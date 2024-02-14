@@ -1,4 +1,5 @@
 # EvryDay
+![Alt text](ABS_Tracker.jpg)
 
 ## Description
 An mobile app that combines the functionalities of three applications, all aimed at promoting a healthy lifestyle. Users can set various goals as part of a long-term health plan, such as logging daily activities, aiming for a 30% protein intake every day, working out daily, etc. The app features a "Healthy Score" out of 100, reflecting how much of their daily goal the user has achieved.
