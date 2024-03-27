@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import DietScreen from './src/screens/Diet-Screen';
 import WorkoutScreen from './src/screens/Workout-Screen';
@@ -17,14 +17,13 @@ function BottomNavBarTabs() {
       initialRouteName="Feed"
       screenOptions={{
         tabBarActiveTintColor: '#e91e63',
-      }}
-    >
+      }}>
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
@@ -34,7 +33,7 @@ function BottomNavBarTabs() {
         component={DietScreen}
         options={{
           tabBarLabel: 'Diet',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="fast-food-outline" color={color} size={size} />
           ),
         }}
@@ -44,7 +43,7 @@ function BottomNavBarTabs() {
         component={SleepScreen}
         options={{
           tabBarLabel: 'Sleep',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="sleep" color={color} size={size} />
           ),
         }}
@@ -54,8 +53,12 @@ function BottomNavBarTabs() {
         component={WorkoutScreen}
         options={{
           tabBarLabel: 'Workout',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="weight-lifter" color={color} size={size} />
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons
+              name="weight-lifter"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -70,4 +73,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
