@@ -6,7 +6,7 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text>Home</Text>
+      <Text>Home</Text>
       </SafeAreaView>
     </>
   );
