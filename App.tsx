@@ -2,21 +2,24 @@ import * as React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import DietScreen from './src/screens/Diet-Screen';
 import WorkoutScreen from './src/screens/Workout-Screen';
 import SleepScreen from './src/screens/Sleep-Screen';
+import AddMealScreen from './src/screens/Add-Meal-Screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function BottomNavBarTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
-        tabBarActiveTintColor: '#e91e63',
+        tabBarActiveTintColor: '#1ee94d',
       }}>
       <Tab.Screen
         name="Dashboard"
@@ -30,7 +33,7 @@ function BottomNavBarTabs() {
       />
       <Tab.Screen
         name="Diet"
-        component={DietScreen}
+        component={DietStack}
         options={{
           tabBarLabel: 'Diet',
           tabBarIcon: ({color, size}) => (
@@ -63,6 +66,15 @@ function BottomNavBarTabs() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function DietStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={DietScreen} />
+      <Stack.Screen name="AddMeal" component={AddMealScreen} />
+    </Stack.Navigator>
   );
 }
 

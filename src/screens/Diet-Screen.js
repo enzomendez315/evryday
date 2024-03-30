@@ -1,9 +1,9 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, Text, View} from 'react-native';
+import {Button, SafeAreaView, StatusBar, Text, View} from 'react-native';
 import {dietStyles as styles} from '../dietStyles';
 import PieChart from 'react-native-pie-chart';
 
-const DietScreen = () => {
+const DietScreen = ({navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -33,7 +33,7 @@ const DietScreen = () => {
         <View style={styles.mealContainer}>
           <Text style={styles.mealText}>Dinner</Text>
           <Text style={styles.mealText}>Snack</Text>
-          <Text style={styles.mealText}>Add Meal</Text>
+          <Button title="Add Meal" onPress={() => navigation.navigate('AddMeal')} />
         </View>
       </SafeAreaView>
     </>
