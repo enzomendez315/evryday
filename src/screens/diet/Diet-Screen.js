@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, SafeAreaView, StatusBar, Text, View} from 'react-native';
-import {dietStyles as styles} from '../dietStyles';
+import {dietStyles as styles} from '../../dietStyles';
 import PieChart from 'react-native-pie-chart';
 
 const DietScreen = ({navigation}) => {

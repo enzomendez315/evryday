@@ -4,10 +4,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import DashboardScreen from './src/screens/Dashboard-Screen';
-import DietScreen from './src/screens/Diet-Screen';
+import DietScreen from './src/screens/diet/Diet-Screen';
+import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 import WorkoutScreen from './src/screens/Workout-Screen';
 import SleepScreen from './src/screens/Sleep-Screen';
-import AddMealScreen from './src/screens/Add-Meal-Screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -20,10 +20,11 @@ function BottomNavBarTabs() {
       initialRouteName="Feed"
       screenOptions={{
         tabBarActiveTintColor: '#1ee94d',
+        headerShown: false,
       }}>
       <Tab.Screen
         name="Dashboard"
-        component={DashboardScreen}
+        component={DashboardStack}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => (
@@ -43,7 +44,7 @@ function BottomNavBarTabs() {
       />
       <Tab.Screen
         name="Sleep"
-        component={SleepScreen}
+        component={SleepStack}
         options={{
           tabBarLabel: 'Sleep',
           tabBarIcon: ({color, size}) => (
@@ -53,7 +54,7 @@ function BottomNavBarTabs() {
       />
       <Tab.Screen
         name="Workout"
-        component={WorkoutScreen}
+        component={WorkoutStack}
         options={{
           tabBarLabel: 'Workout',
           tabBarIcon: ({color, size}) => (
@@ -69,11 +70,35 @@ function BottomNavBarTabs() {
   );
 }
 
-function DietStack() {
+function DashboardStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={DietScreen} />
+      <Stack.Screen name="Dashboard Home" component={DashboardScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function DietStack() {
+  return (
+    <Stack.Navigator screenOptions={{headerShown:true}}>
+      <Stack.Screen name="Diet Home" component={DietScreen} />
       <Stack.Screen name="AddMeal" component={AddMealScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function SleepStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Sleep Home" component={SleepScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function WorkoutStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Workout Home" component={WorkoutScreen} />
     </Stack.Navigator>
   );
 }
