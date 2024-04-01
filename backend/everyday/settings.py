@@ -56,7 +56,9 @@ ROOT_URLCONF = 'everyday.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates'    #.parent / 'frontend/src/screens'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

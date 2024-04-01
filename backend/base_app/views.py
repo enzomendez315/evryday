@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 # Create your views here.
 
@@ -7,7 +6,7 @@ from django.http import HttpResponse
 # Called when the user goes to a certain page or takes a certain action
 
 def dashboard(request):
-    return HttpResponse('This is the main dashboard for EvryDay!')
+    return render(request, 'dashboard.html')
 
 def sleep(request):
-    return HttpResponse('This is the sleep dashboard!')
+    return render(request, 'sleep.html')
