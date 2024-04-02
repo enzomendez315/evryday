@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-const dietStyles = StyleSheet.create({
+const dietHomeStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -52,4 +52,4 @@ const dietStyles = StyleSheet.create({
     },
 });
 
-export {dietStyles};
+export {dietHomeStyles};
