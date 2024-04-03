@@ -9,7 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
-import WorkoutScreen from './src/screens/Workout-Screen';
+import WorkoutScreen from './src/screens/workout/Workout-Screen';
 import SleepScreen from './src/screens/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
