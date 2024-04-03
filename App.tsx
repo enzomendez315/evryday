@@ -14,6 +14,11 @@ import SleepScreen from './src/screens/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 
+import {Amplify} from 'aws-amplify';
+import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
+import awsconfig from './src/aws-exports';
+Amplify.configure(awsconfig);
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -108,10 +113,12 @@ function WorkoutStack() {
   );
 }
 
-export default function App() {
+function App() {
   return (
     <NavigationContainer>
       <BottomNavBarTabs />
     </NavigationContainer>
   );
 }
+
+export default withAuthenticator(App);
