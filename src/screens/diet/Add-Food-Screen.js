@@ -1,15 +1,15 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, Text} from 'react-native';
 
-const WorkoutScreen = (props) => {
+const AddFoodScreen = (props) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text>Workout</Text>
+        <Text>Add Food</Text>
       </SafeAreaView>
     </>
   );
 };
 
-export default WorkoutScreen;
+export default AddFoodScreen;
