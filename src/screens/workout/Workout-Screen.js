@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+
+
 const routineData = [
   {
     name: 'Hypertrophy 1',
