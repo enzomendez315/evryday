@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 const searchFoodStyles = StyleSheet.create({
     container: {
@@ -33,6 +33,8 @@ const searchFoodStyles = StyleSheet.create({
     tableHeadContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginLeft: 20,
+        marginRight: 20,
     },
     tableHeadText: {
         fontSize: 20,
@@ -50,11 +52,15 @@ const searchFoodStyles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
-    horizontalLine: {
-        borderBottomColor: 'black',
-        borderBottomWidth: 1,
-        margin: 10,
-    }
+    listContainer: {
+        padding: 1,
+        scrollEnabled: true,
+    },
+    separator: {
+        height: 1,
+        width: '100%',
+        backgroundColor: 'black',
+    },
 });
 
 export { searchFoodStyles };

@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const dietHomeStyles = StyleSheet.create({
     container: {
@@ -76,6 +76,11 @@ const dietHomeStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    verticalLine: {
+        height: '100%',
+        width: 1,
+        backgroundColor: 'black',
+    },
 });
 
-export {dietHomeStyles};
+export { dietHomeStyles };
