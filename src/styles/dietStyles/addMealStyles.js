@@ -70,7 +70,6 @@ const addMealStyles = StyleSheet.create({
     },
     macroSquareTextContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
         marginTop: 10,
         marginBottom: 10,
     },
@@ -85,25 +84,25 @@ const addMealStyles = StyleSheet.create({
         height: 15,
         backgroundColor: 'lightblue',
         borderWidth: 1,
+        marginRight: 5,
       },
     carbsSquare: {
         width: 15,
         height: 15,
         backgroundColor: 'lightgreen',
         borderWidth: 1,
+        marginRight: 5,
     },
     fatSquare: {
         width: 15,
         height: 15,
         backgroundColor: 'pink',
         borderWidth: 1,
+        marginRight: 5,
     },
     pieChart: {
         marginTop: 40,
         marginBottom: 40,
-        marginLeft: 40,
-        marginRight: 'auto',
-        borderRadius: 10,
     },
 });
 

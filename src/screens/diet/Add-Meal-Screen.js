@@ -27,7 +27,7 @@ const AddMealScreen = ({navigation}) => {
           <ScrollView>
             {foodsList.map((food, index) => (
               <Text style={addMealStyles.foodItem}
-              key={index}>{food.name}</Text>
+              key={index}>{food.name}, {food.calories}cal</Text>
             ))}
           </ScrollView>
           <TouchableOpacity style={addMealStyles.Button}

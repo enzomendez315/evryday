@@ -11,11 +11,13 @@ const dietHomeStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 30,
         fontWeight: 'bold',
+        color: 'black',
     },
     calorieHeader: {
         marginTop: 20,
         textAlign: 'center',
-        fontSize: 30,
+        fontSize: 25,
+        color: 'black',
     },
     calorieText: {
         marginTop: 20,
@@ -39,6 +41,7 @@ const dietHomeStyles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
         marginBottom: 10,
+        color: 'black',
     },
     mealsContainer: {
         flexDirection: 'row',
@@ -50,6 +53,7 @@ const dietHomeStyles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         flexDirection: 'row',
+        color: 'black',
     },
     mealText: {
         fontSize: 25,
