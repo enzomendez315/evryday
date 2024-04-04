@@ -1,45 +1,85 @@
 import React from 'react';
-import {Button, SafeAreaView, StatusBar, Text, View} from 'react-native';
+import {Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import {addMealStyles} from '../../styles/dietStyles/addMealStyles';
 import PieChart from 'react-native-pie-chart';
 
+const foodsList = [
+  {name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5},
+  {name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15},
+];
+
+const mealData = {
+    name: 'New Meal',
+    calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+    protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+    carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+    fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+};
 
 const AddMealScreen = ({navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text style={addMealStyles.title}>New Meal</Text>
+        <Text style={addMealStyles.title}>{mealData.name}</Text>
 
         <View style={addMealStyles.mealContainer}>
-          <Text>Some Tasty Rice</Text>
-          <Text>Some Tasty Chicken</Text>
-          <Button style={addMealStyles.addMealButton}
-          title="Add Food"
-          onPress={() => navigation.navigate('Search Food')} />
-
+          <ScrollView>
+            {foodsList.map((food, index) => (
+              <Text style={addMealStyles.foodItem}
+              key={index}>{food.name}</Text>
+            ))}
+          </ScrollView>
+          <TouchableOpacity style={addMealStyles.Button}
+          onPress={() => navigation.navigate('Search Food')}>
+            <Text style={addMealStyles.ButtonText}>Add New Food</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={addMealStyles.buttonContainer}>
-          <Button title="Save Meal" onPress={() => {}} />
-          <Button title="Use Saved Meal" onPress={() => {}} />
+        <TouchableOpacity style={addMealStyles.Button}>
+            <Text style={addMealStyles.ButtonText}>Complete Meal</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={addMealStyles.Button}>
+            <Text style={addMealStyles.ButtonText}>Save as Recipe</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={addMealStyles.Button}>
+            <Text style={addMealStyles.ButtonText}>Use a Recipe</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={addMealStyles.pieMacroContainer}>
+        <View style={addMealStyles.pieTextContainer}>
+          <Text style={addMealStyles.pieText}>Macro Breakdown:</Text>
         <PieChart
           style={addMealStyles.pieChart}
           widthAndHeight={150}
-          series={[300, 170, 200]}
+          series={[mealData.protein, mealData.carbs, mealData.fat]}
           sliceColor={['lightblue', 'lightgreen', 'pink']}
-          coverFill={'#FFF'}
-          doughnut={true}
         />
+        </View>
 
         <View style={addMealStyles.macroContainer}>
-          <Text>Calories: 670</Text>
-          <Text>Protein: 100g</Text>
-          <Text>Carbs: 200g</Text>
-          <Text>Fat: 50g</Text>
+          <Text style={addMealStyles.macroText}>
+            Calories: {mealData.calories}</Text>
+          
+          <View style={addMealStyles.macroSquareTextContainer}>
+          <View style={addMealStyles.proteinSquare}/>
+          <Text style={addMealStyles.macroText}>
+            Protein: {mealData.protein}g</Text>
+          </View>
+
+          <View style={addMealStyles.macroSquareTextContainer}>
+          <View style={addMealStyles.carbsSquare}/>
+          <Text style={addMealStyles.macroText}>
+            Carbs: {mealData.carbs}g</Text>
+          </View>
+
+          <View style={addMealStyles.macroSquareTextContainer}>
+          <View style={addMealStyles.fatSquare}/>
+          <Text style={addMealStyles.macroText}>
+            Fat: {mealData.fat}g</Text>
+          </View>
         </View>
         </View>
         
