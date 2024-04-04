@@ -121,4 +121,6 @@ function App() {
   );
 }
 
+// Adds native ui for sign in functionality
+// To bypass replace with 'export default App();'
 export default withAuthenticator(App);

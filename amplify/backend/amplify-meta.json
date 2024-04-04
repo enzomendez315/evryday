@@ -9,35 +9,24 @@
       "UnauthRoleName": "amplify-amplify0a53240a11b74-staging-d616d-unauthRole",
       "StackName": "amplify-amplify0a53240a11b74-staging-d616d",
       "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-amplify0a53240a11b74-staging-d616d/aaec7c20-f07c-11ee-8ebc-0a4239d5f5d7",
-      "AmplifyAppId": "d303bpvqrqjc9z",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+      "AmplifyAppId": "d303bpvqrqjc9z"
     }
   },
   "auth": {
-    "EvryDay": {
+    "evryday7b027c17": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "EvryDayPostConfirmation",
-          "triggerProvider": "Cognito",
-          "attributes": [
-            "Arn",
-            "Name"
-          ]
-        }
-      ],
+      "dependsOn": [],
       "customAuth": false,
       "frontendAuthConfig": {
-        "socialProviders": [],
+        "socialProviders": [
+          "GOOGLE"
+        ],
         "usernameAttributes": [
           "EMAIL"
         ],
         "signupAttributes": [
-          "BIRTHDATE",
-          "GENDER",
-          "NAME"
+          "EMAIL"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
@@ -51,142 +40,27 @@
           "EMAIL"
         ]
       },
+      "lastPushTimeStamp": "2024-04-04T00:55:34.530Z",
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/EvryDay-cloudformation-template.json",
-        "logicalId": "authEvryDay"
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/evryday7b027c17-cloudformation-template.json",
+        "logicalId": "authevryday7b027c17"
       },
-      "lastPushTimeStamp": "2024-04-03T08:38:32.198Z",
       "output": {
-        "UserPoolId": "us-east-2_RXVViID5O",
-        "AppClientIDWeb": "5vuacrjbk4oka0mnnd1dn2bigd",
-        "AppClientID": "e25vr5v3tajolfjj7sj4itaov",
-        "IdentityPoolId": "us-east-2:5c6fd48c-cb87-4e0b-9c6c-1aabeb61ea27",
-        "UserPoolArn": "arn:aws:cognito-idp:us-east-2:030695255021:userpool/us-east-2_RXVViID5O",
-        "IdentityPoolName": "testAuthIdentityPool__staging",
-        "UserPoolName": "EvryDay"
+        "UserPoolId": "us-east-2_n28xxdXQk",
+        "AppClientIDWeb": "10d7kn5h27u5s0lgkg9mbld5fo",
+        "AppClientID": "2ike0hgcqpvg3i5e8p5g76d2a8",
+        "HostedUIDomain": "evryday7b027c17-7b027c17-staging",
+        "IdentityPoolId": "us-east-2:f45f15c8-5323-4f8f-8206-46b189c4025b",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-2:030695255021:userpool/us-east-2_n28xxdXQk",
+        "IdentityPoolName": "evryday7b027c17_identitypool_7b027c17__staging",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"com.evryday://\"],\"LogoutURLs\":[\"com.evryday://\"]}",
+        "UserPoolName": "evryday7b027c17_userpool_7b027c17"
       },
-      "lastPushDirHash": "mrRqk7zm536CkX0YROy4b8InL8M="
-    },
-    "userPoolGroups": {
-      "service": "Cognito-UserPool-Groups",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "EvryDay",
-          "attributes": [
-            "UserPoolId",
-            "AppClientIDWeb",
-            "AppClientID"
-          ]
-        }
-      ],
-      "lastPushTimeStamp": "2024-04-03T08:38:32.209Z",
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/userPoolGroups-cloudformation-template.json",
-        "logicalId": "authuserPoolGroups"
-      },
-      "output": {},
-      "lastPushDirHash": "t2vflOQiWiwRak4pqhXoAGrExOs="
+      "lastPushDirHash": "G78/NDcedbHzLRwHTBujcBw7FHc="
     }
   },
-  "function": {
-    "AdminQueriesf3d0d774": {
-      "service": "Lambda",
-      "providerPlugin": "awscloudformation",
-      "build": true,
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "EvryDay",
-          "attributes": [
-            "UserPoolId"
-          ]
-        }
-      ],
-      "lastBuildTimeStamp": "2024-04-03T08:25:42.310Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2024-04-03T08:25:43.479Z",
-      "distZipFilename": "AdminQueriesf3d0d774-466e5a5a6f744d6e7a65-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-        "s3Key": "amplify-builds/AdminQueriesf3d0d774-466e5a5a6f744d6e7a65-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/function/AdminQueriesf3d0d774-cloudformation-template.json",
-        "logicalId": "functionAdminQueriesf3d0d774"
-      },
-      "lastPushTimeStamp": "2024-04-03T08:38:32.220Z",
-      "output": {
-        "LambdaExecutionRoleArn": "arn:aws:iam::030695255021:role/AdminQueriesf3d0d774LambdaRole-staging",
-        "Region": "us-east-2",
-        "Arn": "arn:aws:lambda:us-east-2:030695255021:function:AdminQueriesf3d0d774-staging",
-        "Name": "AdminQueriesf3d0d774-staging",
-        "LambdaExecutionRole": "AdminQueriesf3d0d774LambdaRole-staging"
-      },
-      "lastPushDirHash": "kyh5Hiyq7pjPtnPdVyBXh+Ia4aI="
-    },
-    "EvryDayPostConfirmation": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "lastBuildTimeStamp": "2024-04-03T08:25:46.834Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2024-04-03T08:25:47.229Z",
-      "distZipFilename": "EvryDayPostConfirmation-652b5255764d38676534-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-        "s3Key": "amplify-builds/EvryDayPostConfirmation-652b5255764d38676534-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/function/EvryDayPostConfirmation-cloudformation-template.json",
-        "logicalId": "functionEvryDayPostConfirmation"
-      },
-      "lastPushTimeStamp": "2024-04-03T08:38:32.231Z",
-      "output": {
-        "LambdaExecutionRoleArn": "arn:aws:iam::030695255021:role/EvryDayPostConfirmation-staging",
-        "Region": "us-east-2",
-        "Arn": "arn:aws:lambda:us-east-2:030695255021:function:EvryDayPostConfirmation-staging",
-        "Name": "EvryDayPostConfirmation-staging",
-        "LambdaExecutionRole": "EvryDayPostConfirmation-staging"
-      },
-      "lastPushDirHash": "QNiDomXd1jhoAdbIOwxT6+gFZhE="
-    }
-  },
+  "function": {},
   "api": {
-    "AdminQueries": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "EvryDay",
-          "attributes": [
-            "UserPoolId"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "AdminQueriesf3d0d774",
-          "attributes": [
-            "Arn",
-            "Name"
-          ]
-        }
-      ],
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/api/AdminQueries-cloudformation-template.json",
-        "logicalId": "apiAdminQueries"
-      },
-      "lastPushTimeStamp": "2024-04-03T08:38:32.241Z",
-      "output": {
-        "ApiName": "AdminQueries",
-        "RootUrl": "https://m87nzx9q4i.execute-api.us-east-2.amazonaws.com/staging",
-        "ApiId": "m87nzx9q4i"
-      },
-      "lastPushDirHash": "N++VkmpRoofNYHeStjxeqDc0TsM="
-    },
     "evryday": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
@@ -209,8 +83,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apievryday"
       },
-      "lastPushTimeStamp": "2024-04-03T08:38:40.702Z",
-      "lastPushDirHash": "gjL1/FESI7Ym0r+kQ634gwmU0oI="
+      "lastPushTimeStamp": "2024-04-04T00:55:31.765Z",
+      "lastPushDirHash": "yRhXvF5mSdAztHBG6468+t0ExKE="
     }
   }
 }

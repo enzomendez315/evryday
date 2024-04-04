@@ -13,24 +13,11 @@
       "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
-      "auth": {
-        "EvryDay": {},
-        "userPoolGroups": {}
-      },
-      "function": {
-        "EvryDayPostConfirmation": {
-          "GROUP": "User",
-          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-          "s3Key": "amplify-builds/EvryDayPostConfirmation-652b5255764d38676534-build.zip"
-        },
-        "AdminQueriesf3d0d774": {
-          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-          "s3Key": "amplify-builds/AdminQueriesf3d0d774-466e5a5a6f744d6e7a65-build.zip"
-        }
-      },
       "api": {
-        "AdminQueries": {},
         "evryday": {}
+      },
+      "auth": {
+        "evryday7b027c17": {}
       }
     }
   },
