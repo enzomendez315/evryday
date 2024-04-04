@@ -40,15 +40,37 @@ const dietHomeStyles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    mealContainer: {
+    mealsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    mealNameText: {
+        fontSize: 25,
+        marginTop: 10,
+        marginBottom: 10,
+        flexDirection: 'row',
     },
     mealText: {
         fontSize: 25,
         marginTop: 10,
         marginBottom: 10,
+        marginRight: 'auto',
+        marginLeft: 'auto',
         flexDirection: 'row',
+    },
+    addMealButton: {
+        backgroundColor: 'blue',
+        borderRadius: 8,
+        padding: 10,
+        margin: 10,
+        justifyContent: 'center',
+        height: 50,
+    },
+    addMealButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
 
