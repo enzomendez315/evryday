@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal} from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 
 const routineData = [
   {
@@ -51,7 +51,10 @@ const RoutineTab = ({ routine, onPress}) => (
   </TouchableOpacity>
 )
 
-const ExerciseListPopup = ({ visible, onClose, routine }) => {
+const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
+
+  navigation = useNavigation();
+
   return (
     <Modal
       visible={visible}
@@ -62,19 +65,27 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
       <View style={styles.popupOverlay}>
         <View style={styles.popup}>
           <View style={styles.popupHeader}>
-          <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onClose}>
               <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
             </TouchableOpacity>
-            
+
             <Text style={styles.popupTitle}>{routine.name}</Text>
-           
+
             <TouchableOpacity onPress={() => { /* Handle edit */ }}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.startWorkoutButton}>
-            <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.startWorkoutButton}
+            onPress={() => {
+              // Close the popup first
+              onClose();
+              // Navigate to ActiveWorkout screen with the routine's name
+              navigation.navigate('Active Workout', { routineName: routine.name });
+            }}
+          >
+  <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
+</TouchableOpacity>
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
             <View key={index} style={styles.exerciseContainer}>
@@ -89,7 +100,7 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
           }
 
 
-const WorkoutScreen = (props) => {
+const WorkoutScreen = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
@@ -102,6 +113,11 @@ const WorkoutScreen = (props) => {
   // Function to close the popup
   const closePopup = () => {
     setIsPopupVisible(false);
+  };
+
+  // Function to navigate to ActiveWorkout screen with the routine's name
+  const navigateToActiveWorkout = (routineName) => {
+    navigation.navigate('Active Workout', { routineName });
   };
   
   return (
