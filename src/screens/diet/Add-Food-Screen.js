@@ -13,6 +13,8 @@ const AddFoodScreen = (props) => {
     { label: 'Count', value: 'count' }
   ]);
 
+  console.log(item);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />

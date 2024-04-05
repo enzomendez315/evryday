@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { addMealStyles } from '../../styles/dietStyles/addMealStyles';
 import PieChart from 'react-native-pie-chart';
@@ -17,7 +17,12 @@ const mealData = {
   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 };
 
-const AddMealScreen = ({ navigation }) => {
+const AddMealScreen = (props) => {
+  const { navigation, route } = props;
+  const item1 = route.params;
+
+  console.log(item1);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />

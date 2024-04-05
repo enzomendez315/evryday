@@ -82,17 +82,19 @@ const DietScreen = ({ navigation }) => {
 
           <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
             {mealData.map((meal, index) => (
-              <View key={index} margin={5}>
+              <TouchableOpacity style={{ padding: 5 }}
+                key={index} margin={5}
+                onPress={() => navigation.navigate('Add Meal', { meal })}>
                 <Text style={dietHomeStyles.mealNameText}>{meal.name}</Text>
                 <Text style={dietHomeStyles.mealText}>
                   {meal.calories}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
 
           <TouchableOpacity style={dietHomeStyles.addMealButton}
-            onPress={() => navigation.navigate('Add Meal')}>
+            onPress={() => navigation.navigate('Add Meal', {})}>
             <Text style={dietHomeStyles.addMealButtonText}>Add Meal</Text>
           </TouchableOpacity>
         </View>
