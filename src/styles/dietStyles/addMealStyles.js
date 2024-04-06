@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const addMealStyles = StyleSheet.create({
     container: {
@@ -85,7 +85,7 @@ const addMealStyles = StyleSheet.create({
         backgroundColor: 'lightblue',
         borderWidth: 1,
         marginRight: 5,
-      },
+    },
     carbsSquare: {
         width: 15,
         height: 15,
@@ -104,6 +104,33 @@ const addMealStyles = StyleSheet.create({
         marginTop: 40,
         marginBottom: 40,
     },
+    // Popup styles
+    popupOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    popup: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        width: '90%',
+    },
+    popupHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    popupTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+    },
+    editButton: {
+        fontSize: 18,
+        color: '#0000ff', // Replace with your theme color
+    },
 });
 
-export {addMealStyles};
+export { addMealStyles };

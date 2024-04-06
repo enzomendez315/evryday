@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { addMealStyles } from '../../styles/dietStyles/addMealStyles';
 import PieChart from 'react-native-pie-chart';
 
@@ -17,16 +17,81 @@ const mealData = {
   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 };
 
+const recipeData = [
+  {
+    name: 'Chicken and Rice',
+    ingredients: [
+      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
+      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
+    ],
+    calories: 500,
+    protein: 25,
+    carbs: 50,
+    fat: 20,
+  },
+  {
+    name: 'Chicken and Broccoli',
+    ingredients: [
+      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
+      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
+    ],
+    calories: 350,
+    protein: 20,
+    carbs: 40,
+    fat: 15,
+  },
+  {
+    name: 'Rice and Broccoli',
+    ingredients: [
+      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
+      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
+    ],
+    calories: 250,
+    protein: 15,
+    carbs: 30,
+    fat: 10,
+  },
+];
+
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
   const item1 = route.params;
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   console.log(item1);
+
+  const RecipeListPopup = () => {
+    return (
+      <Modal
+        visible={isPopupVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsPopupVisible(!isPopupVisible)}
+      >
+        <View style={addMealStyles.popupOverlay}>
+          <View style={addMealStyles.popup}>
+            <View style={addMealStyles.popupHeader}>
+              <TouchableOpacity onPress={() => setIsPopupVisible(false)}>
+                <Text style={[addMealStyles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              </TouchableOpacity>
+
+              <Text style={addMealStyles.popupTitle}>Tasty Recipes</Text>
+
+              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                <Text style={addMealStyles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
+        <RecipeListPopup />
         <Text style={addMealStyles.title}>{mealData.name}</Text>
 
         <View style={addMealStyles.mealContainer}>
@@ -49,7 +114,8 @@ const AddMealScreen = (props) => {
           <TouchableOpacity style={addMealStyles.Button}>
             <Text style={addMealStyles.ButtonText}>Save as Recipe</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={addMealStyles.Button}>
+          <TouchableOpacity style={addMealStyles.Button}
+            onPress={() => setIsPopupVisible(true)}>
             <Text style={addMealStyles.ButtonText}>Use a Recipe</Text>
           </TouchableOpacity>
         </View>
