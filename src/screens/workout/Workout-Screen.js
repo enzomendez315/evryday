@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal} from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 
 
 const routineData = [
@@ -39,7 +39,7 @@ const routineData = [
 ];
 
 // Individual routine tab component
-const RoutineTab = ({ routine, onPress}) => (
+const RoutineTab = ({ routine, onPress }) => (
   <TouchableOpacity style={styles.routineTab} onPress={onPress}>
     <Text style={styles.routineName}>{routine.name}</Text>
     {routine.exercises && routine.exercises.map((exercise, index) => (
@@ -62,12 +62,12 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
       <View style={styles.popupOverlay}>
         <View style={styles.popup}>
           <View style={styles.popupHeader}>
-          <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onClose}>
               <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
             </TouchableOpacity>
-            
+
             <Text style={styles.popupTitle}>{routine.name}</Text>
-           
+
             <TouchableOpacity onPress={() => { /* Handle edit */ }}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
@@ -86,7 +86,7 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
       </View>
     </Modal>
   );
-          }
+}
 
 
 const WorkoutScreen = (props) => {
@@ -103,7 +103,7 @@ const WorkoutScreen = (props) => {
   const closePopup = () => {
     setIsPopupVisible(false);
   };
-  
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -120,10 +120,10 @@ const WorkoutScreen = (props) => {
         </View>
         <ScrollView style={styles.routinesContainer}>
           {routineData.map((routine, index) => (
-            <RoutineTab 
-            key={index} 
-            routine={routine}
-            onPress={()=> openPopup(routine)}  />
+            <RoutineTab
+              key={index}
+              routine={routine}
+              onPress={() => openPopup(routine)} />
           ))}
         </ScrollView>
       </SafeAreaView>
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-   // Popup styles
-   popupOverlay: {
+  // Popup styles
+  popupOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
