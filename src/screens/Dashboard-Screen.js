@@ -30,6 +30,9 @@ const DietTab = () => {
     { name: 'Fat', percentage: 10, color: 'lightgreen' },
   ];
 
+  const chartWidth = 80;
+  const chartHeight = 80;
+
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
     backgroundGradientToOpacity: 0,
@@ -45,22 +48,20 @@ const DietTab = () => {
   }));
   
   return (
-    <View style={styles.dietTab}>
+  <TouchableOpacity style={styles.dietTab}>
     <View style={styles.circle}>
       <Text style={styles.caloriesText}>{caloriesUnder} Under</Text>
     </View>
     <PieChart
       data={pieChartData}
-      width={styles.chart.width}
-      height={styles.chart.height}
+      width={chartWidth}
+      height={chartHeight}
       chartConfig={chartConfig}
-      accessor="population"
-      backgroundColor="transparent"
-      paddingLeft="15"
-      paddingRight="15"
-      center={[styles.chart.radius, styles.chart.radius]}
-      hasLegend={false} // Set to false to not render the legend
-      absolute={false} // Set to false to not render absolute values inside the chart
+      accessor={"population"}
+      backgroundColor={"transparent"}
+      paddingLeft={"20"} // Adjust if your chart is not centered
+      hasLegend={false}
+      absolute={false}
     />
     <View style={styles.macroList}>
       {macros.map((macro, index) => (
@@ -69,7 +70,7 @@ const DietTab = () => {
         </Text>
       ))}
     </View>
-  </View>
+  </TouchableOpacity>
 );
 };
 
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
 
 
   macroList: {
-    padding: 20,
+    marginLeft: 20,
   },
 
   macroText: {
