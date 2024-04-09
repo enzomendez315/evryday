@@ -13,6 +13,7 @@ import WorkoutScreen from './src/screens/workout/Workout-Screen';
 import SleepScreen from './src/screens/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
+import ActiveWorkout from './src/screens/workout/Active-Workout-Screen';
 
 import {Amplify} from 'aws-amplify';
 import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
@@ -109,6 +110,7 @@ function WorkoutStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Workout Home" component={WorkoutScreen} />
+      <Stack.Screen name="Active Workout" component={ActiveWorkout} />
     </Stack.Navigator>
   );
 }
