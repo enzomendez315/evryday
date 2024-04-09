@@ -2,11 +2,6 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
-type Todo @model {  # EXAMPLE
-  id: ID!
-  name: String!
-  description: String
-}
 
 type User @model {
   id: ID!
@@ -43,5 +38,22 @@ type SleepLog @model {
   date: String!
   hoursSlept: Float!
   sleepQuality: Int
+  restfulnessScore: Int
   dreamJournal: String
+}
+
+type HealthScore @model {
+  id: ID!
+  userId: ID!
+  date: String!
+  score: Int!
+}
+
+type GoalLog @model {
+  id: ID!
+  userId: ID!
+  weight: Float!
+  hoursSlept: Float!
+  dailyCalories: Int!
+  dailyExercise: Int!
 }
