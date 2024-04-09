@@ -1,5 +1,6 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, Text,  View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import { PieChart } from 'react-native-chart-kit';
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
@@ -23,17 +24,52 @@ const HealthScoreTab = () => {
 const DietTab = () => {
   // Dummy diet data
   const caloriesUnder = 762;
-  const macros = { carbs: 50, protein: 40, fat: 10 };
+  const macros = [
+    { name: 'Carbs', percentage: 50, color: 'skyblue' },
+    { name: 'Protein', percentage: 40, color: 'salmon' },
+    { name: 'Fat', percentage: 10, color: 'lightgreen' },
+  ];
 
+  const chartConfig = {
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  };
+
+  const pieChartData = macros.map((macro, index) => ({
+    name: macro.name,
+    population: macro.percentage,
+    color: macro.color,
+    legendFontColor: macro.color,
+    legendFontSize: 15,
+  }));
+  
   return (
-    <TouchableOpacity style={styles.tab}>
-      <View style={styles.circle}>
-        <Text>{caloriesUnder} Under</Text>
-      </View>
-      {/* Use charting library to create the pie chart for macros */}
-      <Text>Carbs: {macros.carbs}% Protein: {macros.protein}% Fat: {macros.fat}%</Text>
-    </TouchableOpacity>
-  );
+    <View style={styles.dietTab}>
+    <View style={styles.circle}>
+      <Text style={styles.caloriesText}>{caloriesUnder} Under</Text>
+    </View>
+    <PieChart
+      data={pieChartData}
+      width={styles.chart.width}
+      height={styles.chart.height}
+      chartConfig={chartConfig}
+      accessor="population"
+      backgroundColor="transparent"
+      paddingLeft="15"
+      center={[styles.chart.radius, styles.chart.radius]}
+      hasLegend={false} // Set to false to not render the legend
+      absolute={false} // Set to false to not render absolute values inside the chart
+    />
+    <View style={styles.macroList}>
+      {macros.map((macro, index) => (
+        <Text key={index} style={[styles.macroText, {color: macro.color}]}>
+          {macro.name}: {macro.percentage}%
+        </Text>
+      ))}
+    </View>
+  </View>
+);
 };
 
 // Working Out Tab Component:
@@ -112,6 +148,14 @@ const styles = StyleSheet.create({
     // ... other styling for the sleep tab
   },
 
+  dietTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    justifyContent: 'flex-start',
+  
+  },
+
   circle: {
     width: 80, // Set the width and height to create a circle
     height: 80,
@@ -121,6 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10, // Add some margin to separate from the text
   },
+
   scoreText: {
     // Add styling for the score text inside the circle
     fontSize: 24, // example size
@@ -134,6 +179,38 @@ const styles = StyleSheet.create({
     // Add styling for the recommendation text
     fontSize: 16, // example size
   },
+
+  marcoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#E1E2E1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+
+  chart: {
+    width: 80, // Same as circle for consistency
+    height: 80, // Same as circle for consistency
+    radius: 40, // Half of width/height to make it a circle
+  },
+
+  caloriesText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
+
+  macroList: {
+    padding: 20,
+  },
+
+  macroText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  
   // Add more styles for the individual components as needed
 });
 
