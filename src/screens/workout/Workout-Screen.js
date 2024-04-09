@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 const routineData = [
@@ -39,7 +41,7 @@ const routineData = [
 ];
 
 // Individual routine tab component
-const RoutineTab = ({ routine, onPress }) => (
+const RoutineTab = ({ routine, onPress}) => (
   <TouchableOpacity style={styles.routineTab} onPress={onPress}>
     <Text style={styles.routineName}>{routine.name}</Text>
     {routine.exercises && routine.exercises.map((exercise, index) => (
@@ -51,7 +53,10 @@ const RoutineTab = ({ routine, onPress }) => (
   </TouchableOpacity>
 )
 
-const ExerciseListPopup = ({ visible, onClose, routine }) => {
+const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
+
+  navigation = useNavigation();
+
   return (
     <Modal
       visible={visible}
@@ -72,9 +77,17 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.startWorkoutButton}>
-            <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.startWorkoutButton}
+            onPress={() => {
+              // Close the popup first
+              onClose();
+              // Navigate to ActiveWorkout screen with the routine's name
+              navigation.navigate('Active Workout', { routineName: routine.name });
+            }}
+          >
+  <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
+</TouchableOpacity>
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
             <View key={index} style={styles.exerciseContainer}>
@@ -86,10 +99,10 @@ const ExerciseListPopup = ({ visible, onClose, routine }) => {
       </View>
     </Modal>
   );
-}
+          }
 
 
-const WorkoutScreen = (props) => {
+const WorkoutScreen = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
@@ -104,6 +117,11 @@ const WorkoutScreen = (props) => {
     setIsPopupVisible(false);
   };
 
+  // Function to navigate to ActiveWorkout screen with the routine's name
+  const navigateToActiveWorkout = (routineName) => {
+    navigation.navigate('Active Workout', { routineName });
+  };
+  
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -120,10 +138,10 @@ const WorkoutScreen = (props) => {
         </View>
         <ScrollView style={styles.routinesContainer}>
           {routineData.map((routine, index) => (
-            <RoutineTab
-              key={index}
-              routine={routine}
-              onPress={() => openPopup(routine)} />
+            <RoutineTab 
+            key={index} 
+            routine={routine}
+            onPress={()=> openPopup(routine)}  />
           ))}
         </ScrollView>
       </SafeAreaView>
@@ -211,8 +229,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Popup styles
-  popupOverlay: {
+   // Popup styles
+   popupOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
