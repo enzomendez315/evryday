@@ -1,48 +1,160 @@
-import React from 'react';
-import {Button, SafeAreaView, StatusBar, Text, View} from 'react-native';
-import {addMealStyles} from '../../styles/dietStyles/addMealStyles';
+import React, { useState } from 'react';
+import { Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { addMealStyles } from '../../styles/dietStyles/addMealStyles';
 import PieChart from 'react-native-pie-chart';
 
+const foodsList = [
+  { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
+  { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
+  { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
+];
 
-const AddMealScreen = ({navigation}) => {
+const mealData = {
+  name: 'New Meal',
+  calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+  protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+  carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+  fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+};
+
+const recipeData = [
+  {
+    name: 'Chicken and Rice',
+    ingredients: [
+      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
+      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
+    ],
+    calories: 500,
+    protein: 25,
+    carbs: 50,
+    fat: 20,
+  },
+  {
+    name: 'Chicken and Broccoli',
+    ingredients: [
+      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
+      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
+    ],
+    calories: 350,
+    protein: 20,
+    carbs: 40,
+    fat: 15,
+  },
+  {
+    name: 'Rice and Broccoli',
+    ingredients: [
+      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
+      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
+    ],
+    calories: 250,
+    protein: 15,
+    carbs: 30,
+    fat: 10,
+  },
+];
+
+const AddMealScreen = (props) => {
+  const { navigation, route } = props;
+  const item1 = route.params;
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+  console.log(item1);
+
+  const RecipeListPopup = () => {
+    return (
+      <Modal
+        visible={isPopupVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsPopupVisible(!isPopupVisible)}
+      >
+        <View style={addMealStyles.popupOverlay}>
+          <View style={addMealStyles.popup}>
+            <View style={addMealStyles.popupHeader}>
+              <TouchableOpacity onPress={() => setIsPopupVisible(false)}>
+                <Text style={[addMealStyles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              </TouchableOpacity>
+
+              <Text style={addMealStyles.popupTitle}>Tasty Recipes</Text>
+
+              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                <Text style={addMealStyles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text style={addMealStyles.title}>New Meal</Text>
+        <RecipeListPopup />
+        <Text style={addMealStyles.title}>{mealData.name}</Text>
 
         <View style={addMealStyles.mealContainer}>
-          <Text>Some Tasty Rice</Text>
-          <Text>Some Tasty Chicken</Text>
-          <Button style={addMealStyles.addMealButton}
-          title="Add Food"
-          onPress={() => navigation.navigate('Search Food')} />
-
+          <ScrollView>
+            {foodsList.map((food, index) => (
+              <Text style={addMealStyles.foodItem}
+                key={index}>{food.name}, {food.calories}cal</Text>
+            ))}
+          </ScrollView>
+          <TouchableOpacity style={addMealStyles.Button}
+            onPress={() => navigation.navigate('Search Food')}>
+            <Text style={addMealStyles.ButtonText}>Add New Food</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={addMealStyles.buttonContainer}>
-          <Button title="Save Meal" onPress={() => {}} />
-          <Button title="Use Saved Meal" onPress={() => {}} />
+          <TouchableOpacity style={addMealStyles.Button}>
+            <Text style={addMealStyles.ButtonText}>Complete Meal</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={addMealStyles.Button}>
+            <Text style={addMealStyles.ButtonText}>Save as Recipe</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={addMealStyles.Button}
+            onPress={() => setIsPopupVisible(true)}>
+            <Text style={addMealStyles.ButtonText}>Use a Recipe</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={addMealStyles.pieMacroContainer}>
-        <PieChart
-          style={addMealStyles.pieChart}
-          widthAndHeight={150}
-          series={[300, 170, 200]}
-          sliceColor={['lightblue', 'lightgreen', 'pink']}
-          coverFill={'#FFF'}
-          doughnut={true}
-        />
+          <View style={addMealStyles.pieTextContainer}>
+            <Text style={addMealStyles.pieText}>Macro Breakdown:</Text>
+            <PieChart
+              style={addMealStyles.pieChart}
+              widthAndHeight={150}
+              series={[mealData.protein, mealData.carbs, mealData.fat]}
+              sliceColor={['lightblue', 'lightgreen', 'pink']}
+            />
+          </View>
 
-        <View style={addMealStyles.macroContainer}>
-          <Text>Calories: 670</Text>
-          <Text>Protein: 100g</Text>
-          <Text>Carbs: 200g</Text>
-          <Text>Fat: 50g</Text>
+          <View style={addMealStyles.macroContainer}>
+            <Text style={addMealStyles.macroText}>
+              Calories: {mealData.calories}</Text>
+
+            <View style={addMealStyles.macroSquareTextContainer}>
+              <View style={addMealStyles.proteinSquare} />
+              <Text style={addMealStyles.macroText}>
+                Protein: {mealData.protein}g</Text>
+            </View>
+
+            <View style={addMealStyles.macroSquareTextContainer}>
+              <View style={addMealStyles.carbsSquare} />
+              <Text style={addMealStyles.macroText}>
+                Carbs: {mealData.carbs}g</Text>
+            </View>
+
+            <View style={addMealStyles.macroSquareTextContainer}>
+              <View style={addMealStyles.fatSquare} />
+              <Text style={addMealStyles.macroText}>
+                Fat: {mealData.fat}g</Text>
+            </View>
+          </View>
         </View>
-        </View>
-        
+
         <Text>HUGE TIP: don't eat the mysterious cookies the little
           girls in front of the grocery store are selling. They're not
           cookies. They're rocks. I learned that the hard way.

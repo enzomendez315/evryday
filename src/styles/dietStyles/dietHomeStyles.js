@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const dietHomeStyles = StyleSheet.create({
     container: {
@@ -11,11 +11,13 @@ const dietHomeStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 30,
         fontWeight: 'bold',
+        color: 'black',
     },
     calorieHeader: {
         marginTop: 20,
         textAlign: 'center',
-        fontSize: 30,
+        fontSize: 25,
+        color: 'black',
     },
     calorieText: {
         marginTop: 20,
@@ -39,17 +41,46 @@ const dietHomeStyles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
         marginBottom: 10,
+        color: 'black',
     },
-    mealContainer: {
+    mealsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    mealNameText: {
+        fontSize: 25,
+        marginTop: 10,
+        marginBottom: 10,
+        flexDirection: 'row',
+        color: 'black',
     },
     mealText: {
         fontSize: 25,
         marginTop: 10,
         marginBottom: 10,
+        marginRight: 'auto',
+        marginLeft: 'auto',
         flexDirection: 'row',
+    },
+    addMealButton: {
+        backgroundColor: 'blue',
+        borderRadius: 8,
+        padding: 10,
+        margin: 10,
+        justifyContent: 'center',
+        height: 50,
+    },
+    addMealButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    verticalLine: {
+        height: '100%',
+        width: 1,
+        backgroundColor: 'black',
     },
 });
 
-export {dietHomeStyles};
+export { dietHomeStyles };

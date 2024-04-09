@@ -41,7 +41,7 @@ const routineData = [
 ];
 
 // Individual routine tab component
-const RoutineTab = ({ routine, onPress}) => (
+const RoutineTab = ({ routine, onPress }) => (
   <TouchableOpacity style={styles.routineTab} onPress={onPress}>
     <Text style={styles.routineName}>{routine.name}</Text>
     {routine.exercises && routine.exercises.map((exercise, index) => (
@@ -71,7 +71,9 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
             </TouchableOpacity>
 
+
             <Text style={styles.popupTitle}>{routine.name}</Text>
+
 
             <TouchableOpacity onPress={() => { /* Handle edit */ }}>
               <Text style={styles.editButton}>Edit</Text>
@@ -99,7 +101,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
       </View>
     </Modal>
   );
-          }
+}
 
 
 const WorkoutScreen = ({navigation}) => {
@@ -138,10 +140,10 @@ const WorkoutScreen = ({navigation}) => {
         </View>
         <ScrollView style={styles.routinesContainer}>
           {routineData.map((routine, index) => (
-            <RoutineTab 
-            key={index} 
-            routine={routine}
-            onPress={()=> openPopup(routine)}  />
+            <RoutineTab
+              key={index}
+              routine={routine}
+              onPress={() => openPopup(routine)} />
           ))}
         </ScrollView>
       </SafeAreaView>
@@ -229,8 +231,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-   // Popup styles
-   popupOverlay: {
+  // Popup styles
+  popupOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
