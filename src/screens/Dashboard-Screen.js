@@ -57,6 +57,7 @@ const DietTab = () => {
       accessor="population"
       backgroundColor="transparent"
       paddingLeft="15"
+      paddingRight="15"
       center={[styles.chart.radius, styles.chart.radius]}
       hasLegend={false} // Set to false to not render the legend
       absolute={false} // Set to false to not render absolute values inside the chart
