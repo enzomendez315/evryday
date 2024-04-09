@@ -79,17 +79,26 @@ const WorkoutTab = () => {
   // Dummy workout data
   const workouts = [
     { exercise: 'Squat', sets: '4 x', weight: '185lb', reps: 'x 10' },
+    { exercise: 'Chest Press', sets: '3 x', weight: '100lb', reps: 'x 12' },
+    { exercise: 'Seated Row', sets: '3 x', weight: '110lb', reps: 'x 12' },
+    { exercise: 'Leg Extension', sets: '3 x', weight: '80lb', reps: 'x 15' },
     // Add more workouts as needed
   ];
 
   return (
-    <TouchableOpacity style={styles.tab}>
-      {workouts.map((workout, index) => (
-        <Text key={index}>
-          {workout.sets} {workout.exercise} {workout.weight} {workout.reps}
+    <TouchableOpacity style={styles.workoutTab}>
+    <Text style={styles.workoutHistoryTitle}>Workout History</Text>
+    {workouts.map((workout, index) => (
+      <View key={index} style={styles.workoutItem}>
+        <Text style={styles.workoutExercise}>
+          {workout.sets} {workout.exercise}
         </Text>
-      ))}
-    </TouchableOpacity>
+        <Text style={styles.workoutDetails}>
+          {workout.weight} {workout.reps}
+        </Text>
+      </View>
+    ))}
+  </TouchableOpacity>
   );
 };
 
@@ -134,20 +143,14 @@ const styles = StyleSheet.create({
   healthScoreTab: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingStart: 20, // Add padding to the start of the row
-    paddingEnd: 20, // Add padding to the end of the row
-    paddingTop: 20, // Add padding to the top of the row
-    paddingBottom: 20, // Add padding to the bottom of the row
-    // ... other styling for the health score tab
+    padding: 20,
   },
   sleepTab: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingStart: 20, // Add padding to the start of the row
-    paddingEnd: 20, // Add padding to the end of the row
-    paddingTop: 20, // Add padding to the top of the row
-    paddingBottom: 20, // Add padding to the bottom of the row
-    // ... other styling for the sleep tab
+    padding: 20,
+    borderColor: '#919191',
+    borderBottomWidth: 1,
   },
 
   dietTab: {
@@ -155,6 +158,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     justifyContent: 'flex-start',
+    borderColor: '#919191',
+    borderTopWidth: 1,
   
   },
 
@@ -213,6 +218,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   
+  workoutTab: {
+    // Style to match other tabs in your dashboard
+    padding: 20,
+    borderColor: '#919191',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+  },
+  workoutHistoryTitle: {
+    // Title styles as provided in the Figma-generated code
+    fontWeight: '700',
+    fontSize: 20,
+    marginBottom: 8,
+  },
+  workoutItem: {
+    // Layout for each workout item, adjust as needed
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  workoutExercise: {
+    // Style for the exercise text, taken from Figma-generated code
+    fontSize: 16,
+    fontWeight: '400',
+  },
+  workoutDetails: {
+    // Style for the details text, taken from Figma-generated code
+    fontSize: 16,
+    fontWeight: '400',
+  },
   // Add more styles for the individual components as needed
 });
 
