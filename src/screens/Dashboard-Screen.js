@@ -1,15 +1,20 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, Text,  View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
+import WorkoutScreen from './workout/Workout-Screen';
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
   // Dummy health score data
   const healthScore = 85;
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
+  const navigation = useNavigation();
 
   return (
-    <TouchableOpacity style={styles.healthScoreTab}>
+    <TouchableOpacity 
+    style={styles.healthScoreTab}
+    onPress={() => navigation.navigate('Dashboard Home')}>
       <View style={styles.circle}>
         <Text style={styles.scoreText}>{healthScore}</Text>
       </View>
@@ -32,6 +37,7 @@ const DietTab = () => {
 
   const chartWidth = 80;
   const chartHeight = 80;
+  const navigation = useNavigation();
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -48,7 +54,9 @@ const DietTab = () => {
   }));
   
   return (
-  <TouchableOpacity style={styles.dietTab}>
+  <TouchableOpacity 
+  style={styles.dietTab}
+  onPress={() => navigation.navigate('Diet Home')}>
     <View style={styles.circle}>
       <Text style={styles.caloriesText}>{caloriesUnder} Under</Text>
     </View>
@@ -76,6 +84,7 @@ const DietTab = () => {
 
 // Working Out Tab Component:
 const WorkoutTab = () => {
+  const navigation = useNavigation();
   // Dummy workout data
   const workouts = [
     { exercise: 'Squat', sets: '4 x', weight: '185lb', reps: 'x 10' },
@@ -86,7 +95,9 @@ const WorkoutTab = () => {
   ];
 
   return (
-    <TouchableOpacity style={styles.workoutTab}>
+    <TouchableOpacity 
+    style={styles.workoutTab}
+    onPress={() => navigation.navigate('Workout Home')}>
     <Text style={styles.workoutHistoryTitle}>Workout History</Text>
     {workouts.map((workout, index) => (
       <View key={index} style={styles.workoutItem}>
@@ -107,9 +118,12 @@ const SleepTab = () => {
   // Dummy sleep score data
   const sleepScore = 'B+';
   const sleepRecommendation = "Snugly Sloth: You snagged 8 hours of quality dream time today!";
-
+  const navigation = useNavigation();
+  
   return (
-    <TouchableOpacity style={styles.sleepTab}>
+    <TouchableOpacity 
+    style={styles.sleepTab}
+    onPress={() => navigation.navigate('Sleep Home')}>
       <View style={styles.circle}>
         <Text style={styles.scoreText}>{sleepScore}</Text>
       </View>
