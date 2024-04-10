@@ -71,7 +71,9 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
             </TouchableOpacity>
 
+
             <Text style={styles.popupTitle}>{routine.name}</Text>
+
 
             <TouchableOpacity onPress={() => { /* Handle edit */ }}>
               <Text style={styles.editButton}>Edit</Text>

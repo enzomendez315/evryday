@@ -10,7 +10,7 @@ import DashboardScreen from './src/screens/Dashboard-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 import WorkoutScreen from './src/screens/workout/Workout-Screen';
-import SleepScreen from './src/screens/Sleep-Screen';
+import SleepScreen from './src/screens/sleep/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 
@@ -125,5 +125,6 @@ function App() {
 }
 
 // Adds native ui for sign in functionality
-// To bypass replace with 'export default App();'
+// To bypass replace with 'export default App;'
+//export default withAuthenticator(App);
 export default App;

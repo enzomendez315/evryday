@@ -4,8 +4,13 @@ import { schema } from './schema';
 
 
 
-const { Todo } = initSchema(schema);
+const { User, NutritionLog, ExerciseLog, SleepLog, HealthScore, GoalLog } = initSchema(schema);
 
 export {
-  Todo
+  User,
+  NutritionLog,
+  ExerciseLog,
+  SleepLog,
+  HealthScore,
+  GoalLog
 };
