@@ -40,7 +40,7 @@
           "EMAIL"
         ]
       },
-      "lastPushTimeStamp": "2024-04-04T00:55:34.530Z",
+      "lastPushTimeStamp": "2024-04-10T02:08:28.201Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/auth/evryday7b027c17-cloudformation-template.json",
         "logicalId": "authevryday7b027c17"
@@ -83,8 +83,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify0a53240a11b74-staging-d616d-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apievryday"
       },
-      "lastPushTimeStamp": "2024-04-04T00:55:31.765Z",
-      "lastPushDirHash": "yRhXvF5mSdAztHBG6468+t0ExKE="
+      "lastPushTimeStamp": "2024-04-10T02:08:34.982Z",
+      "lastPushDirHash": "l39OxLGA9HDJgXnNfs/sqrjP05c="
     }
   }
 }
