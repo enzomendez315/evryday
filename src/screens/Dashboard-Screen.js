@@ -1,12 +1,12 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, Text} from 'react-native';
+import { SafeAreaView, StatusBar, Text } from 'react-native';
 
 const Dashboard = (props) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-      <Text>Home</Text>
+        <Text>Home</Text>
       </SafeAreaView>
     </>
   );
