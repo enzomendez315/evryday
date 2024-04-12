@@ -21,6 +21,9 @@ import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native'
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 
+import {currentUserDetails, userSignOut} from './src/logic/account'
+import {nutritionLogTest} from './src/logic/diet-api'
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -117,6 +120,9 @@ function WorkoutStack() {
 }
 
 function App() {
+  userSignOut();
+  currentUserDetails();
+  nutritionLogTest();
   return (
     <NavigationContainer>
       <BottomNavBarTabs />
@@ -126,5 +132,5 @@ function App() {
 
 // Adds native ui for sign in functionality
 // To bypass replace with 'export default App;'
-//export default withAuthenticator(App);
-export default App;
+export default withAuthenticator(App);
+// export default App;
