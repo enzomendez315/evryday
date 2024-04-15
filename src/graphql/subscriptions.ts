@@ -140,6 +140,141 @@ export const onDeleteNutritionLog = /* GraphQL */ `subscription OnDeleteNutritio
   APITypes.OnDeleteNutritionLogSubscriptionVariables,
   APITypes.OnDeleteNutritionLogSubscription
 >;
+export const onCreateMeal = /* GraphQL */ `subscription OnCreateMeal($filter: ModelSubscriptionMealFilterInput) {
+  onCreateMeal(filter: $filter) {
+    id
+    userID
+    date
+    mealPeriod
+    foodItems {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateMealSubscriptionVariables,
+  APITypes.OnCreateMealSubscription
+>;
+export const onUpdateMeal = /* GraphQL */ `subscription OnUpdateMeal($filter: ModelSubscriptionMealFilterInput) {
+  onUpdateMeal(filter: $filter) {
+    id
+    userID
+    date
+    mealPeriod
+    foodItems {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateMealSubscriptionVariables,
+  APITypes.OnUpdateMealSubscription
+>;
+export const onDeleteMeal = /* GraphQL */ `subscription OnDeleteMeal($filter: ModelSubscriptionMealFilterInput) {
+  onDeleteMeal(filter: $filter) {
+    id
+    userID
+    date
+    mealPeriod
+    foodItems {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteMealSubscriptionVariables,
+  APITypes.OnDeleteMealSubscription
+>;
+export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($filter: ModelSubscriptionFoodItemFilterInput) {
+  onCreateFoodItem(filter: $filter) {
+    id
+    name
+    calories
+    protein
+    carbs
+    fat
+    serving
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    mealFoodItemsId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateFoodItemSubscriptionVariables,
+  APITypes.OnCreateFoodItemSubscription
+>;
+export const onUpdateFoodItem = /* GraphQL */ `subscription OnUpdateFoodItem($filter: ModelSubscriptionFoodItemFilterInput) {
+  onUpdateFoodItem(filter: $filter) {
+    id
+    name
+    calories
+    protein
+    carbs
+    fat
+    serving
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    mealFoodItemsId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateFoodItemSubscriptionVariables,
+  APITypes.OnUpdateFoodItemSubscription
+>;
+export const onDeleteFoodItem = /* GraphQL */ `subscription OnDeleteFoodItem($filter: ModelSubscriptionFoodItemFilterInput) {
+  onDeleteFoodItem(filter: $filter) {
+    id
+    name
+    calories
+    protein
+    carbs
+    fat
+    serving
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    mealFoodItemsId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteFoodItemSubscriptionVariables,
+  APITypes.OnDeleteFoodItemSubscription
+>;
 export const onCreateExerciseLog = /* GraphQL */ `subscription OnCreateExerciseLog(
   $filter: ModelSubscriptionExerciseLogFilterInput
 ) {

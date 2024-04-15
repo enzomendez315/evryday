@@ -156,6 +156,175 @@ export const schema = {
                 }
             ]
         },
+        "Meal": {
+            "name": "Meal",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "date": {
+                    "name": "date",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "mealPeriod": {
+                    "name": "mealPeriod",
+                    "isArray": false,
+                    "type": {
+                        "enum": "MealPeriod"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "foodItems": {
+                    "name": "foodItems",
+                    "isArray": true,
+                    "type": {
+                        "model": "FoodItem"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "mealFoodItemsId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Meals",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                }
+            ]
+        },
+        "FoodItem": {
+            "name": "FoodItem",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "calories": {
+                    "name": "calories",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "protein": {
+                    "name": "protein",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "carbs": {
+                    "name": "carbs",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "fat": {
+                    "name": "fat",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "serving": {
+                    "name": "serving",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "mealFoodItemsId": {
+                    "name": "mealFoodItemsId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "FoodItems",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "gsi-Meal.foodItems",
+                        "fields": [
+                            "mealFoodItemsId"
+                        ]
+                    }
+                }
+            ]
+        },
         "ExerciseLog": {
             "name": "ExerciseLog",
             "fields": {
@@ -434,8 +603,18 @@ export const schema = {
             ]
         }
     },
-    "enums": {},
+    "enums": {
+        "MealPeriod": {
+            "name": "MealPeriod",
+            "values": [
+                "breakfast",
+                "lunch",
+                "dinner",
+                "custom"
+            ]
+        }
+    },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "2ad93d523e13dbac905d7ef0ebf92197"
+    "version": "adc6290080203ae9de184753f6de3e92"
 };

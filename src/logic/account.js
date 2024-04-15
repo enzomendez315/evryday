@@ -5,7 +5,7 @@ export async function currentUserDetails() {
         const { username, userId} = await getCurrentUser();
         console.log(`Username: ${username}`);
         console.log(`UserId: ${userId}`);
-        const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
+        // const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
         // console.log(`Access Token: ${accessToken}`);
         // console.log(`id Token: ${idToken}`);
     } catch (err) {

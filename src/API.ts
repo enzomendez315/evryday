@@ -205,6 +205,135 @@ export type DeleteNutritionLogInput = {
   _version?: number | null,
 };
 
+export type CreateMealInput = {
+  id?: string | null,
+  userID: string,
+  date: string,
+  mealPeriod: MealPeriod,
+  _version?: number | null,
+};
+
+export enum MealPeriod {
+  breakfast = "breakfast",
+  lunch = "lunch",
+  dinner = "dinner",
+  custom = "custom",
+}
+
+
+export type ModelMealConditionInput = {
+  userID?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  mealPeriod?: ModelMealPeriodInput | null,
+  and?: Array< ModelMealConditionInput | null > | null,
+  or?: Array< ModelMealConditionInput | null > | null,
+  not?: ModelMealConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type ModelMealPeriodInput = {
+  eq?: MealPeriod | null,
+  ne?: MealPeriod | null,
+};
+
+export type Meal = {
+  __typename: "Meal",
+  id: string,
+  userID: string,
+  date: string,
+  mealPeriod: MealPeriod,
+  foodItems?: ModelFoodItemConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelFoodItemConnection = {
+  __typename: "ModelFoodItemConnection",
+  items:  Array<FoodItem | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type FoodItem = {
+  __typename: "FoodItem",
+  id: string,
+  name: string,
+  calories?: number | null,
+  protein?: number | null,
+  carbs?: number | null,
+  fat?: number | null,
+  serving?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  mealFoodItemsId?: string | null,
+};
+
+export type UpdateMealInput = {
+  id: string,
+  userID?: string | null,
+  date?: string | null,
+  mealPeriod?: MealPeriod | null,
+  _version?: number | null,
+};
+
+export type DeleteMealInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateFoodItemInput = {
+  id?: string | null,
+  name: string,
+  calories?: number | null,
+  protein?: number | null,
+  carbs?: number | null,
+  fat?: number | null,
+  serving?: string | null,
+  _version?: number | null,
+  mealFoodItemsId?: string | null,
+};
+
+export type ModelFoodItemConditionInput = {
+  name?: ModelStringInput | null,
+  calories?: ModelIntInput | null,
+  protein?: ModelFloatInput | null,
+  carbs?: ModelFloatInput | null,
+  fat?: ModelFloatInput | null,
+  serving?: ModelStringInput | null,
+  and?: Array< ModelFoodItemConditionInput | null > | null,
+  or?: Array< ModelFoodItemConditionInput | null > | null,
+  not?: ModelFoodItemConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  mealFoodItemsId?: ModelIDInput | null,
+};
+
+export type UpdateFoodItemInput = {
+  id: string,
+  name?: string | null,
+  calories?: number | null,
+  protein?: number | null,
+  carbs?: number | null,
+  fat?: number | null,
+  serving?: string | null,
+  _version?: number | null,
+  mealFoodItemsId?: string | null,
+};
+
+export type DeleteFoodItemInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateExerciseLogInput = {
   id?: string | null,
   userId: string,
@@ -463,6 +592,43 @@ export type ModelNutritionLogConnection = {
   startedAt?: number | null,
 };
 
+export type ModelMealFilterInput = {
+  id?: ModelIDInput | null,
+  userID?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  mealPeriod?: ModelMealPeriodInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelMealFilterInput | null > | null,
+  or?: Array< ModelMealFilterInput | null > | null,
+  not?: ModelMealFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelMealConnection = {
+  __typename: "ModelMealConnection",
+  items:  Array<Meal | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelFoodItemFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  calories?: ModelIntInput | null,
+  protein?: ModelFloatInput | null,
+  carbs?: ModelFloatInput | null,
+  fat?: ModelFloatInput | null,
+  serving?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelFoodItemFilterInput | null > | null,
+  or?: Array< ModelFoodItemFilterInput | null > | null,
+  not?: ModelFoodItemFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  mealFoodItemsId?: ModelIDInput | null,
+};
+
 export type ModelExerciseLogFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
@@ -631,6 +797,34 @@ export type ModelSubscriptionNutritionLogFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionNutritionLogFilterInput | null > | null,
   or?: Array< ModelSubscriptionNutritionLogFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionMealFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userID?: ModelSubscriptionIDInput | null,
+  date?: ModelSubscriptionStringInput | null,
+  mealPeriod?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionMealFilterInput | null > | null,
+  or?: Array< ModelSubscriptionMealFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+  mealFoodItemsId?: ModelSubscriptionIDInput | null,
+};
+
+export type ModelSubscriptionFoodItemFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  calories?: ModelSubscriptionIntInput | null,
+  protein?: ModelSubscriptionFloatInput | null,
+  carbs?: ModelSubscriptionFloatInput | null,
+  fat?: ModelSubscriptionFloatInput | null,
+  serving?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionFoodItemFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFoodItemFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -824,6 +1018,153 @@ export type DeleteNutritionLogMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateMealMutationVariables = {
+  input: CreateMealInput,
+  condition?: ModelMealConditionInput | null,
+};
+
+export type CreateMealMutation = {
+  createMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateMealMutationVariables = {
+  input: UpdateMealInput,
+  condition?: ModelMealConditionInput | null,
+};
+
+export type UpdateMealMutation = {
+  updateMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteMealMutationVariables = {
+  input: DeleteMealInput,
+  condition?: ModelMealConditionInput | null,
+};
+
+export type DeleteMealMutation = {
+  deleteMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateFoodItemMutationVariables = {
+  input: CreateFoodItemInput,
+  condition?: ModelFoodItemConditionInput | null,
+};
+
+export type CreateFoodItemMutation = {
+  createFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
+  } | null,
+};
+
+export type UpdateFoodItemMutationVariables = {
+  input: UpdateFoodItemInput,
+  condition?: ModelFoodItemConditionInput | null,
+};
+
+export type UpdateFoodItemMutation = {
+  updateFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
+  } | null,
+};
+
+export type DeleteFoodItemMutationVariables = {
+  input: DeleteFoodItemInput,
+  condition?: ModelFoodItemConditionInput | null,
+};
+
+export type DeleteFoodItemMutation = {
+  deleteFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
   } | null,
 };
 
@@ -1244,6 +1585,167 @@ export type SyncNutritionLogsQuery = {
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetMealQueryVariables = {
+  id: string,
+};
+
+export type GetMealQuery = {
+  getMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListMealsQueryVariables = {
+  filter?: ModelMealFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListMealsQuery = {
+  listMeals?:  {
+    __typename: "ModelMealConnection",
+    items:  Array< {
+      __typename: "Meal",
+      id: string,
+      userID: string,
+      date: string,
+      mealPeriod: MealPeriod,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncMealsQueryVariables = {
+  filter?: ModelMealFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncMealsQuery = {
+  syncMeals?:  {
+    __typename: "ModelMealConnection",
+    items:  Array< {
+      __typename: "Meal",
+      id: string,
+      userID: string,
+      date: string,
+      mealPeriod: MealPeriod,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetFoodItemQueryVariables = {
+  id: string,
+};
+
+export type GetFoodItemQuery = {
+  getFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
+  } | null,
+};
+
+export type ListFoodItemsQueryVariables = {
+  filter?: ModelFoodItemFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListFoodItemsQuery = {
+  listFoodItems?:  {
+    __typename: "ModelFoodItemConnection",
+    items:  Array< {
+      __typename: "FoodItem",
+      id: string,
+      name: string,
+      calories?: number | null,
+      protein?: number | null,
+      carbs?: number | null,
+      fat?: number | null,
+      serving?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      mealFoodItemsId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncFoodItemsQueryVariables = {
+  filter?: ModelFoodItemFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncFoodItemsQuery = {
+  syncFoodItems?:  {
+    __typename: "ModelFoodItemConnection",
+    items:  Array< {
+      __typename: "FoodItem",
+      id: string,
+      name: string,
+      calories?: number | null,
+      protein?: number | null,
+      carbs?: number | null,
+      fat?: number | null,
+      serving?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      mealFoodItemsId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -1688,6 +2190,147 @@ export type OnDeleteNutritionLogSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateMealSubscriptionVariables = {
+  filter?: ModelSubscriptionMealFilterInput | null,
+};
+
+export type OnCreateMealSubscription = {
+  onCreateMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateMealSubscriptionVariables = {
+  filter?: ModelSubscriptionMealFilterInput | null,
+};
+
+export type OnUpdateMealSubscription = {
+  onUpdateMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteMealSubscriptionVariables = {
+  filter?: ModelSubscriptionMealFilterInput | null,
+};
+
+export type OnDeleteMealSubscription = {
+  onDeleteMeal?:  {
+    __typename: "Meal",
+    id: string,
+    userID: string,
+    date: string,
+    mealPeriod: MealPeriod,
+    foodItems?:  {
+      __typename: "ModelFoodItemConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateFoodItemSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodItemFilterInput | null,
+};
+
+export type OnCreateFoodItemSubscription = {
+  onCreateFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
+  } | null,
+};
+
+export type OnUpdateFoodItemSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodItemFilterInput | null,
+};
+
+export type OnUpdateFoodItemSubscription = {
+  onUpdateFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
+  } | null,
+};
+
+export type OnDeleteFoodItemSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodItemFilterInput | null,
+};
+
+export type OnDeleteFoodItemSubscription = {
+  onDeleteFoodItem?:  {
+    __typename: "FoodItem",
+    id: string,
+    name: string,
+    calories?: number | null,
+    protein?: number | null,
+    carbs?: number | null,
+    fat?: number | null,
+    serving?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    mealFoodItemsId?: string | null,
   } | null,
 };
 

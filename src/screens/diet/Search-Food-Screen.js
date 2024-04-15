@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { searchFoodStyles } from '../../styles/dietStyles/searchFoodStyles';
+import { getFoodItems } from '../../logic/diet-api'
+import { FoodItem } from '../../models';
 
 const foodsList = [
   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -28,13 +30,17 @@ const foodsList = [
 ];
 
 const SearchFoodScreen = ({ navigation }) => {
+  const [foodItems, setFoodItems] = useState([]);
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={searchFoodStyles.header}>
           <Text style={searchFoodStyles.title}>Search Food</Text>
-          <TextInput style={searchFoodStyles.searchInputText} placeholder="Enter Food Here" />
+          <TextInput 
+          style={searchFoodStyles.searchInputText}
+           placeholder="Enter Food Here" 
+           onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
         </View>
 
         <Text style={searchFoodStyles.resultsText}>Search Results:</Text>
@@ -50,7 +56,7 @@ const SearchFoodScreen = ({ navigation }) => {
             <FlatList
               style={searchFoodStyles.listContainer}
               scrollEnabled={false}
-              data={foodsList}
+              data={foodItems}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>

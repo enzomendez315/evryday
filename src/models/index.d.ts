@@ -1,8 +1,13 @@
 import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
-import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
+import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/datastore";
 
-
+export enum MealPeriod {
+  BREAKFAST = "breakfast",
+  LUNCH = "lunch",
+  DINNER = "dinner",
+  CUSTOM = "custom"
+}
 
 
 
@@ -80,6 +85,80 @@ export declare type NutritionLog = LazyLoading extends LazyLoadingDisabled ? Eag
 
 export declare const NutritionLog: (new (init: ModelInit<NutritionLog>) => NutritionLog) & {
   copyOf(source: NutritionLog, mutator: (draft: MutableModel<NutritionLog>) => MutableModel<NutritionLog> | void): NutritionLog;
+}
+
+type EagerMeal = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Meal, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userID: string;
+  readonly date: string;
+  readonly mealPeriod: MealPeriod | keyof typeof MealPeriod;
+  readonly foodItems?: (FoodItem | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyMeal = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Meal, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userID: string;
+  readonly date: string;
+  readonly mealPeriod: MealPeriod | keyof typeof MealPeriod;
+  readonly foodItems: AsyncCollection<FoodItem>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Meal = LazyLoading extends LazyLoadingDisabled ? EagerMeal : LazyMeal
+
+export declare const Meal: (new (init: ModelInit<Meal>) => Meal) & {
+  copyOf(source: Meal, mutator: (draft: MutableModel<Meal>) => MutableModel<Meal> | void): Meal;
+}
+
+type EagerFoodItem = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodItem, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly calories?: number | null;
+  readonly protein?: number | null;
+  readonly carbs?: number | null;
+  readonly fat?: number | null;
+  readonly serving?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly mealFoodItemsId?: string | null;
+}
+
+type LazyFoodItem = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodItem, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly calories?: number | null;
+  readonly protein?: number | null;
+  readonly carbs?: number | null;
+  readonly fat?: number | null;
+  readonly serving?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly mealFoodItemsId?: string | null;
+}
+
+export declare type FoodItem = LazyLoading extends LazyLoadingDisabled ? EagerFoodItem : LazyFoodItem
+
+export declare const FoodItem: (new (init: ModelInit<FoodItem>) => FoodItem) & {
+  copyOf(source: FoodItem, mutator: (draft: MutableModel<FoodItem>) => MutableModel<FoodItem> | void): FoodItem;
 }
 
 type EagerExerciseLog = {

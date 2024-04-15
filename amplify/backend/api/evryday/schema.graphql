@@ -2,6 +2,13 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+enum MealPeriod {
+  breakfast
+  lunch
+  dinner
+  custom
+}
+
 type User @model {
   id: ID!
   userId: ID!
@@ -20,6 +27,24 @@ type NutritionLog @model {
   protein: Float
   carbs: Float
   fat: Float
+}
+
+type Meal @model {
+  id: ID!
+  userID: ID!
+  date: String!
+  mealPeriod: MealPeriod!
+  foodItems: [FoodItem] @hasMany
+}
+
+type FoodItem @model {
+  id: ID!
+  name: String!
+  calories: Int
+  protein: Float
+  carbs: Float
+  fat: Float
+  serving: String
 }
 
 type ExerciseLog @model {

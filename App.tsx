@@ -22,7 +22,7 @@ import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 
 import {currentUserDetails, userSignOut} from './src/logic/account'
-import {nutritionLogTest} from './src/logic/diet-api'
+import {initFoodItems} from './src/logic/diet-api'
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -120,9 +120,9 @@ function WorkoutStack() {
 }
 
 function App() {
-  userSignOut();
+  // userSignOut();
   currentUserDetails();
-  nutritionLogTest();
+  initFoodItems();
   return (
     <NavigationContainer>
       <BottomNavBarTabs />
