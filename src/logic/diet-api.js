@@ -6,8 +6,8 @@ import { NutritionLog, FoodItem, Meal } from '../models';
 
 const client = generateClient();
 
-export async function getFoodItems(searchTerm){
-    if(!searchTerm){
+export async function getFoodItems(searchTerm) {
+    if (!searchTerm) {
         // console.log("NO Search term used");
         const foodItems = await DataStore.query(FoodItem);
         // console.log(JSON.stringify(foodItems));
@@ -19,20 +19,20 @@ export async function getFoodItems(searchTerm){
     return foodItems;
 }
 
-async function createFoodItem(foodItem){
-    if (!foodItem){
+async function createFoodItem(foodItem) {
+    if (!foodItem) {
         return;
     }
     try {
         await DataStore.save(foodItem);
         console.log('Successfully added: ', foodItem);
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
 
 
-export function nutritionLogTest(){
+export function nutritionLogTest() {
     // addNutritionLogEntry(foodItemDetails);
     // getAllNutritionLogEntries();
 }
@@ -55,7 +55,7 @@ export async function addNutritionLogEntry(logDetails) {
                 "fat": 123.45
             })
         );
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -68,7 +68,7 @@ export async function getAllNutritionLogEntries() {
         // const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
         // console.log(listAllFoodLogs.data);  
         // return listAllFoodLogs; 
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -96,9 +96,9 @@ const foodsList = [
     { name: 'Tomatoes', calories: 20, protein: 1, carbs: 5, fat: 0, serving: '100g' },
     { name: 'Avocado', calories: 200, protein: 2, carbs: 10, fat: 15, serving: '1 medium' },
     { name: 'Grapes', calories: 50, protein: 1, carbs: 10, fat: 0, serving: '100g' },
-  ];
+];
 
-function bulkCreateFood(foodArr){
+function bulkCreateFood(foodArr) {
     foodArr.forEach(item => {
         let foodItem = new FoodItem({
             name: item.name,
@@ -112,12 +112,12 @@ function bulkCreateFood(foodArr){
     });
 }
 
-export async function initFoodItems(){
+export async function initFoodItems() {
     //Uncomment to clear the Food Items Table on app start
     // await DataStore.delete(FoodItem, Predicates.ALL);
 
     const foods = await getFoodItems();
-    if(foods.length == 0){
+    if (foods.length == 0) {
         console.log("initialised food items");
         bulkCreateFood(foodsList);
     }
