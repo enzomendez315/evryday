@@ -131,6 +131,30 @@ const addMealStyles = StyleSheet.create({
         fontSize: 18,
         color: '#0000ff', // Replace with your theme color
     },
+    popupContentContainer: {
+        height: 500,
+        width: '100%',
+    },
+    // recipe tab styles
+    recipeTab: {
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        borderWidth: 1,
+    },
+    recipeName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: 'black',
+    },
+    recipeIngredients: {
+        fontSize: 16,
+    },
+    recipeNutrition: {
+        fontSize: 16,
+        marginTop: 8,
+    },
 });
 
 export { addMealStyles };
