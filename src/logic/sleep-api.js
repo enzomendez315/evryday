@@ -5,7 +5,7 @@ import { SleepLog } from '../models';
 export async function addSleepLogEntry(logDetails) {
     try {
         await DataStore.save(
-            new SleepLogLog({
+            new SleepLog({
                 "userId": "45c8ce94-ae73-4f6e-a2c8-dd5a87707c4d",
                 "date": "Lorem ipsum dolor sit amet",
                 "hoursSlept": 8.5,

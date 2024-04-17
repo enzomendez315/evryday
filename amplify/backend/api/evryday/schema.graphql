@@ -51,9 +51,22 @@ type ExerciseLog @model {
   id: ID!
   userId: ID!
   date: String!
-  exerciseType: String!
+  exerciseRoutine: ExerciseRoutine
+  exerciseType: ExerciseType
   durationMinutes: Int
   caloriesBurned: Int
+}
+
+type ExerciseRoutine @model {
+  id: ID!
+  userId: ID!
+  date: String!
+  exercises: [ExerciseType] @hasMany
+}
+
+type ExerciseType @model {
+  id: ID!
+  name: String!
 }
 
 type SleepLog @model {
