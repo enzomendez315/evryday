@@ -14,10 +14,20 @@
     },
     "categories": {
       "api": {
-        "evryday": {}
+        "evryday": {},
+        "AdminQueries": {}
       },
       "auth": {
-        "evryday7b027c17": {}
+        "evryday7b027c17": {
+          "googleClientId": "1064045555003-u8hsdnv9td0scelrm84rmar3q6ehsdd9.apps.googleusercontent.com"
+        },
+        "userPoolGroups": {}
+      },
+      "function": {
+        "AdminQueries01025b9f": {
+          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
+          "s3Key": "amplify-builds/AdminQueries01025b9f-75726558426e2b316458-build.zip"
+        }
       }
     }
   },

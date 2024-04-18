@@ -147,22 +147,12 @@ export type CreateNutritionLogInput = {
   id?: string | null,
   userId: string,
   date: string,
-  foodName: string,
-  calories?: number | null,
-  protein?: number | null,
-  carbs?: number | null,
-  fat?: number | null,
   _version?: number | null,
 };
 
 export type ModelNutritionLogConditionInput = {
   userId?: ModelIDInput | null,
   date?: ModelStringInput | null,
-  foodName?: ModelStringInput | null,
-  calories?: ModelIntInput | null,
-  protein?: ModelFloatInput | null,
-  carbs?: ModelFloatInput | null,
-  fat?: ModelFloatInput | null,
   and?: Array< ModelNutritionLogConditionInput | null > | null,
   or?: Array< ModelNutritionLogConditionInput | null > | null,
   not?: ModelNutritionLogConditionInput | null,
@@ -176,11 +166,7 @@ export type NutritionLog = {
   id: string,
   userId: string,
   date: string,
-  foodName: string,
-  calories?: number | null,
-  protein?: number | null,
-  carbs?: number | null,
-  fat?: number | null,
+  Meals?: ModelMealConnection | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -188,29 +174,24 @@ export type NutritionLog = {
   _lastChangedAt: number,
 };
 
-export type UpdateNutritionLogInput = {
-  id: string,
-  userId?: string | null,
-  date?: string | null,
-  foodName?: string | null,
-  calories?: number | null,
-  protein?: number | null,
-  carbs?: number | null,
-  fat?: number | null,
-  _version?: number | null,
+export type ModelMealConnection = {
+  __typename: "ModelMealConnection",
+  items:  Array<Meal | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
 };
 
-export type DeleteNutritionLogInput = {
+export type Meal = {
+  __typename: "Meal",
   id: string,
-  _version?: number | null,
-};
-
-export type CreateMealInput = {
-  id?: string | null,
-  userID: string,
-  date: string,
   mealPeriod: MealPeriod,
-  _version?: number | null,
+  foodItems?: ModelFoodItemConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  nutritionLogMealsId?: string | null,
 };
 
 export enum MealPeriod {
@@ -220,37 +201,6 @@ export enum MealPeriod {
   custom = "custom",
 }
 
-
-export type ModelMealConditionInput = {
-  userID?: ModelIDInput | null,
-  date?: ModelStringInput | null,
-  mealPeriod?: ModelMealPeriodInput | null,
-  and?: Array< ModelMealConditionInput | null > | null,
-  or?: Array< ModelMealConditionInput | null > | null,
-  not?: ModelMealConditionInput | null,
-  _deleted?: ModelBooleanInput | null,
-  createdAt?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-};
-
-export type ModelMealPeriodInput = {
-  eq?: MealPeriod | null,
-  ne?: MealPeriod | null,
-};
-
-export type Meal = {
-  __typename: "Meal",
-  id: string,
-  userID: string,
-  date: string,
-  mealPeriod: MealPeriod,
-  foodItems?: ModelFoodItemConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
 
 export type ModelFoodItemConnection = {
   __typename: "ModelFoodItemConnection",
@@ -276,12 +226,46 @@ export type FoodItem = {
   mealFoodItemsId?: string | null,
 };
 
+export type UpdateNutritionLogInput = {
+  id: string,
+  userId?: string | null,
+  date?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteNutritionLogInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateMealInput = {
+  id?: string | null,
+  mealPeriod: MealPeriod,
+  _version?: number | null,
+  nutritionLogMealsId?: string | null,
+};
+
+export type ModelMealConditionInput = {
+  mealPeriod?: ModelMealPeriodInput | null,
+  and?: Array< ModelMealConditionInput | null > | null,
+  or?: Array< ModelMealConditionInput | null > | null,
+  not?: ModelMealConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  nutritionLogMealsId?: ModelIDInput | null,
+};
+
+export type ModelMealPeriodInput = {
+  eq?: MealPeriod | null,
+  ne?: MealPeriod | null,
+};
+
 export type UpdateMealInput = {
   id: string,
-  userID?: string | null,
-  date?: string | null,
   mealPeriod?: MealPeriod | null,
   _version?: number | null,
+  nutritionLogMealsId?: string | null,
 };
 
 export type DeleteMealInput = {
@@ -338,7 +322,6 @@ export type CreateExerciseLogInput = {
   id?: string | null,
   userId: string,
   date: string,
-  exerciseType: string,
   durationMinutes?: number | null,
   caloriesBurned?: number | null,
   _version?: number | null,
@@ -347,7 +330,6 @@ export type CreateExerciseLogInput = {
 export type ModelExerciseLogConditionInput = {
   userId?: ModelIDInput | null,
   date?: ModelStringInput | null,
-  exerciseType?: ModelStringInput | null,
   durationMinutes?: ModelIntInput | null,
   caloriesBurned?: ModelIntInput | null,
   and?: Array< ModelExerciseLogConditionInput | null > | null,
@@ -363,7 +345,8 @@ export type ExerciseLog = {
   id: string,
   userId: string,
   date: string,
-  exerciseType: string,
+  exerciseRoutine?: ExerciseRoutine | null,
+  exerciseType?: ExerciseType | null,
   durationMinutes?: number | null,
   caloriesBurned?: number | null,
   createdAt: string,
@@ -373,17 +356,108 @@ export type ExerciseLog = {
   _lastChangedAt: number,
 };
 
+export type ExerciseRoutine = {
+  __typename: "ExerciseRoutine",
+  id: string,
+  userId: string,
+  date: string,
+  exercises?: ModelExerciseTypeConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelExerciseTypeConnection = {
+  __typename: "ModelExerciseTypeConnection",
+  items:  Array<ExerciseType | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ExerciseType = {
+  __typename: "ExerciseType",
+  id: string,
+  name: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  exerciseRoutineExercisesId?: string | null,
+};
+
 export type UpdateExerciseLogInput = {
   id: string,
   userId?: string | null,
   date?: string | null,
-  exerciseType?: string | null,
   durationMinutes?: number | null,
   caloriesBurned?: number | null,
   _version?: number | null,
 };
 
 export type DeleteExerciseLogInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateExerciseRoutineInput = {
+  id?: string | null,
+  userId: string,
+  date: string,
+  _version?: number | null,
+};
+
+export type ModelExerciseRoutineConditionInput = {
+  userId?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  and?: Array< ModelExerciseRoutineConditionInput | null > | null,
+  or?: Array< ModelExerciseRoutineConditionInput | null > | null,
+  not?: ModelExerciseRoutineConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type UpdateExerciseRoutineInput = {
+  id: string,
+  userId?: string | null,
+  date?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteExerciseRoutineInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateExerciseTypeInput = {
+  id?: string | null,
+  name: string,
+  _version?: number | null,
+  exerciseRoutineExercisesId?: string | null,
+};
+
+export type ModelExerciseTypeConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelExerciseTypeConditionInput | null > | null,
+  or?: Array< ModelExerciseTypeConditionInput | null > | null,
+  not?: ModelExerciseTypeConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  exerciseRoutineExercisesId?: ModelIDInput | null,
+};
+
+export type UpdateExerciseTypeInput = {
+  id: string,
+  name?: string | null,
+  _version?: number | null,
+  exerciseRoutineExercisesId?: string | null,
+};
+
+export type DeleteExerciseTypeInput = {
   id: string,
   _version?: number | null,
 };
@@ -572,11 +646,6 @@ export type ModelNutritionLogFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
   date?: ModelStringInput | null,
-  foodName?: ModelStringInput | null,
-  calories?: ModelIntInput | null,
-  protein?: ModelFloatInput | null,
-  carbs?: ModelFloatInput | null,
-  fat?: ModelFloatInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelNutritionLogFilterInput | null > | null,
@@ -594,8 +663,6 @@ export type ModelNutritionLogConnection = {
 
 export type ModelMealFilterInput = {
   id?: ModelIDInput | null,
-  userID?: ModelIDInput | null,
-  date?: ModelStringInput | null,
   mealPeriod?: ModelMealPeriodInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
@@ -603,13 +670,7 @@ export type ModelMealFilterInput = {
   or?: Array< ModelMealFilterInput | null > | null,
   not?: ModelMealFilterInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelMealConnection = {
-  __typename: "ModelMealConnection",
-  items:  Array<Meal | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
+  nutritionLogMealsId?: ModelIDInput | null,
 };
 
 export type ModelFoodItemFilterInput = {
@@ -633,7 +694,6 @@ export type ModelExerciseLogFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
   date?: ModelStringInput | null,
-  exerciseType?: ModelStringInput | null,
   durationMinutes?: ModelIntInput | null,
   caloriesBurned?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
@@ -649,6 +709,37 @@ export type ModelExerciseLogConnection = {
   items:  Array<ExerciseLog | null >,
   nextToken?: string | null,
   startedAt?: number | null,
+};
+
+export type ModelExerciseRoutineFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelExerciseRoutineFilterInput | null > | null,
+  or?: Array< ModelExerciseRoutineFilterInput | null > | null,
+  not?: ModelExerciseRoutineFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelExerciseRoutineConnection = {
+  __typename: "ModelExerciseRoutineConnection",
+  items:  Array<ExerciseRoutine | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelExerciseTypeFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelExerciseTypeFilterInput | null > | null,
+  or?: Array< ModelExerciseTypeFilterInput | null > | null,
+  not?: ModelExerciseTypeFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  exerciseRoutineExercisesId?: ModelIDInput | null,
 };
 
 export type ModelSleepLogFilterInput = {
@@ -788,22 +879,16 @@ export type ModelSubscriptionNutritionLogFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
   date?: ModelSubscriptionStringInput | null,
-  foodName?: ModelSubscriptionStringInput | null,
-  calories?: ModelSubscriptionIntInput | null,
-  protein?: ModelSubscriptionFloatInput | null,
-  carbs?: ModelSubscriptionFloatInput | null,
-  fat?: ModelSubscriptionFloatInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionNutritionLogFilterInput | null > | null,
   or?: Array< ModelSubscriptionNutritionLogFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
+  nutritionLogMealsId?: ModelSubscriptionIDInput | null,
 };
 
 export type ModelSubscriptionMealFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  userID?: ModelSubscriptionIDInput | null,
-  date?: ModelSubscriptionStringInput | null,
   mealPeriod?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
@@ -832,13 +917,34 @@ export type ModelSubscriptionExerciseLogFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
   date?: ModelSubscriptionStringInput | null,
-  exerciseType?: ModelSubscriptionStringInput | null,
   durationMinutes?: ModelSubscriptionIntInput | null,
   caloriesBurned?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionExerciseLogFilterInput | null > | null,
   or?: Array< ModelSubscriptionExerciseLogFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionExerciseRoutineFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  date?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionExerciseRoutineFilterInput | null > | null,
+  or?: Array< ModelSubscriptionExerciseRoutineFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+  exerciseRoutineExercisesId?: ModelSubscriptionIDInput | null,
+};
+
+export type ModelSubscriptionExerciseTypeFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionExerciseTypeFilterInput | null > | null,
+  or?: Array< ModelSubscriptionExerciseTypeFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -960,11 +1066,11 @@ export type CreateNutritionLogMutation = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -984,11 +1090,11 @@ export type UpdateNutritionLogMutation = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1008,11 +1114,11 @@ export type DeleteNutritionLogMutation = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1030,8 +1136,6 @@ export type CreateMealMutation = {
   createMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -1043,6 +1147,7 @@ export type CreateMealMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -1055,8 +1160,6 @@ export type UpdateMealMutation = {
   updateMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -1068,6 +1171,7 @@ export type UpdateMealMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -1080,8 +1184,6 @@ export type DeleteMealMutation = {
   deleteMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -1093,6 +1195,7 @@ export type DeleteMealMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -1179,7 +1282,28 @@ export type CreateExerciseLogMutation = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -1201,7 +1325,28 @@ export type UpdateExerciseLogMutation = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -1223,7 +1368,28 @@ export type DeleteExerciseLogMutation = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -1231,6 +1397,135 @@ export type DeleteExerciseLogMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateExerciseRoutineMutationVariables = {
+  input: CreateExerciseRoutineInput,
+  condition?: ModelExerciseRoutineConditionInput | null,
+};
+
+export type CreateExerciseRoutineMutation = {
+  createExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateExerciseRoutineMutationVariables = {
+  input: UpdateExerciseRoutineInput,
+  condition?: ModelExerciseRoutineConditionInput | null,
+};
+
+export type UpdateExerciseRoutineMutation = {
+  updateExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteExerciseRoutineMutationVariables = {
+  input: DeleteExerciseRoutineInput,
+  condition?: ModelExerciseRoutineConditionInput | null,
+};
+
+export type DeleteExerciseRoutineMutation = {
+  deleteExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateExerciseTypeMutationVariables = {
+  input: CreateExerciseTypeInput,
+  condition?: ModelExerciseTypeConditionInput | null,
+};
+
+export type CreateExerciseTypeMutation = {
+  createExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
+  } | null,
+};
+
+export type UpdateExerciseTypeMutationVariables = {
+  input: UpdateExerciseTypeInput,
+  condition?: ModelExerciseTypeConditionInput | null,
+};
+
+export type UpdateExerciseTypeMutation = {
+  updateExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
+  } | null,
+};
+
+export type DeleteExerciseTypeMutationVariables = {
+  input: DeleteExerciseTypeInput,
+  condition?: ModelExerciseTypeConditionInput | null,
+};
+
+export type DeleteExerciseTypeMutation = {
+  deleteExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
   } | null,
 };
 
@@ -1517,11 +1812,11 @@ export type GetNutritionLogQuery = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1544,11 +1839,6 @@ export type ListNutritionLogsQuery = {
       id: string,
       userId: string,
       date: string,
-      foodName: string,
-      calories?: number | null,
-      protein?: number | null,
-      carbs?: number | null,
-      fat?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1575,11 +1865,6 @@ export type SyncNutritionLogsQuery = {
       id: string,
       userId: string,
       date: string,
-      foodName: string,
-      calories?: number | null,
-      protein?: number | null,
-      carbs?: number | null,
-      fat?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1599,8 +1884,6 @@ export type GetMealQuery = {
   getMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -1612,6 +1895,7 @@ export type GetMealQuery = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -1627,14 +1911,13 @@ export type ListMealsQuery = {
     items:  Array< {
       __typename: "Meal",
       id: string,
-      userID: string,
-      date: string,
       mealPeriod: MealPeriod,
       createdAt: string,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+      nutritionLogMealsId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -1654,14 +1937,13 @@ export type SyncMealsQuery = {
     items:  Array< {
       __typename: "Meal",
       id: string,
-      userID: string,
-      date: string,
       mealPeriod: MealPeriod,
       createdAt: string,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+      nutritionLogMealsId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -1762,7 +2044,28 @@ export type GetExerciseLogQuery = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -1787,7 +2090,6 @@ export type ListExerciseLogsQuery = {
       id: string,
       userId: string,
       date: string,
-      exerciseType: string,
       durationMinutes?: number | null,
       caloriesBurned?: number | null,
       createdAt: string,
@@ -1816,7 +2118,6 @@ export type SyncExerciseLogsQuery = {
       id: string,
       userId: string,
       date: string,
-      exerciseType: string,
       durationMinutes?: number | null,
       caloriesBurned?: number | null,
       createdAt: string,
@@ -1824,6 +2125,149 @@ export type SyncExerciseLogsQuery = {
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetExerciseRoutineQueryVariables = {
+  id: string,
+};
+
+export type GetExerciseRoutineQuery = {
+  getExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListExerciseRoutinesQueryVariables = {
+  filter?: ModelExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListExerciseRoutinesQuery = {
+  listExerciseRoutines?:  {
+    __typename: "ModelExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncExerciseRoutinesQueryVariables = {
+  filter?: ModelExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncExerciseRoutinesQuery = {
+  syncExerciseRoutines?:  {
+    __typename: "ModelExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetExerciseTypeQueryVariables = {
+  id: string,
+};
+
+export type GetExerciseTypeQuery = {
+  getExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
+  } | null,
+};
+
+export type ListExerciseTypesQueryVariables = {
+  filter?: ModelExerciseTypeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListExerciseTypesQuery = {
+  listExerciseTypes?:  {
+    __typename: "ModelExerciseTypeConnection",
+    items:  Array< {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncExerciseTypesQueryVariables = {
+  filter?: ModelExerciseTypeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncExerciseTypesQuery = {
+  syncExerciseTypes?:  {
+    __typename: "ModelExerciseTypeConnection",
+    items:  Array< {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -2134,11 +2578,11 @@ export type OnCreateNutritionLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2157,11 +2601,11 @@ export type OnUpdateNutritionLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2180,11 +2624,11 @@ export type OnDeleteNutritionLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    foodName: string,
-    calories?: number | null,
-    protein?: number | null,
-    carbs?: number | null,
-    fat?: number | null,
+    Meals?:  {
+      __typename: "ModelMealConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2201,8 +2645,6 @@ export type OnCreateMealSubscription = {
   onCreateMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -2214,6 +2656,7 @@ export type OnCreateMealSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -2225,8 +2668,6 @@ export type OnUpdateMealSubscription = {
   onUpdateMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -2238,6 +2679,7 @@ export type OnUpdateMealSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -2249,8 +2691,6 @@ export type OnDeleteMealSubscription = {
   onDeleteMeal?:  {
     __typename: "Meal",
     id: string,
-    userID: string,
-    date: string,
     mealPeriod: MealPeriod,
     foodItems?:  {
       __typename: "ModelFoodItemConnection",
@@ -2262,6 +2702,7 @@ export type OnDeleteMealSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    nutritionLogMealsId?: string | null,
   } | null,
 };
 
@@ -2344,7 +2785,28 @@ export type OnCreateExerciseLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -2365,7 +2827,28 @@ export type OnUpdateExerciseLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -2386,7 +2869,28 @@ export type OnDeleteExerciseLogSubscription = {
     id: string,
     userId: string,
     date: string,
-    exerciseType: string,
+    exerciseRoutine?:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    exerciseType?:  {
+      __typename: "ExerciseType",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      exerciseRoutineExercisesId?: string | null,
+    } | null,
     durationMinutes?: number | null,
     caloriesBurned?: number | null,
     createdAt: string,
@@ -2394,6 +2898,129 @@ export type OnDeleteExerciseLogSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseRoutineFilterInput | null,
+};
+
+export type OnCreateExerciseRoutineSubscription = {
+  onCreateExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseRoutineFilterInput | null,
+};
+
+export type OnUpdateExerciseRoutineSubscription = {
+  onUpdateExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseRoutineFilterInput | null,
+};
+
+export type OnDeleteExerciseRoutineSubscription = {
+  onDeleteExerciseRoutine?:  {
+    __typename: "ExerciseRoutine",
+    id: string,
+    userId: string,
+    date: string,
+    exercises?:  {
+      __typename: "ModelExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateExerciseTypeSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseTypeFilterInput | null,
+};
+
+export type OnCreateExerciseTypeSubscription = {
+  onCreateExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
+  } | null,
+};
+
+export type OnUpdateExerciseTypeSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseTypeFilterInput | null,
+};
+
+export type OnUpdateExerciseTypeSubscription = {
+  onUpdateExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
+  } | null,
+};
+
+export type OnDeleteExerciseTypeSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseTypeFilterInput | null,
+};
+
+export type OnDeleteExerciseTypeSubscription = {
+  onDeleteExerciseType?:  {
+    __typename: "ExerciseType",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    exerciseRoutineExercisesId?: string | null,
   } | null,
 };
 

@@ -3,11 +3,13 @@ import { generateClient } from 'aws-amplify/api';
 // import { listNutritionLogs } from '../graphql/queries';
 import { DataStore } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal } from '../models';
+import {getCurrentUser} from 'aws-amplify/auth';
+import {Amplify} from 'aws-amplify';
 
 const client = generateClient();
 
 export async function getFoodItems(searchTerm){
-    if(!searchTerm){
+    if(!searchTerm || searchTerm == ""){
         // console.log("NO Search term used");
         const foodItems = await DataStore.query(FoodItem);
         // console.log(JSON.stringify(foodItems));
@@ -32,18 +34,13 @@ async function createFoodItem(foodItem){
 }
 
 
-export function nutritionLogTest(){
-    // addNutritionLogEntry(foodItemDetails);
-    // getAllNutritionLogEntries();
-}
+// export function nutritionLogTest(){
+//     // addNutritionLogEntry(foodItemDetails);
+//     // getAllNutritionLogEntries();
+// }
 
 export async function addNutritionLogEntry(logDetails) {
     try {
-        // const log = await client.graphql({
-        //     query: createNutritionLog,
-        //     variables: {input: foodItemDetails}
-        // });
-        // console.log('Successfully added: ', logDetails);
         await DataStore.save(
             new NutritionLog({
                 "userId": "45c8ce94-ae73-4f6e-a2c8-dd5a87707c4d",
@@ -60,14 +57,16 @@ export async function addNutritionLogEntry(logDetails) {
     }
 }
 
-export async function getAllNutritionLogEntries() {
+export async function getUsersNutritionLog(date) {
     try {
-        const models = await DataStore.query(NutritionLog);
-        // console.log(models);
-        return models;
-        // const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
-        // console.log(listAllFoodLogs.data);  
-        // return listAllFoodLogs; 
+        const logs = await DataStore.query(NutritionLog, (u) => u.and(c => [
+            u.userId.eq(getCurrentUser().userId),
+            u.date.eq(date)
+        ]));
+
+
+        // console.log(logs);
+        return logs;
     } catch (err){
         console.log(err);
     }
@@ -113,8 +112,8 @@ function bulkCreateFood(foodArr){
 }
 
 export async function initFoodItems(){
-    //Uncomment to clear the Food Items Table on app start
-    // await DataStore.delete(FoodItem, Predicates.ALL);
+    // Uncomment to clear the Food Items Table on app start
+    // Amplify.DataStore.clear()
 
     const foods = await getFoodItems();
     if(foods.length == 0){
@@ -122,3 +121,15 @@ export async function initFoodItems(){
         bulkCreateFood(foodsList);
     }
 }
+
+        // notes: TODO:Delete
+        // graphql creation
+        // const log = await client.graphql({
+        //     query: createNutritionLog,
+        //     variables: {input: foodItemDetails}
+        // });
+        // console.log('Successfully added: ', logDetails);
+        // graphql query
+        // const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
+        // console.log(listAllFoodLogs.data);  
+        // return listAllFoodLogs; 

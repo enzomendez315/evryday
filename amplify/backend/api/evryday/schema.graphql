@@ -1,7 +1,3 @@
-# This "input" configures a global authorization rule to enable public access to
-# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
-input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
-
 enum MealPeriod {
   breakfast
   lunch
@@ -9,7 +5,7 @@ enum MealPeriod {
   custom
 }
 
-type User @model {
+type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   name: String!
@@ -18,26 +14,20 @@ type User @model {
   weight: Float
 }
 
-type NutritionLog @model {
+type NutritionLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: String!
-  foodName: String!
-  calories: Int
-  protein: Float
-  carbs: Float
-  fat: Float
+  Meals: [Meal] @hasMany
 }
 
-type Meal @model {
+type Meal @model @auth(rules: [{allow: public}]) {
   id: ID!
-  userID: ID!
-  date: String!
   mealPeriod: MealPeriod!
   foodItems: [FoodItem] @hasMany
 }
 
-type FoodItem @model {
+type FoodItem @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
   calories: Int
@@ -47,7 +37,7 @@ type FoodItem @model {
   serving: String
 }
 
-type ExerciseLog @model {
+type ExerciseLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: String!
@@ -57,19 +47,19 @@ type ExerciseLog @model {
   caloriesBurned: Int
 }
 
-type ExerciseRoutine @model {
+type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: String!
   exercises: [ExerciseType] @hasMany
 }
 
-type ExerciseType @model {
+type ExerciseType @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
 }
 
-type SleepLog @model {
+type SleepLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: String!
@@ -79,14 +69,14 @@ type SleepLog @model {
   dreamJournal: String
 }
 
-type HealthScore @model {
+type HealthScore @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: String!
   score: Int!
 }
 
-type GoalLog @model {
+type GoalLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   weight: Float!
@@ -94,3 +84,4 @@ type GoalLog @model {
   dailyCalories: Int!
   dailyExercise: Int!
 }
+ 
