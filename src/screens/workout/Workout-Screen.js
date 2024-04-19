@@ -3,41 +3,164 @@ import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, Styl
 import { useNavigation } from '@react-navigation/native';
 
 
-
 const routineData = [
   {
     name: 'Hypertrophy 1',
     exercises: [
-      { name: 'Squat', weight: '185lb', reps: '10', muscleGroup: 'Leg' },
-      { name: 'Chest Press', weight: '100lb', reps: '12', muscleGroup: 'Chest' },
-      { name: 'Seated Row', weight: '110lb', reps: '12', muscleGroup: 'Back' },
-      { name: 'Leg Extension', weight: '80lb', reps: '15', muscleGroup: 'Leg' },
-      { name: 'Incline Chest Press', weight: '30lb', reps: '12', muscleGroup: 'Chest' },
+      {
+        name: 'Squat',
+        sets: [
+          { setNumber: 1, weight: '185lb', reps: '10', completed: false },
+          { setNumber: 2, weight: '185lb', reps: '10', completed: false },
+          { setNumber: 3, weight: '185lb', reps: '10', completed: false },
+        ],
+        muscleGroup: 'Leg',
+      },
+      {
+        name: 'Chest Press',
+        sets: [
+          { setNumber: 1, weight: '100lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '100lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '100lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Chest',
+      },
+      {
+        name: 'Seated Row',
+        sets: [
+          { setNumber: 1, weight: '110lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '110lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '110lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Back',
+      },
+      {
+        name: 'Leg Extension',
+        sets: [
+          { setNumber: 1, weight: '80lb', reps: '15', completed: false },
+          { setNumber: 2, weight: '80lb', reps: '15', completed: false },
+          { setNumber: 3, weight: '80lb', reps: '15', completed: false },
+        ],
+        muscleGroup: 'Leg',
+      },
+      {
+        name: 'Incline Chest Press',
+        sets: [
+          { setNumber: 1, weight: '30lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '30lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '30lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Chest',
+      },
     ],
     lastPerformed: '1 day ago',
   },
+
   {
     name: 'Hypertrophy 2',
     exercises: [
-      { name: 'Deadlift', weight: '225lb', reps: '8', muscleGroup: 'Back' },
-      { name: 'Shoulder Press', weight: '80lb', reps: '10', muscleGroup: 'Shoulder' },
-      { name: 'Lat Pulldown', weight: '120lb', reps: '12', muscleGroup: 'Back' },
-      { name: 'Leg Curl', weight: '90lb', reps: '12', muscleGroup: 'Leg' },
-      { name: 'Dumbbell Fly', weight: '25lb', reps: '12', muscleGroup: 'Chest' },
+      {
+        name: 'Deadlift',
+        sets: [
+          { setNumber: 1, weight: '225lb', reps: '8', completed: false },
+          { setNumber: 2, weight: '225lb', reps: '8', completed: false },
+          { setNumber: 3, weight: '225lb', reps: '8', completed: false },
+        ],
+        muscleGroup: 'Back',
+      },
+      {
+        name: 'Shoulder Press',
+        sets: [
+          { setNumber: 1, weight: '80lb', reps: '10', completed: false },
+          { setNumber: 2, weight: '80lb', reps: '10', completed: false },
+          { setNumber: 3, weight: '80lb', reps: '10', completed: false },
+        ],
+        muscleGroup: 'Shoulder',
+      },
+      {
+        name: 'Lat Pulldown',
+        sets: [
+          { setNumber: 1, weight: '120lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '120lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '120lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Back',
+      },
+      {
+        name: 'Leg Curl',
+        sets: [
+          { setNumber: 1, weight: '90lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '90lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '90lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Leg',
+      },
+      {
+        name: 'Dumbbell Fly',
+        sets: [
+          { setNumber: 1, weight: '25lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '25lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '25lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Chest',
+      },
     ],
     lastPerformed: '2 days ago',
   },
   {
     name: 'Hypertrophy 3',
     exercises: [
-      { name: 'Bench Press', weight: '135lb', reps: '10', muscleGroup: 'Chest' },
-      { name: 'Bent Over Row', weight: '95lb', reps: '12', muscleGroup: 'Back' },
-      { name: 'Leg Press', weight: '160lb', reps: '12', muscleGroup: 'Leg' },
-      { name: 'Calf Raise', weight: '100lb', reps: '15', muscleGroup: 'Leg' },
-      { name: 'Tricep Pushdown', weight: '50lb', reps: '12', muscleGroup: 'Arm' },
+      {
+        name: 'Bench Press',
+        sets: [
+          { setNumber: 1, weight: '135lb', reps: '10', completed: false },
+          { setNumber: 2, weight: '135lb', reps: '10', completed: false },
+          { setNumber: 3, weight: '135lb', reps: '10', completed: false },
+        ],
+        muscleGroup: 'Chest',
+      },
+      {
+        name: 'Bent Over Row',
+        sets: [
+          { setNumber: 1, weight: '95lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '95lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '95lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Back',
+      },
+      {
+        name: 'Leg Press',
+        sets: [
+          { setNumber: 1, weight: '160lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '160lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '160lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Leg',
+      },
+      {
+        name: 'Calf Raise',
+        sets: [
+          { setNumber: 1, weight: '100lb', reps: '15', completed: false },
+          { setNumber: 2, weight: '100lb', reps: '15', completed: false },
+          { setNumber: 3, weight: '100lb', reps: '15', completed: false },
+        ],
+        muscleGroup: 'Leg',
+      },
+      {
+        name: 'Tricep Pushdown',
+        sets: [
+          { setNumber: 1, weight: '50lb', reps: '12', completed: false },
+          { setNumber: 2, weight: '50lb', reps: '12', completed: false },
+          { setNumber: 3, weight: '50lb', reps: '12', completed: false },
+        ],
+        muscleGroup: 'Arm',
+      },
     ],
     lastPerformed: '3 days ago',
-  },
+  }
+
+
+
 ];
 
 // Individual routine tab component
@@ -46,12 +169,11 @@ const RoutineTab = ({ routine, onPress }) => (
     <Text style={styles.routineName}>{routine.name}</Text>
     {routine.exercises && routine.exercises.map((exercise, index) => (
       <View key={index} style={styles.exerciseRow}>
-        <Text style={styles.exerciseName}>{exercise.name}</Text>
-        <Text style={styles.exerciseDetails}>{`${exercise.weight} x ${exercise.reps}`}</Text>
+        <Text style={styles.exerciseName}>{`${exercise.sets.length} x ${exercise.name}`}</Text>
       </View>
     ))}
   </TouchableOpacity>
-)
+);
 
 const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 
@@ -68,13 +190,9 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
         <View style={styles.popup}>
           <View style={styles.popupHeader}>
             <TouchableOpacity onPress={onClose}>
-              <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>×</Text>
             </TouchableOpacity>
-
-
             <Text style={styles.popupTitle}>{routine.name}</Text>
-
-
             <TouchableOpacity onPress={() => { /* Handle edit */ }}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
@@ -84,8 +202,8 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
             onPress={() => {
               // Close the popup first
               onClose();
-              // Navigate to ActiveWorkout screen with the routine's name
-              navigation.navigate('Active Workout', { routineName: routine.name });
+              // Navigate to ActiveWorkout screen with the routine's name and data
+              navigation.navigate('Active Workout', { routineName: routine.name, workoutData: routine.exercises });
             }}
           >
             <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
@@ -93,7 +211,12 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
             <View key={index} style={styles.exerciseContainer}>
-              <Text style={styles.exerciseName}>{`${exercise.reps} X ${exercise.name}`}</Text>
+              <Text style={styles.exerciseName}>{exercise.name}</Text>
+              {exercise.sets.map((set, setIndex) => (
+                <Text key={setIndex} style={styles.exerciseSet}>
+                  {`Set ${set.setNumber}: ${set.weight} x ${set.reps} ${set.completed ? '(completed)' : ''}`}
+                </Text>
+              ))}
               <Text style={styles.muscleGroup}>{exercise.muscleGroup}</Text>
             </View>
           ))}
@@ -214,9 +337,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   routineName: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 8,
+
   },
   exerciseRow: {
     flexDirection: 'row',
@@ -226,6 +350,7 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 16,
   },
+
   exerciseDetails: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -250,6 +375,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
