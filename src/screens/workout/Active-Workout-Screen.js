@@ -1,15 +1,109 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 
+const SetItem = ({ setNumber, previous, onUpdate, onCheck }) => {
 
+  const [inputWeight, setInputWeight] = useState(weight);
+  const [inputReps, setInputReps] = useState(reps);
+
+  const handleComplete = () => {
+    onCheck(setNumber, !completed);
+  };
+
+  return (
+    <View style={styles.setRow}>
+      <Text style={styles.setText}>Set {setNumber}</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => {
+          setInputWeight(value);
+          onUpdate(setNumber, 'weight', value);
+        }}
+        value={inputWeight}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => {
+          setInputReps(value);
+          onUpdate(setNumber, 'reps', value);
+        }}
+        value={inputReps}
+        keyboardType="numeric"
+      />
+      <TouchableOpacity onPress={handleComplete}>
+        <Icon name="check" size={24} color={completed ? 'green' : 'grey'} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+const ActiveWorkoutTab = ({ exerciseData }) => {
+  const [sets, setSets] = useState(exerciseData.sets);
+  
+  // Function to add new set
+  const addSet = () => {
+    const newSetData = {
+      setNumber: sets.length + 1,
+      weight: '0lb', // Default weight
+      reps: '0', // Default reps
+      completed: false,
+    };
+    setSets([...sets, newSetData]);
+  };
+
+  // Function to update set data (weight, reps)
+  const updateSetData = (setIndex, field, value) => {
+    const updatedSets = sets.map((set, index) => {
+      if (index === setIndex) {
+        return { ...set, [field]: value };
+      }
+      return set;
+    });
+    setSets(updatedSets);
+  };
+
+  // Function to handle set completion
+  const handleCheck = (setNumber, newCompleted) => {
+    const updatedSets = sets.map((set) =>
+      set.setNumber === setNumber ? { ...set, completed: newCompleted } : set
+    );
+    setSets(updatedSets);
+  };
+
+  return (
+    <View style={styles.workoutTabContainer}>
+      <Text style={styles.exerciseTitle}>{exerciseData.name}</Text>
+      <FlatList
+        data={sets}
+        renderItem={({ item, index }) => (
+          <SetItem
+            setNumber={item.setNumber}
+            weight={item.weight}
+            reps={item.reps}
+            completed={item.completed}
+            onUpdate={updateSetData}
+            onCheck={handleCheck}
+            key={index}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={
+          <TouchableOpacity onPress={addSet} style={styles.addSetButton}>
+            <Text style={styles.addSetText}>+ Add Set</Text>
+          </TouchableOpacity>
+        }
+      />
+    </View>
+  );
+};
 
 const ActiveWorkout = ({route, navigation}) => {
   navigation = useNavigation();
-  const [routineName, setRoutineName] = useState(route.params?.routineName || 'Workout');
+  const routineName = route.params?.routineName || 'Workout';
   const [secondsElapsed, setSecondsElapsed] = useState(0);
-  const [workoutData, setWorkoutData] = useState(route.params?.workoutData || []);
+  const workoutData = route.params?.workoutData?.exercises || [];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,65 +120,6 @@ const ActiveWorkout = ({route, navigation}) => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-   // WorkoutTab component is defined here
-   const WorkoutTab = ({ exerciseData }) => {
-    const [sets, setSets] = useState(exerciseData.sets);
-
-    const addSet = () => {
-      const newSetData = {
-        setNumber: sets.length + 1,
-        weight: '', // Initialize to empty string or a default value
-        reps: '', // Initialize to empty string or a default value
-        completed: false,
-      };
-      setSets([...sets, newSetData]);
-    };
-
-    const updateSetData = (setIndex, field, value) => {
-      const updatedSets = sets.map((set, index) => {
-        if (index === setIndex) {
-          return { ...set, [field]: value };
-        }
-        return set;
-      });
-      setSets(updatedSets);
-    };
-
-    const completeSet = (setIndex) => {
-      updateSetData(setIndex, 'completed', true);
-    };
-
-    return (
-      <View style={styles.workoutTabContainer}>
-        {sets.map((set, index) => (
-          <View key={index} style={styles.setRow}>
-            <Text style={styles.setText}>{set.setNumber}</Text>
-            <Text style={styles.previousText}>{exerciseData.previous}lbs x {exerciseData.reps}</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(value) => updateSetData(index, 'weight', value)}
-              value={set.weight}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(value) => updateSetData(index, 'reps', value)}
-              value={set.reps}
-              keyboardType="numeric"
-            />
-            <TouchableOpacity onPress={() => completeSet(index)}>
-              <Icon name="check" size={24} color={set.completed ? 'green' : 'grey'} />
-            </TouchableOpacity>
-          </View>
-        ))}
-        <TouchableOpacity onPress={addSet}>
-          <Text style={styles.addSetText}>+ Add Set</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -95,14 +130,15 @@ const ActiveWorkout = ({route, navigation}) => {
       </View>
       <Text style={styles.routineName}>{routineName}</Text>
       <Text style={styles.activeClock}>{formatTime(secondsElapsed)}</Text>
-      {/* Placeholder for the list of exercise tabs */}
-      <View style={styles.placeholderContainer}>
-        <Text style={styles.placeholderText}>Exercise Tabs Will Go Here</Text>
-        {workoutData.map((exerciseData, index) => (
-        <WorkoutTab key={index} exerciseData={exerciseData} />
-      ))}
-      </View>
-      <TouchableOpacity style={styles.addButton}>
+      <FlatList
+        data={workoutData}
+        renderItem={({ item, index }) => (
+          <ActiveWorkoutTab key={index.toString()} exerciseData={item} />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+
+      <TouchableOpacity style={styles.addButton} onPress={() => { /* implement add exercise logic */ }}>
         <Text style={styles.addButtonText}>Add more exercise</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
@@ -112,8 +148,6 @@ const ActiveWorkout = ({route, navigation}) => {
   );
 };
 
-
-  
   const styles = StyleSheet.create({
     container: {
       flex: 1,
