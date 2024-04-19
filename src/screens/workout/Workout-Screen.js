@@ -208,6 +208,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
           >
             <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
           </TouchableOpacity>
+      
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
             <View key={index} style={styles.exerciseContainer}>
@@ -242,9 +243,8 @@ const WorkoutHomeScreen = ({ navigation }) => {
     setIsPopupVisible(false);
   };
 
-  // Function to navigate to ActiveWorkout screen with the routine's name
-  const navigateToActiveWorkout = (routineName) => {
-    navigation.navigate('Active Workout', { routineName });
+  const navigateToExerciseList = () => {
+    navigation.navigate('Workout List');
   };
 
   return (
@@ -255,11 +255,20 @@ const WorkoutHomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.startWorkoutButton}>
           <Text style={styles.startWorkoutButtonText}>Start an Empty Workout</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.exerciseListButton} 
+          onPress={navigateToExerciseList}>
+          <Text style={styles.exerciseListButtonText}>Exercise List</Text>
+        </TouchableOpacity>
+
         <View style={styles.routineHeader}>
           <Text style={styles.routineTitle}>Routines</Text>
+
           <TouchableOpacity style={styles.addRoutineButton}>
             <Text style={styles.addRoutineButtonText}>+ Routine</Text>
           </TouchableOpacity>
+
         </View>
         <ScrollView style={styles.routinesContainer}>
           {routineData.map((routine, index) => (
@@ -375,7 +384,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  
+
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -411,6 +420,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'grey',
   },
+
+  exerciseListButton: {
+    marginTop: 10, 
+    backgroundColor: 'blue', 
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+
+  },
+  exerciseListButtonText: {
+    // add your styling for the text here
+    color: 'white', // example text color
+    fontSize: 20,
+    fontWeight: 'bold',
+    // add more styling as needed
+  },
+
   // Additional styles for your routines would go here
 });
 
