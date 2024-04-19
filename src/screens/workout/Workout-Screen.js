@@ -104,7 +104,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 }
 
 
-const WorkoutScreen = ({ navigation }) => {
+const WorkoutHomeScreen = ({ navigation }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
@@ -288,4 +288,4 @@ const styles = StyleSheet.create({
   // Additional styles for your routines would go here
 });
 
-export default WorkoutScreen;
+export default WorkoutHomeScreen;

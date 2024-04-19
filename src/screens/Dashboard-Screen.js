@@ -97,7 +97,7 @@ const WorkoutTab = () => {
   return (
     <TouchableOpacity 
     style={styles.workoutTab}
-    onPress={() => navigation.navigate('Workout Home')}>
+    onPress={() => navigation.navigate('Workout List')}>
     <Text style={styles.workoutHistoryTitle}>Workout History</Text>
     {workouts.map((workout, index) => (
       <View key={index} style={styles.workoutItem}>
