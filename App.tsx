@@ -15,6 +15,7 @@ import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
+import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 
 import {Amplify} from 'aws-amplify';
 import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
@@ -115,6 +116,7 @@ function WorkoutStack() {
     <Stack.Navigator>
       <Stack.Screen name="Workout Home" component={WorkoutScreen} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
+      <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
     </Stack.Navigator>
   );
 }
@@ -132,5 +134,5 @@ function App() {
 
 // Adds native ui for sign in functionality
 // To bypass replace with 'export default App;'
-export default withAuthenticator(App);
-// export default App;
+//export default withAuthenticator(App);
+ export default App;
