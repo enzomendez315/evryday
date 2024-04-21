@@ -9,7 +9,7 @@ const MealPeriod = {
   "CUSTOM": "custom"
 };
 
-const { User, NutritionLog, Meal, FoodItem, ExerciseLog, SleepLog, HealthScore, GoalLog } = initSchema(schema);
+const { User, NutritionLog, Meal, FoodItem, ExerciseLog, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog } = initSchema(schema);
 
 export {
   User,
@@ -17,6 +17,8 @@ export {
   Meal,
   FoodItem,
   ExerciseLog,
+  ExerciseRoutine,
+  ExerciseType,
   SleepLog,
   HealthScore,
   GoalLog,

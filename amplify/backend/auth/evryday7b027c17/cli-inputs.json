@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "evryday7b027c17_identitypool_7b027c17",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "evryda7b027c17",
     "userPoolName": "evryday7b027c17_userpool_7b027c17",
     "autoVerifiedAttributes": [
@@ -25,10 +25,16 @@
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
-    "userpoolClientWriteAttributes": [],
-    "userpoolClientReadAttributes": [],
+    "userpoolClientWriteAttributes": [
+      "name",
+      "email"
+    ],
+    "userpoolClientReadAttributes": [
+      "email",
+      "name"
+    ],
     "userpoolClientLambdaRole": "evryda7b027c17_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
+    "userpoolClientSetAttributes": true,
     "sharedId": "7b027c17",
     "resourceName": "evryday7b027c17",
     "authSelections": "identityPoolAndUserPool",
@@ -37,12 +43,15 @@
     "usernameAttributes": [
       "email"
     ],
-    "hostedUIDomainName": "evryday7b027c17-7b027c17",
+    "hostedUIDomainName": "evryday",
     "authProvidersUserPool": [
       "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+      "User",
+      "Admin"
+    ],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -60,10 +69,18 @@
     },
     "breakCircularDependency": true,
     "dependsOn": [],
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"com.evryday://\"],\"LogoutURLs\":[\"com.evryday://\"]}",
-    "userPoolGroups": false,
-    "adminQueries": false,
-    "thirdPartyAuth": false,
-    "authProviders": []
+    "userPoolGroups": true,
+    "adminQueries": true,
+    "thirdPartyAuth": true,
+    "authProviders": [
+      "accounts.google.com"
+    ],
+    "triggers": {},
+    "adminQueryGroup": "Admin",
+    "parentStack": {
+      "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"email\",\"openid\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"com.evryday://\"],\"LogoutURLs\":[\"com.evryday://\"]}"
   }
 }

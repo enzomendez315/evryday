@@ -3,6 +3,13 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-2",
+    "aws_cloud_logic_custom": [
+        {
+            "name": "AdminQueries",
+            "endpoint": "https://amsyjg5psl.execute-api.us-east-2.amazonaws.com/staging",
+            "region": "us-east-2"
+        }
+    ],
     "aws_appsync_graphqlEndpoint": "https://ehdhxp6jvbgijb2zyoy7s5oyya.appsync-api.us-east-2.amazonaws.com/graphql",
     "aws_appsync_region": "us-east-2",
     "aws_appsync_authenticationType": "API_KEY",
@@ -12,19 +19,17 @@ const awsmobile = {
     "aws_user_pools_id": "us-east-2_n28xxdXQk",
     "aws_user_pools_web_client_id": "10d7kn5h27u5s0lgkg9mbld5fo",
     "oauth": {
-        "domain": "evryday7b027c17-7b027c17-staging.auth.us-east-2.amazoncognito.com",
+        "domain": "evryday-staging.auth.us-east-2.amazoncognito.com",
         "scope": [
-            "phone",
             "email",
             "openid",
-            "profile",
             "aws.cognito.signin.user.admin"
         ],
         "redirectSignIn": "com.evryday://",
         "redirectSignOut": "com.evryday://",
         "responseType": "code"
     },
-    "federationTarget": "COGNITO_USER_POOLS",
+    "federationTarget": "COGNITO_USER_AND_IDENTITY_POOLS",
     "aws_cognito_username_attributes": [
         "EMAIL"
     ],

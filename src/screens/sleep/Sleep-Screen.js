@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { getAllSleepEntries } from '../../logic/sleep-api'
 
 const sleepData = [
   { day: 'March 1, 2024', hours: 7.5, quality: 'Good' },
