@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { dietHomeStyles } from '../../styles/dietStyles/dietHomeStyles';
 import PieChart from 'react-native-pie-chart';
+import { Bar } from 'react-native-progress';
 
 const mealData = [
   {
@@ -64,18 +65,34 @@ const DietScreen = ({ navigation }) => {
           widthAndHeight={200}
           series={[calorieData.caloriesGoal - calorieData.caloriesCurrent,
           calorieData.caloriesCurrent]}
-          sliceColor={['#808080', '#7CFC00']}
+          sliceColor={['#86A184', '#7CFC00']}
           coverFill={'#FFF'}
           doughnut={true}
         />
 
         <View style={dietHomeStyles.macroContainer}>
-          <Text style={dietHomeStyles.macroText}>
-            Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
-          <Text style={dietHomeStyles.macroText}>
-            Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
-          <Text style={dietHomeStyles.macroText}>
-            Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
+            <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
+              width={125}
+              color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+          </View>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
+            <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
+              width={125}
+              color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+          </View>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+            <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
+              width={125}
+              color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+          </View>
+
         </View>
 
         <View style={dietHomeStyles.mealsContainer}>
