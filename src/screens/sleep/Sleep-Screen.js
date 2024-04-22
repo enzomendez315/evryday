@@ -204,18 +204,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sleepScrollContainer: {
-    marginHorizontal: 20,
+    marginHorizontal: 1,
     marginVertical: 10,
   },
   sleepTabContainer: {
-    marginHorizontal: 10,
     marginVertical: 10,
     borderRadius: 8,
     borderColor: 'black',
-    borderWidth: 2,
+    //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: 'lightblue', // This is a placeholder color
+    backgroundColor: '#DADADA', // This is a placeholder color
     borderRadius: 8,
     padding: 16,
   },

@@ -51,7 +51,7 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text style={dietHomeStyles.title}>March 30, 2024</Text>
+        <Text style={dietHomeStyles.title}>{new Date().toDateString()}</Text>
 
         <View>
           <Text style={dietHomeStyles.calorieHeader}>Calories</Text>
