@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import { ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { dietHomeStyles } from '../../styles/dietStyles/dietHomeStyles';
 import PieChart from 'react-native-pie-chart';
+import { getUsersNutritionLog } from '../../logic/diet-api'
+import { NutritionLog, Meal, getMeal} from '../../models';
+import { currentUserDetails } from '../../logic/account';
+
+//nutritionlog.Meals.FoodItems
+let userId
 
 const mealData = [
   {
@@ -45,7 +51,23 @@ const calorieData = {
   caloriesGoal: 3000,
 };
 
+async function getUsersLog(setNutritionLog, user, date) {
+  await getUsersNutritionLog(user, date).then((log) => {setNutritionLog(log)});
+}
+
 const DietScreen = ({ navigation }) => {
+  // const userId = useContext(AccountContext);
+  
+  const [nutritionlog, setNutritionLog] = useState();
+  useEffect(() => {
+    currentUserDetails().then(async (user) => {
+    userId = user
+    console.log(`userid diet:${userId}`)
+    date = new Date(Date.now()).toISOString().substring(0,10);
+    getUsersLog(setNutritionLog, user, date);
+  });
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />

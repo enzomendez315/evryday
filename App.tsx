@@ -17,12 +17,19 @@ import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 
 import {Amplify} from 'aws-amplify';
-import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
+// import {Amplify} from '@aws-amplify/core';
+import { DataStore, Predicates } from '@aws-amplify/datastore';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
+import { User } from './src/models';
+import { Hub } from 'aws-amplify/utils';
+
+import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
 
 import {currentUserDetails, userSignOut} from './src/logic/account'
-import {initFoodItems} from './src/logic/diet-api'
+import {initFoodItems, initNutritionLog} from './src/logic/diet-api'
+
+const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -118,15 +125,31 @@ function WorkoutStack() {
     </Stack.Navigator>
   );
 }
+async function RunOnStart(userId:string){
+  // userSignOut();
+    console.log("started initFoodItems() and initNutritionLog()");
+    await initFoodItems();
+    await initNutritionLog(userId);
+}
 
 function App() {
-  // userSignOut();
-  currentUserDetails();
-  initFoodItems();
+  const [userId, setUserId] = React.useState("");
+  React.useEffect(() => {
+    currentUserDetails().then(async (user) => {
+      // console.log("user id: ", user);
+      setUserId(user);
+      console.log(User); // Need to use a random model to initialize the DataStore
+      await DataStore.start();
+      // await DataStore.clear(); //Clears the local DataStore
+      await StartListening(user);
+    });
+  }, []);
   return (
-    <NavigationContainer>
-      <BottomNavBarTabs />
-    </NavigationContainer>
+    <AccountContext.Provider value={userId}>
+      <NavigationContainer>
+        <BottomNavBarTabs />
+      </NavigationContainer>
+    </AccountContext.Provider>
   );
 }
 
@@ -134,3 +157,18 @@ function App() {
 // To bypass replace with 'export default App;'
 export default withAuthenticator(App);
 // export default App;
+
+// Fully syncs the local Datastore with the remote database before running RunOnStart()
+export function StartListening(user:string){
+  console.log("DataStore is started");
+  const listener = Hub.listen('datastore', async hubData => {
+      const  { event, data } = hubData.payload;
+      if (event === 'ready') {
+        console.log("DataStore is ready");
+          listener(); // Stops the listener
+          RunOnStart(user);
+      }
+  })
+}
+
+

@@ -1,23 +1,18 @@
 import { generateClient } from 'aws-amplify/api';
-// import { createNutritionLog } from '../graphql/mutations';
-// import { listNutritionLogs } from '../graphql/queries';
 import { DataStore } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal } from '../models';
-import {getCurrentUser} from 'aws-amplify/auth';
-import {Amplify} from 'aws-amplify';
+// import {getCurrentUser} from 'aws-amplify/auth';
+// import {Amplify} from 'aws-amplify';
+// import { currentUserDetails } from './account';
 
 const client = generateClient();
 
 export async function getFoodItems(searchTerm){
     if(!searchTerm || searchTerm == ""){
-        // console.log("NO Search term used");
         const foodItems = await DataStore.query(FoodItem);
-        // console.log(JSON.stringify(foodItems));
         return foodItems;
     }
-    // console.log(`Search term: ${searchTerm}`);
     const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
-    // console.log(JSON.stringify(foodItems));
     return foodItems;
 }
 
@@ -33,43 +28,75 @@ async function createFoodItem(foodItem){
     }
 }
 
-
-// export function nutritionLogTest(){
-//     // addNutritionLogEntry(foodItemDetails);
-//     // getAllNutritionLogEntries();
-// }
-
-export async function addNutritionLogEntry(logDetails) {
-    try {
-        await DataStore.save(
-            new NutritionLog({
-                "userId": "45c8ce94-ae73-4f6e-a2c8-dd5a87707c4d",
-                "date": "Lorem ipsum dolor sit amet",
-                "foodName": "Lorem ipsum dolor sit amet",
-                "calories": 1020,
-                "protein": 123.45,
-                "carbs": 123.45,
-                "fat": 123.45
-            })
-        );
-    } catch (err){
-        console.log(err);
-    }
+export async function addNutritionLog(userId, date) {
+    p = new Promise((resolve, reject) => { 
+        console.log(`Date add UserId: ${userId} Date: ${date}`);
+        try {
+            let log = new NutritionLog({
+                "userId": userId,
+                "date": date,
+            });
+            DataStore.save(log).then(() => {return log});
+        } catch (err){
+            console.log(err);
+        }
+    });
+    return p;
 }
 
-export async function getUsersNutritionLog(date) {
-    try {
-        const logs = await DataStore.query(NutritionLog, (u) => u.and(c => [
-            u.userId.eq(getCurrentUser().userId),
-            u.date.eq(date)
-        ]));
+export async function getUsersNutritionLog(userId, date) {
+    p = new Promise((resolve, reject) => {    
+        try {
+            console.log(`get nutritionlog UserId: ${userId} Date: ${date}`);
+            DataStore.query(NutritionLog, (u) => u.and(c => [
+                u.userId.eq(userId),
+                u.date.eq(date)
+            ])).then((oldLog) => {
+                // console.log(oldLog.length)
+                if(oldLog.length == 0){
+                    addNutritionLog(userId, date).then((newLog) => {
+                        console.log(`initialised nutrition log: ${newLog}`);
+                        parseLog(newLog);
+                        resolve(newLog);
+                    });
+                }
+                parseLog(oldLog);
+                resolve(oldLog);
+            });
+        } catch (err){
+            console.log(err);
+            reject(err);
+        }
+    });
+    return p;
+}
 
+function parseLog(log) {
+    console.log(`${log.Meals.length} meals in log`);
+    log.Meals.forEach((meal) => {
 
-        // console.log(logs);
-        return logs;
-    } catch (err){
-        console.log(err);
-    }
+        meal.FoodItems.forEach((food) => {
+            name = 'New Meal',
+            calories = meal.FoodsItems.reduce((acc, food) => acc + food.calories, 0),
+            protein = meal.FoodsItems.reduce((acc, food) => acc + food.protein, 0),
+            carbs = meal.FoodsItems.reduce((acc, food) => acc + food.carbs, 0),
+            fat = meal.FoodsItems.reduce((acc, food) => acc + food.fat, 0)
+            console.log(food);
+            console.log(`Name: ${name} Calories: ${calories} Protein: ${protein} Carbs: ${carbs} Fat: ${fat}`);
+        });
+    });
+}
+
+function calcMealMacros(meal){
+    let mealData = {
+        name: 'New Meal',
+        calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+        protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+        carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+        fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+    };
+    return mealData;
+
 }
 
 const foodsList = [
@@ -111,25 +138,91 @@ function bulkCreateFood(foodArr){
     });
 }
 
-export async function initFoodItems(){
-    // Uncomment to clear the Food Items Table on app start
-    // Amplify.DataStore.clear()
 
-    const foods = await getFoodItems();
-    if(foods.length == 0){
-        console.log("initialised food items");
-        bulkCreateFood(foodsList);
+
+export async function initFoodItems(){
+    console.log("Started initFoodItems");
+    getFoodItems().then((foods) => {
+        console.log(`Food Items: ${foods.length}`);
+        if(foods.length == 0){
+            console.log("Adding food items");
+            bulkCreateFood(foodsList);
+        }
+        console.log("Finished initFoodItems");
+    });
+}
+
+export function initNutritionLog(userId){
+    console.log("Started initNutritionLog");
+    date = new Date(Date.now()).toISOString().substring(0,10);
+    console.log(`Date init: ${date}`);
+    getUsersNutritionLog(userId, date).then((logs) => {
+        if(logs.length == 0){
+            console.log("could not initialise nutrition log");
+        }
+        console.log(`Nutrition Log: ${logs}`);
+        console.log("Finished initNutritionLog");
+    });
+}
+ 
+//TODO: verify inputs for createMeal
+export async function getMeal(userId, date, mealType) {
+    try {
+        const nutritionlog =  await getUsersNutritionLog(userId, date);
+        console.log(`getMeal UserId: ${userId} Date: ${date} MealType: ${mealType}`);
+
+        DataStore.query(Meal, (u) => u.and(c => [
+            u.nutritionLogID.eq(nutritionlog[0].id),
+            u.mealType.eq(mealType)
+        ])).then((foundMeal) => {
+            console.log(foundMeal.length)
+            if(foundMeal.length == 0){
+                let newMeal = new Meal({
+                    "nutritionLogID": nutritionlog[0].id,
+                    "mealType": mealType,
+                });
+                DataStore.save(newMeal).then(() => {
+                    console.log(`Meal created: ${newMeal}`);
+                    return newMeal});
+            }
+            console.log(`Meal found: ${foundMeal}`);
+            return foundMeal;
+        });
+    } catch (err){
+        console.log(err);
     }
 }
 
-        // notes: TODO:Delete
-        // graphql creation
-        // const log = await client.graphql({
-        //     query: createNutritionLog,
-        //     variables: {input: foodItemDetails}
-        // });
-        // console.log('Successfully added: ', logDetails);
-        // graphql query
-        // const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
-        // console.log(listAllFoodLogs.data);  
-        // return listAllFoodLogs; 
+export async function addFoodToMeal(userId, date, mealType, foodItem){
+    console.log(`addFoodToMeal UserId: ${userId} Date: ${date} MealType: ${mealType} FoodItem: ${foodItem}`);
+    try {
+        let meal = await getMeal(userId, date, mealType);
+        meal.foodItems.push(foodItem);
+        DataStore.save(meal).then(() => {return meal});
+    } catch (err){
+        console.log(err);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// notes on GraphQL implementation: TODO:Delete
+// import { createNutritionLog } from '../graphql/mutations';
+// import { listNutritionLogs } from '../graphql/queries';
+// graphql creation
+// const log = await client.graphql({
+//     query: createNutritionLog,
+//     variables: {input: foodItemDetails}
+// });
+// console.log('Successfully added: ', logDetails);
+// graphql query
+// const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
+// console.log(listAllFoodLogs.data);  
+// return listAllFoodLogs; 

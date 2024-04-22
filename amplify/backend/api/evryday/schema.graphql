@@ -17,7 +17,7 @@ type User @model @auth(rules: [{allow: public}]) {
 type NutritionLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
-  date: String!
+  date: AWSDate!
   Meals: [Meal] @hasMany
 }
 
