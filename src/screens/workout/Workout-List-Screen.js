@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { COLORS } from '../../theme/theme';
 
 const exercises = [
     { name: 'Bench Press (Barbell)', detail: '165 lbs (x4)', type: 'Chest' },
@@ -76,11 +77,11 @@ const WorkoutListScreen = () => {
             <ScrollView style={styles.listContainer}>
                 {filteredExercises.length > 0 ? (
                     filteredExercises.map((exercise, index) => (
-                        <View key={index} style={styles.exerciseItem}>
+                        <TouchableOpacity key={index} style={styles.exerciseItem}>
                             <Text style={styles.exerciseName}>{exercise.name}</Text>
                             <Text style={styles.exerciseDetail}>{exercise.detail}</Text>
                             <Text style={styles.exerciseType}>{exercise.type}</Text>
-                        </View>
+                        </TouchableOpacity>
                     ))
                 ) : (
                     <Text style={styles.noResultsText}>No Exercise Found</Text>
@@ -93,16 +94,16 @@ const WorkoutListScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 20,
+        padding: 20,
         paddingHorizontal: 15,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     title: {
-        fontSize: 24,
+        fontSize: 36,
         fontWeight: 'bold',
         color: 'black',
-        marginBottom: 10,
-        textAlign: 'center'
+        marginBottom: 20,
+        textAlign: 'left'
     },
     searchSection: {
         flexDirection: 'row',
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20
     },
+
     searchInput: {
         flex: 1,
         marginRight: 10,
@@ -119,25 +121,29 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontSize: 16,
     },
+
     searchButton: {
-        backgroundColor: 'blue',
-        borderRadius: 5,
+        backgroundColor: COLORS.primaryBlueHex,
+        borderRadius: 15,
         paddingVertical: 10,
         paddingHorizontal: 20
     },
     searchButtonText: {
         fontSize: 16,
-        color: '#fff',
-        textAlign: 'center'
+        color: COLORS.whiteHex,
+        textAlign: 'center',
+        fontWeight: 'bold'
     },
+
     listContainer: {
         flex: 1
     },
+
     exerciseItem: {
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-        padding: 15,
-        marginBottom: 10,
+        backgroundColor: COLORS.darkBlue,
+        borderRadius: 15,
+        padding: 12,
+        marginBottom: 8,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -145,17 +151,18 @@ const styles = StyleSheet.create({
     exerciseName: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'black'
+        color: COLORS.whiteHex,
     },
+
     exerciseDetail: {
         fontSize: 14,
-        color: 'grey'
+        color: COLORS.lightBlue,
     },
     exerciseType: {
         fontSize: 14,
-        fontWeight: 'bold',
-        color: 'darkblue'
+        color: COLORS.lightGray,
     },
+
     noResultsText: {
         fontSize: 18,
         color: 'red',

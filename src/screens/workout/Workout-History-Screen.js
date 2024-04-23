@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { COLORS } from '../../theme/theme';
 
 const WorkingHistoryOverview = () => {
     const workoutHistory = [
@@ -66,29 +67,32 @@ const WorkingHistoryOverview = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Workout History</Text>
+            
             <ScrollView>
                 {workoutHistory.map((session) => (
-                    <View key={session.id} style={styles.sessionContainer}>
+                    <TouchableOpacity key={session.id} style={styles.sessionContainer}>
                         <Text style={styles.sessionDate}>{session.date}</Text>
+                        
                         <View style={styles.statsContainer}>
-                            <Image source={require('../../images/apple.png')} style={styles.icon} />
-                            <Text>{session.duration}</Text>
-                            <Image source={require('../../images/apple.png')} style={styles.icon} />
-                            <Text>{session.totalWeight}</Text>
-                            <Image source={require('../../images/apple.png')} style={styles.icon} />
-                            <Text>{session.prCount}</Text>
+                            <Image source={require('../../images/time.png')} style={styles.icon} />
+                            <Text style={styles.containerStats}>{session.duration}</Text>
+                            <Image source={require('../../images/weight.png')} style={styles.icon} />
+                            <Text style={styles.containerStats}>{session.totalWeight}</Text>
+                            <Image source={require('../../images/trophy.png')} style={styles.icon} />
+                            <Text style={styles.containerStats}>{session.prCount}</Text>
                         </View>
+                        
                         {session.details.map((detail, index) => (
                             <View key={index} style={styles.detailContainer}>
                                 <Text style={styles.exerciseName}>
                                     {`${detail.sets} x ${detail.exercise}`}
                                 </Text>
-                                <Text>
+                                <Text style={styles.detailExercise}>
                                     {`${detail.weight} - ${detail.reps} reps`}
                                 </Text>
                             </View>
                         ))}
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </ScrollView>
         </View>
@@ -99,24 +103,31 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        paddingHorizontal: 15,
         backgroundColor: '#fff',
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left'
     },
+
     sessionContainer: {
         marginBottom: 20,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        backgroundColor: COLORS.darkBlue,
     },
+
     sessionDate: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: COLORS.lightBlue,
     },
+
     statsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -127,12 +138,26 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
     },
+
     detailContainer: {
         marginTop: 10,
+        marginLeft: 10,
     },
     exerciseName: {
         fontWeight: 'bold',
+        color: COLORS.whiteHex,
+        fontSize: 16,
     },
+
+    detailExercise: {
+        color: COLORS.lightBlue,
+        fontSize: 14,
+    },
+
+    containerStats: {
+        fontWeight: 'bold',
+        color: COLORS.lightGray,
+    }
 });
 
 export default WorkingHistoryOverview;
