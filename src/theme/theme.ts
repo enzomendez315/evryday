@@ -6,6 +6,9 @@ interface Color {
     secondaryPurpleHex: string;
     primaryGrayHex: string;
     whiteHex: string;
+    lightGray: string;
+    lightBlue: string;
+    darkBlue: string;
   }
   
   export const COLORS: Color = {
@@ -16,4 +19,7 @@ interface Color {
     secondaryPurpleHex: '#764D8F',
     primaryGrayHex: '#515050',
     whiteHex: '#FFFFFF',
+    lightGray: '#D3D3D3',
+    lightBlue: '#99D7EF',
+    darkBlue: '#0683B2',
   };
