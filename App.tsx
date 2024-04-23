@@ -17,8 +17,10 @@ import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 
 import {Amplify} from 'aws-amplify';
+import { DataStore, Predicates } from 'aws-amplify/datastore';
+import { ConsoleLogger } from 'aws-amplify/utils';
 // import {Amplify} from '@aws-amplify/core';
-import { DataStore, Predicates } from '@aws-amplify/datastore';
+// import { DataStore } from "@aws-amplify/datastore";
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { User } from './src/models';
@@ -134,13 +136,14 @@ async function RunOnStart(userId:string){
 
 function App() {
   const [userId, setUserId] = React.useState("");
+  // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
   React.useEffect(() => {
     currentUserDetails().then(async (user) => {
       // console.log("user id: ", user);
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
       await DataStore.start();
-      // await DataStore.clear(); //Clears the local DataStore
+      await DataStore.clear(); //Clears the local DataStore
       await StartListening(user);
     });
   }, []);
