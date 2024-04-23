@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput } from 'react-native';
+import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { LineChart } from 'react-native-chart-kit';
 import { getAllSleepEntries } from '../../logic/sleep-api'
 
 const sleepData = [
@@ -15,6 +16,49 @@ const sleepData = [
   { day: 'March 9, 2024', hours: 7.5, quality: 'Good' },
   { day: 'March 10, 2024', hours: 6.5, quality: 'Poor' },
 ];
+
+const MyLineChart = () => {
+  return (
+    <>
+      <LineChart
+        data={{
+          labels: sleepData.map(day => day.day.split(' ')[1].replace(',', '')),
+          datasets: [
+            {
+              data: sleepData.map(day => day.hours),
+              color: (opacity = 1) => `rgba(234, 255, 244, ${opacity})`, // optional
+              //strokeWidth: 2 // optional
+            }
+          ],
+          legend: ["Hours Asleep"] // optional
+        }}
+        width={Dimensions.get('window').width - 16}
+        height={220}
+        yAxisInterval={1}
+        chartConfig={{
+          backgroundColor: "#00a8e2",
+          backgroundGradientFrom: "#00c6ff",
+          backgroundGradientTo: "#0072ff",
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16
+          },
+          propsForDots: {
+            r: "6",
+            strokeWidth: "2",
+            stroke: "#00c6ff"
+          }
+        }}
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+        }}
+      />
+    </>
+  );
+};
 
 const SleepScreen = (props) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -108,6 +152,10 @@ const SleepScreen = (props) => {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.chartContainer}>
+          <MyLineChart />
+        </View>
+
         <ScrollView style={styles.sleepScrollContainer}>
           {sleepData.map((day, index) => (
             <View style={styles.sleepTabContainer} key={index}>
@@ -150,19 +198,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  chartContainer: {
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sleepScrollContainer: {
-    marginHorizontal: 20,
+    marginHorizontal: 1,
     marginVertical: 10,
   },
   sleepTabContainer: {
-    marginHorizontal: 10,
     marginVertical: 10,
     borderRadius: 8,
     borderColor: 'black',
-    borderWidth: 2,
+    //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: 'lightblue', // This is a placeholder color
+    backgroundColor: '#DADADA', // This is a placeholder color
     borderRadius: 8,
     padding: 16,
   },

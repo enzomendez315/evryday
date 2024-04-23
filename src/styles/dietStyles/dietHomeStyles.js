@@ -81,6 +81,20 @@ const dietHomeStyles = StyleSheet.create({
         width: 1,
         backgroundColor: 'black',
     },
+    progressBar: {
+        height: 20,
+        width: '100%',
+        backgroundColor: 'white',
+        borderColor: '#000',
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    macroRectangleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginHorizontal: 20,
+    },
 });
 
 export { dietHomeStyles };

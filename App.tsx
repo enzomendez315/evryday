@@ -115,7 +115,7 @@ function SleepStack() {
 
 function WorkoutStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Workout Home" component={WorkoutHomeScreen} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />

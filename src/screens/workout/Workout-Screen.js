@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { COLORS } from '../../theme/theme';
 
 const routineData = [
   {
@@ -197,6 +197,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
           </View>
+          
           <TouchableOpacity
             style={styles.startWorkoutButton}
             onPress={() => {
@@ -211,15 +212,19 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
       
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
-            <View key={index} style={styles.exerciseContainer}>
-              <Text style={styles.exerciseName}>{exercise.name}</Text>
+            <ScrollView key={index} style={styles.exerciseContainer}>
+
+              <Text style={styles.exerciseNamePopUp}>{exercise.name}</Text>
+              <Text style={styles.muscleGroup}>{exercise.muscleGroup}</Text>
+
               {exercise.sets.map((set, setIndex) => (
                 <Text key={setIndex} style={styles.exerciseSet}>
                   {`Set ${set.setNumber}: ${set.weight} x ${set.reps} ${set.completed ? '(completed)' : ''}`}
                 </Text>
               ))}
-              <Text style={styles.muscleGroup}>{exercise.muscleGroup}</Text>
-            </View>
+
+             
+            </ScrollView>
           ))}
         </View>
       </View>
@@ -247,14 +252,23 @@ const WorkoutHomeScreen = ({ navigation }) => {
     navigation.navigate('Workout List');
   };
 
+  const navigateToExerciseHistory = () => {
+    navigation.navigate('Workout History');
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.headerTitle}>Start Workout</Text>
-        <TouchableOpacity style={styles.startWorkoutButton}>
-          <Text style={styles.startWorkoutButtonText}>Start an Empty Workout</Text>
+      <View style={styles.container}>
+
+      <Text style={styles.title}>Workout</Text>
+
+      <TouchableOpacity 
+          style={styles.exerciseHistoryButton} 
+          onPress={navigateToExerciseHistory}>
+          <Text style={styles.exerciseListButtonText}>History</Text>
         </TouchableOpacity>
+
 
         <TouchableOpacity 
           style={styles.exerciseListButton} 
@@ -263,11 +277,12 @@ const WorkoutHomeScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <View style={styles.routineHeader}>
+
           <Text style={styles.routineTitle}>Routines</Text>
 
-          <TouchableOpacity style={styles.addRoutineButton}>
+          {/* <TouchableOpacity style={styles.addRoutineButton}>
             <Text style={styles.addRoutineButtonText}>+ Routine</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
         </View>
         <ScrollView style={styles.routinesContainer}>
@@ -278,7 +293,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
               onPress={() => openPopup(routine)} />
           ))}
         </ScrollView>
-      </SafeAreaView>
+      </View>
       {selectedRoutine && (
         <ExerciseListPopup
           visible={isPopupVisible}
@@ -295,69 +310,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    padding: 20,
   },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  startWorkoutButton: {
-    backgroundColor: '#6200EE', // Use your app's theme color here
-    padding: 10,
-    marginHorizontal: 20,
-    borderRadius: 8,
-  },
-  startWorkoutButtonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+
   routineHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   routineTitle: {
     fontSize: 24,
     fontWeight: 'bold',
   },
+  
   addRoutineButton: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryBlueHex,
+    borderRadius: 15,
     padding: 10,
   },
+
   addRoutineButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   routinesContainer: {
     flex: 1,
   },
 
   routineTab: {
-    backgroundColor: '#f2f2f2', // This is a placeholder color
-    borderRadius: 8,
+    backgroundColor: COLORS.darkBlue,
+    borderRadius: 15,
     padding: 16,
     marginBottom: 16,
   },
+
   routineName: {
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: COLORS.whiteHex
 
   },
+
   exerciseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 4,
-  },
-  exerciseName: {
-    fontSize: 16,
   },
 
   exerciseDetails: {
@@ -365,7 +367,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Popup styles
+  exerciseListButton: {
+    backgroundColor: COLORS.primaryBlueHex, 
+    padding: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+
+  },
+
+  exerciseHistoryButton: {
+    backgroundColor: COLORS.primaryBlueHex, 
+    padding: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 15,
+
+  },
+
+  exerciseListButtonText: {
+    color: 'white', 
+    fontSize: 20,
+    fontWeight: 'bold', // add more styling as needed
+  },
+
   popupOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -391,12 +415,13 @@ const styles = StyleSheet.create({
   },
   editButton: {
     fontSize: 18,
-    color: '#0000ff', // Replace with your theme color
+    color: COLORS.primaryBlueHex, // Replace with your theme color
   },
+
   startWorkoutButton: {
-    backgroundColor: '#0000ff', // Replace with your theme color
+    backgroundColor: COLORS.primaryBlueHex, // Replace with your theme color
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 15,
     marginBottom: 20,
   },
   startWorkoutButtonText: {
@@ -415,27 +440,28 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: COLORS.lightBlue,
   },
+
+  exerciseNamePopUp: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.primaryGrayHex,
+  },
+
   muscleGroup: {
     fontSize: 16,
-    color: 'grey',
+    color: COLORS.primaryGrayHex,
   },
 
-  exerciseListButton: {
-    marginTop: 10, 
-    backgroundColor: 'blue', 
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-
-  },
-  exerciseListButtonText: {
-    // add your styling for the text here
-    color: 'white', // example text color
-    fontSize: 20,
+  title: {
+    fontSize: 36,
     fontWeight: 'bold',
-    // add more styling as needed
-  },
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left'
+},
+
 
   // Additional styles for your routines would go here
 });
