@@ -138,22 +138,30 @@ const SleepTab = () => {
 const Dashboard = (props) => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container}>
-        <ScrollView>
-          {/* Render your components here */}
-          <HealthScoreTab />
-          <DietTab />
-          <WorkoutTab />
-          <SleepTab />
-          {/* Add more components as needed */}
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Render your components here */}
+        <HealthScoreTab style={styles.tab} />
+        <DietTab style={styles.tab} />
+        <WorkoutTab style={styles.tab} />
+        <SleepTab style={styles.tab} />
+        {/* Add more components as needed */}
+      </ScrollView>
+    </SafeAreaView>
+  </>
   );
 };
 
 const styles = StyleSheet.create({
+
+  defaultTabStyle: {
+    // Default styling for tabs
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  
   healthScoreTab: {
     flexDirection: 'row',
     alignItems: 'center',
