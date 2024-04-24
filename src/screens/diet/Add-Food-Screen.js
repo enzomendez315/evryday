@@ -53,9 +53,10 @@ const AddFoodScreen = (props) => {
 
         <TouchableOpacity
           onPress={() => {
-            addFood(meal.mealId, item.id).then((m) => {
+            //Uncomment to add food to a meal
+            // addFood(meal.mealId, item.id).then((m) => { 
               navigation.navigate('Add Meal', {meal});
-            });
+            // });
           }}
           style={addFoodStyles.button}>
           <Text style={addFoodStyles.buttonText}>Add Food</Text>
