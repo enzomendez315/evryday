@@ -1,21 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { addMealStyles } from '../../styles/dietStyles/addMealStyles';
 import PieChart from 'react-native-pie-chart';
-
-const foodsList = [
-  { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-  { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-  { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-];
-
-const mealData = {
-  name: 'New Meal',
-  calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
-  protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
-  carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
-  fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
-};
+import { currentUserDetails } from '../../logic/account';
+import { getMeal, calcMealMacros } from '../../logic/diet-api'
 
 const recipeData = [
   {
@@ -53,14 +41,60 @@ const recipeData = [
   },
 ];
 
+async function getUsersLog(setMealData, setFoodList, mealId) {
+    await getMeal(mealId).then(async (meal) => {
+      console.log(`Got meal: ${meal.id}`);
+      await meal.foodItems.toArray().then(async (food) => {
+      if (food.length == 0) {
+        console.log('No food items');
+        return;
+      }
+      console.log(`Got food: ${food[0].name} ${food[0].calories} ${food[0].protein} ${food[0].carbs} ${food[0].fat}`);
+      setFoodList(food);
+      await calcMealMacros(meal).then((macro) => {
+        console.log(`Got macros calories: ${macro.calories} carbs: ${macro.carbs} fat: ${macro.fat} protein:${macro.protein}`);
+        setMealData(macro);
+      });
+    });
+  });
+}
+
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const item1 = route.params;
+  const mealId = route.params.meal.mealId;
+  console.log(`mealId: ${mealId}`);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [mealData, setMealData] = useState(route.params.meal);
+  const [foodList, setFoodList] = useState();
+  let foodListView = <></>;
 
-  console.log(item1);
+  let pieSeries = [mealData.protein, mealData.carbs, mealData.fat]
+  if (pieSeries.reduce((acc, val) => acc + val, 0) == 0){
+    pieSeries = [0, 0, 1]
+  }
+
+  useEffect(() => {
+    setMealData(route.params.meal);
+    console.log('route.params', route.params);
+    getUsersLog(setMealData, setFoodList, mealId);
+  
+  }, [route.params]);
+
+if(foodListView != undefined) {
+  foodListView = (
+    <>
+      { foodList?.map((food, index) => (
+        <Text style={addMealStyles.foodItem}
+          key={index}>{food.name}, {food.calories}cal</Text>
+        ))}  
+      </>
+    );
+  }
+
+  console.log(route.params.meal);
 
   const RecipeListPopup = () => {
+    navigation
     return (
       <Modal
         visible={isPopupVisible}
@@ -87,6 +121,7 @@ const AddMealScreen = (props) => {
     );
   }
 
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -96,13 +131,10 @@ const AddMealScreen = (props) => {
 
         <View style={addMealStyles.mealContainer}>
           <ScrollView>
-            {foodsList.map((food, index) => (
-              <Text style={addMealStyles.foodItem}
-                key={index}>{food.name}, {food.calories}cal</Text>
-            ))}
+            {foodListView}
           </ScrollView>
           <TouchableOpacity style={addMealStyles.Button}
-            onPress={() => navigation.navigate('Search Food')}>
+            onPress={() => navigation.navigate('Search Food', route.params)}>
             <Text style={addMealStyles.ButtonText}>Add New Food</Text>
           </TouchableOpacity>
         </View>
@@ -126,7 +158,7 @@ const AddMealScreen = (props) => {
             <PieChart
               style={addMealStyles.pieChart}
               widthAndHeight={150}
-              series={[mealData.protein, mealData.carbs, mealData.fat]}
+              series={pieSeries}
               sliceColor={['lightblue', 'lightgreen', 'pink']}
             />
           </View>

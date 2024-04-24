@@ -143,7 +143,7 @@ function App() {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
       await DataStore.start();
-      await DataStore.clear(); //Clears the local DataStore
+      // await DataStore.clear(); //Clears the local DataStore
       await StartListening(user);
     });
   }, []);

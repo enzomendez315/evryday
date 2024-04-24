@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { addFoodStyles } from '../../styles/dietStyles/addFoodStyles';
+import { FoodItem } from '../../models';
+import { addFoodToMeal } from '../../logic/diet-api'
+
 
 const AddFoodScreen = (props) => {
   const { navigation, route } = props;
-  const { item } = route.params;
+  const { item, meal} = route.params;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('gram');
   const [items, setItems] = useState([
@@ -49,7 +52,11 @@ const AddFoodScreen = (props) => {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Add Meal')}
+          onPress={() => {
+            addFood(meal.mealId, item.id).then((m) => {
+              navigation.navigate('Add Meal', {meal});
+            });
+          }}
           style={addFoodStyles.button}>
           <Text style={addFoodStyles.buttonText}>Add Food</Text>
         </TouchableOpacity>
@@ -57,5 +64,18 @@ const AddFoodScreen = (props) => {
     </>
   );
 };
+
+async function addFood(mealId, foodId) {
+  p = new Promise((resolve, reject) => {
+    try {
+      addFoodToMeal(mealId, foodId).then((m) => {
+        resolve(m);
+      });
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  })
+}
 
 export default AddFoodScreen;

@@ -15,12 +15,15 @@ async function updateFoodItems(setFoodItems, searchInput = "") {
   await getFoodItems(searchInput).then((getFood) => {setFoodItems(getFood)});
 }
 
-const SearchFoodScreen = ({ navigation }) => {
+const SearchFoodScreen = ({ route, navigation }) => {
   // const [foodItems, setFoodItems] = useState<FoodItem>([]);
+  const meal = route.params.meal;
+  const mealId = route.params.meal.mealId;
+  console.log(`mealId: ${mealId}`);
   const [foodItems, setFoodItems] = useState();
   useEffect(() => {
     updateFoodItems(setFoodItems);
-  }, []);
+  }, [foodItems]);
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -50,7 +53,7 @@ const SearchFoodScreen = ({ navigation }) => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>
-                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item, meal })}>
                     <View style={searchFoodStyles.tableTextContainer}>
                       <Text style={searchFoodStyles.tableText}>{item.name}</Text>
                       <Text style={searchFoodStyles.tableText}>{item.serving}</Text>

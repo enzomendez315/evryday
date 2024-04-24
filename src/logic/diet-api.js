@@ -5,10 +5,6 @@ import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 // import {Amplify} from 'aws-amplify';
 // import { currentUserDetails } from './account';
 
-///PIVOT DONT LINK NUTRITION LOG AND MEALS
-
-let MEALS;
-let NUTRITIONLOG;
 
 const client = generateClient();
 let initialised = false;
@@ -19,15 +15,11 @@ export const NUTLOG = async (userId, date) =>{
     let currentDate;
     p = new Promise(async (resolve, reject) =>{
         console.log(`NUTLOG initialised: ${initialised}`);
-        
-        // if(userId && date && (userId != currentUserId || date != currentDate)){
         await getUsersNutritionLog(userId, date).then(async (log) => {
             nutLog = log;
-            // NUTRITIONLOG = log;
             console.log(`Retreiving Nutrition Log id: ${log.id} userId: ${userId} date: ${date}`);
             await nutLog.Meals.toArray().then( async (m) => {
                 meals = m;
-                // MEALS = m;
                 console.log(`NUTLOG meal: ${meals}`);
                 console.log(`meals: ${meals.length}`);
                 if (meals.length == 0){
@@ -71,51 +63,20 @@ export const NUTLOG = async (userId, date) =>{
                 });
             });
         });
-        // } else if(initialised){
-        //     resolve({
-        //         nutLog,
-        //         meals,
-        //         userId: currentUserId,
-        //         date: currentDate
-        //     });
-        // } else {
-        //     reject("Could not initialise Nutrition Log");
-        // }
     });
     return p;
 }
 
 //TODO: verify inputs for createMeal
-export async function getMeal(userId, date, mealType) {
+export async function getMeal(mealId) {
     p = new Promise(async (resolve, reject) => {
-        try {
-            console.log(`getMeal UserId: ${userId} Date: ${date} MealType: ${mealType}`);
-            // const nutritionlog =  await getUsersNutritionLog(userId, date).then(async (log) => {
-            //     const meal = await nutritionlog.Meals.toArray().then(async (meals) => {
-            //     console.log(`Meals: ${meals} MealsId: ${meals.id} meal period: ${meals.mealPeriod}`)
-            //     });
-
-            // console.log(`meal foodItems: ${await meal.foodItems.toArray()}`);
-            // });
-
-            await DataStore.query(Meal, (c) => c.and(c => [
-                c.nutritionLogID.eq(nutritionlog[0].id),
-                c.mealType.eq(mealType)
-            ])).then((foundMeal) => {
-                console.log(foundMeal.length)
-                if(foundMeal.length == 0){
-                    let newMeal = new Meal({
-                        "nutritionLogID": nutritionlog[0].id,
-                        "mealType": mealType,
-                        "foodItems": []
-                    });
-                    DataStore.save(newMeal).then(() => {
-                        console.log(`Meal created: ${newMeal}`);
-                        resolve(newMeal)});
-                }
-                console.log(`Meal found: ${foundMeal}`);
-                resolve(foundMeal);
-            });
+    try { 
+        console.log(`getMeal mealId: ${mealId}`);
+        await DataStore.query(Meal, (m) => m.id.eq(mealId)).then((foundMeal) => { 
+            console.log(`Found Meal: ${foundMeal}`);
+            resolve(foundMeal[0]);
+        });
+            
         } catch (err){
             console.log(err);
             reject(err);
@@ -125,12 +86,20 @@ export async function getMeal(userId, date, mealType) {
 }
 
 
-export async function getFoodItems(searchTerm){
-    if(!searchTerm || searchTerm == ""){
+export async function getFoodItems(searchTerm, getTaken = false){
+    if(getTaken) {
         const foodItems = await DataStore.query(FoodItem);
         return foodItems;
     }
-    const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
+    else if(!searchTerm || searchTerm == ""){
+        const foodItems = await DataStore.query(FoodItem, (c) => c.mealFoodItemsId.eq( null || undefined));
+        return foodItems;
+    }
+    const foodItems = await DataStore.query(FoodItem, (c) => c.and([
+        (c) => c.name.contains(searchTerm),
+        (c) => c.mealFoodItemsId( null || undefined)
+    ]));
+
     return foodItems;
 }
 
@@ -192,30 +161,41 @@ export async function getUsersNutritionLog(userId, date) {
     return p;
 }
 
-export async function getMealMacros(meals){
-    p = new Promise(async (resolve, reject) => {
+export function getMealMacros(meals){
+    p = new Promise( (resolve, reject) => {
         console.log("Started GetMealMacros");
         let macros = [];
-        await meals.forEach(m => {
-            macros.push(calcMealMacros(m));
-        }).then(() => {
-            resolve(macros);
+        let count = 0;
+        meals.forEach( m => {
+            let macro = calcMealMacros(m).then((macro) => {
+                console.log(`macro: ${macro.calories} ${macro.protein} ${macro.carbs} ${macro.fat}`);
+                macros.push(macro);
+                count++;
+                if (count == meals.length){
+                    console.log("Finished GetMealMacros");
+                    resolve(macros);
+                }
+            });
         });
     });
     return p;
 }
 
-async function calcMealMacros(meal){
-    let foodsList = await meal.foodItems.toArray();
-    let mealData = {
-        name: meal.mealPeriod,
-        calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
-        protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
-        carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
-        fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
-    };
-    console.log(`name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
-    return mealData;
+export async function calcMealMacros(meal){
+    p = new Promise(async (resolve, reject) => {
+        let foodsList = await meal.foodItems.toArray();
+        let mealData = {
+            mealId: meal.id,
+            name: meal.mealPeriod,
+            calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+            protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+            carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+            fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+        };
+        console.log(`name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
+        resolve(mealData);
+    });
+    return p;
 }
 
 export function initNutritionLog(userId){
@@ -229,57 +209,58 @@ export function initNutritionLog(userId){
         console.log(`Nutrition Log: ${nutLog.id}`);
         console.log("Finished initNutritionLog");
 
-        // meals.forEach(m => {
-        //     calcMealMacros(m);
-        // });
-        // getMealMacros();
-
-        // await getMeal(userId, date, "Breakfast").then((meal) => {
-        //     console.log(meal);
-        // });
-
-        // await getMeal(userId, date, "Lunch").then((meal) => { 
-        //     console.log(meal);
-        // });
-
-        // await getMeal(userId, date, "Dinner").then((meal) => {
-        //     console.log(meal);
-        // });
+    
     });
-    // getUsersNutritionLog(userId, date).then(async (logs) => {
-        // if(logs.length == 0){
-        //     console.log("could not initialise nutrition log");
-        // }
-        // console.log(`Nutrition Log: ${logs}`);
-        // console.log("Finished initNutritionLog");
-        // await getMeal(userId, date, "Breakfast").then((meal) => {
-        //     console.log(meal);
-        // });
-
-        // await getMeal(userId, date, "Lunch").then((meal) => { 
-        //     console.log(meal);
-        // });
-
-        // await getMeal(userId, date, "Dinner").then((meal) => {
-        //     console.log(meal);
-        // });
-    // });
 }
  
 
-
-export async function addFoodToMeal(userId, date, mealType, foodItem){
+export async function addFoodToMeal(mealId, foodId){
     p = new Promise(async (resolve, reject) => {
-        console.log(`addFoodToMeal UserId: ${userId} Date: ${date} MealType: ${mealType} FoodItem: ${foodItem}`);
+        console.log(`addFoodToMeal mealId: ${mealId} Date: ${foodId}`);
         try {
-            let meal = await getMeal(userId, date, mealType).then((meal) => {
-                DataStore.save(
-                    Meal.copyOf(meal, updated => {
-                        updated.foodItems.push(foodItem);
-                    })
-                );
+            let meal0 = await getMeal(mealId).then(async (meal) => {
+                console.log(`meal: ${meal.id}`);
+                if(!meal){
+                    console.log("No meal");
+                    reject("No meal");
+                }
+                let foodItem = await DataStore.query(FoodItem, (f) => f.id.eq(foodId)).then(async (foods) => {
+                    if(foods.length == 0){
+                        console.log("No food items");
+                        reject("No food items");
+                    }
+                    console.log(`food: ${foods[0].name}`);
+                    console.log(`food: ${foods[0].id} name: ${foods[0].name} calories: ${foods[0].calories} 
+                    protein: ${foods[0].protein} carb:${foods[0].carbs} fat: ${foods[0].fat} 
+                    serv: ${foods[0].serving}, mealId: ${foods[0].mealFoodItemsId}`);
+                    await DataStore.save(
+                        FoodItem.copyOf(foods[0], updated => {
+                            updated.id = foods[0].id;
+                            updated.name = foods[0].name;
+                            updated.calories = foods[0].calories;
+                            updated.protein = foods[0].protein;
+                            updated.carbs = foods[0].carbs;
+                            updated.fat = foods[0].fat;
+                            updated.serving = foods[0].serving;
+                            updated.mealFoodItemsId = meal.id;
+                        })
+                    ).then(async (m) => {
+                        console.log(m);
+                        console.log(`Added meal to food: ${foods[0].id}`);
+                        mealFoodArr = await meal.foodItems.toArray();
+                        await DataStore.save(
+                            Meal.copyOf(meal, updated => {
+                                updated = meal;
+                                updated.foodItems = [...mealFoodArr, foods[0]];
+                            })
+                        ).then((g) => {
+                            console.log(`Added food to food: ${foods[0].id}`);
+                            resolve(g);
+                        });
+                        // resolve(foods[0]);
+                    });
+                });
             });
-            resolve(meal);
         } catch (err){
             console.log(err);
             reject(err);
@@ -289,10 +270,9 @@ export async function addFoodToMeal(userId, date, mealType, foodItem){
 }
 
 
-
 export async function initFoodItems(){
     console.log("Started initFoodItems");
-    getFoodItems().then((foods) => {
+    getFoodItems("", true).then((foods) => {
         console.log(`Food Items: ${foods.length}`);
         if(foods.length == 0){
             console.log("Adding food items");
@@ -301,6 +281,7 @@ export async function initFoodItems(){
         console.log("Finished initFoodItems");
     });
 }
+
 
 function bulkCreateFood(foodArr){
     foodArr.forEach(item => {
@@ -341,21 +322,3 @@ const bulkFoodsList = [
     { name: 'Grapes', calories: 50, protein: 1, carbs: 10, fat: 0, serving: '100g' },
   ];
 
-
-
-
-
-
-// notes on GraphQL implementation: TODO:Delete
-// import { createNutritionLog } from '../graphql/mutations';
-// import { listNutritionLogs } from '../graphql/queries';
-// graphql creation
-// const log = await client.graphql({
-//     query: createNutritionLog,
-//     variables: {input: foodItemDetails}
-// });
-// console.log('Successfully added: ', logDetails);
-// graphql query
-// const listAllFoodLogs = await client.graphql({ query: listNutritionLogs });
-// console.log(listAllFoodLogs.data);  
-// return listAllFoodLogs; 

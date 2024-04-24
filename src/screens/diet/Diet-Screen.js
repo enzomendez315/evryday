@@ -6,83 +6,35 @@ import { getUsersNutritionLog, getMeal, NUTLOG, getMealMacros } from '../../logi
 import { NutritionLog, Meal} from '../../models';
 import { currentUserDetails } from '../../logic/account';
 import { DataStore } from 'aws-amplify/datastore';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
-//nutritionlog.Meals.FoodItems
 let userId
-// let meals = []
-// let nutritionLog = getUsersNutritionLog(user, date);
 
-
-// const mealData = [
-//   {
-//     name: 'Breakfast',
-//     calories: 500,
-//     protein: 25,
-//     carbs: 50,
-//     fat: 20,
-//   },
-//   {
-//     name: 'Lunch',
-//     calories: 700,
-//     protein: 30,
-//     carbs: 70,
-//     fat: 30,
-//   },
-//   {
-//     name: 'Dinner',
-//     calories: 600,
-//     protein: 35,
-//     carbs: 60,
-//     fat: 25,
-//   },
-//   {
-//     name: 'Snack',
-//     calories: 200,
-//     protein: 10,
-//     carbs: 20,
-//     fat: 5,
-//   },
-// ];
-
-
-// const calorieData = {
-//   proteinCurrent: mealData.reduce((acc, meal) => acc + meal.protein, 0),
-//   proteinGoal: 150,
-//   carbsCurrent: mealData.reduce((acc, meal) => acc + meal.carbs, 0),
-//   carbsGoal: 250,
-//   fatCurrent: mealData.reduce((acc, meal) => acc + meal.fat, 0),
-//   fatGoal: 75,
-//   caloriesCurrent: mealData.reduce((acc, meal) => acc + meal.calories, 0),
-//   caloriesGoal: 3000,
-// };
-
-
-async function getUsersLog(setMealData, setCalorieData, user, date) {
-  await NUTLOG(userId, date).then(async ({nutLog, meals, userId, date}) => {
-    console.log(`Got nutLog: ${nutLog.id} ${meals} ${userId} ${date}`);
-    await getMealMacros(meals).then((macro) => {
-      console.log(`Got meals: ${macro.calories} ${macro.carbs} ${macro.fat} ${macro.protein}`);
-      setMealData(macro);
-      setCalorieData({
-        proteinCurrent: macro.reduce((acc, meal) => acc + meal.protein, 0),
-        proteinGoal: 150,
-        carbsCurrent: macro.reduce((acc, meal) => acc + meal.carbs, 0),
-        carbsGoal: 250,
-        fatCurrent: macro.reduce((acc, meal) => acc + meal.fat, 0),
-        fatGoal: 75,
-        caloriesCurrent: macro.reduce((acc, meal) => acc + meal.calories, 0),
-        caloriesGoal: 3000,
+async function getUsersLog(setMealData, setCalorieData) {
+  currentUserDetails().then(async (user) => {
+    userId = user
+    console.log(`userid diet:${userId}`)
+    date = new Date(Date.now()).toISOString().substring(0,10);
+    await NUTLOG(userId, date).then(async ({nutLog, meals, userId, date}) => {
+      console.log(`Got nutLog: ${nutLog.id} ${meals} ${userId} ${date}`);
+      await getMealMacros(meals).then((macro) => {
+        console.log(`Got meals: ${macro[0].calories} ${macro[0].carbs} ${macro[0].fat} ${macro[0].protein}`);
+        setMealData(macro);
+        setCalorieData({
+          proteinCurrent: macro.reduce((acc, meal) => acc + meal.protein, 0),
+          proteinGoal: 150,
+          carbsCurrent: macro.reduce((acc, meal) => acc + meal.carbs, 0),
+          carbsGoal: 250,
+          fatCurrent: macro.reduce((acc, meal) => acc + meal.fat, 0),
+          fatGoal: 75,
+          caloriesCurrent: macro.reduce((acc, meal) => acc + meal.calories, 0),
+          caloriesGoal: 3000,
+        });
       });
     });
   });
-
 }
 
-
-
 const DietScreen = ({ navigation }) => {
-  let tempMeals
   const [mealData, setMealData] = useState();
   const [calorieData, setCalorieData] = useState({
     proteinCurrent: 0,
@@ -94,17 +46,46 @@ const DietScreen = ({ navigation }) => {
     caloriesCurrent: 0,
     caloriesGoal: 3000,
   });
-
+  let changed = false;
+  
   useEffect(() => {
-    currentUserDetails().then(async (user) => {
-    userId = user
-    console.log(`userid diet:${userId}`)
-    date = new Date(Date.now()).toISOString().substring(0,10);
-    getUsersLog(setMealData, setCalorieData, user, date);
-  });
+    let logUpdatedAt = null;
+    const sub = DataStore.observeQuery(NutritionLog, (u) => u.id.eq(currentUserDetails()))
+    .subscribe(({ items }) => {
+      if(items != undefined && items.length > 0){
+        if(logUpdatedAt != items[0].updatedAt){
+          console.log(`Nutrition Log updated`);
+          logUpdatedAt = items[0].updatedAt;
+          getUsersLog(setMealData, setCalorieData);
+        }
+      }
+    });
+
+    
+    getUsersLog(setMealData, setCalorieData);
+    
+  
+  return () => {sub.unsubscribe();}
   }, []);
   
+  let mealButtons = <></>
   
+  if (mealData != undefined) {
+    mealButtons = (
+      <>
+        { mealData?.map((meal, index) => (
+          <TouchableOpacity style={{ padding: 5 }}
+            key={index} margin={5}
+            onPress={() => navigation.navigate('Add Meal', { meal })}>
+            <Text style={dietHomeStyles.mealNameText}>{meal.name}</Text>
+            <Text style={dietHomeStyles.mealText}>
+              {meal.calories}
+            </Text>
+          </TouchableOpacity>
+        ))}  
+      </>
+    );
+  }
 
   // const [nutritionLog, setNutritionLog] = useState();
   // useEffect(() => {
@@ -126,6 +107,10 @@ const DietScreen = ({ navigation }) => {
     
   // }, []);
 
+
+  let pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
+    calorieData.caloriesCurrent]
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -142,8 +127,7 @@ const DietScreen = ({ navigation }) => {
         <PieChart
           style={dietHomeStyles.pieChart}
           widthAndHeight={200}
-          series={[calorieData.caloriesGoal - calorieData.caloriesCurrent,
-          calorieData.caloriesCurrent]}
+          series={pieSeries}
           sliceColor={['#808080', '#7CFC00']}
           coverFill={'#FFF'}
           doughnut={true}
@@ -159,21 +143,11 @@ const DietScreen = ({ navigation }) => {
         </View>
 
         <View style={dietHomeStyles.mealsContainer}>
-            <MealButtons value={mealData} ></MealButtons>
-          {/* <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
-            { mealData.map((meal, index) => (
-              <TouchableOpacity style={{ padding: 5 }}
-                key={index} margin={5}
-                onPress={() => navigation.navigate('Add Meal', { meal })}>
-                <Text style={dietHomeStyles.mealNameText}>{meal.name}</Text>
-                <Text style={dietHomeStyles.mealText}>
-                  {meal.calories}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView> */}
-
-          <TouchableOpacity style={dietHomeStyles.addMealButton}
+          <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+            {mealButtons}
+          </ScrollView>
+          
+          <TouchableOpacity style={dietHomeStyles.addMealButton} disabled={true}
             onPress={() => navigation.navigate('Add Meal', {})}>
             <Text style={dietHomeStyles.addMealButtonText}>Add Meal</Text>
           </TouchableOpacity>
@@ -184,26 +158,6 @@ const DietScreen = ({ navigation }) => {
   );
 };
 
-const MealButtons = (mealData) => {
-  if (mealData == undefined) {
-    return <></>
-  }
-  return (
-    <>
-      <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
-            { mealData.map((meal, index) => (
-              <TouchableOpacity style={{ padding: 5 }}
-                key={index} margin={5}
-                onPress={() => navigation.navigate('Add Meal', { meal })}>
-                <Text style={dietHomeStyles.mealNameText}>{meal.name}</Text>
-                <Text style={dietHomeStyles.mealText}>
-                  {meal.calories}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-    </>
-  );
-}
+
 
 export default DietScreen;
