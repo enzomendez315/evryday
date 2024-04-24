@@ -9,12 +9,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
-import WorkoutScreen from './src/screens/workout/Workout-Screen';
+
 import SleepScreen from './src/screens/sleep/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
 
+import WorkoutHomeScreen from './src/screens/workout/Workout-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
+import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
+import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 
 import {Amplify} from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
@@ -121,9 +124,11 @@ function SleepStack() {
 
 function WorkoutStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Workout Home" component={WorkoutScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Workout Home" component={WorkoutHomeScreen} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
+      <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
+      <Stack.Screen name="Workout List" component={WorkoutListScreen} />
     </Stack.Navigator>
   );
 }
@@ -156,11 +161,6 @@ function App() {
   );
 }
 
-// Adds native ui for sign in functionality
-// To bypass replace with 'export default App;'
-export default withAuthenticator(App);
-// export default App;
-
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
 export function StartListening(user:string){
   console.log("DataStore is started");
@@ -173,5 +173,12 @@ export function StartListening(user:string){
       }
   })
 }
+
+// Adds native ui for sign in functionality
+// To bypass replace with 'export default App;'
+export default withAuthenticator(App);
+// export default App;
+
+
 
 

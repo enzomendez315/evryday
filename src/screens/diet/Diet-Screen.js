@@ -6,8 +6,51 @@ import { getUsersNutritionLog, getMeal, NUTLOG, getMealMacros } from '../../logi
 import { NutritionLog, Meal} from '../../models';
 import { currentUserDetails } from '../../logic/account';
 import { DataStore } from 'aws-amplify/datastore';
+import { Bar } from 'react-native-progress';
 
 let userId
+
+// const mealData = [
+//   {
+//     name: 'Breakfast',
+//     calories: 500,
+//     protein: 25,
+//     carbs: 50,
+//     fat: 20,
+//   },
+//   {
+//     name: 'Lunch',
+//     calories: 700,
+//     protein: 30,
+//     carbs: 70,
+//     fat: 30,
+//   },
+//   {
+//     name: 'Dinner',
+//     calories: 600,
+//     protein: 35,
+//     carbs: 60,
+//     fat: 25,
+//   },
+//   {
+//     name: 'Snack',
+//     calories: 200,
+//     protein: 10,
+//     carbs: 20,
+//     fat: 5,
+//   },
+// ];
+
+// const calorieData = {
+//   proteinCurrent: mealData.reduce((acc, meal) => acc + meal.protein, 0),
+//   proteinGoal: 150,
+//   carbsCurrent: mealData.reduce((acc, meal) => acc + meal.carbs, 0),
+//   carbsGoal: 250,
+//   fatCurrent: mealData.reduce((acc, meal) => acc + meal.fat, 0),
+//   fatGoal: 75,
+//   caloriesCurrent: mealData.reduce((acc, meal) => acc + meal.calories, 0),
+//   caloriesGoal: 3000,
+// };
 
 async function getUsersLog(setMealData, setCalorieData) {
   currentUserDetails().then(async (user) => {
@@ -115,7 +158,7 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text style={dietHomeStyles.title}>March 30, 2024</Text>
+        <Text style={dietHomeStyles.title}>{new Date().toDateString()}</Text>
 
         <View>
           <Text style={dietHomeStyles.calorieHeader}>Calories</Text>
@@ -128,18 +171,34 @@ const DietScreen = ({ navigation }) => {
           style={dietHomeStyles.pieChart}
           widthAndHeight={200}
           series={pieSeries}
-          sliceColor={['#808080', '#7CFC00']}
+          sliceColor={['#86A184', '#7CFC00']}
           coverFill={'#FFF'}
           doughnut={true}
         />
 
         <View style={dietHomeStyles.macroContainer}>
-          <Text style={dietHomeStyles.macroText}>
-            Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
-          <Text style={dietHomeStyles.macroText}>
-            Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
-          <Text style={dietHomeStyles.macroText}>
-            Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
+            <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
+              width={125}
+              color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+          </View>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
+            <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
+              width={125}
+              color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+          </View>
+          <View style={dietHomeStyles.macroRectangleContainer}>
+            <Text style={dietHomeStyles.macroText}>
+              Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+            <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
+              width={125}
+              color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+          </View>
+
         </View>
 
         <View style={dietHomeStyles.mealsContainer}>
