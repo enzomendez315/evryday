@@ -52,7 +52,7 @@ let userId
 //   caloriesGoal: 3000,
 // };
 
-async function getUsersLog(setMealData, setCalorieData) {
+async function getUsersLog(setMealData, setCalorieData, currentMacros) {
   currentUserDetails().then(async (user) => {
     userId = user
     console.log(`userid diet:${userId}`)
@@ -61,6 +61,10 @@ async function getUsersLog(setMealData, setCalorieData) {
       console.log(`Got nutLog: ${nutLog.id} ${meals} ${userId} ${date}`);
       await getMealMacros(meals).then((macro) => {
         console.log(`Got meals: ${macro[0].calories} ${macro[0].carbs} ${macro[0].fat} ${macro[0].protein}`);
+        if (currentMacros === macro){
+          console.log(`Macros are the same`);
+          return;
+        }
         setMealData(macro);
         setCalorieData({
           proteinCurrent: macro.reduce((acc, meal) => acc + meal.protein, 0),
@@ -89,27 +93,27 @@ const DietScreen = ({ navigation }) => {
     caloriesCurrent: 0,
     caloriesGoal: 3000,
   });
-  let changed = false;
+  const [logChanged, setLogChanged] = useState(true);
   
   useEffect(() => {
-    let logUpdatedAt = null;
-    const sub = DataStore.observeQuery(NutritionLog, (u) => u.id.eq(currentUserDetails()))
-    .subscribe(({ items }) => {
-      if(items != undefined && items.length > 0){
-        if(logUpdatedAt != items[0].updatedAt){
-          console.log(`Nutrition Log updated`);
-          logUpdatedAt = items[0].updatedAt;
-          getUsersLog(setMealData, setCalorieData);
-        }
-      }
-    });
-
-    
+    // let logUpdatedAt = null;
+    // const sub = DataStore.observeQuery(NutritionLog, (u) => u.id.eq(currentUserDetails()))
+    // .subscribe(({ items }) => {
+    //   if(items != undefined && items.length > 0){
+    //     if(logUpdatedAt != items[0].updatedAt){
+    //       console.log(`Nutrition Log updated`);
+    //       logUpdatedAt = items[0].updatedAt;
+    //       getUsersLog(setMealData, setCalorieData);
+    //     }
+    //   }
+    // });
+    if (!logChanged) return;
+    console.log('DIET SCREEN useEffect');
+    setLogChanged(false);
     getUsersLog(setMealData, setCalorieData);
     
-  
-  return () => {sub.unsubscribe();}
-  }, []);
+  // return () => {sub.unsubscribe();}
+  }, [logChanged]);
   
   let mealButtons = <></>
   

@@ -121,7 +121,7 @@ const AddMealScreen = (props) => {
   }
 
   useEffect(() => {
-    setMealData(route.params.meal);
+    // setMealData(route.params.meal);
     console.log('route.params', route.params);
     getUsersLog(setMealData, setFoodList, mealId);
   

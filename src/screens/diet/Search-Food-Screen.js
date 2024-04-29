@@ -23,7 +23,7 @@ const SearchFoodScreen = ({ route, navigation }) => {
   const [foodItems, setFoodItems] = useState();
   useEffect(() => {
     updateFoodItems(setFoodItems);
-  }, [foodItems]);
+  }, []);
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -33,7 +33,8 @@ const SearchFoodScreen = ({ route, navigation }) => {
           <TextInput 
           style={searchFoodStyles.searchInputText}
            placeholder="Enter Food Here" 
-           onChangeText={async (input) => { updateFoodItems(setFoodItems, input); }}/>
+          //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
+           onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }}/>
         </View>
 
         <Text style={searchFoodStyles.resultsText}>Search Results:</Text>

@@ -22,8 +22,6 @@ import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import {Amplify} from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
-// import {Amplify} from '@aws-amplify/core';
-// import { DataStore } from "@aws-amplify/datastore";
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 import { User } from './src/models';
@@ -134,7 +132,7 @@ function WorkoutStack() {
 }
 async function RunOnStart(userId:string){
   // userSignOut();
-    console.log("started initFoodItems() and initNutritionLog()");
+    // console.log("started initFoodItems() and initNutritionLog()");
     await initFoodItems();
     await initNutritionLog(userId);
 }

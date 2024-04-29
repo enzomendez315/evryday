@@ -5,64 +5,67 @@ import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 // import {Amplify} from 'aws-amplify';
 // import { currentUserDetails } from './account';
 
-
+const DEBUG = true;
 const client = generateClient();
 let initialised = false;
 export const NUTLOG = async (userId, date) =>{
-    let meals;
-    let nutLog;
-    let currentUserId;
-    let currentDate;
+    // let meals;
+    // let nutLog;
+    // let currentUserId;
+    // let currentDate;
     p = new Promise(async (resolve, reject) =>{
-        console.log(`NUTLOG initialised: ${initialised}`);
-        await getUsersNutritionLog(userId, date).then(async (log) => {
-            nutLog = log;
-            console.log(`Retreiving Nutrition Log id: ${log.id} userId: ${userId} date: ${date}`);
-            await nutLog.Meals.toArray().then( async (m) => {
-                meals = m;
-                console.log(`NUTLOG meal: ${meals}`);
-                console.log(`meals: ${meals.length}`);
-                if (meals.length == 0){
-                    console.log("Creating meals");
-                    const breakfast = new Meal({
-                        nutritionLogMealsId: nutLog.id,
-                        mealPeriod: MealPeriod.BREAKFAST,
-                        foodItems: []
-                    });
-                    await DataStore.save(breakfast).then(() => {console.log(`NUTLOG: Breakfast created`)});
-                    const lunch = new Meal({
-                        nutritionLogMealsId: nutLog.id,
-                        mealPeriod: MealPeriod.LUNCH,
-                        foodItems: []
-                    })
-                    await DataStore.save(lunch).then(() => {console.log(`NUTLOG: Lunch created`)});
-                    const dinner = new Meal({
-                        nutritionLogMealsId: nutLog.id,
-                        mealPeriod: MealPeriod.DINNER,
-                        foodItems: []
-                    })
-                    await DataStore.save(dinner).then(() => {console.log(`NUTLOG: Dinner created`)});
-                    await DataStore.save(
-                        NutritionLog.copyOf(nutLog, updated => {
-                            updated= log;
-                            updated.Meals = [breakfast, lunch, dinner];
+        try {
+            await getUsersNutritionLog(userId, date).then(async (nutLog) => {
+                // nutLog = log;
+                DEBUG && console.log(`Retreiving Nutrition Log id: ${nutLog.id} userId: ${userId} date: ${date}`);
+                await nutLog.Meals.toArray().then( async (meals) => {
+                    // meals = m;
+                    DEBUG && console.log(`NUTLOG meal: ${meals}`);
+                    DEBUG && console.log(`meals: ${meals.length}`);
+                    if (meals.length == 0){
+                        DEBUG && console.log("Creating meals");
+                        const breakfast = new Meal({
+                            nutritionLogMealsId: nutLog.id,
+                            mealPeriod: MealPeriod.BREAKFAST,
+                            foodItems: []
+                        });
+                        await DataStore.save(breakfast).then(() => {DEBUG && console.log(`NUTLOG: Breakfast created`)});
+                        const lunch = new Meal({
+                            nutritionLogMealsId: nutLog.id,
+                            mealPeriod: MealPeriod.LUNCH,
+                            foodItems: []
                         })
-                    ).then((m) => {console.log(`NUTLOG: Finished Creating meals`)});
-                }
-            
-                initialised = true;
-                currentUserId = userId;
-                currentDate = date;
-                console.log(`NUTLOG complete`);
+                        await DataStore.save(lunch).then(() => {DEBUG && console.log(`NUTLOG: Lunch created`)});
+                        const dinner = new Meal({
+                            nutritionLogMealsId: nutLog.id,
+                            mealPeriod: MealPeriod.DINNER,
+                            foodItems: []
+                        })
+                        await DataStore.save(dinner).then(() => {DEBUG && console.log(`NUTLOG: Dinner created`)});
+                        await DataStore.save(
+                            NutritionLog.copyOf(nutLog, updated => {
+                                updated= log;
+                                updated.Meals = [breakfast, lunch, dinner];
+                            })
+                        ).then((m) => {console.log(DEBUG && `NUTLOG: Finished Creating meals`)});
+                    }
                 
-                resolve({
-                    nutLog,
-                    meals,
-                    userId: currentUserId,
-                    date: currentDate
+                    // initialised = true;
+                    // currentUserId = userId;
+                    // currentDate = date;
+                    // DEBUG && console.log(`Finished: GetNutLog`);
+                    
+                    resolve({
+                        nutLog,
+                        meals,
+                        userId: userId,
+                        date: date
+                    });
                 });
             });
-        });
+        } catch (error) {
+            reject(error);
+        }
     });
     return p;
 }
@@ -71,9 +74,9 @@ export const NUTLOG = async (userId, date) =>{
 export async function getMeal(mealId) {
     p = new Promise(async (resolve, reject) => {
     try { 
-        console.log(`getMeal mealId: ${mealId}`);
+        DEBUG && console.log(`getMeal mealId: ${mealId}`);
         await DataStore.query(Meal, (m) => m.id.eq(mealId)).then((foundMeal) => { 
-            console.log(`Found Meal: ${foundMeal}`);
+            DEBUG && console.log(`Found Meal: ${foundMeal}`);
             resolve(foundMeal[0]);
         });
             
@@ -85,23 +88,31 @@ export async function getMeal(mealId) {
     return p;
 }
 
-
-export async function getFoodItems(searchTerm, getTaken = false){
-    if(getTaken) {
+export async function getFoodItems(searchTerm){
+    if(!searchTerm || searchTerm == ""){
         const foodItems = await DataStore.query(FoodItem);
         return foodItems;
     }
-    else if(!searchTerm || searchTerm == ""){
-        const foodItems = await DataStore.query(FoodItem, (c) => c.mealFoodItemsId.eq( null || undefined));
-        return foodItems;
-    }
-    const foodItems = await DataStore.query(FoodItem, (c) => c.and([
-        (c) => c.name.contains(searchTerm),
-        (c) => c.mealFoodItemsId( null || undefined)
-    ]));
-
+    const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
     return foodItems;
 }
+// export async function getFoodItems(searchTerm, getTaken = false){
+//     DEBUG && console.log(`getFoodItems Started: ${searchTerm}, Taken: ${getTaken}`);
+//     if(getTaken) {
+//         const foodItems = await DataStore.query(FoodItem);
+//         return foodItems;
+//     }
+//     else if(!searchTerm || searchTerm == ""){
+//         const foodItems = await DataStore.query(FoodItem, (c) => c.mealFoodItemsId.eq( null || undefined));
+//         return foodItems;
+//     }
+//     const foodItems = await DataStore.query(FoodItem, (c) => c.and([
+//         (c) => c.name.contains(searchTerm),
+//         (c) => c.mealFoodItemsId( null || undefined)
+//     ]));
+//     DEBUG && console.log(`getFoodItems Finished: ${foodItems.length}`);
+//     return foodItems;
+// }
 
 async function createFoodItem(foodItem){
     if (!foodItem){
@@ -109,7 +120,7 @@ async function createFoodItem(foodItem){
     }
     try {
         await DataStore.save(foodItem);
-        console.log('Successfully added: ', foodItem);
+        DEBUG && console.log('Successfully added: ', foodItem);
     } catch (err){
         console.log(err);
     }
@@ -117,16 +128,18 @@ async function createFoodItem(foodItem){
 
 export async function addNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => { 
-        console.log(`Date add UserId: ${userId} Date: ${date}`);
         try {
             let log = new NutritionLog({
                 "userId": userId,
                 "date": date,
                 "Meals": []
             });
-            DataStore.save(log).then(() => {resolve(log)});
+            DataStore.save(log).then(() => {
+                DEBUG && console.log(`Nutrition log created logID: ${log.id} UserId: ${userId} Date: ${date}`);
+                resolve(log)
+            });
         } catch (err){
-            console.log(err);
+            console.log(`Failed to create nutrition log: ${err}`);
             reject(err);
         }
     });
@@ -136,7 +149,6 @@ export async function addNutritionLog(userId, date) {
 export async function getUsersNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => {    
         try {
-            console.log(`get nutritionlog UserId: ${userId} Date: ${date}`);
             DataStore.query(NutritionLog, (u) => u.and(c => [
                 u.userId.eq(userId),
                 u.date.eq(date)
@@ -144,17 +156,14 @@ export async function getUsersNutritionLog(userId, date) {
                 // console.log(oldLog.length)
                 if(oldLog.length == 0){
                     addNutritionLog(userId, date).then((newLog) => {
-                        console.log(`Created nutrition log: ${newLog}`);
-                        // parseLog(newLog);
                         resolve(newLog);
                     });
                 }
-                // parseLog(oldLog[0]);
-                console.log(`Found Nutrition Log: ${oldLog[0].id}`);
+                DEBUG && console.log(`Nutrition log found logID: ${oldLog.id} UserId: ${userId} Date: ${date}`);
                 resolve(oldLog[0]);
             });
         } catch (err){
-            console.log(err);
+            console.log(`Failed to find or create a nutrition log for UserId: ${userId} Date: ${date} error: ${err}`);
             reject(err);
         }
     });
@@ -163,16 +172,16 @@ export async function getUsersNutritionLog(userId, date) {
 
 export function getMealMacros(meals){
     p = new Promise( (resolve, reject) => {
-        console.log("Started GetMealMacros");
+        DEBUG && console.log("Started GetMealMacros");
         let macros = [];
         let count = 0;
         meals.forEach( m => {
             let macro = calcMealMacros(m).then((macro) => {
-                console.log(`macro: ${macro.calories} ${macro.protein} ${macro.carbs} ${macro.fat}`);
+                DEBUG && console.log(`macro: ${macro.calories} ${macro.protein} ${macro.carbs} ${macro.fat}`);
                 macros.push(macro);
                 count++;
                 if (count == meals.length){
-                    console.log("Finished GetMealMacros");
+                    DEBUG && console.log("Finished GetMealMacros");
                     resolve(macros);
                 }
             });
@@ -192,34 +201,19 @@ export async function calcMealMacros(meal){
             carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
             fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
         };
-        console.log(`name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
+        DEBUG && console.log(`name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
         resolve(mealData);
     });
     return p;
-}
-
-export function initNutritionLog(userId){
-    console.log("Started initNutritionLog");
-    date = new Date(Date.now()).toISOString().substring(0,10);
-    console.log(`Date init: ${date}`);
-    NUTLOG(userId, date).then(async ({nutLog, meals, userId, date}) => {
-        if(nutLog.length == 0){
-            console.log("could not initialise nutrition log");
-        }
-        console.log(`Nutrition Log: ${nutLog.id}`);
-        console.log("Finished initNutritionLog");
-
-    
-    });
 }
  
 
 export async function addFoodToMeal(mealId, foodId){
     p = new Promise(async (resolve, reject) => {
-        console.log(`addFoodToMeal mealId: ${mealId} Date: ${foodId}`);
+        DEBUG && console.log(`addFoodToMeal mealId: ${mealId} Date: ${foodId}`);
         try {
             let meal0 = await getMeal(mealId).then(async (meal) => {
-                console.log(`meal: ${meal.id}`);
+                DEBUG && console.log(`meal: ${meal.id}`);
                 if(!meal){
                     console.log("No meal");
                     reject("No meal");
@@ -229,8 +223,7 @@ export async function addFoodToMeal(mealId, foodId){
                         console.log("No food items");
                         reject("No food items");
                     }
-                    console.log(`food: ${foods[0].name}`);
-                    console.log(`food: ${foods[0].id} name: ${foods[0].name} calories: ${foods[0].calories} 
+                    DEBUG && console.log(`food: ${foods[0].id} name: ${foods[0].name} calories: ${foods[0].calories} 
                     protein: ${foods[0].protein} carb:${foods[0].carbs} fat: ${foods[0].fat} 
                     serv: ${foods[0].serving}, mealId: ${foods[0].mealFoodItemsId}`);
                     await DataStore.save(
@@ -246,7 +239,7 @@ export async function addFoodToMeal(mealId, foodId){
                         })
                     ).then(async (m) => {
                         console.log(m);
-                        console.log(`Added meal to food: ${foods[0].id}`);
+                        DEBUG && console.log(`Added mealid to food item: ${foods[0].id}`);
                         mealFoodArr = await meal.foodItems.toArray();
                         await DataStore.save(
                             Meal.copyOf(meal, updated => {
@@ -254,31 +247,47 @@ export async function addFoodToMeal(mealId, foodId){
                                 updated.foodItems = [...mealFoodArr, foods[0]];
                             })
                         ).then((g) => {
-                            console.log(`Added food to food: ${foods[0].id}`);
+                            DEBUG && console.log(`Added foodItemID: ${foods[0].id} to meal: ${meal.id}`);
                             resolve(g);
                         });
-                        // resolve(foods[0]);
                     });
                 });
             });
         } catch (err){
-            console.log(err);
+            console.log(`Failed to add food to meal. Error: ${err}`);
             reject(err);
         }
     });
     return p;
 }
 
+export function initNutritionLog(userId){
+    DEBUG && console.log("Started initNutritionLog");
+    date = new Date(Date.now()).toISOString().substring(0,10);
+    DEBUG && console.log(`Date init: ${date}`);
+    NUTLOG(userId, date).then(async ({nutLog, meals, userId, date}) => {
+        
+        if(nutLog.length == 0){
+            DEBUG && console.log("could not initialise nutrition log");
+        }
+        DEBUG && console.log(`Nutrition Log: ${nutLog.id}`);
+        DEBUG && console.log("Finished initNutritionLog");
+
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 
 export async function initFoodItems(){
-    console.log("Started initFoodItems");
-    getFoodItems("", true).then((foods) => {
+    DEBUG && console.log("Started initFoodItems");
+    getFoodItems("").then((foods) => {
         console.log(`Food Items: ${foods.length}`);
         if(foods.length == 0){
-            console.log("Adding food items");
+            DEBUG && console.log("Adding food items");
             bulkCreateFood(bulkFoodsList);
         }
-        console.log("Finished initFoodItems");
+        DEBUG && console.log("Finished initFoodItems");
     });
 }
 
