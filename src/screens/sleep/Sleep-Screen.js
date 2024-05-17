@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
-import { makeSleepEntry, getSleepEntry, SLEEPLOG } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, SLEEPLOG, deleteSleepEntry, clearLocalData } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
+
 
 let userID;
 let date;
@@ -24,7 +25,9 @@ const OLDsleepData = [
 
 // gets the user's id and associated sleep log
 // called in useEffect when screen is loaded
+// called when data is added/removed to update UI
 async function getUsersLog(setSleepData) {
+  console.debug("Getting user's sleep log");
   currentUserDetails().then(async (user) => {
     userID = user;
     console.log(`userid: ${userID}`)
@@ -32,6 +35,7 @@ async function getUsersLog(setSleepData) {
     await SLEEPLOG(userID, date).then(async (data) => {
       if (data === null) {
         console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+        setSleepData([]);
         return;
       }
       console.log(`Got sleepLog: ${data.sleepLog.id} ${data.userId} ${data.date}`);
@@ -90,6 +94,7 @@ const SleepScreen = (props) => {
   const [sleepData, setSleepData] = useState([]);
 
   useEffect(() => {
+    clearLocalData();
     getUsersLog(setSleepData);
   }, []);
 
@@ -187,9 +192,18 @@ const SleepScreen = (props) => {
           <TouchableOpacity
             style={styles.addSleepButton}
             onPress={() => {
-              makeSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10), 7, 1)
+              makeSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10), 7, 1);
+              getUsersLog(setSleepData);
             }}>
             <Text style={styles.addSleepButtonText}>Add sleep data to datastore</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addSleepButton}
+            onPress={() => {
+              deleteSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10));
+              getUsersLog(setSleepData);
+            }}>
+            <Text style={styles.addSleepButtonText}>remove data from datastore</Text>
           </TouchableOpacity>
         </View>
 
@@ -201,14 +215,16 @@ const SleepScreen = (props) => {
         */}
 
         {/* Sleep data */}
+        {sleepData.length > 0 ? <Text>Hi there</Text> : <Text>I am deeply troubled by the lack of sleep data</Text>}
+
         <ScrollView style={styles.sleepScrollContainer}>
           {sleepData.map((day, index) => (
             <View style={styles.sleepTabContainer} key={index}>
               <SleepTab dayReport={day} />
             </View>
           ))}
-        </ScrollView>
 
+        </ScrollView>
       </SafeAreaView>
     </>
   );
