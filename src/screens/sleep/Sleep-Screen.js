@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
-import { getAllSleepEntries } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, SLEEPLOG } from '../../logic/sleep-api'
+import { currentUserDetails } from '../../logic/account';
 
-const sleepData = [
+let userID;
+let date;
+
+// legacy: used before datastore connection was made
+const OLDsleepData = [
   { day: 'March 1, 2024', hours: 7.5, quality: 'Good' },
   { day: 'March 2, 2024', hours: 6.5, quality: 'Poor' },
   { day: 'March 3, 2024', hours: 8.0, quality: 'Great' },
@@ -16,6 +21,26 @@ const sleepData = [
   { day: 'March 9, 2024', hours: 7.5, quality: 'Good' },
   { day: 'March 10, 2024', hours: 6.5, quality: 'Poor' },
 ];
+
+// gets the user's id and associated sleep log
+// called in useEffect when screen is loaded
+async function getUsersLog(setSleepData) {
+  currentUserDetails().then(async (user) => {
+    userID = user;
+    console.log(`userid: ${userID}`)
+    date = new Date(Date.now()).toISOString().substring(0, 10);
+    await SLEEPLOG(userID, date).then(async (data) => {
+      if (data === null) {
+        console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+        return;
+      }
+      console.log(`Got sleepLog: ${data.sleepLog.id} ${data.userId} ${data.date}`);
+      setSleepData([
+        { day: data.date, hours: data.sleepLog.hoursSlept, quality: 'Good' },
+      ]);
+    });
+  });
+}
 
 const MyLineChart = () => {
   return (
@@ -62,6 +87,11 @@ const MyLineChart = () => {
 
 const SleepScreen = (props) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [sleepData, setSleepData] = useState([]);
+
+  useEffect(() => {
+    getUsersLog(setSleepData);
+  }, []);
 
   const AddSleepPopup = () => {
     return (
@@ -152,10 +182,25 @@ const SleepScreen = (props) => {
           </TouchableOpacity>
         </View>
 
+
+        <View>
+          <TouchableOpacity
+            style={styles.addSleepButton}
+            onPress={() => {
+              makeSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10), 7, 1)
+            }}>
+            <Text style={styles.addSleepButtonText}>Add sleep data to datastore</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Chart */}
+        {/*
         <View style={styles.chartContainer}>
           <MyLineChart />
         </View>
+        */}
 
+        {/* Sleep data */}
         <ScrollView style={styles.sleepScrollContainer}>
           {sleepData.map((day, index) => (
             <View style={styles.sleepTabContainer} key={index}>

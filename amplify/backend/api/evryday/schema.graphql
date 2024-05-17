@@ -40,7 +40,7 @@ type FoodItem @model @auth(rules: [{allow: public}]) {
 type ExerciseLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
-  date: String!
+  date: AWSDate!
   exerciseRoutine: ExerciseRoutine
   exerciseType: ExerciseType
   durationMinutes: Int
@@ -62,7 +62,7 @@ type ExerciseType @model @auth(rules: [{allow: public}]) {
 type SleepLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
-  date: String!
+  date: AWSDate!
   hoursSlept: Float!
   sleepQuality: Int
   restfulnessScore: Int
