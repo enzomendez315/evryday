@@ -49,7 +49,7 @@ export async function getSleepEntry(userId, date) {
                 }
                 else {
                     console.log(`Sleep log found: ${oldLog}`);
-                    resolve(oldLog[0]);
+                    resolve(oldLog);
                 }
             });
         } catch (err) {
@@ -60,27 +60,24 @@ export async function getSleepEntry(userId, date) {
     return p;
 }
 
-// this is a promise that is called when the sleep page is opened
-// it returns a sleep entry for the current user and date
-// if no entry is found, it returns null
-export const SLEEPLOG = async (userId, date) => {
-    p = new Promise(async (resolve, reject) => {
+// queries datastore and returns a list of all sleep entries for a user
+// returns list of sleep entries or null if none are found
+export async function getAllSleepEntries(userId) {
+    p = new Promise((resolve, reject) => {
         try {
-            await getSleepEntry(userId, date).then(async (sleepLog) => {
-                if (sleepLog == null) {
-                    //console.log("No sleep log found");
+            DataStore.query(SleepLog, (c) => c.userId.eq(userId)).then((logs) => {
+                if (logs.length == 0) {
+                    console.log("no logs found");
                     resolve(null);
                 }
-                console.log(`Retreiving Sleep Log id: ${sleepLog.id} userId: ${userId} date: ${date}`);
-                resolve({
-                    sleepLog,
-                    userId: userId,
-                    date: date
-                });
+                else {
+                    console.log(`Sleep logs found: ${logs}`);
+                    resolve(logs);
+                }
             });
-        } catch (error) {
-            console.log(`Failed to find SLEEPLOG for UserId: ${userId} Date: ${date} error: ${error}`);
-            reject(error);
+        } catch (err) {
+            console.log(`Failed to find sleep logs for UserId: ${userId} error: ${err}`);
+            reject(err);
         }
     });
     return p;
@@ -93,18 +90,5 @@ export async function deleteSleepEntry(userId, date) {
         console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
     } catch (err) {
         console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);
-    }
-}
-
-// clears local data when page is opened
-// done to make sure there aren't any old entries not synced
-//
-// TODO: Find a better way to sync the cloud and local data
-export async function clearLocalData() {
-    try {
-        await DataStore.clear();
-        console.log("Local data cleared");
-    } catch (err) {
-        console.log(`Failed to clear local data error: ${err}`);
     }
 }

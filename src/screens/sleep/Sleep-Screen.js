@@ -2,46 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
-import { makeSleepEntry, getSleepEntry, SLEEPLOG, deleteSleepEntry, clearLocalData } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
+// sleep data comes in the form { day: string, hours: int, quality: int }
+// only in this format for sleep tab UI component
+// put in this form by getUsersLog after getting data from datastore
+// the values are saved in the sleepData state
 
 let userID;
 let date;
-
-// legacy: used before datastore connection was made
-const OLDsleepData = [
-  { day: 'March 1, 2024', hours: 7.5, quality: 'Good' },
-  { day: 'March 2, 2024', hours: 6.5, quality: 'Poor' },
-  { day: 'March 3, 2024', hours: 8.0, quality: 'Great' },
-  { day: 'March 4, 2024', hours: 7.0, quality: 'Good' },
-  { day: 'March 5, 2024', hours: 7.5, quality: 'Good' },
-  { day: 'March 6, 2024', hours: 6.5, quality: 'Poor' },
-  { day: 'March 7, 2024', hours: 8.0, quality: 'Great' },
-  { day: 'March 8, 2024', hours: 7.0, quality: 'Good' },
-  { day: 'March 9, 2024', hours: 7.5, quality: 'Good' },
-  { day: 'March 10, 2024', hours: 6.5, quality: 'Poor' },
-];
 
 // gets the user's id and associated sleep log
 // called in useEffect when screen is loaded
 // called when data is added/removed to update UI
 async function getUsersLog(setSleepData) {
+  let tempSleepData = [];
   console.debug("Getting user's sleep log");
-  currentUserDetails().then(async (user) => {
+  await currentUserDetails().then(async (user) => {
     userID = user;
     console.log(`userid: ${userID}`)
     date = new Date(Date.now()).toISOString().substring(0, 10);
-    await SLEEPLOG(userID, date).then(async (data) => {
+    await getAllSleepEntries(userID, date).then(async (data) => {
       if (data === null) {
         console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
         setSleepData([]);
         return;
       }
-      console.log(`Got sleepLog: ${data.sleepLog.id} ${data.userId} ${data.date}`);
-      setSleepData([
-        { day: data.date, hours: data.sleepLog.hoursSlept, quality: 'Good' },
-      ]);
+      data.forEach(element => {
+        tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
+      });
+      setSleepData(tempSleepData);
     });
   });
 }
@@ -94,11 +85,12 @@ const SleepScreen = (props) => {
   const [sleepData, setSleepData] = useState([]);
 
   useEffect(() => {
-    clearLocalData();
     getUsersLog(setSleepData);
   }, []);
 
   const AddSleepPopup = () => {
+    let hours = 0;
+    let quality = 0;
     return (
       <Modal
         visible={isPopupVisible}
@@ -123,7 +115,7 @@ const SleepScreen = (props) => {
             <View style={styles.popupContent}>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput placeholder="Enter hours" />
+                <TextInput placeholder="Enter hours" onChangeText={newText => hours = parseInt(newText)} />
               </View>
 
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -131,18 +123,22 @@ const SleepScreen = (props) => {
                 <RNPickerSelect
                   style={pickerSelectStyles}
                   placeholder={{ label: "Select sleep quality", value: null }}
-                  onValueChange={(value) => console.log(value)}
+                  onValueChange={(value) => quality = value}
                   items={[
-                    { label: "Poor", value: "poor" },
-                    { label: "Good", value: "good" },
-                    { label: "Great", value: "great" },
+                    { label: "Poor", value: 1 },
+                    { label: "Good", value: 2 },
+                    { label: "Great", value: 3 },
                   ]}
                 />
               </View>
 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={() => setIsPopupVisible(false)}>
+                onPress={() => {
+                  makeSleepEntry(userID, date, hours, quality);
+                  setIsPopupVisible(false);
+                  getUsersLog(setSleepData);
+                }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
             </View>
@@ -162,10 +158,10 @@ const SleepScreen = (props) => {
         </View>
         <View style={[styles.qualityCircle,
         {
-          backgroundColor: dayReport.quality === 'Poor' ? 'red'
-            : dayReport.quality === 'Good' ? 'blue' : 'green'
+          backgroundColor: dayReport.quality === 1 ? 'red'
+            : dayReport.quality === 2 ? 'blue' : 'green'
         }]}>
-          <Text style={styles.qualityText}>{dayReport.quality}</Text>
+          {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
         </View>
       </View>
     </View>
@@ -191,16 +187,16 @@ const SleepScreen = (props) => {
         <View>
           <TouchableOpacity
             style={styles.addSleepButton}
-            onPress={() => {
-              makeSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10), 7, 1);
+            onPress={async () => {
+              await makeSleepEntry(userID, date, 7, 1);
               getUsersLog(setSleepData);
             }}>
             <Text style={styles.addSleepButtonText}>Add sleep data to datastore</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addSleepButton}
-            onPress={() => {
-              deleteSleepEntry(userID, new Date(Date.now()).toISOString().substring(0, 10));
+            onPress={async () => {
+              await deleteSleepEntry(userID, date);
               getUsersLog(setSleepData);
             }}>
             <Text style={styles.addSleepButtonText}>remove data from datastore</Text>

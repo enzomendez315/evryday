@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -19,7 +19,7 @@ import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 
-import {Amplify} from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
 import awsconfig from './src/aws-exports';
@@ -27,10 +27,10 @@ Amplify.configure(awsconfig);
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
 
-import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
+import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
-import {currentUserDetails, userSignOut} from './src/logic/account'
-import {initFoodItems, initNutritionLog} from './src/logic/diet-api'
+import { currentUserDetails, userSignOut } from './src/logic/account'
+import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
 
 const AccountContext = React.createContext("");
 
@@ -50,7 +50,7 @@ function BottomNavBarTabs() {
         component={DashboardStack}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
@@ -60,7 +60,7 @@ function BottomNavBarTabs() {
         component={DietStack}
         options={{
           tabBarLabel: 'Diet',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="fast-food-outline" color={color} size={size} />
           ),
         }}
@@ -70,7 +70,7 @@ function BottomNavBarTabs() {
         component={SleepStack}
         options={{
           tabBarLabel: 'Sleep',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="sleep" color={color} size={size} />
           ),
         }}
@@ -80,7 +80,7 @@ function BottomNavBarTabs() {
         component={WorkoutStack}
         options={{
           tabBarLabel: 'Workout',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="weight-lifter"
               color={color}
@@ -103,7 +103,7 @@ function DashboardStack() {
 
 function DietStack() {
   return (
-    <Stack.Navigator screenOptions={{headerShown:true}}>
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Diet Home" component={DietScreen} />
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
@@ -130,11 +130,11 @@ function WorkoutStack() {
     </Stack.Navigator>
   );
 }
-async function RunOnStart(userId:string){
+async function RunOnStart(userId: string) {
   // userSignOut();
-    // console.log("started initFoodItems() and initNutritionLog()");
-    await initFoodItems();
-    await initNutritionLog(userId);
+  // console.log("started initFoodItems() and initNutritionLog()");
+  await initFoodItems();
+  await initNutritionLog(userId);
 }
 
 function App() {
@@ -144,6 +144,7 @@ function App() {
     currentUserDetails().then(async (user) => {
       // console.log("user id: ", user);
       setUserId(user);
+      console.log("this is the user");
       console.log(User); // Need to use a random model to initialize the DataStore
       await DataStore.start();
       // await DataStore.clear(); //Clears the local DataStore
@@ -160,15 +161,15 @@ function App() {
 }
 
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
-export function StartListening(user:string){
+export function StartListening(user: string) {
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {
-      const  { event, data } = hubData.payload;
-      if (event === 'ready') {
-        console.log("DataStore is ready");
-          listener(); // Stops the listener
-          RunOnStart(user);
-      }
+    const { event, data } = hubData.payload;
+    if (event === 'ready') {
+      console.log("DataStore is ready");
+      listener(); // Stops the listener
+      RunOnStart(user);
+    }
   })
 }
 

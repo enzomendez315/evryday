@@ -1,26 +1,17 @@
 import { generateClient } from 'aws-amplify/api';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
-// import {getCurrentUser} from 'aws-amplify/auth';
-// import {Amplify} from 'aws-amplify';
-// import { currentUserDetails } from './account';
 
 const DEBUG = true;
-const client = generateClient();
-let initialised = false;
 
+// calls getUsersNutritionLog
+// if there are no meals in the log it creates 3 meals
 export const NUTLOG = async (userId, date) => {
-    // let meals;
-    // let nutLog;
-    // let currentUserId;
-    // let currentDate;
     p = new Promise(async (resolve, reject) => {
         try {
             await getUsersNutritionLog(userId, date).then(async (nutLog) => {
-                // nutLog = log;
                 DEBUG && console.log(`Retreiving Nutrition Log id: ${nutLog.id} userId: ${userId} date: ${date}`);
                 await nutLog.Meals.toArray().then(async (meals) => {
-                    // meals = m;
                     DEBUG && console.log(`NUTLOG meal: ${meals}`);
                     DEBUG && console.log(`meals: ${meals.length}`);
                     if (meals.length == 0) {
@@ -50,12 +41,6 @@ export const NUTLOG = async (userId, date) => {
                             })
                         ).then((m) => { console.log(DEBUG && `NUTLOG: Finished Creating meals`) });
                     }
-
-                    // initialised = true;
-                    // currentUserId = userId;
-                    // currentDate = date;
-                    // DEBUG && console.log(`Finished: GetNutLog`);
-
                     resolve({
                         nutLog,
                         meals,
@@ -71,6 +56,7 @@ export const NUTLOG = async (userId, date) => {
     return p;
 }
 
+// queries the datastore for a meal with mealId
 //TODO: verify inputs for createMeal
 export async function getMeal(mealId) {
     p = new Promise(async (resolve, reject) => {
@@ -89,6 +75,9 @@ export async function getMeal(mealId) {
     return p;
 }
 
+// queries all food items from the datastore
+// takes in a search term to filter the results
+// if no search term is provided, returns all food items
 export async function getFoodItems(searchTerm) {
     if (!searchTerm || searchTerm == "") {
         const foodItems = await DataStore.query(FoodItem);
@@ -97,24 +86,8 @@ export async function getFoodItems(searchTerm) {
     const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
     return foodItems;
 }
-// export async function getFoodItems(searchTerm, getTaken = false){
-//     DEBUG && console.log(`getFoodItems Started: ${searchTerm}, Taken: ${getTaken}`);
-//     if(getTaken) {
-//         const foodItems = await DataStore.query(FoodItem);
-//         return foodItems;
-//     }
-//     else if(!searchTerm || searchTerm == ""){
-//         const foodItems = await DataStore.query(FoodItem, (c) => c.mealFoodItemsId.eq( null || undefined));
-//         return foodItems;
-//     }
-//     const foodItems = await DataStore.query(FoodItem, (c) => c.and([
-//         (c) => c.name.contains(searchTerm),
-//         (c) => c.mealFoodItemsId( null || undefined)
-//     ]));
-//     DEBUG && console.log(`getFoodItems Finished: ${foodItems.length}`);
-//     return foodItems;
-// }
 
+// adds foodItem to the datastore
 async function createFoodItem(foodItem) {
     if (!foodItem) {
         return;
@@ -127,6 +100,7 @@ async function createFoodItem(foodItem) {
     }
 }
 
+// creates a new nutrition log and adds to the datastore
 export async function addNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => {
         try {
@@ -147,6 +121,8 @@ export async function addNutritionLog(userId, date) {
     return p;
 }
 
+// gets nutrition log for a user and date
+// if no log is found, creates a new one
 export async function getUsersNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => {
         try {
@@ -171,6 +147,8 @@ export async function getUsersNutritionLog(userId, date) {
     return p;
 }
 
+// gets the total macros for all meals
+// loops through each meal and calls calcMealMacros
 export function getMealMacros(meals) {
     p = new Promise((resolve, reject) => {
         DEBUG && console.log("Started GetMealMacros");
@@ -191,6 +169,7 @@ export function getMealMacros(meals) {
     return p;
 }
 
+// gets macros for a meal
 export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = await meal.foodItems.toArray();
@@ -208,7 +187,7 @@ export async function calcMealMacros(meal) {
     return p;
 }
 
-
+// adds a food item to a meal
 export async function addFoodToMeal(mealId, foodId) {
     p = new Promise(async (resolve, reject) => {
         DEBUG && console.log(`addFoodToMeal mealId: ${mealId} Date: ${foodId}`);
@@ -262,6 +241,7 @@ export async function addFoodToMeal(mealId, foodId) {
     return p;
 }
 
+// calls NUTLOG to make a new nutrition log
 export function initNutritionLog(userId) {
     DEBUG && console.log("Started initNutritionLog");
     date = new Date(Date.now()).toISOString().substring(0, 10);
@@ -279,7 +259,8 @@ export function initNutritionLog(userId) {
     });
 }
 
-
+// calls getFoodItems
+// calls bulkCreateFood if no food items are found
 export async function initFoodItems() {
     DEBUG && console.log("Started initFoodItems");
     getFoodItems("").then((foods) => {
@@ -292,7 +273,8 @@ export async function initFoodItems() {
     });
 }
 
-
+// takes a list of foods and turns them into FoodItems
+// calls createFoodItem to save them to the database
 function bulkCreateFood(foodArr) {
     foodArr.forEach(item => {
         let foodItem = new FoodItem({
@@ -307,6 +289,7 @@ function bulkCreateFood(foodArr) {
     });
 }
 
+// list of foods for the search page
 const bulkFoodsList = [
     { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
     { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
