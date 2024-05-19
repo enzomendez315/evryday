@@ -49,7 +49,7 @@ export async function getSleepEntry(userId, date) {
                 }
                 else {
                     //console.log(`Sleep log found: ${oldLog}`);
-                    resolve(oldLog);
+                    resolve(log);
                 }
             });
         } catch (err) {
@@ -83,7 +83,7 @@ export async function getAllSleepEntries(userId) {
     return p;
 }
 
-// deletes a sleep entry from the datastore, might delete all entries for a user
+// deletes a sleep entry from the datastore
 export async function deleteSleepEntry(userId, date) {
     try {
         await DataStore.delete(SleepLog, (u) => u.and(c => [
@@ -93,5 +93,14 @@ export async function deleteSleepEntry(userId, date) {
         console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
     } catch (err) {
         console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);
+    }
+}
+
+export async function deleteAllSleepEntries(userId) {
+    try {
+        await DataStore.delete(SleepLog, (u) => u.userId.eq(userId));
+        console.log(`Deleted all sleep logs for userId: ${userId}`);
+    } catch (err) {
+        console.log(`Failed to delete all sleep logs for userId: ${userId} error: ${err}`);
     }
 }

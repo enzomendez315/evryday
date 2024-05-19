@@ -3,7 +3,7 @@ import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, Tou
 import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
-import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // sleep data comes in the form { day: string, hours: int, quality: int }
@@ -12,13 +12,21 @@ import { currentUserDetails } from '../../logic/account';
 // the values are saved in the sleepData state as an array of objects
 
 // these should be defined once at the beginning of opening the page
-// currently they are updated each time getUsersLog is called
+// currently they are updated each time getUsersLog is called (which is a lot)
 let userID;
 let date;
+
+// this is the format that the sleep data is put in from the datastore
+// received in getUsersLog and saved in sleepData state
+const testSleepData = [
+  { day: '2024-03-10', hours: 6.5, quality: 1 },
+];
+
 
 // gets the user's id and associated sleep log
 // called in useEffect when screen is loaded
 // called when data is added/removed to update UI
+// TODO: this is called a lot, probably a better way to update UI
 async function getUsersLog(setSleepData) {
   let tempSleepData = [];
   console.debug("Getting user's sleep log");
@@ -41,15 +49,16 @@ async function getUsersLog(setSleepData) {
 }
 
 // chart that renders sleepData on UI
-const MyLineChart = () => {
+// if the data passed in is empty the app will crash
+const MyLineChart = ({ sleepArray }) => {
   return (
     <>
       <LineChart
         data={{
-          labels: sleepData.map(day => day.day.split(' ')[1].replace(',', '')),
+          labels: sleepArray.map(day => day.day.split('-')[2]),
           datasets: [
             {
-              data: sleepData.map(day => day.hours),
+              data: sleepArray.map(day => day.hours),
               color: (opacity = 1) => `rgba(234, 255, 244, ${opacity})`, // optional
               //strokeWidth: 2 // optional
             }
@@ -101,8 +110,7 @@ const SleepScreen = (props) => {
     // they are used when user tracks sleep data
     let hours = 0;
     let quality = 0;
-    let tempStartTime = new Date();
-    let tempEndTime = new Date();
+    let tempStartDate = new Date();
     return (
       <Modal
         visible={isPopupVisible}
@@ -125,10 +133,8 @@ const SleepScreen = (props) => {
             </View>
 
             <View style={styles.popupContent}>
-              <Text>Start of Sleep</Text>
-              <DatePicker date={tempStartTime} onDateChange={(newTime) => { tempStartTime = newTime }} />
-              <Text>End of Sleep</Text>
-              <DatePicker date={tempEndTime} onDateChange={(newTime) => { tempEndTime = newTime }} />
+              <Text>Wakeup Date</Text>
+              <DatePicker mode='date' date={tempStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
 
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
@@ -152,11 +158,9 @@ const SleepScreen = (props) => {
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={() => {
-                  //makeSleepEntry(userID, date, hours, quality);
+                  makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, quality);
                   setIsPopupVisible(false);
-                  console.log("this is start time: ", tempStartTime);
-                  console.log("this is end time: ", tempEndTime);
-                  //getUsersLog(setSleepData);
+                  getUsersLog(setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
@@ -210,26 +214,29 @@ const SleepScreen = (props) => {
               await makeSleepEntry(userID, date, 7, 1);
               getUsersLog(setSleepData);
             }}>
-            <Text style={styles.addSleepButtonText}>Add sleep data to datastore</Text>
+            <Text style={styles.addSleepButtonText}>Add some silly sleep data to datastore</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addSleepButton}
             onPress={async () => {
-              await deleteSleepEntry(userID, date);
+              await deleteAllSleepEntries(userID);
               getUsersLog(setSleepData);
             }}>
-            <Text style={styles.addSleepButtonText}>remove data from datastore</Text>
+            <Text style={styles.addSleepButtonText}>remove all user sleep data from datastore</Text>
           </TouchableOpacity>
         </View>
 
         {/* Chart */}
-        {/*
-        <View style={styles.chartContainer}>
-          <MyLineChart />
-        </View>
-        */}
+        {sleepData.length > 0 ? <Text>We got some sleepData</Text> : <Text>Empty sleepData</Text>}
+        {sleepData.length > 0 ?
+          <View style={styles.chartContainer}>
+            <MyLineChart sleepArray={sleepData} />
+          </View>
+          : <Text>No chart for you, go collect more sleep data then talk to me</Text>}
 
-        {/* Sleep data */}
+
+
+        {/* Sleep data rendered in tabs*/}
         {sleepData.length > 0 ? <Text>Hi there</Text> : <Text>I am deeply troubled by the lack of sleep data</Text>}
 
         <ScrollView style={styles.sleepScrollContainer}>
