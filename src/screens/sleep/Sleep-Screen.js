@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
+import DatePicker from 'react-native-date-picker'
 import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // sleep data comes in the form { day: string, hours: int, quality: int }
 // only in this format for sleep tab UI component
 // put in this form by getUsersLog after getting data from datastore
-// the values are saved in the sleepData state
+// the values are saved in the sleepData state as an array of objects
 
+// these should be defined once at the beginning of opening the page
+// currently they are updated each time getUsersLog is called
 let userID;
 let date;
 
@@ -37,6 +40,7 @@ async function getUsersLog(setSleepData) {
   });
 }
 
+// chart that renders sleepData on UI
 const MyLineChart = () => {
   return (
     <>
@@ -88,9 +92,17 @@ const SleepScreen = (props) => {
     getUsersLog(setSleepData);
   }, []);
 
+
+  // TODO: filter the input from the user to make sure it is valid
+  // (e.g. hours slept is a number, quality is 1-3, times are sequentail)
   const AddSleepPopup = () => {
+    // these are not hooks because useSate re-renders the page
+    // these don't need to be shown to UI
+    // they are used when user tracks sleep data
     let hours = 0;
     let quality = 0;
+    let tempStartTime = new Date();
+    let tempEndTime = new Date();
     return (
       <Modal
         visible={isPopupVisible}
@@ -113,6 +125,11 @@ const SleepScreen = (props) => {
             </View>
 
             <View style={styles.popupContent}>
+              <Text>Start of Sleep</Text>
+              <DatePicker date={tempStartTime} onDateChange={(newTime) => { tempStartTime = newTime }} />
+              <Text>End of Sleep</Text>
+              <DatePicker date={tempEndTime} onDateChange={(newTime) => { tempEndTime = newTime }} />
+
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
                 <TextInput placeholder="Enter hours" onChangeText={newText => hours = parseInt(newText)} />
@@ -135,9 +152,11 @@ const SleepScreen = (props) => {
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={() => {
-                  makeSleepEntry(userID, date, hours, quality);
+                  //makeSleepEntry(userID, date, hours, quality);
                   setIsPopupVisible(false);
-                  getUsersLog(setSleepData);
+                  console.log("this is start time: ", tempStartTime);
+                  console.log("this is end time: ", tempEndTime);
+                  //getUsersLog(setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>

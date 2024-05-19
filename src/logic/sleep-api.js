@@ -11,6 +11,7 @@ import { SleepLog } from '../models';
 
 // creates a new sleep entry into the datastore
 // checks if one already exists for the user and date
+// called by UI when user submits a new sleep entry
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     if (await getSleepEntry(userID_, date_) === null) {
         try {
@@ -34,7 +35,6 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
 }
 
 // queries datastore and returns the entry from user and date
-// called by SLEEPLOG
 // returns null if no entry is found
 export async function getSleepEntry(userId, date) {
     p = new Promise((resolve, reject) => {
@@ -42,18 +42,18 @@ export async function getSleepEntry(userId, date) {
             DataStore.query(SleepLog, (u) => u.and(c => [
                 u.userId.eq(userId),
                 u.date.eq(date)
-            ])).then((oldLog) => {
-                if (oldLog.length == 0) {
+            ])).then((log) => {
+                if (log.length == 0) {
                     //console.log("no log found");
                     resolve(null);
                 }
                 else {
-                    console.log(`Sleep log found: ${oldLog}`);
+                    //console.log(`Sleep log found: ${oldLog}`);
                     resolve(oldLog);
                 }
             });
         } catch (err) {
-            console.log(`Failed to find a sleep log for UserId: ${userId} Date: ${date} error: ${err}`);
+            //console.log(`Failed to find a sleep log for UserId: ${userId} Date: ${date} error: ${err}`);
             reject(err);
         }
     });
@@ -67,16 +67,16 @@ export async function getAllSleepEntries(userId) {
         try {
             DataStore.query(SleepLog, (c) => c.userId.eq(userId)).then((logs) => {
                 if (logs.length == 0) {
-                    console.log("no logs found");
+                    //console.log("no logs found");
                     resolve(null);
                 }
                 else {
-                    console.log(`Sleep logs found: ${logs}`);
+                    //console.log(`Sleep logs found: ${logs}`);
                     resolve(logs);
                 }
             });
         } catch (err) {
-            console.log(`Failed to find sleep logs for UserId: ${userId} error: ${err}`);
+            //console.log(`Failed to find sleep logs for UserId: ${userId} error: ${err}`);
             reject(err);
         }
     });
@@ -86,7 +86,10 @@ export async function getAllSleepEntries(userId) {
 // deletes a sleep entry from the datastore, might delete all entries for a user
 export async function deleteSleepEntry(userId, date) {
     try {
-        await DataStore.delete(SleepLog, (log) => log.userId.eq(userId));
+        await DataStore.delete(SleepLog, (u) => u.and(c => [
+            u.userId.eq(userId),
+            u.date.eq(date)
+        ]));
         console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
     } catch (err) {
         console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);

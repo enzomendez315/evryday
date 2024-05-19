@@ -1,4 +1,4 @@
-import {getCurrentUser, signOut, fetchAuthSession} from 'aws-amplify/auth';
+import { getCurrentUser, signOut, fetchAuthSession } from 'aws-amplify/auth';
 import { DataStore } from 'aws-amplify/datastore';
 import { User } from '../models';
 
@@ -10,7 +10,7 @@ export async function currentUserDetails() {
             getCurrentUser().then((user) => {
                 resolve(user.username);
             });
-    
+
         } catch (err) {
             console.log(err);
             reject(err);
@@ -18,7 +18,7 @@ export async function currentUserDetails() {
     })
 
     return p;
-    
+
 }
 
 export async function userSignOut() {
@@ -27,8 +27,4 @@ export async function userSignOut() {
     } catch (error) {
         console.log('error signing out: ', error);
     }
-}
-
-export function testingFunc() {
-    currentUserDetails();
 }
