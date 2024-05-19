@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries } from '../../logic/sleep-api'
@@ -96,22 +95,6 @@ const MyLineChart = ({ sleepArray }) => {
   );
 };
 
-const MySlider = () => {
-  const progress = useSharedValue(30);
-  const min = useSharedValue(0);
-  const max = useSharedValue(100);
-  return (
-    <>
-      <Slider
-        style={styles.container}
-        progress={progress}
-        minimumValue={min}
-        maximumValue={max}
-      />
-    </>
-  );
-};
-
 const SleepScreen = (props) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [sleepData, setSleepData] = useState([]);
@@ -128,8 +111,13 @@ const SleepScreen = (props) => {
     // these don't need to be shown to UI
     // they are used when user tracks sleep data
     let hours = 0;
-    let quality = 0;
     let tempStartDate = new Date();
+
+    // for slider
+    let progress = useSharedValue(5);
+    const min = useSharedValue(1);
+    const max = useSharedValue(10);
+
     return (
       <Modal
         visible={isPopupVisible}
@@ -158,30 +146,27 @@ const SleepScreen = (props) => {
 
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                  <TextInput placeholder="Enter hours" onChangeText={newText => hours = parseInt(newText)} />
+                  <TextInput style={styles.textInput} placeholder="Enter hours slept"
+                    keyboardType='numeric'
+                    onChangeText={(newText) => hours = parseInt(newText)} />
                 </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={styles.sliderContainer}>
                   <Text style={styles.addSleepInputText}>Quality: </Text>
-                  <MySlider />
-                  {/* Quality picker 
-                <RNPickerSelect
-                  style={pickerSelectStyles}
-                  placeholder={{ label: "Select sleep quality", value: null }}
-                  onValueChange={(value) => quality = value}
-                  items={[
-                    { label: "Poor", value: 1 },
-                    { label: "Good", value: 2 },
-                    { label: "Great", value: 3 },
-                  ]}
-                />
-                */}
+                  <Slider
+                    style={styles.sliderStuff}
+                    progress={progress}
+                    minimumValue={min}
+                    maximumValue={max}
+                    step={9}
+                    onSlidingComplete={(value) => { progress.value = value }}
+                  />
                 </View>
 
                 <TouchableOpacity
                   style={[styles.addSleepButton, { marginTop: 20 }]}
                   onPress={() => {
-                    makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, quality);
+                    makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress.value);
                     setIsPopupVisible(false);
                     getUsersLog(setSleepData);
                   }}>
@@ -384,6 +369,24 @@ const styles = StyleSheet.create({
   },
   addSleepInputText: {
     fontSize: 18,
+    margin: 10,
+  },
+  textInput: {
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 8,
+    padding: 5,
+  },
+  sliderContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+  sliderStuff: {
+    margin: 10,
+    marginTop: 20,
   },
 });
 
