@@ -6,6 +6,11 @@ import DatePicker from 'react-native-date-picker'
 import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
+// for adding sleep slider
+import { useSharedValue } from 'react-native-reanimated';
+import { Slider } from 'react-native-awesome-slider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 // sleep data comes in the form { day: string, hours: int, quality: int }
 // only in this format for sleep tab UI component
 // put in this form by getUsersLog after getting data from datastore
@@ -21,7 +26,6 @@ let date;
 const testSleepData = [
   { day: '2024-03-10', hours: 6.5, quality: 1 },
 ];
-
 
 // gets the user's id and associated sleep log
 // called in useEffect when screen is loaded
@@ -49,7 +53,6 @@ async function getUsersLog(setSleepData) {
 }
 
 // chart that renders sleepData on UI
-// if the data passed in is empty the app will crash
 const MyLineChart = ({ sleepArray }) => {
   return (
     <>
@@ -93,6 +96,22 @@ const MyLineChart = ({ sleepArray }) => {
   );
 };
 
+const MySlider = () => {
+  const progress = useSharedValue(30);
+  const min = useSharedValue(0);
+  const max = useSharedValue(100);
+  return (
+    <>
+      <Slider
+        style={styles.container}
+        progress={progress}
+        minimumValue={min}
+        maximumValue={max}
+      />
+    </>
+  );
+};
+
 const SleepScreen = (props) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [sleepData, setSleepData] = useState([]);
@@ -118,31 +137,34 @@ const SleepScreen = (props) => {
         transparent={true}
         onRequestClose={() => setIsPopupVisible(!isPopupVisible)}
       >
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setIsPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <TouchableOpacity onPress={() => setIsPopupVisible(false)}>
+                  <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+                </TouchableOpacity>
 
-              <Text style={styles.popupTitle}>New Sleep Data</Text>
+                <Text style={styles.popupTitle}>New Sleep Data</Text>
 
-              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                <Text style={styles.editButton}>Edit</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.popupContent}>
-              <Text>Wakeup Date</Text>
-              <DatePicker mode='date' date={tempStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput placeholder="Enter hours" onChangeText={newText => hours = parseInt(newText)} />
+                <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                  <Text style={styles.editButton}>Edit</Text>
+                </TouchableOpacity>
               </View>
 
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.addSleepInputText}>Quality: </Text>
+              <View style={styles.popupContent}>
+                <Text>Wakeup Date</Text>
+                <DatePicker mode='date' date={tempStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                  <TextInput placeholder="Enter hours" onChangeText={newText => hours = parseInt(newText)} />
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.addSleepInputText}>Quality: </Text>
+                  <MySlider />
+                  {/* Quality picker 
                 <RNPickerSelect
                   style={pickerSelectStyles}
                   placeholder={{ label: "Select sleep quality", value: null }}
@@ -153,21 +175,23 @@ const SleepScreen = (props) => {
                     { label: "Great", value: 3 },
                   ]}
                 />
+                */}
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.addSleepButton, { marginTop: 20 }]}
+                  onPress={() => {
+                    makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, quality);
+                    setIsPopupVisible(false);
+                    getUsersLog(setSleepData);
+                  }}>
+                  <Text style={styles.addSleepButtonText}>Submit</Text>
+                </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={() => {
-                  makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, quality);
-                  setIsPopupVisible(false);
-                  getUsersLog(setSleepData);
-                }}>
-                <Text style={styles.addSleepButtonText}>Submit</Text>
-              </TouchableOpacity>
             </View>
-
           </View>
-        </View>
+        </GestureHandlerRootView>
       </Modal>
     );
   }
@@ -194,58 +218,58 @@ const SleepScreen = (props) => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <AddSleepPopup />
-        <Text style={styles.title}>Sleep History</Text>
+        <ScrollView>
+          <AddSleepPopup />
+          <Text style={styles.title}>Sleep History</Text>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-          <Text style={styles.monthText}>March 2024</Text>
-          <TouchableOpacity
-            style={styles.addSleepButton}
-            onPress={() => setIsPopupVisible(true)}>
-            <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
-          </TouchableOpacity>
-        </View>
-
-
-        <View>
-          <TouchableOpacity
-            style={styles.addSleepButton}
-            onPress={async () => {
-              await makeSleepEntry(userID, date, 7, 1);
-              getUsersLog(setSleepData);
-            }}>
-            <Text style={styles.addSleepButtonText}>Add some silly sleep data to datastore</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addSleepButton}
-            onPress={async () => {
-              await deleteAllSleepEntries(userID);
-              getUsersLog(setSleepData);
-            }}>
-            <Text style={styles.addSleepButtonText}>remove all user sleep data from datastore</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Chart */}
-        {sleepData.length > 0 ? <Text>We got some sleepData</Text> : <Text>Empty sleepData</Text>}
-        {sleepData.length > 0 ?
-          <View style={styles.chartContainer}>
-            <MyLineChart sleepArray={sleepData} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
+            <Text style={styles.monthText}>March 2024</Text>
+            <TouchableOpacity
+              style={styles.addSleepButton}
+              onPress={() => setIsPopupVisible(true)}>
+              <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
+            </TouchableOpacity>
           </View>
-          : <Text>No chart for you, go collect more sleep data then talk to me</Text>}
 
 
+          <View>
+            <TouchableOpacity
+              style={styles.addSleepButton}
+              onPress={async () => {
+                await makeSleepEntry(userID, date, 7, 1);
+                getUsersLog(setSleepData);
+              }}>
+              <Text style={styles.addSleepButtonText}>Add some silly sleep data to datastore</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addSleepButton}
+              onPress={async () => {
+                await deleteAllSleepEntries(userID);
+                getUsersLog(setSleepData);
+              }}>
+              <Text style={styles.addSleepButtonText}>remove all user sleep data from datastore</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Sleep data rendered in tabs*/}
-        {sleepData.length > 0 ? <Text>Hi there</Text> : <Text>I am deeply troubled by the lack of sleep data</Text>}
-
-        <ScrollView style={styles.sleepScrollContainer}>
-          {sleepData.map((day, index) => (
-            <View style={styles.sleepTabContainer} key={index}>
-              <SleepTab dayReport={day} />
+          {/* Chart */}
+          {sleepData.length > 0 ? <Text>We got some sleepData</Text> : <Text>Empty sleepData</Text>}
+          {sleepData.length > 0 ?
+            <View style={styles.chartContainer}>
+              <MyLineChart sleepArray={sleepData} />
             </View>
-          ))}
+            : <Text>No chart for you, go collect more sleep data then talk to me</Text>}
 
+          {/* Sleep data rendered in tabs*/}
+          {sleepData.length > 0 ? <Text>Hi there</Text> : <Text>I am deeply troubled by the lack of sleep data</Text>}
+
+          <ScrollView style={styles.sleepScrollContainer}>
+            {sleepData.map((day, index) => (
+              <View style={styles.sleepTabContainer} key={index}>
+                <SleepTab dayReport={day} />
+              </View>
+            ))}
+
+          </ScrollView>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -255,6 +279,11 @@ const SleepScreen = (props) => {
 export default SleepScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 35,
     fontWeight: 'bold',
