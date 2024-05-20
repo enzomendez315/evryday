@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
-import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries, editSleepEntry } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // for adding sleep slider
@@ -46,6 +46,8 @@ async function getUsersLog(setSleepData) {
       data.forEach(element => {
         tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
       });
+      // sorts the sleep data by date
+      tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
       setSleepData(tempSleepData);
     });
   });
@@ -95,93 +97,171 @@ const MyLineChart = ({ sleepArray }) => {
   );
 };
 
-const SleepScreen = (props) => {
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [sleepData, setSleepData] = useState([]);
+// called by add slepp button and when a sleep tab is pressed
+// if a sleep tab is pressed, the user can edit the sleep data
+// TODO: filter the input from the user to make sure it is valid
+// (e.g. dates are recent and hours is a number)
+const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }) => {
 
-  useEffect(() => {
-    getUsersLog(setSleepData);
-  }, []);
+  // these are not hooks because useSate re-renders the page
+  let hours = 0;
+  let tempStartDate = new Date();
 
+  // for slider
+  const progress = useSharedValue(5);
+  const min = useSharedValue(1);
+  const max = useSharedValue(10);
 
-  // TODO: filter the input from the user to make sure it is valid
-  // (e.g. hours slept is a number, quality is 1-3, times are sequentail)
-  const AddSleepPopup = () => {
-    // these are not hooks because useSate re-renders the page
-    // these don't need to be shown to UI
-    // they are used when user tracks sleep data
-    let hours = 0;
-    let tempStartDate = new Date();
+  return (
+    <Modal
+      visible={isAddPopupVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setIsAddPopupVisible(!isAddPopupVisible)}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={styles.popupOverlay}>
+          <View style={styles.popup}>
+            <View style={styles.popupHeader}>
+              <TouchableOpacity onPress={() => setIsAddPopupVisible(false)}>
+                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              </TouchableOpacity>
 
-    // for slider
-    let progress = useSharedValue(5);
-    const min = useSharedValue(1);
-    const max = useSharedValue(10);
+              <Text style={styles.popupTitle}>New Sleep Data</Text>
 
-    return (
-      <Modal
-        visible={isPopupVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsPopupVisible(!isPopupVisible)}
-      >
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <View style={styles.popupOverlay}>
-            <View style={styles.popup}>
-              <View style={styles.popupHeader}>
-                <TouchableOpacity onPress={() => setIsPopupVisible(false)}>
-                  <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-                </TouchableOpacity>
+              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
 
-                <Text style={styles.popupTitle}>New Sleep Data</Text>
-
-                <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                  <Text style={styles.editButton}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.popupContent}>
+            <View style={styles.popupContent}>
+              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
                 <Text>Wakeup Date</Text>
                 <DatePicker mode='date' date={tempStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
-
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                  <TextInput style={styles.textInput} placeholder="Enter hours slept"
-                    keyboardType='numeric'
-                    onChangeText={(newText) => hours = parseInt(newText)} />
-                </View>
-
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.addSleepInputText}>Quality: </Text>
-                  <Slider
-                    style={styles.sliderStuff}
-                    progress={progress}
-                    minimumValue={min}
-                    maximumValue={max}
-                    step={9}
-                    onSlidingComplete={(value) => { progress.value = value }}
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={[styles.addSleepButton, { marginTop: 20 }]}
-                  onPress={() => {
-                    makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress.value);
-                    setIsPopupVisible(false);
-                    getUsersLog(setSleepData);
-                  }}>
-                  <Text style={styles.addSleepButtonText}>Submit</Text>
-                </TouchableOpacity>
               </View>
 
-            </View>
-          </View>
-        </GestureHandlerRootView>
-      </Modal>
-    );
-  }
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                <TextInput style={styles.textInput} placeholder="Enter hours slept"
+                  keyboardType='numeric'
+                  onChangeText={(newText) => hours = parseInt(newText)} />
+              </View>
 
-  const SleepTab = ({ dayReport }) => (
+              <View style={styles.sliderContainer}>
+                <Text style={styles.addSleepInputText}>Quality: </Text>
+                <Slider
+                  style={styles.sliderStuff}
+                  progress={progress}
+                  minimumValue={min}
+                  maximumValue={max}
+                  step={9}
+                  onSlidingComplete={(value) => { progress.value = value }}
+                />
+              </View>
+
+              <TouchableOpacity
+                style={[styles.addSleepButton, { marginTop: 20 }]}
+                onPress={() => {
+                  makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress.value);
+                  setIsAddPopupVisible(false);
+                  getUsersLog(setSleepData);
+                }}>
+                <Text style={styles.addSleepButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </View>
+      </GestureHandlerRootView>
+    </Modal>
+  );
+}
+
+const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
+  // these are not hooks because useSate re-renders the page
+  let hours = editPopupData.hours;
+  let tempStartDate = new Date(editPopupData.day);
+  let pickerStartDate = new Date(tempStartDate);
+  pickerStartDate.setDate(tempStartDate.getDate() + 1);
+
+  // for slider
+  const progress2 = useSharedValue(5);
+  const min = useSharedValue(1);
+  const max = useSharedValue(10);
+
+  return (
+    <Modal
+      visible={isEditPopupVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setIsEditPopupVisible(!isEditPopupVisible)}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={styles.popupOverlay}>
+          <View style={styles.popup}>
+            <View style={styles.popupHeader}>
+              <TouchableOpacity onPress={() => setIsEditPopupVisible(false)}>
+                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.popupTitle}>Edit Sleep Data</Text>
+
+              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.popupContent}>
+              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
+                <Text>Wakeup Date</Text>
+                <DatePicker mode='date' date={pickerStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
+              </View>
+
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                <TextInput style={styles.textInput} value={hours.toString()}
+                  keyboardType='numeric'
+                  onChangeText={(newText) => hours = parseInt(newText)} />
+              </View>
+
+              <View style={styles.sliderContainer}>
+                <Text style={styles.addSleepInputText}>Quality: </Text>
+                <Slider
+                  style={styles.sliderStuff}
+                  progress={progress2}
+                  minimumValue={min}
+                  maximumValue={max}
+                  step={9}
+                  onSlidingComplete={(value) => { progress2.value = value }}
+                />
+              </View>
+              <Text>Original Quality: {editPopupData.quality}</Text>
+
+              <TouchableOpacity
+                style={[styles.addSleepButton, { marginTop: 20 }]}
+                onPress={() => {
+                  // TODO: fix this function
+                  //editSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress2.value);
+                  setIsEditPopupVisible(false);
+                  getUsersLog(setSleepData);
+                }}>
+                <Text style={styles.addSleepButtonText}>Save Changes</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </View>
+      </GestureHandlerRootView>
+    </Modal>
+  );
+}
+
+// UI component for each sleep entry
+const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
+  <TouchableOpacity onPress={() => {
+    setEditPopupData(dayReport);
+    setIsEditPopupVisible(true);
+  }}>
     <View style={styles.sleepTab}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View>
@@ -197,21 +277,37 @@ const SleepScreen = (props) => {
         </View>
       </View>
     </View>
-  )
+  </TouchableOpacity>
+)
+
+// Main Screen
+const SleepScreen = (props) => {
+  const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
+  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });//[day, hours, quality]
+  const [sleepData, setSleepData] = useState([]);
+
+  useEffect(() => {
+    getUsersLog(setSleepData);
+  }, []);
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView>
-          <AddSleepPopup />
+          <AddSleepPopup setSleepData={setSleepData}
+            setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
+
+          <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData}
+            setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
           <Text style={styles.title}>Sleep History</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
             <Text style={styles.monthText}>March 2024</Text>
             <TouchableOpacity
               style={styles.addSleepButton}
-              onPress={() => setIsPopupVisible(true)}>
+              onPress={() => setIsAddPopupVisible(true)}>
               <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
             </TouchableOpacity>
           </View>
@@ -250,7 +346,8 @@ const SleepScreen = (props) => {
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>
-                <SleepTab dayReport={day} />
+                <SleepTab dayReport={day} setEditPopupData={setEditPopupData}
+                  setIsEditPopupVisible={setIsEditPopupVisible} />
               </View>
             ))}
 

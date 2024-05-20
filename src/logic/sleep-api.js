@@ -34,6 +34,25 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     }
 }
 
+// TODO: make this work
+export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
+    if (await getSleepEntry(userID_, date_) !== null) {
+        try {
+            const sleeplog = await DataStore.save(
+                SleepLog.copyOf(await getSleepEntry(userID_, date_), updated => {
+                    updated.hoursSlept = hoursSlept_;
+                    updated.sleepQuality = sleepQuality_;
+                })
+            );
+            console.log('sleep log updated successfully!', sleeplog);
+        } catch (error) {
+            console.log('Error updating sleep log', error);
+        }
+    } else {
+        console.log("Entry does not exist for this date and user");
+    }
+}
+
 // queries datastore and returns the entry from user and date
 // returns null if no entry is found
 export async function getSleepEntry(userId, date) {

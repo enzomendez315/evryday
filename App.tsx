@@ -93,6 +93,7 @@ function BottomNavBarTabs() {
   );
 }
 
+// screens in the dashboard tab
 function DashboardStack() {
   return (
     <Stack.Navigator>
@@ -101,6 +102,7 @@ function DashboardStack() {
   );
 }
 
+// screens in the diet tab
 function DietStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
@@ -112,6 +114,7 @@ function DietStack() {
   );
 }
 
+// screens in the sleep tab
 function SleepStack() {
   return (
     <Stack.Navigator>
@@ -120,6 +123,7 @@ function SleepStack() {
   );
 }
 
+// screens in the workout tab
 function WorkoutStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -130,6 +134,8 @@ function WorkoutStack() {
     </Stack.Navigator>
   );
 }
+
+// Initializes the FoodItems and NutritionLog tables on app start
 async function RunOnStart(userId: string) {
   // userSignOut();
   // console.log("started initFoodItems() and initNutritionLog()");
