@@ -2,7 +2,7 @@ import { generateClient } from 'aws-amplify/api';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 
-const DEBUG = true;
+const DEBUG = false;
 
 // calls getUsersNutritionLog
 // if there are no meals in the log it creates 3 meals

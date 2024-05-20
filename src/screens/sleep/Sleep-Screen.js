@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
+import MonthPicker from 'react-native-month-picker';
 import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, editSleepEntry } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
@@ -177,6 +178,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }
   );
 }
 
+// opened when a sleep tab is pressed
 const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
   // these are not hooks because useSate re-renders the page
   // they are the 3 
@@ -259,6 +261,48 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
   );
 }
 
+// opened when the month and year text is pressed
+const PickMonthPopup = ({ isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue }) => {
+  return (
+    <Modal
+      transparent
+      animationType="fade"
+      visible={isPickMonthPopupVisible}
+      onRequestClose={() => {
+        setIsPickMonthPopupVisible(false);
+      }}>
+      <View style={styles.contentContainer}>
+        <View style={styles.content}>
+          <MonthPicker
+            selectedDate={tempDate || new Date()}
+            onMonthChange={setTempDate}
+          />
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={() => {
+              setIsPickMonthPopupVisible(false);
+              setMonthValue(new Date(tempDate));
+            }}>
+            <Text>Confirm</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  )
+}
+
+// takes in a date object and returns a string in the format "March 2024"
+// used for UI to display the month and year 
+function getMonthYearFormat(date) {
+  // if date is in a string format, convert it to a date object
+  let date2 = new Date(date);
+  console.log("this is date2");
+  console.log(date2);
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  return monthNames[date2.getMonth()] + " " + date2.getFullYear();
+}
+
 // UI component for each sleep entry
 const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
   <TouchableOpacity onPress={() => {
@@ -273,8 +317,8 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
         </View>
         <View style={[styles.qualityCircle,
         {
-          backgroundColor: dayReport.quality === 1 ? 'red'
-            : dayReport.quality === 2 ? 'blue' : 'green'
+          backgroundColor: dayReport.quality < 4 ? 'red'
+            : dayReport.quality < 6 ? 'blue' : 'green'
         }]}>
           {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
         </View>
@@ -288,6 +332,10 @@ const SleepScreen = (props) => {
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [isPickMonthPopupVisible, setIsPickMonthPopupVisible] = useState(false);
+  // for the month picker
+  const [tempDate, setTempDate] = useState(new Date()); // hook used in modal
+  const [monthValue, setMonthValue] = useState(new Date()); // what UI sees, updated when modal is closed
   // when a sleep tab is pressed, the data is saved here
   const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });
   // a list of all the sleep entries to show the user in the UI
@@ -301,16 +349,23 @@ const SleepScreen = (props) => {
     <>
       <StatusBar barStyle='default' />
       <SafeAreaView>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <AddSleepPopup setSleepData={setSleepData}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
+
+          <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible}
+            tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue}
+            setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
+
           <Text style={styles.title}>Sleep History</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-            <Text style={styles.monthText}>March 2024</Text>
+            <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
+              <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.addSleepButton}
               onPress={() => setIsAddPopupVisible(true)}>
@@ -319,15 +374,13 @@ const SleepScreen = (props) => {
           </View>
 
           {/* Chart */}
-          {sleepData.length > 0 ? <Text>We got some sleepData</Text> : <Text>Empty sleepData</Text>}
           {sleepData.length > 0 ?
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} />
             </View>
-            : <Text>No chart for you, go collect more sleep data then talk to me</Text>}
+            : <Text>No chart for you, go collect more sleep data peasant</Text>}
 
           {/* Sleep data rendered in tabs*/}
-          {sleepData.length > 0 ? <Text>Hi there</Text> : <Text>I am deeply troubled by the lack of sleep data</Text>}
 
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
@@ -397,6 +450,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DADADA', // This is a placeholder color
     borderRadius: 8,
     padding: 16,
+    marginHorizontal: 10,
   },
   dateName: {
     fontSize: 26,
@@ -470,6 +524,27 @@ const styles = StyleSheet.create({
   sliderStuff: {
     margin: 10,
     marginTop: 20,
+  },
+  // for pick month popup
+  contentContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  content: {
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginVertical: 70,
+  },
+  confirmButton: {
+    borderWidth: 0.5,
+    padding: 15,
+    margin: 10,
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
