@@ -1,11 +1,3 @@
-/*
-This file is used by the sleep-screen ui to interact with the datastore
-The order it is called is as follows:
-1. clearLocalData and SLEEPLOG are called when the sleep page is opened
-2. getSleepEntry is called internally by SLEEPLOG to query the datastore for the sleep entry
-3. makeSleepEntry is called when the user submits a new sleep entry
-*/
-
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
 
@@ -110,9 +102,16 @@ export async function getAllSleepEntries(userId) {
 // Copilot Written - BEWARE
 // Haven't tested this yet
 export async function getSleepEntriesForMonth(userId, month, year) {
+    // month is 1-12, if month is less than 10, add a 0 in front
+    if (month < 10) {
+        month = `0${month}`;
+    }
     p = new Promise((resolve, reject) => {
         try {
-            DataStore.query(SleepLog, (c) => c.userId.eq(userId)).then((logs) => {
+            DataStore.query(SleepLog, (c) => c.and(c => [
+                c.userId.eq(userId),
+                c.date.beginsWith(`${year}-${month}`),
+            ])).then((logs) => {
                 if (logs.length == 0) {
                     DEBUG && console.log("no logs found");
                     resolve(null);

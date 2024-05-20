@@ -3,13 +3,14 @@ import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, Tou
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
-import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, editSleepEntry } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, editSleepEntry, getSleepEntriesForMonth } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 // sleep data comes in the form { day: string, hours: int, quality: int }
 // only in this format for sleep tab UI component
@@ -38,7 +39,7 @@ async function getUsersLog(setSleepData) {
     userID = user;
     console.log(`userid: ${userID}`)
     date = new Date(Date.now()).toISOString().substring(0, 10);
-    await getAllSleepEntries(userID, date).then(async (data) => {
+    await getAllSleepEntries(userID).then(async (data) => {
       if (data === null) {
         console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
         setSleepData([]);
@@ -49,6 +50,33 @@ async function getUsersLog(setSleepData) {
       });
       // sorts the sleep data by date
       tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+      setSleepData(tempSleepData);
+    });
+  });
+}
+
+// similar to getusers log
+// should probably be in api file
+async function getUsersMonthLog(setSleepData, month, year) {
+  let tempSleepData = [];
+  console.debug("Getting user's sleep log");
+  await currentUserDetails().then(async (user) => {
+    userID = user;
+    console.log(`userid: ${userID}`)
+    date = new Date(Date.now()).toISOString().substring(0, 10);
+    await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
+      if (data === null) {
+        console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+        setSleepData([]);
+        return;
+      }
+      data.forEach(element => {
+        tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
+      });
+      // sorts the sleep data by date
+      tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+      console.log("this is sleep data", tempSleepData);
+      console.log("this is month", month);
       setSleepData(tempSleepData);
     });
   });
@@ -165,7 +193,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }
                 onPress={() => {
                   makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress.value);
                   setIsAddPopupVisible(false);
-                  getUsersLog(setSleepData);
+                  getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
@@ -248,7 +276,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
                 onPress={() => {
                   editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
-                  getUsersLog(setSleepData);
+                  getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
                 <Text style={styles.addSleepButtonText}>Save Changes</Text>
               </TouchableOpacity>
@@ -262,7 +290,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 }
 
 // opened when the month and year text is pressed
-const PickMonthPopup = ({ isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue }) => {
+const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue }) => {
   return (
     <Modal
       transparent
@@ -282,6 +310,7 @@ const PickMonthPopup = ({ isPickMonthPopupVisible, setIsPickMonthPopupVisible, t
             onPress={() => {
               setIsPickMonthPopupVisible(false);
               setMonthValue(new Date(tempDate));
+              getUsersMonthLog(setSleepData, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear());
             }}>
             <Text>Confirm</Text>
           </TouchableOpacity>
@@ -296,8 +325,6 @@ const PickMonthPopup = ({ isPickMonthPopupVisible, setIsPickMonthPopupVisible, t
 function getMonthYearFormat(date) {
   // if date is in a string format, convert it to a date object
   let date2 = new Date(date);
-  console.log("this is date2");
-  console.log(date2);
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   return monthNames[date2.getMonth()] + " " + date2.getFullYear();
@@ -342,7 +369,7 @@ const SleepScreen = (props) => {
   const [sleepData, setSleepData] = useState([]);
 
   useEffect(() => {
-    getUsersLog(setSleepData);
+    getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
   }, []);
 
   return (
@@ -356,16 +383,17 @@ const SleepScreen = (props) => {
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
-          <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible}
+          <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
-          <Text style={styles.title}>Sleep History</Text>
-
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-            <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
-              <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
+                <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
+                <Text>Select Month</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
               style={styles.addSleepButton}
               onPress={() => setIsAddPopupVisible(true)}>
@@ -378,7 +406,7 @@ const SleepScreen = (props) => {
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} />
             </View>
-            : <Text>No chart for you, go collect more sleep data peasant</Text>}
+            : <Text>No sleep data for this month</Text>}
 
           {/* Sleep data rendered in tabs*/}
 

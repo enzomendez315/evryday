@@ -51,7 +51,7 @@ const DietScreen = ({ navigation }) => {
     fatCurrent: 0,
     fatGoal: 75,
     caloriesCurrent: 0,
-    caloriesGoal: 3000,
+    caloriesGoal: 2000,
   });
   const [logChanged, setLogChanged] = useState(true);
 

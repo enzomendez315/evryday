@@ -61,7 +61,7 @@ function BottomNavBarTabs() {
         options={{
           tabBarLabel: 'Diet',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="nutrition-outline" color={color} size={size} />
+            <Ionicons name="nutrition" color={color} size={size} />
           ),
         }}
       />
