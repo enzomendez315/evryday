@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
-import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, deleteAllSleepEntries, editSleepEntry } from '../../logic/sleep-api'
+import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, editSleepEntry } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // for adding sleep slider
@@ -179,12 +179,16 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }
 
 const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
   // these are not hooks because useSate re-renders the page
+  // they are the 3 
   let hours = editPopupData.hours;
-  let tempStartDate = new Date(editPopupData.day);
-  let pickerStartDate = new Date(tempStartDate);
-  pickerStartDate.setDate(tempStartDate.getDate() + 1);
+  let wakeDate = new Date(editPopupData.day);
+  let pickerStartDate = new Date(wakeDate);
+  pickerStartDate.setDate(wakeDate.getDate() + 1); // this is a hack to make the date picker work
 
   // for slider
+  // TODO: figure out how to make this progress start at the value of the sleep data
+  // something like progress2.value = editSleepdata.quality
+  // it doesn't work because useSharedValue is a mystery
   const progress2 = useSharedValue(5);
   const min = useSharedValue(1);
   const max = useSharedValue(10);
@@ -206,15 +210,15 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <Text style={styles.popupTitle}>Edit Sleep Data</Text>
 
-              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                <Text style={styles.editButton}>Edit</Text>
+              <TouchableOpacity onPress={() => { deleteSleepEntry(userID, editPopupData.date) }}>
+                <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
                 <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={pickerStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
+                <DatePicker mode='date' date={pickerStartDate} onDateChange={(newDate) => { wakeDate = newDate }} />
               </View>
 
               <View style={{ flexDirection: 'row' }}>
@@ -240,8 +244,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={() => {
-                  // TODO: fix this function
-                  //editSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress2.value);
+                  editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
                   getUsersLog(setSleepData);
                 }}>
@@ -282,9 +285,12 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
 
 // Main Screen
 const SleepScreen = (props) => {
+  // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
-  const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });//[day, hours, quality]
+  // when a sleep tab is pressed, the data is saved here
+  const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });
+  // a list of all the sleep entries to show the user in the UI
   const [sleepData, setSleepData] = useState([]);
 
   useEffect(() => {
@@ -293,7 +299,7 @@ const SleepScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle='default' />
       <SafeAreaView>
         <ScrollView>
           <AddSleepPopup setSleepData={setSleepData}
@@ -309,26 +315,6 @@ const SleepScreen = (props) => {
               style={styles.addSleepButton}
               onPress={() => setIsAddPopupVisible(true)}>
               <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
-            </TouchableOpacity>
-          </View>
-
-
-          <View>
-            <TouchableOpacity
-              style={styles.addSleepButton}
-              onPress={async () => {
-                await makeSleepEntry(userID, date, 7, 1);
-                getUsersLog(setSleepData);
-              }}>
-              <Text style={styles.addSleepButtonText}>Add some silly sleep data to datastore</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addSleepButton}
-              onPress={async () => {
-                await deleteAllSleepEntries(userID);
-                getUsersLog(setSleepData);
-              }}>
-              <Text style={styles.addSleepButtonText}>remove all user sleep data from datastore</Text>
             </TouchableOpacity>
           </View>
 

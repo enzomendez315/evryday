@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { searchFoodStyles } from '../../styles/dietStyles/searchFoodStyles';
 import { getFoodItems } from '../../logic/diet-api'
@@ -12,7 +12,7 @@ async function updateFoodItems(setFoodItems, searchInput = "") {
   // initialisedDiet = true;
   if (searchInput == oldSearchInput) return;
   oldSearchInput = searchInput;
-  await getFoodItems(searchInput).then((getFood) => {setFoodItems(getFood)});
+  await getFoodItems(searchInput).then((getFood) => { setFoodItems(getFood) });
 }
 
 const SearchFoodScreen = ({ route, navigation }) => {
@@ -26,15 +26,15 @@ const SearchFoodScreen = ({ route, navigation }) => {
   }, []);
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView>
         <View style={searchFoodStyles.header}>
           <Text style={searchFoodStyles.title}>Search Food</Text>
-          <TextInput 
-          style={searchFoodStyles.searchInputText}
-           placeholder="Enter Food Here" 
-          //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
-           onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }}/>
+          <TextInput
+            style={searchFoodStyles.searchInputText}
+            placeholder="Enter Food Here"
+            //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
+            onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }} />
         </View>
 
         <Text style={searchFoodStyles.resultsText}>Search Results:</Text>

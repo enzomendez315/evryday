@@ -8,7 +8,7 @@ import { addFoodToMeal } from '../../logic/diet-api'
 
 const AddFoodScreen = (props) => {
   const { navigation, route } = props;
-  const { item, meal} = route.params;
+  const { item, meal } = route.params;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('gram');
   const [items, setItems] = useState([
@@ -20,7 +20,7 @@ const AddFoodScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView>
         <Text style={addFoodStyles.title}>{item.name} was selected</Text>
         <Text style={addFoodStyles.text}>
@@ -54,7 +54,7 @@ const AddFoodScreen = (props) => {
         <TouchableOpacity
           onPress={() => {
             //Uncomment to add food to a meal
-            addFood(meal.mealId, item.id).then((m) => { 
+            addFood(meal.mealId, item.id).then((m) => {
               // navigation.navigate('Add Meal', {meal});
               navigation.navigate('Diet Home');
             });

@@ -86,7 +86,7 @@ const DietScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView>
         <Text style={dietHomeStyles.title}>{new Date().toDateString()}</Text>
 

@@ -34,7 +34,8 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     }
 }
 
-// TODO: make this work
+// updates an existing sleep entry in the datastore
+// uses getSleepEntry to get the entry to update
 export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     if (await getSleepEntry(userID_, date_) !== null) {
         try {
@@ -67,8 +68,9 @@ export async function getSleepEntry(userId, date) {
                     resolve(null);
                 }
                 else {
-                    //console.log(`Sleep log found: ${oldLog}`);
-                    resolve(log);
+                    //console.log(`Sleep log found: ${log[0].id}`);
+                    // returns the first log found because only one should exist
+                    resolve(log[0]);
                 }
             });
         } catch (err) {
@@ -102,6 +104,29 @@ export async function getAllSleepEntries(userId) {
     return p;
 }
 
+// write me a fucntion that gets the sleep logs for a user from a certain month and year from date in the format of "YYYY-MM-DD"
+// Copilot Written - BEWARE
+export async function getSleepEntriesForMonth(userId, month, year) {
+    p = new Promise((resolve, reject) => {
+        try {
+            DataStore.query(SleepLog, (c) => c.userId.eq(userId)).then((logs) => {
+                if (logs.length == 0) {
+                    //console.log("no logs found");
+                    resolve(null);
+                }
+                else {
+                    //console.log(`Sleep logs found: ${logs}`);
+                    resolve(logs);
+                }
+            });
+        } catch (err) {
+            //console.log(`Failed to find sleep logs for UserId: ${userId} error: ${err}`);
+            reject(err);
+        }
+    });
+    return p;
+}
+
 // deletes a sleep entry from the datastore
 export async function deleteSleepEntry(userId, date) {
     try {
@@ -112,14 +137,5 @@ export async function deleteSleepEntry(userId, date) {
         console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
     } catch (err) {
         console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);
-    }
-}
-
-export async function deleteAllSleepEntries(userId) {
-    try {
-        await DataStore.delete(SleepLog, (u) => u.userId.eq(userId));
-        console.log(`Deleted all sleep logs for userId: ${userId}`);
-    } catch (err) {
-        console.log(`Failed to delete all sleep logs for userId: ${userId} error: ${err}`);
     }
 }

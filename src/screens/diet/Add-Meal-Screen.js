@@ -89,9 +89,9 @@ const recipeData = [
 ];
 
 async function getUsersLog(setMealData, setFoodList, mealId) {
-    await getMeal(mealId).then(async (meal) => {
-      console.log(`Got meal: ${meal.id}`);
-      await meal.foodItems.toArray().then(async (food) => {
+  await getMeal(mealId).then(async (meal) => {
+    console.log(`Got meal: ${meal.id}`);
+    await meal.foodItems.toArray().then(async (food) => {
       if (food.length == 0) {
         console.log('No food items');
         return;
@@ -116,7 +116,7 @@ const AddMealScreen = (props) => {
   let foodListView = <></>;
 
   let pieSeries = [mealData.protein, mealData.carbs, mealData.fat]
-  if (pieSeries.reduce((acc, val) => acc + val, 0) == 0){
+  if (pieSeries.reduce((acc, val) => acc + val, 0) == 0) {
     pieSeries = [0, 0, 1]
   }
 
@@ -124,16 +124,16 @@ const AddMealScreen = (props) => {
     // setMealData(route.params.meal);
     console.log('route.params', route.params);
     getUsersLog(setMealData, setFoodList, mealId);
-  
+
   }, [route.params]);
 
-if(foodListView != undefined) {
-  foodListView = (
-    <>
-      { foodList?.map((food, index) => (
-        <Text style={addMealStyles.foodItem}
-          key={index}>{food.name}, {food.calories}cal</Text>
-        ))}  
+  if (foodListView != undefined) {
+    foodListView = (
+      <>
+        {foodList?.map((food, index) => (
+          <Text style={addMealStyles.foodItem}
+            key={index}>{food.name}, {food.calories}cal</Text>
+        ))}
       </>
     );
   }
@@ -195,22 +195,22 @@ if(foodListView != undefined) {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView>
         <ScrollView>
           <RecipeListPopup />
 
           <Text style={addMealStyles.title}>{mealData.name}</Text>
 
-        <View style={addMealStyles.mealContainer}>
-          <ScrollView>
-            {foodListView}
-          </ScrollView>
-          <TouchableOpacity style={addMealStyles.Button}
-            onPress={() => navigation.navigate('Search Food', route.params)}>
-            <Text style={addMealStyles.ButtonText}>Add New Food</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={addMealStyles.mealContainer}>
+            <ScrollView>
+              {foodListView}
+            </ScrollView>
+            <TouchableOpacity style={addMealStyles.Button}
+              onPress={() => navigation.navigate('Search Food', route.params)}>
+              <Text style={addMealStyles.ButtonText}>Add New Food</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={addMealStyles.buttonContainer}>
             <TouchableOpacity style={addMealStyles.Button}
@@ -226,16 +226,16 @@ if(foodListView != undefined) {
             </TouchableOpacity>
           </View>
 
-        <View style={addMealStyles.pieMacroContainer}>
-          <View style={addMealStyles.pieTextContainer}>
-            <Text style={addMealStyles.pieText}>Macro Breakdown:</Text>
-            <PieChart
-              style={addMealStyles.pieChart}
-              widthAndHeight={150}
-              series={pieSeries}
-              sliceColor={['lightblue', 'lightgreen', 'pink']}
-            />
-          </View>
+          <View style={addMealStyles.pieMacroContainer}>
+            <View style={addMealStyles.pieTextContainer}>
+              <Text style={addMealStyles.pieText}>Macro Breakdown:</Text>
+              <PieChart
+                style={addMealStyles.pieChart}
+                widthAndHeight={150}
+                series={pieSeries}
+                sliceColor={['lightblue', 'lightgreen', 'pink']}
+              />
+            </View>
 
             <View style={addMealStyles.macroContainer}>
               <Text style={addMealStyles.macroText}>

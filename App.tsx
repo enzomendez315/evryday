@@ -61,7 +61,7 @@ function BottomNavBarTabs() {
         options={{
           tabBarLabel: 'Diet',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="fast-food-outline" color={color} size={size} />
+            <Ionicons name="nutrition-outline" color={color} size={size} />
           ),
         }}
       />
@@ -96,8 +96,13 @@ function BottomNavBarTabs() {
 // screens in the dashboard tab
 function DashboardStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard Home" component={DashboardScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Dashboard Home" component={DashboardScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#6a5',
+          },
+        }} />
     </Stack.Navigator>
   );
 }
@@ -106,7 +111,12 @@ function DashboardStack() {
 function DietStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="Diet Home" component={DietScreen} />
+      <Stack.Screen name="Diet Home" component={DietScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#6a5',
+          },
+        }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
@@ -117,8 +127,13 @@ function DietStack() {
 // screens in the sleep tab
 function SleepStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Sleep Home" component={SleepScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Sleep Home" component={SleepScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#6a5',
+          },
+        }} />
     </Stack.Navigator>
   );
 }
@@ -126,8 +141,13 @@ function SleepStack() {
 // screens in the workout tab
 function WorkoutStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Workout Home" component={WorkoutHomeScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Workout Home" component={WorkoutHomeScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#6a5',
+          },
+        }} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
       <Stack.Screen name="Workout List" component={WorkoutListScreen} />
