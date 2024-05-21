@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
-import { makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries, editSleepEntry, getSleepEntriesForMonth } from '../../logic/sleep-api'
+import {
+  makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries,
+  editSleepEntry, getSleepEntriesForMonth
+} from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
 // for adding sleep slider
@@ -14,7 +17,7 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 // sleep data comes in the form { day: string, hours: int, quality: int }
 // only in this format for sleep tab UI component
-// put in this form by getUsersLog after getting data from datastore
+// put in this form by getLog function(s) after getting data from datastore
 // the values are saved in the sleepData state as an array of objects
 
 // these should be defined once at the beginning of opening the page
@@ -92,16 +95,17 @@ const MyLineChart = ({ sleepArray }) => {
           datasets: [
             {
               data: sleepArray.map(day => day.hours),
-              color: (opacity = 1) => `rgba(234, 255, 244, ${opacity})`, // optional
+              //color: (opacity = 1) => `rgba(234, 255, 244, ${opacity})`, // optional
               //strokeWidth: 2 // optional
             }
           ],
-          legend: ["Hours Asleep"] // optional
+          //legend: ["Hours of Sleep"] // optional
         }}
         width={Dimensions.get('window').width - 16}
         height={220}
         yAxisInterval={1}
         chartConfig={{
+          withHorizontalLabels: true,
           backgroundColor: "#00a8e2",
           backgroundGradientFrom: "#00c6ff",
           backgroundGradientTo: "#0072ff",
@@ -130,7 +134,7 @@ const MyLineChart = ({ sleepArray }) => {
 // if a sleep tab is pressed, the user can edit the sleep data
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
-const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }) => {
+const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, monthValue }) => {
 
   // these are not hooks because useSate re-renders the page
   let hours = 0;
@@ -210,6 +214,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData }
 const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
   // these are not hooks because useSate re-renders the page
   // they are the 3 
+  console.log("here is edit popup data: ", editPopupData);
   let hours = editPopupData.hours;
   let wakeDate = new Date(editPopupData.day);
   let pickerStartDate = new Date(wakeDate);
@@ -240,7 +245,11 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <Text style={styles.popupTitle}>Edit Sleep Data</Text>
 
-              <TouchableOpacity onPress={() => { deleteSleepEntry(userID, editPopupData.date) }}>
+              <TouchableOpacity onPress={() => {
+                deleteSleepEntry(userID, editPopupData.day);
+                setIsEditPopupVisible(false);
+                getUsersMonthLog(setSleepData, wakeDate.getMonth() + 1, wakeDate.getFullYear());
+              }}>
                 <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
             </View>
@@ -342,12 +351,15 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
           <Text style={styles.dateName}>{dayReport.day}</Text>
           <Text style={styles.hoursText}>{`Hours of Sleep: ${dayReport.hours}`}</Text>
         </View>
-        <View style={[styles.qualityCircle,
-        {
-          backgroundColor: dayReport.quality < 4 ? 'red'
-            : dayReport.quality < 6 ? 'blue' : 'green'
-        }]}>
-          {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
+        <View>
+          <View style={[styles.qualityCircle,
+          {
+            backgroundColor: dayReport.quality < 4 ? 'red'
+              : dayReport.quality < 6 ? 'blue' : 'green'
+          }]}>
+            {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
+          </View>
+          <Text>Quality</Text>
         </View>
       </View>
     </View>
@@ -369,7 +381,12 @@ const SleepScreen = (props) => {
   const [sleepData, setSleepData] = useState([]);
 
   useEffect(() => {
-    getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
+    currentUserDetails().then(async (user) => {
+      userID = user;
+      console.log(`userid: ${userID}`);
+      date = new Date(Date.now()).toISOString().substring(0, 10);
+    });
+    getUsersMonthLog(setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
   }, []);
 
   return (
@@ -377,7 +394,7 @@ const SleepScreen = (props) => {
       <StatusBar barStyle='default' />
       <SafeAreaView>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <AddSleepPopup setSleepData={setSleepData}
+          <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData}
@@ -406,7 +423,11 @@ const SleepScreen = (props) => {
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} />
             </View>
-            : <Text>No sleep data for this month</Text>}
+            : <View>
+              <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
+              <Text style={{ textAlign: 'center' }}>No sleep data found</Text>
+            </View>
+          }
 
           {/* Sleep data rendered in tabs*/}
 
@@ -507,6 +528,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  image: {
+    width: 300,
+    height: 300,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 20,
+    marginBottom: 20,
   },
   // styles for the popup
   popup: {

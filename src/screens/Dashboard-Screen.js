@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import WorkoutScreen from './workout/Workout-Screen';
+import { syncDailyLog } from '../logic/sleep-api'
+import { currentUserDetails } from '../logic/account';
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
@@ -114,28 +115,48 @@ const WorkoutTab = () => {
 };
 
 // Sleeping Tab Component:
-const SleepTab = () => {
+const SleepTab = ({ sleepData }) => {
   // Dummy sleep score data
-  const sleepScore = 'B+';
+
+  console.log('this is sleep data');
+  console.log(sleepData);
   const sleepRecommendation = "Snugly Sloth: You snagged 8 hours of quality dream time today!";
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
       style={styles.sleepTab}
-      onPress={() => navigation.navigate('Sleep Home')}>
-      <View style={styles.circle}>
-        <Text style={styles.scoreText}>{sleepScore}</Text>
-      </View>
-      <View style={styles.recommendationContainer}>
-        <Text style={styles.recommendationText}>{sleepRecommendation}</Text>
-      </View>
+      onPress={() => navigation.navigate('Sleep')}>
+
+      {sleepData != null && sleepData.length > 0 ? (
+        <View>
+          <View style={styles.circle}>
+            <Text style={styles.scoreText}>{sleepData[0].hours}h</Text>
+          </View>
+          <View style={styles.recommendationContainer}>
+            <Text style={styles.recommendationText}>
+              You got {sleepData[0].hours} of sleep with a quality of {sleepData[0].quality}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        <Text>No sleep data today</Text>
+      )}
+
     </TouchableOpacity>
   );
 };
 
 
 const Dashboard = (props) => {
+  const [sleepData, setSleepData] = useState(null);
+  let date;
+
+  useEffect(() => {
+    date = new Date().toISOString().substring(0, 10);
+    syncDailyLog(setSleepData, date);
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="default" backgroundColor="#6a5" />
@@ -145,7 +166,7 @@ const Dashboard = (props) => {
           <HealthScoreTab style={styles.tab} />
           <DietTab style={styles.tab} />
           <WorkoutTab style={styles.tab} />
-          <SleepTab style={styles.tab} />
+          <SleepTab style={styles.tab} sleepData={sleepData} />
           {/* Add more components as needed */}
         </ScrollView>
       </SafeAreaView>

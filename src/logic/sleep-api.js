@@ -1,7 +1,11 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
+import { currentUserDetails } from './account';
 
 const DEBUG = false;
+
+// sleep date is in form dateVariable.toISOString().substring(0, 10)
+// this goes from a date object to a string in the format "YYYY-MM-DD"
 
 // creates a new sleep entry into the datastore
 // checks if one already exists for the user and date
@@ -46,6 +50,24 @@ export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     } else {
         DEBUG && console.log("Entry does not exist for this date and user");
     }
+}
+
+export async function syncDailyLog(setSleepData, date) {
+    let tempSleepData = [];
+    DEBUG && console.debug("Getting user's day sleep log");
+    await currentUserDetails().then(async (user) => {
+        let userID = user;
+        DEBUG && console.log(`userid: ${userID}`)
+        await getSleepEntry(userID, date).then(async (data) => {
+            if (data === null) {
+                console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+                setSleepData([]);
+                return;
+            }
+            tempSleepData.push({ day: data.date, hours: data.hoursSlept, quality: data.sleepQuality });
+            setSleepData(tempSleepData);
+        });
+    });
 }
 
 // queries datastore and returns the entry from user and date
