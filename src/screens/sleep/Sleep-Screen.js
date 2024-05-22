@@ -31,6 +31,19 @@ const testSleepData = [
   { day: '2024-03-10', hours: 6.5, quality: 1 },
 ];
 
+// gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
+// converts UTC to local, subtracts local offset from hours
+function getLocalDate(dateObject) {
+  let offset = new Date().getTimezoneOffset() / 60;
+  let tempDate = new Date(dateObject);
+  tempDate.setHours(tempDate.getHours() - offset);
+  const year = tempDate.getFullYear();
+  const month = String(tempDate.getMonth() + 1).padStart(2, '0');
+  const day = String(tempDate.getDate()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
+}
+
 // gets the user's id and associated sleep log
 // called in useEffect when screen is loaded
 // called when data is added/removed to update UI
@@ -170,7 +183,10 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
                 <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={tempStartDate} onDateChange={(newDate) => { tempStartDate = newDate }} />
+                <DatePicker mode='date' date={tempStartDate}
+                  onDateChange={(newDate) => {
+                    tempStartDate = getLocalDate(newDate);
+                  }} />
               </View>
 
               <View style={{ flexDirection: 'row' }}>
@@ -195,7 +211,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={() => {
-                  makeSleepEntry(userID, tempStartDate.toISOString().substring(0, 10), hours, progress.value);
+                  makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
                   getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
@@ -217,6 +233,8 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
   console.log("here is edit popup data: ", editPopupData);
   let hours = editPopupData.hours;
   let wakeDate = new Date(editPopupData.day);
+  console.log("this is the date object in edit sleep popup");
+  console.log(wakeDate);
   let pickerStartDate = new Date(wakeDate);
   pickerStartDate.setDate(wakeDate.getDate() + 1); // this is a hack to make the date picker work
 
@@ -256,8 +274,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={pickerStartDate} onDateChange={(newDate) => { wakeDate = newDate }} />
+                <Text>Wakeup Date {wakeDate.toISOString().substring(0, 10)}</Text>
               </View>
 
               <View style={{ flexDirection: 'row' }}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailyLog } from '../logic/sleep-api'
 import { currentUserDetails } from '../logic/account';
@@ -116,10 +116,6 @@ const WorkoutTab = () => {
 
 // Sleeping Tab Component:
 const SleepTab = ({ sleepData }) => {
-  // Dummy sleep score data
-
-  console.log('this is sleep data');
-  console.log(sleepData);
   const sleepRecommendation = "Snugly Sloth: You snagged 8 hours of quality dream time today!";
   const navigation = useNavigation();
 
@@ -147,15 +143,33 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
+// gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
+function getLocalDate() {
+  let tempDate = new Date();
+  const year = tempDate.getFullYear();
+  const month = String(tempDate.getMonth() + 1).padStart(2, '0');
+  const day = String(tempDate.getDate()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
+}
 
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   let date;
 
+  // called only once when the screen is first loaded
   useEffect(() => {
-    date = new Date().toISOString().substring(0, 10);
+    date = getLocalDate();
     syncDailyLog(setSleepData, date);
   }, []);
+
+  // called every time the screen is opened
+  useFocusEffect(
+    React.useCallback(() => {
+      syncDailyLog(setSleepData, date);
+      return;
+    }, [])
+  );
 
   return (
     <>
