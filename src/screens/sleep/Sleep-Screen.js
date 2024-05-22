@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
@@ -21,7 +22,7 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 // the values are saved in the sleepData state as an array of objects
 
 // these should be defined once at the beginning of opening the page
-// currently they are updated each time getUsersLog is called (which is a lot)
+// done in useEfect
 let userID;
 let date;
 
@@ -94,10 +95,9 @@ const MyLineChart = ({ sleepArray }) => {
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
 const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, monthValue }) => {
-
   // these are not hooks because useSate re-renders the page
   let hours = 0;
-  let tempStartDate = new Date();
+  let tempStartDate = new Date(getLocalDate(new Date()));
 
   // for slider
   const progress = useSharedValue(5);
@@ -131,7 +131,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 <Text>Wakeup Date</Text>
                 <DatePicker mode='date' date={tempStartDate}
                   onDateChange={(newDate) => {
-                    tempStartDate = getLocalDate(newDate);
+                    tempStartDate = newDate;
                   }} />
               </View>
 
@@ -156,8 +156,8 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={() => {
-                  makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
+                onPress={async () => {
+                  await makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
                   syncUsersMonthLog(userID, setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
@@ -175,12 +175,9 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
 // opened when a sleep tab is pressed
 const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
   // these are not hooks because useSate re-renders the page
-  // they are the 3 
-  console.log("here is edit popup data: ", editPopupData);
+  // they are the 3 values of the sleep data that the user can edit
   let hours = editPopupData.hours;
   let wakeDate = new Date(editPopupData.day);
-  console.log("this is the date object in edit sleep popup");
-  console.log(wakeDate);
   let pickerStartDate = new Date(wakeDate);
   pickerStartDate.setDate(wakeDate.getDate() + 1); // this is a hack to make the date picker work
 
@@ -350,6 +347,14 @@ const SleepScreen = (props) => {
       syncUsersMonthLog(userID, setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
     });
   }, []);
+
+  // called every time the screen is opened
+  useFocusEffect(
+    React.useCallback(() => {
+      syncUsersMonthLog(userID, setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
+      return;
+    }, [])
+  );
 
   return (
     <>

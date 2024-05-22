@@ -10,6 +10,7 @@ const DEBUG = false;
 // checks if one already exists for the user and date
 // called by UI when user submits a new sleep entry
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
+    DEBUG && console.log("Making a new sleep entry with the date: ", date_);
     if (await getSleepEntry(userID_, date_) === null) {
         try {
             const sleeplog = await DataStore.save(
@@ -59,7 +60,7 @@ export async function syncDailyLog(userID_, setSleepData, date) {
     DEBUG && console.log(`userid: ${userID}`)
     await getSleepEntry(userID, date).then(async (data) => {
         if (data === null) {
-            console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            DEBUG && console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
             setSleepData([]);
             return;
         }
@@ -74,13 +75,13 @@ export async function syncDailyLog(userID_, setSleepData, date) {
 // can get with new Date().getMonth() + 1 and new Date().getFullYear()
 export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
     let tempSleepData = [];
-    console.debug("Getting user's sleep log");
-    userID = userID_;
-    console.log(`userid: ${userID}`)
+    DEBUG && console.debug("Getting user's sleep log");
+    let userID = userID_;
+    DEBUG && console.log(`userid: ${userID}`)
     date = new Date(Date.now()).toISOString().substring(0, 10);
     await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
         if (data === null) {
-            console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            DEBUG && console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
             setSleepData([]);
             return;
         }
@@ -176,6 +177,7 @@ export async function getSleepEntriesForMonth(userId, month, year) {
 
 // deletes a sleep entry from the datastore
 export async function deleteSleepEntry(userId, date) {
+    DEBUG && console.log(`Deleting sleep log for userId: ${userId} date: ${date}`);
     try {
         await DataStore.delete(SleepLog, (u) => u.and(c => [
             u.userId.eq(userId),

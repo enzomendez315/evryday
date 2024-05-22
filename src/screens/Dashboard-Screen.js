@@ -172,7 +172,6 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
-      console.log(userID);
       return;
     }, [])
   );
