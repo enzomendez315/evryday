@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
 import { FoodItem } from '../../models';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';

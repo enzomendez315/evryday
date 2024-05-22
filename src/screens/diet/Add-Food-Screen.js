@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { FoodItem } from '../../models';
 import { addFoodToMeal } from '../../logic/diet-api'

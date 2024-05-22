@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { currentUserDetails } from '../../logic/account';
 import { getMeal, calcMealMacros } from '../../logic/diet-api'
