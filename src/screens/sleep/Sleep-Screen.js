@@ -4,8 +4,8 @@ import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
 import {
-  makeSleepEntry, getSleepEntry, deleteSleepEntry, getAllSleepEntries,
-  editSleepEntry, getSleepEntriesForMonth
+  makeSleepEntry, deleteSleepEntry,
+  editSleepEntry, syncUsersMonthLog
 } from '../../logic/sleep-api'
 import { currentUserDetails } from '../../logic/account';
 
@@ -42,60 +42,6 @@ function getLocalDate(dateObject) {
   const day = String(tempDate.getDate()).padStart(2, '0');
   const formattedDate = `${year}-${month}-${day}`;
   return formattedDate;
-}
-
-// gets the user's id and associated sleep log
-// called in useEffect when screen is loaded
-// called when data is added/removed to update UI
-// TODO: this is called a lot, probably a better way to update UI
-async function getUsersLog(setSleepData) {
-  let tempSleepData = [];
-  console.debug("Getting user's sleep log");
-  await currentUserDetails().then(async (user) => {
-    userID = user;
-    console.log(`userid: ${userID}`)
-    date = new Date(Date.now()).toISOString().substring(0, 10);
-    await getAllSleepEntries(userID).then(async (data) => {
-      if (data === null) {
-        console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
-        setSleepData([]);
-        return;
-      }
-      data.forEach(element => {
-        tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
-      });
-      // sorts the sleep data by date
-      tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
-      setSleepData(tempSleepData);
-    });
-  });
-}
-
-// similar to getusers log
-// should probably be in api file
-async function getUsersMonthLog(setSleepData, month, year) {
-  let tempSleepData = [];
-  console.debug("Getting user's sleep log");
-  await currentUserDetails().then(async (user) => {
-    userID = user;
-    console.log(`userid: ${userID}`)
-    date = new Date(Date.now()).toISOString().substring(0, 10);
-    await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
-      if (data === null) {
-        console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
-        setSleepData([]);
-        return;
-      }
-      data.forEach(element => {
-        tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
-      });
-      // sorts the sleep data by date
-      tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
-      console.log("this is sleep data", tempSleepData);
-      console.log("this is month", month);
-      setSleepData(tempSleepData);
-    });
-  });
 }
 
 // chart that renders sleepData on UI
@@ -213,7 +159,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 onPress={() => {
                   makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
-                  getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
+                  syncUsersMonthLog(userID, setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
@@ -266,7 +212,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
               <TouchableOpacity onPress={() => {
                 deleteSleepEntry(userID, editPopupData.day);
                 setIsEditPopupVisible(false);
-                getUsersMonthLog(setSleepData, wakeDate.getMonth() + 1, wakeDate.getFullYear());
+                syncUsersMonthLog(userID, setSleepData, wakeDate.getMonth() + 1, wakeDate.getFullYear());
               }}>
                 <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
@@ -274,7 +220,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                <Text>Wakeup Date {wakeDate.toISOString().substring(0, 10)}</Text>
+                {isEditPopupVisible ? <Text>Wakeup Date {wakeDate.toISOString().substring(0, 10)}</Text> : null}
               </View>
 
               <View style={{ flexDirection: 'row' }}>
@@ -302,7 +248,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
                 onPress={() => {
                   editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
-                  getUsersMonthLog(setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
+                  syncUsersMonthLog(userID, setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
                 }}>
                 <Text style={styles.addSleepButtonText}>Save Changes</Text>
               </TouchableOpacity>
@@ -336,7 +282,7 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
             onPress={() => {
               setIsPickMonthPopupVisible(false);
               setMonthValue(new Date(tempDate));
-              getUsersMonthLog(setSleepData, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear());
+              syncUsersMonthLog(userID, setSleepData, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear());
             }}>
             <Text>Confirm</Text>
           </TouchableOpacity>
@@ -400,10 +346,9 @@ const SleepScreen = (props) => {
   useEffect(() => {
     currentUserDetails().then(async (user) => {
       userID = user;
-      console.log(`userid: ${userID}`);
-      date = new Date(Date.now()).toISOString().substring(0, 10);
+      date = getLocalDate(new Date());
+      syncUsersMonthLog(userID, setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
     });
-    getUsersMonthLog(setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
   }, []);
 
   return (

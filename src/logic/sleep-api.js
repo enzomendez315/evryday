@@ -1,6 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
-import { currentUserDetails } from './account';
 
 const DEBUG = false;
 
@@ -52,21 +51,45 @@ export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     }
 }
 
-export async function syncDailyLog(setSleepData, date) {
+// called in dashboard to get the user's sleep log for the day
+export async function syncDailyLog(userID_, setSleepData, date) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's day sleep log");
-    await currentUserDetails().then(async (user) => {
-        let userID = user;
-        DEBUG && console.log(`userid: ${userID}`)
-        await getSleepEntry(userID, date).then(async (data) => {
-            if (data === null) {
-                console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
-                setSleepData([]);
-                return;
-            }
-            tempSleepData.push({ day: data.date, hours: data.hoursSlept, quality: data.sleepQuality });
-            setSleepData(tempSleepData);
+    let userID = userID_;
+    DEBUG && console.log(`userid: ${userID}`)
+    await getSleepEntry(userID, date).then(async (data) => {
+        if (data === null) {
+            console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            setSleepData([]);
+            return;
+        }
+        tempSleepData.push({ day: data.date, hours: data.hoursSlept, quality: data.sleepQuality });
+        setSleepData(tempSleepData);
+    });
+}
+
+// gets the sleep entries for a month and year
+// calls hook function to update UI
+// month is 1-12, year is 4 digit number
+// can get with new Date().getMonth() + 1 and new Date().getFullYear()
+export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
+    let tempSleepData = [];
+    console.debug("Getting user's sleep log");
+    userID = userID_;
+    console.log(`userid: ${userID}`)
+    date = new Date(Date.now()).toISOString().substring(0, 10);
+    await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
+        if (data === null) {
+            console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            setSleepData([]);
+            return;
+        }
+        data.forEach(element => {
+            tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
         });
+        // sorts the sleep data by date
+        tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+        setSleepData(tempSleepData);
     });
 }
 

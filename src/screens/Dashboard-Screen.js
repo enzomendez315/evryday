@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailyLog } from '../logic/sleep-api'
 import { currentUserDetails } from '../logic/account';
+import { getCurrentUser } from 'aws-amplify/auth';
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
@@ -156,17 +157,22 @@ function getLocalDate() {
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   let date;
+  let userID;
 
   // called only once when the screen is first loaded
   useEffect(() => {
     date = getLocalDate();
-    syncDailyLog(setSleepData, date);
+    getCurrentUser().then((user) => {
+      userID = user.username;
+    });
+    syncDailyLog(userID, setSleepData, date);
   }, []);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLog(setSleepData, date);
+      syncDailyLog(userID, setSleepData, date);
+      console.log(userID);
       return;
     }, [])
   );
@@ -177,6 +183,7 @@ const Dashboard = (props) => {
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {/* Render your components here */}
+          <Text>The date is {date}</Text>
           <HealthScoreTab style={styles.tab} />
           <DietTab style={styles.tab} />
           <WorkoutTab style={styles.tab} />
