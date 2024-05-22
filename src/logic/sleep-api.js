@@ -52,6 +52,20 @@ export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     }
 }
 
+// deletes a sleep entry from the datastore
+export async function deleteSleepEntry(userId, date) {
+    DEBUG && console.log(`Deleting sleep log for userId: ${userId} date: ${date}`);
+    try {
+        await DataStore.delete(SleepLog, (u) => u.and(c => [
+            u.userId.eq(userId),
+            u.date.eq(date)
+        ]));
+        DEBUG && console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
+    } catch (err) {
+        console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);
+    }
+}
+
 // called in dashboard to get the user's sleep log for the day
 export async function syncDailyLog(userID_, setSleepData, date) {
     let tempSleepData = [];
@@ -96,7 +110,8 @@ export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
 
 // queries datastore and returns the entry from user and date
 // returns null if no entry is found
-export async function getSleepEntry(userId, date) {
+// helper function for syncDailyLog
+async function getSleepEntry(userId, date) {
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(SleepLog, (u) => u.and(c => [
@@ -121,33 +136,10 @@ export async function getSleepEntry(userId, date) {
     return p;
 }
 
-// queries datastore and returns a list of all sleep entries for a user
-// returns list of sleep entries or null if none are found
-export async function getAllSleepEntries(userId) {
-    p = new Promise((resolve, reject) => {
-        try {
-            DataStore.query(SleepLog, (c) => c.userId.eq(userId)).then((logs) => {
-                if (logs.length == 0) {
-                    DEBUG && console.log("no logs found");
-                    resolve(null);
-                }
-                else {
-                    DEBUG && console.log(`Sleep logs found: ${logs}`);
-                    resolve(logs);
-                }
-            });
-        } catch (err) {
-            console.log(`Failed to find sleep logs for UserId: ${userId} error: ${err}`);
-            reject(err);
-        }
-    });
-    return p;
-}
-
 // write me a fucntion that gets the sleep logs for a user from a certain month and year from date in the format of "YYYY-MM-DD"
 // Copilot Written - BEWARE
-// Haven't tested this yet
-export async function getSleepEntriesForMonth(userId, month, year) {
+// helper function for syncUsersMonthLog
+async function getSleepEntriesForMonth(userId, month, year) {
     // month is 1-12, if month is less than 10, add a 0 in front
     if (month < 10) {
         month = `0${month}`;
@@ -173,18 +165,4 @@ export async function getSleepEntriesForMonth(userId, month, year) {
         }
     });
     return p;
-}
-
-// deletes a sleep entry from the datastore
-export async function deleteSleepEntry(userId, date) {
-    DEBUG && console.log(`Deleting sleep log for userId: ${userId} date: ${date}`);
-    try {
-        await DataStore.delete(SleepLog, (u) => u.and(c => [
-            u.userId.eq(userId),
-            u.date.eq(date)
-        ]));
-        DEBUG && console.log(`Deleted sleep log for userId: ${userId} date: ${date}`);
-    } catch (err) {
-        console.log(`Failed to delete sleep log for userId: ${userId} date: ${date} error: ${err}`);
-    }
 }

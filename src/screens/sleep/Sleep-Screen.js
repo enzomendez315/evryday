@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, SafeAreaView, StatusBar, Text, StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
+import {
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet,
+  ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
+} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
@@ -14,26 +17,18 @@ import { currentUserDetails } from '../../logic/account';
 import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 // sleep data comes in the form { day: string, hours: int, quality: int }
-// only in this format for sleep tab UI component
-// put in this form by getLog function(s) after getting data from datastore
+// only in this format for sleep tab UI component, received from sync functions
 // the values are saved in the sleepData state as an array of objects
 
-// these should be defined once at the beginning of opening the page
-// done in useEfect
+// these are defined once at the beginning of opening the page in useEfect
 let userID;
 let date;
 
-// this is the format that the sleep data is put in from the datastore
-// received in getUsersLog and saved in sleepData state
-const testSleepData = [
-  { day: '2024-03-10', hours: 6.5, quality: 1 },
-];
-
 // gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
 // converts UTC to local, subtracts local offset from hours
+// this is hacky and causes some bugs with dates being off by 1 day
 function getLocalDate(dateObject) {
   let offset = new Date().getTimezoneOffset() / 60;
   let tempDate = new Date(dateObject);
@@ -570,27 +565,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'blue',
-    borderRadius: 4,
-    color: 'blue',
-    paddingRight: 30 // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'blue',
-    borderRadius: 8,
-    color: 'blue',
-    paddingRight: 30 // to ensure the text is never behind the icon
-  }
 });

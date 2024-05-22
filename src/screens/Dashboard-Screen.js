@@ -6,6 +6,9 @@ import { syncDailyLog } from '../logic/sleep-api'
 import { currentUserDetails } from '../logic/account';
 import { getCurrentUser } from 'aws-amplify/auth';
 
+let date;
+let userID;
+
 // Health Score Tab Component:
 const HealthScoreTab = () => {
   // Dummy health score data
@@ -156,16 +159,14 @@ function getLocalDate() {
 
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
-  let date;
-  let userID;
 
   // called only once when the screen is first loaded
   useEffect(() => {
     date = getLocalDate();
     getCurrentUser().then((user) => {
       userID = user.username;
+      syncDailyLog(userID, setSleepData, date);
     });
-    syncDailyLog(userID, setSleepData, date);
   }, []);
 
   // called every time the screen is opened
