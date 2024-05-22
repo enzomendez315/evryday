@@ -127,7 +127,6 @@ const SleepTab = ({ sleepData }) => {
     <TouchableOpacity
       style={styles.sleepTab}
       onPress={() => navigation.navigate('Sleep')}>
-
       {sleepData != null && sleepData.length > 0 ? (
         <View>
           <View style={styles.circle}>
@@ -157,6 +156,17 @@ function getLocalDate() {
   return formattedDate;
 }
 
+// gets date in format 'Month DD, YYYY'
+// takes input from getLocalDate
+function getFormattedDate() {
+  let tempDate = new Date();
+  const month = tempDate.toLocaleString('default', { month: 'long' });
+  const day = tempDate.getDate();
+  const year = tempDate.getFullYear();
+  const formattedDate = `${month} ${day}, ${year}`;
+  return formattedDate;
+}
+
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
 
@@ -181,12 +191,16 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {/* Render your components here */}
-          <Text>The date is {date}</Text>
+        {/* Render your components here */}
+        <Text style={styles.title}>{getFormattedDate()}</Text>
+        <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
+          <Text style={styles.tabHeaderText}>Health Score</Text>
           <HealthScoreTab style={styles.tab} />
+          <Text style={styles.tabHeaderText}>Nutrition</Text>
           <DietTab style={styles.tab} />
+          <Text style={styles.tabHeaderText}>Exercise</Text>
           <WorkoutTab style={styles.tab} />
+          <Text style={styles.tabHeaderText}>Sleep</Text>
           <SleepTab style={styles.tab} sleepData={sleepData} />
           {/* Add more components as needed */}
         </ScrollView>
@@ -196,7 +210,21 @@ const Dashboard = (props) => {
 };
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: '#DADADA',
+  },
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
+    color: 'black'
+  },
+  tabHeaderText: {
+    fontSize: 20,
+    color: 'black',
+    marginTop: 10,
+    marginLeft: 10,
+  },
   defaultTabStyle: {
     // Default styling for tabs
     justifyContent: 'center',
@@ -208,13 +236,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8, // smooth edges
+    marginBottom: 10,
+    marginHorizontal: 10,
   },
   sleepTab: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    borderColor: '#919191',
-    borderBottomWidth: 1,
+    //borderColor: '#919191',
+    //borderBottomWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    backgroundColor: '#fff',
   },
 
   dietTab: {
@@ -222,8 +258,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     justifyContent: 'flex-start',
-    borderColor: '#919191',
-    borderTopWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    backgroundColor: '#fff',
+    //borderColor: '#919191',
+    //borderTopWidth: 1,
 
   },
 
@@ -272,7 +312,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-
   macroList: {
     marginLeft: 20,
   },
@@ -285,9 +324,13 @@ const styles = StyleSheet.create({
   workoutTab: {
     // Style to match other tabs in your dashboard
     padding: 20,
-    borderColor: '#919191',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+    //borderColor: '#919191',
+    //borderTopWidth: 1,
+    //borderBottomWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 10,
+    marginHorizontal: 10,
   },
   workoutHistoryTitle: {
     // Title styles as provided in the Figma-generated code

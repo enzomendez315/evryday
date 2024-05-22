@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import DashboardScreen from './src/screens/Dashboard-Screen';
+import SettingsScreen from './src/screens/Settings-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 
@@ -32,6 +33,7 @@ import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-nativ
 import { currentUserDetails, userSignOut } from './src/logic/account'
 import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
 
+// I don't think this is being used
 const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
@@ -89,6 +91,20 @@ function BottomNavBarTabs() {
           ),
         }}
       />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsStack}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="account"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -98,6 +114,19 @@ function DashboardStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Dashboard Home" component={DashboardScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#6a5',
+          },
+        }} />
+    </Stack.Navigator>
+  );
+}
+
+function SettingsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Settings Home" component={SettingsScreen}
         options={{
           headerStyle: {
             backgroundColor: '#6a5',
@@ -168,9 +197,7 @@ function App() {
   // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
   React.useEffect(() => {
     currentUserDetails().then(async (user) => {
-      // console.log("user id: ", user);
       setUserId(user);
-      console.log("this is the user");
       console.log(User); // Need to use a random model to initialize the DataStore
       await DataStore.start();
       // await DataStore.clear(); //Clears the local DataStore

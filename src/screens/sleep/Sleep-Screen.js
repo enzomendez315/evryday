@@ -29,6 +29,7 @@ let date;
 // gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
 // converts UTC to local, subtracts local offset from hours
 // this is hacky and causes some bugs with dates being off by 1 day
+// that or timezones shouldn't exist and there should be 1 earth time
 function getLocalDate(dateObject) {
   let offset = new Date().getTimezoneOffset() / 60;
   let tempDate = new Date(dateObject);
@@ -354,8 +355,8 @@ const SleepScreen = (props) => {
   return (
     <>
       <StatusBar barStyle='default' />
-      <SafeAreaView>
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.container}>
+        <View>
           <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
@@ -392,7 +393,7 @@ const SleepScreen = (props) => {
           }
 
           {/* Sleep data rendered in tabs*/}
-
+          <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text>
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>
@@ -400,9 +401,9 @@ const SleepScreen = (props) => {
                   setIsEditPopupVisible={setIsEditPopupVisible} />
               </View>
             ))}
-
           </ScrollView>
-        </ScrollView>
+
+        </View>
       </SafeAreaView>
     </>
   );
@@ -415,6 +416,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#DADADA',
   },
   title: {
     fontSize: 35,
@@ -458,7 +460,7 @@ const styles = StyleSheet.create({
     //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: '#DADADA', // This is a placeholder color
+    backgroundColor: '#fff', // This is a placeholder color
     borderRadius: 8,
     padding: 16,
     marginHorizontal: 10,

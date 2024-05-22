@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
-import { searchFoodStyles } from '../../styles/dietStyles/searchFoodStyles';
 import { getFoodItems } from '../../logic/diet-api'
 import { FoodItem } from '../../models';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
@@ -28,40 +27,40 @@ const SearchFoodScreen = ({ route, navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor="#6a5" />
       <SafeAreaView>
-        <View style={searchFoodStyles.header}>
-          <Text style={searchFoodStyles.title}>Search Food</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Search Food</Text>
           <TextInput
-            style={searchFoodStyles.searchInputText}
+            style={styles.searchInputText}
             placeholder="Enter Food Here"
             //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
             onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }} />
         </View>
 
-        <Text style={searchFoodStyles.resultsText}>Search Results:</Text>
+        <Text style={styles.resultsText}>Search Results:</Text>
 
-        <View style={searchFoodStyles.tableHeadContainer}>
-          <Text style={searchFoodStyles.tableHeadText}>Food Name</Text>
-          <Text style={searchFoodStyles.tableHeadText}>Serving</Text>
-          <Text style={searchFoodStyles.tableHeadText}>Calories</Text>
+        <View style={styles.tableHeadContainer}>
+          <Text style={styles.tableHeadText}>Food Name</Text>
+          <Text style={styles.tableHeadText}>Serving</Text>
+          <Text style={styles.tableHeadText}>Calories</Text>
         </View>
 
         <ScrollView>
-          <View style={searchFoodStyles.tableContainer}>
+          <View style={styles.tableContainer}>
             <FlatList
-              style={searchFoodStyles.listContainer}
+              style={styles.listContainer}
               scrollEnabled={false}
               data={foodItems}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>
                   <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item, meal })}>
-                    <View style={searchFoodStyles.tableTextContainer}>
-                      <Text style={searchFoodStyles.tableText}>{item.name}</Text>
-                      <Text style={searchFoodStyles.tableText}>{item.serving}</Text>
-                      <Text style={searchFoodStyles.tableText}>{item.calories}</Text>
+                    <View style={styles.tableTextContainer}>
+                      <Text style={styles.tableText}>{item.name}</Text>
+                      <Text style={styles.tableText}>{item.serving}</Text>
+                      <Text style={styles.tableText}>{item.calories}</Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={searchFoodStyles.separator} />
+                  <View style={styles.separator} />
                 </>
               )}
             />
@@ -73,3 +72,66 @@ const SearchFoodScreen = ({ route, navigation }) => {
 };
 
 export default SearchFoodScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black',
+  },
+  searchInputText: {
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'left',
+    borderWidth: 1,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  resultsText: {
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'left',
+  },
+  tableContainer: {
+    padding: 10,
+    justifyContent: 'center',
+  },
+  tableHeadContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  tableHeadText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black'
+  },
+  tableTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  tableText: {
+    margin: 6,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  listContainer: {
+    padding: 1,
+    scrollEnabled: true,
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: 'black',
+  },
+});
