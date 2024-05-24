@@ -4,6 +4,28 @@ import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 
 const DEBUG = false;
 
+// called by main Diet page
+export async function getUsersLog(userId, date, setCalorieData, setMealData = () => { }) {
+    await NUTLOG(userId, date).then(async ({ nutLog, meals, userId, date }) => {
+        DEBUG && console.log(`Got nutLog: ${nutLog.id} ${meals} ${userId} ${date}`);
+
+        await getMealMacros(meals).then((macro) => {
+            DEBUG && console.log(`Got meals: ${macro[0].calories} ${macro[0].carbs} ${macro[0].fat} ${macro[0].protein}`);
+            setMealData(macro);
+            setCalorieData({
+                proteinCurrent: macro.reduce((acc, meal) => acc + meal.protein, 0),
+                proteinGoal: 150,
+                carbsCurrent: macro.reduce((acc, meal) => acc + meal.carbs, 0),
+                carbsGoal: 250,
+                fatCurrent: macro.reduce((acc, meal) => acc + meal.fat, 0),
+                fatGoal: 75,
+                caloriesCurrent: macro.reduce((acc, meal) => acc + meal.calories, 0),
+                caloriesGoal: 2000,
+            });
+        });
+    });
+}
+
 // calls getUsersNutritionLog
 // if there are no meals in the log it creates 3 meals
 export const NUTLOG = async (userId, date) => {
@@ -314,4 +336,3 @@ const bulkFoodsList = [
     { name: 'Avocado', calories: 200, protein: 2, carbs: 10, fat: 15, serving: '1 medium' },
     { name: 'Grapes', calories: 50, protein: 1, carbs: 10, fat: 0, serving: '100g' },
 ];
-

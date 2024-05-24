@@ -36,7 +36,7 @@ import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
 
 const DEBUG = false;
 
-// I don't think this is being used
+// used to pass userID to all screens
 export const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
@@ -204,7 +204,6 @@ function App() {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
       await DataStore.start();
-      // await DataStore.clear(); //Clears the local DataStore
       await StartListening(user);
     });
   }, []);

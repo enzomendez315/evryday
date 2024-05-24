@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailyLog } from '../logic/sleep-api'
+import { syncDailyLog } from '../logic/sleep-api';
+import { getUsersLog } from '../logic/diet-api';
 import { currentUserDetails } from '../logic/account';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { COLORS } from '../theme/theme';
+import { parse } from 'react-native-svg';
 
 let date;
 let userID;
@@ -32,13 +34,32 @@ const HealthScoreTab = () => {
 };
 
 // Dieting Tab Component:
-const DietTab = () => {
-  // Dummy diet data
-  const caloriesUnder = 762;
+const DietTab = ({ calorieData }) => {
+  if (calorieData == null) {
+    return (
+      <TouchableOpacity
+        style={styles.dietTab}
+        onPress={() => navigation.navigate('Diet')}>
+        <Text>Loading...</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  // gets calorie percentage, protein and carbs are 4 calories per gram, fat is 9
+  let tempCarbs = (((calorieData.carbsCurrent * 4) / calorieData.caloriesCurrent) * 100).toFixed(0);
+  let tempProtein = (((calorieData.proteinCurrent * 4) / calorieData.caloriesCurrent) * 100).toFixed(0);
+  let tempFat = (((calorieData.fatCurrent * 9) / calorieData.caloriesCurrent) * 100).toFixed(0);
+
+  // normalize the percentages
+  let total = parseInt(tempCarbs) + parseInt(tempProtein) + parseInt(tempFat);
+  let finalCarbs = parseInt((parseInt(tempCarbs) / total * 100).toFixed(0));
+  let finalProtein = parseInt((parseInt(tempProtein) / total * 100).toFixed(0));
+  let finalFat = parseInt((parseInt(tempFat) / total * 100).toFixed(0));
+
   const macros = [
-    { name: 'Carbs', percentage: 50, color: 'skyblue' },
-    { name: 'Protein', percentage: 40, color: 'salmon' },
-    { name: 'Fat', percentage: 10, color: 'lightgreen' },
+    { name: 'Carbs', percentage: finalCarbs, color: 'skyblue' },
+    { name: 'Protein', percentage: finalProtein, color: 'salmon' },
+    { name: 'Fat', percentage: finalFat, color: 'lightgreen' },
   ];
 
   const chartWidth = 80;
@@ -62,28 +83,35 @@ const DietTab = () => {
   return (
     <TouchableOpacity
       style={styles.dietTab}
-      onPress={() => navigation.navigate('Diet Home')}>
-      <View style={styles.circle}>
-        <Text style={styles.caloriesText}>{caloriesUnder} Under</Text>
-      </View>
-      <PieChart
-        data={pieChartData}
-        width={chartWidth}
-        height={chartHeight}
-        chartConfig={chartConfig}
-        accessor={"population"}
-        backgroundColor={"transparent"}
-        paddingLeft={"20"} // Adjust if your chart is not centered
-        hasLegend={false}
-        absolute={false}
-      />
-      <View style={styles.macroList}>
-        {macros.map((macro, index) => (
-          <Text key={index} style={[styles.macroText, { color: macro.color }]}>
-            {macro.name}: {macro.percentage}%
-          </Text>
-        ))}
-      </View>
+      onPress={() => navigation.navigate('Diet')}>
+      {calorieData != null ? (
+        <View style={{ flexDirection: 'row' }}>
+          <View style={styles.circle}>
+            <Text style={styles.caloriesText}>{calorieData.caloriesCurrent}</Text>
+            <Text>Calories</Text>
+          </View>
+          <PieChart
+            data={pieChartData}
+            width={chartWidth}
+            height={chartHeight}
+            chartConfig={chartConfig}
+            accessor={"population"}
+            backgroundColor={"transparent"}
+            paddingLeft={"20"} // Adjust if your chart is not centered
+            hasLegend={false}
+            absolute={false}
+          />
+          <View style={styles.macroList}>
+            {macros.map((macro, index) => (
+              <Text key={index} style={[styles.macroText, { color: macro.color }]}>
+                {macro.name}: {macro.percentage}%
+              </Text>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <Text>No calorie data today</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -103,7 +131,7 @@ const WorkoutTab = () => {
   return (
     <TouchableOpacity
       style={styles.workoutTab}
-      onPress={() => navigation.navigate('Workout History')}>
+      onPress={() => navigation.navigate('Workout')}>
       <Text style={styles.workoutHistoryTitle}>Workout History</Text>
       {workouts.map((workout, index) => (
         <View key={index} style={styles.workoutItem}>
@@ -170,6 +198,11 @@ function getFormattedDate() {
 
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
+  const [calorieData, setcalorieData] = useState(null);
+
+  // bool for diet tab loading too soon
+  // TODO: fix diet api to handle null data calls
+  let tempLoading = true;
 
   // called only once when the screen is first loaded
   useEffect(() => {
@@ -177,6 +210,8 @@ const Dashboard = (props) => {
     getCurrentUser().then((user) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
+      getUsersLog(userID, date, setcalorieData);
+      tempLoading = false;
     });
   }, []);
 
@@ -184,6 +219,7 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
+      if (!tempLoading) getUsersLog(userID, date, setcalorieData);
       return;
     }, [])
   );
@@ -198,7 +234,7 @@ const Dashboard = (props) => {
           <Text style={styles.tabHeaderText}>Health Score</Text>
           <HealthScoreTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
-          <DietTab style={styles.tab} />
+          <DietTab style={styles.tab} calorieData={calorieData} />
           <Text style={styles.tabHeaderText}>Exercise</Text>
           <WorkoutTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Sleep</Text>

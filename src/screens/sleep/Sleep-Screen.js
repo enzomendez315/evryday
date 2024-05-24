@@ -169,7 +169,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
 }
 
 // opened when a sleep tab is pressed
-const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData }) => {
+const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepData, editPopupData, monthValue }) => {
   // these are not hooks because useSate re-renders the page
   // they are the 3 values of the sleep data that the user can edit
   let hours = editPopupData.hours;
@@ -255,7 +255,8 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 }
 
 // opened when the month and year text is pressed
-const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue, setIsLoading }) => {
+const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible,
+  tempDate, setTempDate, setMonthValue, setIsLoading }) => {
   return (
     <Modal
       transparent
@@ -286,13 +287,13 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
   )
 }
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
 // takes in a date object and returns a string in the format "March 2024"
 // used for UI to display the month and year 
 function getMonthYearFormat(date) {
   // if date is in a string format, convert it to a date object
   let date2 = new Date(date);
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
   return monthNames[date2.getMonth()] + " " + date2.getFullYear();
 }
 
@@ -305,7 +306,7 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
     <View style={styles.sleepTab}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View>
-          <Text style={styles.dateName}>{dayReport.day}</Text>
+          <Text style={styles.dateName}>{`${monthNames[new Date(dayReport.day).getMonth()]} ${new Date(dayReport.day).getDate() + 1}`}</Text>
           <Text style={styles.hoursText}>{`Hours of Sleep: ${dayReport.hours}`}</Text>
         </View>
         <View>
@@ -364,7 +365,7 @@ const SleepScreen = (props) => {
           <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
-          <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData}
+          <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
@@ -385,7 +386,9 @@ const SleepScreen = (props) => {
             </TouchableOpacity>
           </View>
 
-          {!isLoading ? <Text style={styles.monthText}>Total Hours: {totalHours}</Text> : null}
+          {totalHours !== 0 ? <Text style={styles.monthText}>
+            Average Hours: {(totalHours / sleepData.length).toFixed(2)}
+          </Text> : null}
 
           {/* Chart */}
           {!isLoading ? sleepData.length > 0 ?
