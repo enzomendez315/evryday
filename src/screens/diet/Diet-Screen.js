@@ -6,6 +6,7 @@ import { NutritionLog, Meal } from '../../models';
 import { currentUserDetails } from '../../logic/account';
 import { DataStore } from 'aws-amplify/datastore';
 import { Bar } from 'react-native-progress';
+import { COLORS } from '../../theme/theme';
 
 let userId;
 
@@ -85,7 +86,7 @@ const DietScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>{new Date().toDateString()}</Text>
 

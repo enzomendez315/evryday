@@ -258,7 +258,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
         <Text style={styles.title}>Workout</Text>

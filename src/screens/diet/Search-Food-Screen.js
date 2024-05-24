@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
+import { COLORS } from '../../theme/theme';
 import { FoodItem } from '../../models';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
@@ -25,7 +26,7 @@ const SearchFoodScreen = ({ route, navigation }) => {
   }, []);
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
         <View style={styles.header}>
           <Text style={styles.title}>Search Food</Text>

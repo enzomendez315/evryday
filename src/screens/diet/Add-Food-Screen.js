@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { COLORS } from '../../theme/theme';
 import { FoodItem } from '../../models';
 import { addFoodToMeal } from '../../logic/diet-api'
 
@@ -19,7 +20,7 @@ const AddFoodScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
         <Text style={styles.title}>{item.name} was selected</Text>
         <Text style={styles.text}>

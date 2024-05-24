@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
+import { COLORS } from '../../theme/theme';
 import { currentUserDetails } from '../../logic/account';
 import { getMeal, calcMealMacros } from '../../logic/diet-api'
 
@@ -194,7 +195,7 @@ const AddMealScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
         <ScrollView>
           <RecipeListPopup />

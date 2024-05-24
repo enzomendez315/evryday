@@ -9,6 +9,7 @@ interface Color {
     lightGray: string;
     lightBlue: string;
     darkBlue: string;
+    lightGreen: string;
   }
   
   export const COLORS: Color = {
@@ -22,4 +23,5 @@ interface Color {
     lightGray: '#D3D3D3',
     lightBlue: '#99D7EF',
     darkBlue: '#0683B2',
+    lightGreen: '#43DC6B',
   };

@@ -87,7 +87,8 @@ export async function syncDailyLog(userID_, setSleepData, date) {
 // calls hook function to update UI
 // month is 1-12, year is 4 digit number
 // can get with new Date().getMonth() + 1 and new Date().getFullYear()
-export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
+// setIsLoading is only passed when the screen first calls this function
+export async function syncUsersMonthLog(userID_, month, year, setSleepData, setIsLoading = () => { }) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's sleep log");
     let userID = userID_;
@@ -97,6 +98,7 @@ export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
         if (data === null) {
             DEBUG && console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
             setSleepData([]);
+            setIsLoading(false);
             return;
         }
         data.forEach(element => {
@@ -105,6 +107,7 @@ export async function syncUsersMonthLog(userID_, setSleepData, month, year) {
         // sorts the sleep data by date
         tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
         setSleepData(tempSleepData);
+        setIsLoading(false);
     });
 }
 

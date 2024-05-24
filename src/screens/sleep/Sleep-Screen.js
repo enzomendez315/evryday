@@ -11,7 +11,7 @@ import {
   makeSleepEntry, deleteSleepEntry,
   editSleepEntry, syncUsersMonthLog
 } from '../../logic/sleep-api'
-import { currentUserDetails } from '../../logic/account';
+import { AccountContext } from '../../../App';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
@@ -155,7 +155,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 onPress={async () => {
                   await makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
-                  syncUsersMonthLog(userID, setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
+                  syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
@@ -205,7 +205,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
               <TouchableOpacity onPress={() => {
                 deleteSleepEntry(userID, editPopupData.day);
                 setIsEditPopupVisible(false);
-                syncUsersMonthLog(userID, setSleepData, wakeDate.getMonth() + 1, wakeDate.getFullYear());
+                syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
               }}>
                 <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
@@ -241,7 +241,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
                 onPress={() => {
                   editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
-                  syncUsersMonthLog(userID, setSleepData, monthValue.getMonth() + 1, monthValue.getFullYear());
+                  syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Save Changes</Text>
               </TouchableOpacity>
@@ -255,7 +255,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 }
 
 // opened when the month and year text is pressed
-const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue }) => {
+const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible, tempDate, setTempDate, setMonthValue, setIsLoading }) => {
   return (
     <Modal
       transparent
@@ -275,7 +275,8 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
             onPress={() => {
               setIsPickMonthPopupVisible(false);
               setMonthValue(new Date(tempDate));
-              syncUsersMonthLog(userID, setSleepData, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear());
+              setIsLoading(true);
+              syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
             }}>
             <Text>Confirm</Text>
           </TouchableOpacity>
@@ -324,6 +325,7 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
 
 // Main Screen
 const SleepScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(true);
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
@@ -336,21 +338,23 @@ const SleepScreen = (props) => {
   // a list of all the sleep entries to show the user in the UI
   const [sleepData, setSleepData] = useState([]);
 
+  // gets the context created in the App.tsx file
+  userID = React.useContext(AccountContext);
+
   useEffect(() => {
-    currentUserDetails().then(async (user) => {
-      userID = user;
-      date = getLocalDate(new Date());
-      syncUsersMonthLog(userID, setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
-    });
+    date = getLocalDate(new Date());
+    syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
   }, []);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncUsersMonthLog(userID, setSleepData, new Date().getMonth() + 1, new Date().getFullYear());
+      syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
       return;
     }, [])
   );
+
+  let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
   return (
     <>
@@ -364,7 +368,7 @@ const SleepScreen = (props) => {
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
-            tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue}
+            tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
@@ -381,8 +385,10 @@ const SleepScreen = (props) => {
             </TouchableOpacity>
           </View>
 
+          {!isLoading ? <Text style={styles.monthText}>Total Hours: {totalHours}</Text> : null}
+
           {/* Chart */}
-          {sleepData.length > 0 ?
+          {!isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} />
             </View>
@@ -390,10 +396,11 @@ const SleepScreen = (props) => {
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
               <Text style={{ textAlign: 'center' }}>No sleep data found</Text>
             </View>
+            : <Text>Loading...</Text>
           }
 
           {/* Sleep data rendered in tabs*/}
-          <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text>
+          {sleepData.length > 0 ? <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text> : null}
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>

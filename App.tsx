@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { COLORS } from './src/theme/theme';
 
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import SettingsScreen from './src/screens/Settings-Screen';
@@ -33,8 +34,10 @@ import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-nativ
 import { currentUserDetails, userSignOut } from './src/logic/account'
 import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
 
+const DEBUG = false;
+
 // I don't think this is being used
-const AccountContext = React.createContext("");
+export const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -116,20 +119,21 @@ function DashboardStack() {
       <Stack.Screen name="Dashboard Home" component={DashboardScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#6a5',
+            backgroundColor: COLORS.lightGreen,
           },
         }} />
     </Stack.Navigator>
   );
 }
 
+// screens in the settings tab
 function SettingsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Settings Home" component={SettingsScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#6a5',
+            backgroundColor: COLORS.lightGreen,
           },
         }} />
     </Stack.Navigator>
@@ -143,7 +147,7 @@ function DietStack() {
       <Stack.Screen name="Diet Home" component={DietScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#6a5',
+            backgroundColor: COLORS.lightGreen,
           },
         }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
@@ -160,7 +164,7 @@ function SleepStack() {
       <Stack.Screen name="Sleep Home" component={SleepScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#6a5',
+            backgroundColor: COLORS.lightGreen,
           },
         }} />
     </Stack.Navigator>
@@ -174,7 +178,7 @@ function WorkoutStack() {
       <Stack.Screen name="Workout Home" component={WorkoutHomeScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#6a5',
+            backgroundColor: COLORS.lightGreen,
           },
         }} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
@@ -230,7 +234,3 @@ export function StartListening(user: string) {
 // To bypass replace with 'export default App;'
 export default withAuthenticator(App);
 // export default App;
-
-
-
-

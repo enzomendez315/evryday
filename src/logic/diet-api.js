@@ -264,7 +264,7 @@ export function initNutritionLog(userId) {
 export async function initFoodItems() {
     DEBUG && console.log("Started initFoodItems");
     getFoodItems("").then((foods) => {
-        console.log(`Food Items: ${foods.length}`);
+        DEBUG && console.log(`Food Items: ${foods.length}`);
         if (foods.length == 0) {
             DEBUG && console.log("Adding food items");
             bulkCreateFood(bulkFoodsList);

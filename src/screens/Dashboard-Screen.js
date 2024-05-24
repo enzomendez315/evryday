@@ -5,6 +5,7 @@ import { PieChart } from 'react-native-chart-kit';
 import { syncDailyLog } from '../logic/sleep-api'
 import { currentUserDetails } from '../logic/account';
 import { getCurrentUser } from 'aws-amplify/auth';
+import { COLORS } from '../theme/theme';
 
 let date;
 let userID;
@@ -189,7 +190,7 @@ const Dashboard = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor="#6a5" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         {/* Render your components here */}
         <Text style={styles.title}>{getFormattedDate()}</Text>
