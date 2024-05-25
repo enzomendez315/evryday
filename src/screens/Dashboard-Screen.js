@@ -35,6 +35,7 @@ const HealthScoreTab = () => {
 
 // Dieting Tab Component:
 const DietTab = ({ calorieData }) => {
+  const navigation = useNavigation();
   if (calorieData == null) {
     return (
       <TouchableOpacity
@@ -64,7 +65,6 @@ const DietTab = ({ calorieData }) => {
 
   const chartWidth = 80;
   const chartHeight = 80;
-  const navigation = useNavigation();
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -210,7 +210,8 @@ const Dashboard = (props) => {
     getCurrentUser().then((user) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
-      getUsersLog(userID, date, setcalorieData);
+      // TODO: fix this from crashing on startup
+      // getUsersLog(userID, date, setcalorieData);
       tempLoading = false;
     });
   }, []);
@@ -219,7 +220,8 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
-      if (!tempLoading) getUsersLog(userID, date, setcalorieData);
+      // TODO: fix this from crashing on startup
+      // if (!tempLoading) getUsersLog(userID, date, setcalorieData);
       return;
     }, [])
   );
