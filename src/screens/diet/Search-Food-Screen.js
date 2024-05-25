@@ -1,73 +1,67 @@
-import React, {useState} from 'react';
-import { View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
-import { searchFoodStyles } from '../../styles/dietStyles/searchFoodStyles';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
+import { COLORS } from '../../theme/theme';
 import { FoodItem } from '../../models';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
-const foodsList = [
-  { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-  { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-  { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-  { name: 'Salmon', calories: 250, protein: 20, carbs: 0, fat: 15, serving: '150g' },
-  { name: 'Banana', calories: 100, protein: 1, carbs: 25, fat: 0, serving: '1 medium' },
-  { name: 'Eggs', calories: 70, protein: 6, carbs: 0, fat: 5, serving: '1 large' },
-  { name: 'Spinach', calories: 10, protein: 1, carbs: 2, fat: 0, serving: '100g' },
-  { name: 'Milk', calories: 150, protein: 8, carbs: 12, fat: 8, serving: '1 cup' },
-  { name: 'Pasta', calories: 250, protein: 10, carbs: 50, fat: 5, serving: '200g' },
-  { name: 'Apple', calories: 50, protein: 0, carbs: 15, fat: 0, serving: '1 medium' },
-  { name: 'Bread', calories: 100, protein: 5, carbs: 15, fat: 2, serving: '2 slices' },
-  { name: 'Yogurt', calories: 150, protein: 10, carbs: 15, fat: 5, serving: '1 cup' },
-  { name: 'Orange', calories: 50, protein: 1, carbs: 12, fat: 0, serving: '1 medium' },
-  { name: 'Beef', calories: 200, protein: 20, carbs: 0, fat: 15, serving: '100g' },
-  { name: 'Cheese', calories: 100, protein: 5, carbs: 0, fat: 10, serving: '1 slice' },
-  { name: 'Carrots', calories: 25, protein: 1, carbs: 5, fat: 0, serving: '100g' },
-  { name: 'Peanuts', calories: 200, protein: 10, carbs: 5, fat: 15, serving: '50g' },
-  { name: 'Turkey', calories: 150, protein: 15, carbs: 0, fat: 10, serving: '100g' },
-  { name: 'Potatoes', calories: 150, protein: 2, carbs: 30, fat: 0, serving: '150g' },
-  { name: 'Tomatoes', calories: 20, protein: 1, carbs: 5, fat: 0, serving: '100g' },
-  { name: 'Avocado', calories: 200, protein: 2, carbs: 10, fat: 15, serving: '1 medium' },
-  { name: 'Grapes', calories: 50, protein: 1, carbs: 10, fat: 0, serving: '100g' },
-];
+// let initialisedDiet = false;
+let oldSearchInput = "INITIALISED";
 
-const SearchFoodScreen = ({ navigation }) => {
-  const [foodItems, setFoodItems] = useState([]);
+async function updateFoodItems(setFoodItems, searchInput = "") {
+  // initialisedDiet = true;
+  if (searchInput == oldSearchInput) return;
+  oldSearchInput = searchInput;
+  await getFoodItems(searchInput).then((getFood) => { setFoodItems(getFood) });
+}
+
+const SearchFoodScreen = ({ route, navigation }) => {
+  // const [foodItems, setFoodItems] = useState<FoodItem>([]);
+  const meal = route.params.meal;
+  const mealId = route.params.meal.mealId;
+  console.log(`mealId: ${mealId}`);
+  const [foodItems, setFoodItems] = useState();
+  useEffect(() => {
+    updateFoodItems(setFoodItems);
+  }, []);
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
-        <View style={searchFoodStyles.header}>
-          <Text style={searchFoodStyles.title}>Search Food</Text>
-          <TextInput 
-          style={searchFoodStyles.searchInputText}
-           placeholder="Enter Food Here" 
-           onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
+        <View style={styles.header}>
+          <Text style={styles.title}>Search Food</Text>
+          <TextInput
+            style={styles.searchInputText}
+            placeholder="Enter Food Here"
+            //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
+            onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }} />
         </View>
 
-        <Text style={searchFoodStyles.resultsText}>Search Results:</Text>
+        <Text style={styles.resultsText}>Search Results:</Text>
 
-        <View style={searchFoodStyles.tableHeadContainer}>
-          <Text style={searchFoodStyles.tableHeadText}>Food Name</Text>
-          <Text style={searchFoodStyles.tableHeadText}>Serving</Text>
-          <Text style={searchFoodStyles.tableHeadText}>Calories</Text>
+        <View style={styles.tableHeadContainer}>
+          <Text style={styles.tableHeadText}>Food Name</Text>
+          <Text style={styles.tableHeadText}>Serving</Text>
+          <Text style={styles.tableHeadText}>Calories</Text>
         </View>
 
         <ScrollView>
-          <View style={searchFoodStyles.tableContainer}>
+          <View style={styles.tableContainer}>
             <FlatList
-              style={searchFoodStyles.listContainer}
+              style={styles.listContainer}
               scrollEnabled={false}
               data={foodItems}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>
-                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item })}>
-                    <View style={searchFoodStyles.tableTextContainer}>
-                      <Text style={searchFoodStyles.tableText}>{item.name}</Text>
-                      <Text style={searchFoodStyles.tableText}>{item.serving}</Text>
-                      <Text style={searchFoodStyles.tableText}>{item.calories}</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item, meal })}>
+                    <View style={styles.tableTextContainer}>
+                      <Text style={styles.tableText}>{item.name}</Text>
+                      <Text style={styles.tableText}>{item.serving}</Text>
+                      <Text style={styles.tableText}>{item.calories}</Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={searchFoodStyles.separator} />
+                  <View style={styles.separator} />
                 </>
               )}
             />
@@ -79,3 +73,66 @@ const SearchFoodScreen = ({ navigation }) => {
 };
 
 export default SearchFoodScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black',
+  },
+  searchInputText: {
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'left',
+    borderWidth: 1,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  resultsText: {
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'left',
+  },
+  tableContainer: {
+    padding: 10,
+    justifyContent: 'center',
+  },
+  tableHeadContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  tableHeadText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black'
+  },
+  tableTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  tableText: {
+    margin: 6,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  listContainer: {
+    padding: 1,
+    scrollEnabled: true,
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: 'black',
+  },
+});

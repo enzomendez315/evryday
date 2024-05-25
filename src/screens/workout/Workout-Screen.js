@@ -197,7 +197,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
           </View>
-          
+
           <TouchableOpacity
             style={styles.startWorkoutButton}
             onPress={() => {
@@ -209,7 +209,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
           >
             <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
           </TouchableOpacity>
-      
+
           <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
           {routine.exercises.map((exercise, index) => (
             <ScrollView key={index} style={styles.exerciseContainer}>
@@ -223,7 +223,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
                 </Text>
               ))}
 
-             
+
             </ScrollView>
           ))}
         </View>
@@ -258,20 +258,20 @@ const WorkoutHomeScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
-      <Text style={styles.title}>Workout</Text>
+        <Text style={styles.title}>Workout</Text>
 
-      <TouchableOpacity 
-          style={styles.exerciseHistoryButton} 
+        <TouchableOpacity
+          style={styles.exerciseHistoryButton}
           onPress={navigateToExerciseHistory}>
           <Text style={styles.exerciseListButtonText}>History</Text>
         </TouchableOpacity>
 
 
-        <TouchableOpacity 
-          style={styles.exerciseListButton} 
+        <TouchableOpacity
+          style={styles.exerciseListButton}
           onPress={navigateToExerciseList}>
           <Text style={styles.exerciseListButtonText}>Exercise List</Text>
         </TouchableOpacity>
@@ -309,7 +309,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#DADADA',
     padding: 20,
   },
 
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  
+
   addRoutineButton: {
     backgroundColor: COLORS.primaryBlueHex,
     borderRadius: 15,
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseListButton: {
-    backgroundColor: COLORS.primaryBlueHex, 
+    backgroundColor: COLORS.primaryBlueHex,
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseHistoryButton: {
-    backgroundColor: COLORS.primaryBlueHex, 
+    backgroundColor: COLORS.primaryBlueHex,
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseListButtonText: {
-    color: 'white', 
+    color: 'white',
     fontSize: 20,
     fontWeight: 'bold', // add more styling as needed
   },
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 20,
     textAlign: 'left'
-},
+  },
 
 
   // Additional styles for your routines would go here

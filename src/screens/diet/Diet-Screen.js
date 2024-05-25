@@ -1,120 +1,135 @@
-import React from 'react';
-import { ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import { dietHomeStyles } from '../../styles/dietStyles/dietHomeStyles';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
+import { getUsersLog } from '../../logic/diet-api'
+import { useFocusEffect } from '@react-navigation/native';
+import { NutritionLog, Meal } from '../../models';
+import { currentUserDetails } from '../../logic/account';
+import { DataStore } from 'aws-amplify/datastore';
 import { Bar } from 'react-native-progress';
+import { AccountContext } from '../../../App';
+import { COLORS } from '../../theme/theme';
 
-const mealData = [
-  {
-    name: 'Breakfast',
-    calories: 500,
-    protein: 25,
-    carbs: 50,
-    fat: 20,
-  },
-  {
-    name: 'Lunch',
-    calories: 700,
-    protein: 30,
-    carbs: 70,
-    fat: 30,
-  },
-  {
-    name: 'Dinner',
-    calories: 600,
-    protein: 35,
-    carbs: 60,
-    fat: 25,
-  },
-  {
-    name: 'Snack',
-    calories: 200,
-    protein: 10,
-    carbs: 20,
-    fat: 5,
-  },
-];
-
-const calorieData = {
-  proteinCurrent: mealData.reduce((acc, meal) => acc + meal.protein, 0),
-  proteinGoal: 150,
-  carbsCurrent: mealData.reduce((acc, meal) => acc + meal.carbs, 0),
-  carbsGoal: 250,
-  fatCurrent: mealData.reduce((acc, meal) => acc + meal.fat, 0),
-  fatGoal: 75,
-  caloriesCurrent: mealData.reduce((acc, meal) => acc + meal.calories, 0),
-  caloriesGoal: 3000,
-};
+let userId;
 
 const DietScreen = ({ navigation }) => {
+  const [mealData, setMealData] = useState();
+  const [calorieData, setCalorieData] = useState({
+    proteinCurrent: 0,
+    proteinGoal: 150,
+    carbsCurrent: 0,
+    carbsGoal: 250,
+    fatCurrent: 0,
+    fatGoal: 75,
+    caloriesCurrent: 0,
+    caloriesGoal: 2000,
+  });
+  const [logChanged, setLogChanged] = useState(true);
+
+  userId = React.useContext(AccountContext);
+
+  useEffect(() => {
+    if (!logChanged) return;
+    console.log('DIET SCREEN useEffect');
+    setLogChanged(false);
+    getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+  }, [logChanged]);
+
+  // called every time the screen is opened
+  useFocusEffect(
+    React.useCallback(() => {
+      getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+      return;
+    }, [])
+  );
+
+  let mealButtons = <></>
+
+  if (mealData != undefined) {
+    mealButtons = (
+      <>
+        {mealData?.map((meal, index) => (
+          <TouchableOpacity style={{ padding: 5 }}
+            key={index} margin={5}
+            onPress={() => navigation.navigate('Add Meal', { meal })}>
+            <Text style={styles.mealNameText}>{meal.name}</Text>
+            <Text style={styles.mealText}>
+              {meal.calories}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </>
+    );
+  }
+
+  let pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
+  calorieData.caloriesCurrent]
+
   return (
     <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <Text style={dietHomeStyles.title}>{new Date().toDateString()}</Text>
+      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>{new Date().toDateString()}</Text>
 
-        <View>
-          <Text style={dietHomeStyles.calorieHeader}>Calories</Text>
-          <Text style={dietHomeStyles.calorieText}>
-            {calorieData.caloriesCurrent}/{calorieData.caloriesGoal}
-          </Text>
-        </View>
+        <ScrollView>
+          <Text style={styles.tabHeaderText}>Calories</Text>
+          <View style={styles.calorieContainer}>
+            <Text style={styles.calorieText}>
+              {calorieData.caloriesCurrent}/{calorieData.caloriesGoal}
+            </Text>
 
-        <PieChart
-          style={dietHomeStyles.pieChart}
-          widthAndHeight={200}
-          series={[calorieData.caloriesGoal - calorieData.caloriesCurrent,
-          calorieData.caloriesCurrent]}
-          sliceColor={['#86A184', '#7CFC00']}
-          coverFill={'#FFF'}
-          doughnut={true}
-        />
+            <PieChart
+              style={styles.pieChart}
+              widthAndHeight={150}
+              series={pieSeries}
+              sliceColor={['#86A184', '#7CFC00']}
+              coverFill={'#FFF'}
+              doughnut={true}
+            />
 
-        <View style={dietHomeStyles.macroContainer}>
-          <View style={dietHomeStyles.macroRectangleContainer}>
-            <Text style={dietHomeStyles.macroText}>
-              Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
-            <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
-              width={125}
-              color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
-          </View>
-          <View style={dietHomeStyles.macroRectangleContainer}>
-            <Text style={dietHomeStyles.macroText}>
-              Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
-            <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
-              width={125}
-              color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
-          </View>
-          <View style={dietHomeStyles.macroRectangleContainer}>
-            <Text style={dietHomeStyles.macroText}>
-              Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
-            <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
-              width={125}
-              color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
           </View>
 
-        </View>
+          <Text style={styles.tabHeaderText}>Macros</Text>
+          <View style={styles.macroContainer}>
+            <View style={styles.macroRectangleContainer}>
+              <Text style={styles.macroText}>
+                Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
+              <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
+                width={125}
+                color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+            </View>
+            <View style={styles.macroRectangleContainer}>
+              <Text style={styles.macroText}>
+                Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
+              <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
+                width={125}
+                color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+            </View>
+            <View style={styles.macroRectangleContainer}>
+              <Text style={styles.macroText}>
+                Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+              <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
+                width={125}
+                color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+            </View>
+          </View>
 
-        <View style={dietHomeStyles.mealsContainer}>
+          <Text style={styles.tabHeaderText}>Meals</Text>
+          <View style={styles.mealsContainer}>
+            <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+              {mealButtons}
+            </ScrollView>
 
-          <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
-            {mealData.map((meal, index) => (
-              <TouchableOpacity style={{ padding: 5 }}
-                key={index} margin={5}
-                onPress={() => navigation.navigate('Add Meal', { meal })}>
-                <Text style={dietHomeStyles.mealNameText}>{meal.name}</Text>
-                <Text style={dietHomeStyles.mealText}>
-                  {meal.calories}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <TouchableOpacity style={dietHomeStyles.addMealButton}
-            onPress={() => navigation.navigate('Add Meal', {})}>
-            <Text style={dietHomeStyles.addMealButtonText}>Add Meal</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity style={styles.addMealButton} disabled={false}
+              onPress={() => {
+                //navigation.navigate('Add Meal', {});
+                console.log("pressed");
+                setLogChanged(true);
+              }}>
+              <Text style={styles.addMealButtonText}>Add Meal</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
 
     </>
@@ -122,3 +137,115 @@ const DietScreen = ({ navigation }) => {
 };
 
 export default DietScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#DADADA',
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  tabHeaderText: {
+    fontSize: 20,
+    color: 'black',
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  calorieContainer: {
+    margin: 10,
+    borderRadius: 8,
+    backgroundColor: 'white',
+  },
+  calorieHeader: {
+    margin: 10,
+    textAlign: 'center',
+    fontSize: 25,
+    color: 'black',
+  },
+  calorieText: {
+    margin: 5,
+    textAlign: 'center',
+    fontSize: 30,
+    color: 'black',
+  },
+  pieChart: {
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    borderRadius: 10,
+  },
+  macroContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+  },
+  macroText: {
+    textAlign: 'left',
+    fontSize: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    color: 'black',
+  },
+  mealsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    margin: 10,
+    borderRadius: 8,
+  },
+  mealNameText: {
+    fontSize: 25,
+    marginTop: 10,
+    marginBottom: 10,
+    flexDirection: 'row',
+    color: 'black',
+  },
+  mealText: {
+    fontSize: 25,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    flexDirection: 'row',
+  },
+  addMealButton: {
+    backgroundColor: 'blue',
+    borderRadius: 8,
+    padding: 10,
+    margin: 10,
+    justifyContent: 'center',
+    height: 50,
+  },
+  addMealButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  verticalLine: {
+    height: '100%',
+    width: 1,
+    backgroundColor: 'black',
+  },
+  progressBar: {
+    height: 20,
+    width: '100%',
+    backgroundColor: 'white',
+    borderColor: '#000',
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  macroRectangleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 20,
+  },
+});

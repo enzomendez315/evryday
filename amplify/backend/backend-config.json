@@ -107,6 +107,14 @@
     }
   },
   "parameters": {
+    "AMPLIFY_auth_evryday7b027c17_googleClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "evryday7b027c17"
+        }
+      ]
+    },
     "AMPLIFY_function_AdminQueries01025b9f_deploymentBucketName": {
       "usedBy": [
         {

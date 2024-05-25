@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { COLORS } from './src/theme/theme';
 
 import DashboardScreen from './src/screens/Dashboard-Screen';
+import SettingsScreen from './src/screens/Settings-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 
@@ -19,13 +21,23 @@ import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 
-import {Amplify} from 'aws-amplify';
-import {withAuthenticator, useAuthenticator} from '@aws-amplify/ui-react-native';
+import { Amplify } from 'aws-amplify';
+import { DataStore, Predicates } from 'aws-amplify/datastore';
+import { ConsoleLogger } from 'aws-amplify/utils';
 import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
+import { User } from './src/models';
+import { Hub } from 'aws-amplify/utils';
 
-import {currentUserDetails, userSignOut} from './src/logic/account'
-import {initFoodItems} from './src/logic/diet-api'
+import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
+
+import { currentUserDetails, userSignOut } from './src/logic/account'
+import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
+
+const DEBUG = false;
+
+// used to pass userID to all screens
+export const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -43,7 +55,7 @@ function BottomNavBarTabs() {
         component={DashboardStack}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
@@ -53,8 +65,8 @@ function BottomNavBarTabs() {
         component={DietStack}
         options={{
           tabBarLabel: 'Diet',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="fast-food-outline" color={color} size={size} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="nutrition" color={color} size={size} />
           ),
         }}
       />
@@ -63,7 +75,7 @@ function BottomNavBarTabs() {
         component={SleepStack}
         options={{
           tabBarLabel: 'Sleep',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="sleep" color={color} size={size} />
           ),
         }}
@@ -73,9 +85,23 @@ function BottomNavBarTabs() {
         component={WorkoutStack}
         options={{
           tabBarLabel: 'Workout',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="weight-lifter"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsStack}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="account"
               color={color}
               size={size}
             />
@@ -86,18 +112,44 @@ function BottomNavBarTabs() {
   );
 }
 
+// screens in the dashboard tab
 function DashboardStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard Home" component={DashboardScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Dashboard Home" component={DashboardScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
     </Stack.Navigator>
   );
 }
 
+// screens in the settings tab
+function SettingsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Settings Home" component={SettingsScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
+    </Stack.Navigator>
+  );
+}
+
+// screens in the diet tab
 function DietStack() {
   return (
-    <Stack.Navigator screenOptions={{headerShown:true}}>
-      <Stack.Screen name="Diet Home" component={DietScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Diet Home" component={DietScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
@@ -105,18 +157,30 @@ function DietStack() {
   );
 }
 
+// screens in the sleep tab
 function SleepStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Sleep Home" component={SleepScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Sleep Home" component={SleepScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
     </Stack.Navigator>
   );
 }
 
+// screens in the workout tab
 function WorkoutStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Workout Home" component={WorkoutHomeScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Workout Home" component={WorkoutHomeScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
       <Stack.Screen name="Workout List" component={WorkoutListScreen} />
@@ -124,18 +188,48 @@ function WorkoutStack() {
   );
 }
 
-function App() {
+// Initializes the FoodItems and NutritionLog tables on app start
+async function RunOnStart(userId: string) {
   // userSignOut();
-  currentUserDetails();
-  initFoodItems();
+  // console.log("started initFoodItems() and initNutritionLog()");
+  await initFoodItems();
+  await initNutritionLog(userId);
+}
+
+function App() {
+  const [userId, setUserId] = React.useState("");
+  // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
+  React.useEffect(() => {
+    currentUserDetails().then(async (user) => {
+      setUserId(user);
+      console.log(User); // Need to use a random model to initialize the DataStore
+      await DataStore.start();
+      await StartListening(user);
+    });
+  }, []);
   return (
-    <NavigationContainer>
-      <BottomNavBarTabs />
-    </NavigationContainer>
+    <AccountContext.Provider value={userId}>
+      <NavigationContainer>
+        <BottomNavBarTabs />
+      </NavigationContainer>
+    </AccountContext.Provider>
   );
+}
+
+// Fully syncs the local Datastore with the remote database before running RunOnStart()
+export function StartListening(user: string) {
+  console.log("DataStore is started");
+  const listener = Hub.listen('datastore', async hubData => {
+    const { event, data } = hubData.payload;
+    if (event === 'ready') {
+      console.log("DataStore is ready");
+      listener(); // Stops the listener
+      RunOnStart(user);
+    }
+  })
 }
 
 // Adds native ui for sign in functionality
 // To bypass replace with 'export default App;'
-//export default withAuthenticator(App);
- export default App;
+export default withAuthenticator(App);
+// export default App;

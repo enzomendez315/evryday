@@ -14,10 +14,13 @@
     },
     "categories": {
       "api": {
-        "evryday": {}
+        "evryday": {},
+        "AdminQueries": {}
       },
       "auth": {
-        "evryday7b027c17": {},
+        "evryday7b027c17": {
+          "googleClientId": "1064045555003-u8hsdnv9td0scelrm84rmar3q6ehsdd9.apps.googleusercontent.com"
+        },
         "userPoolGroups": {}
       },
       "function": {
