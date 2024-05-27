@@ -20,6 +20,7 @@ import WorkoutHomeScreen from './src/screens/workout/Workout-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
+import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
@@ -184,6 +185,7 @@ function WorkoutStack() {
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
       <Stack.Screen name="Workout List" component={WorkoutListScreen} />
+      <Stack.Screen name="Edit Routine" component={EditRoutineScreen} />
     </Stack.Navigator>
   );
 }

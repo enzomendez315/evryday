@@ -38,7 +38,7 @@ const DietScreen = ({ navigation }) => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+      //getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
       return;
     }, [])
   );

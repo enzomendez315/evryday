@@ -175,6 +175,7 @@ const RoutineTab = ({ routine, onPress }) => (
   </TouchableOpacity>
 );
 
+
 const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 
   navigation = useNavigation();
@@ -193,7 +194,10 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>×</Text>
             </TouchableOpacity>
             <Text style={styles.popupTitle}>{routine.name}</Text>
-            <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+            <TouchableOpacity onPress={() => {
+              onClose();
+              navigation.navigate("Edit Routine", { routineName: routine.name, workoutData: routine.exercises });
+            }}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
           </View>
@@ -232,7 +236,6 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
   );
 }
 
-
 const WorkoutHomeScreen = ({ navigation }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
@@ -241,11 +244,6 @@ const WorkoutHomeScreen = ({ navigation }) => {
   const openPopup = (routine) => {
     setSelectedRoutine(routine);
     setIsPopupVisible(true);
-  };
-
-  // Function to close the popup
-  const closePopup = () => {
-    setIsPopupVisible(false);
   };
 
   const navigateToExerciseList = () => {
@@ -280,9 +278,10 @@ const WorkoutHomeScreen = ({ navigation }) => {
 
           <Text style={styles.routineTitle}>Routines</Text>
 
-          {/* <TouchableOpacity style={styles.addRoutineButton}>
+          <TouchableOpacity style={styles.addRoutineButton}
+            onPress={() => navigation.navigate("Edit Routine", {})}>
             <Text style={styles.addRoutineButtonText}>+ Routine</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
         </View>
         <ScrollView style={styles.routinesContainer}>
@@ -297,7 +296,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
       {selectedRoutine && (
         <ExerciseListPopup
           visible={isPopupVisible}
-          onClose={closePopup}
+          onClose={() => setIsPopupVisible(false)}
           routine={selectedRoutine}
         />
       )}
