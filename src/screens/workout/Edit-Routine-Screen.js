@@ -1,26 +1,116 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../../theme/theme';
 
+const DeleteExercisePopup = ({ setShowDeleteModal, showDeleteModal, exerciseToDelete, handleConfirmDelete }) => {
+    return (
+        <Modal
+            visible={showDeleteModal}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setShowDeleteModal(false)}
+        >
+            <View style={styles.popupOverlay}>
+                <View style={styles.popup}>
+                    <View style={styles.popupHeader}>
+                        <Text>Are you sure you want to delete {exerciseToDelete} from this routine?</Text>
+                    </View>
+                    <TouchableOpacity style={styles.addSetButton}
+                        onPress={() => {
+                            handleConfirmDelete();
+                            setShowDeleteModal(false);
+                        }} >
+                        <Text style={{ color: 'white' }}>Yes</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.addSetButton}
+                        onPress={() => {
+                            setShowDeleteModal(false);
+                        }} >
+                        <Text style={{ color: 'white' }}>No</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+    );
+}
 
 const EditRoutineScreen = ({ route, navigation }) => {
     navigation = useNavigation();
     let routineName = route.params?.routineName || 'New Workout';
-    let tempWorkoutData = route.params?.workoutData || [];
-    const [workoutData, setWorkoutData] = useState(tempWorkoutData);
-    const [text, onChangeText] = useState('');
+    let initWorkoutData = route.params?.workoutData || [];
+    const [workoutData, setWorkoutData] = useState(initWorkoutData);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [exerciseToDelete, setExerciseToDelete] = useState('');
+
+    const handleDeleteExercise = (exerciseName) => {
+        setExerciseToDelete(exerciseName);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        // Perform delete operation here
+        let newWorkoutData = [...workoutData];
+        // Remove the exercise from the workoutData array
+        newWorkoutData = newWorkoutData.filter(item => item.name !== exerciseToDelete);
+        setWorkoutData(newWorkoutData);
+        console.log(`Deleting exercise: ${exerciseToDelete}`);
+        setShowDeleteModal(false);
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteModal(false);
+    };
+
+    console.log("this is workoutData");
+    console.log(workoutData.find(item => item.name === 'Chest Press'));
+
+    // called by + Set button
+    const AddSet = (exerciseName) => {
+        let newWorkoutData = [...workoutData];
+        let exercise = newWorkoutData.find(item => item.name === exerciseName);
+        let newSet = {
+            setNumber: exercise.sets.length + 1,
+            reps: 0,
+            weight: 0,
+        };
+        exercise.sets.push(newSet);
+        setWorkoutData(newWorkoutData);
+    }
+
+    // called by Remove Set button
+    const RemoveSet = (exerciseName) => {
+        let newWorkoutData = [...workoutData];
+        let exercise = newWorkoutData.find(item => item.name === exerciseName);
+        exercise.sets.pop();
+        setWorkoutData(newWorkoutData);
+    }
 
     return (
         <View style={styles.container}>
+            <DeleteExercisePopup showDeleteModal={showDeleteModal} handleConfirmDelete={handleConfirmDelete}
+                exerciseToDelete={exerciseToDelete} setShowDeleteModal={setShowDeleteModal} />
             <Text style={styles.title}>Edit Routine Screen</Text>
             <ScrollView>
                 <View style={styles.routineContainer}>
-                    <Text style={styles.title}>{routineName}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.title}>{routineName}</Text>
+                        <TouchableOpacity
+                            style={styles.addSetButton}
+                            onPress={() => console.log("save changes pressed")}>
+                            <Text style={{ color: 'white' }}>Save Changes</Text>
+                        </TouchableOpacity>
+                    </View>
                     {workoutData.map((item, index) => (
                         <View style={styles.exercisesContainer} key={index}>
-                            <Text>Exercise: {item.name}</Text>
-                            <Text>Target: {item.muscleGroup}</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={styles.title}>{item.name}</Text>
+                                <TouchableOpacity
+                                    style={styles.addSetButton}
+                                    onPress={() => handleDeleteExercise(item.name)}>
+                                    <Text style={{ color: 'white' }}>Delete Exercise</Text>
+                                </TouchableOpacity>
+                            </View>
 
                             <View style={styles.setContainerHeader}>
                                 <Text>Set</Text>
@@ -47,13 +137,22 @@ const EditRoutineScreen = ({ route, navigation }) => {
 
                                 </View>
                             ))}
-
-                            <TouchableOpacity style={styles.addSetButton}
-                                onPress={() => console.log("add set pressed")}>
-                                <Text style={{ color: 'white' }}>+ Set</Text>
-                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <TouchableOpacity style={styles.addSetButton}
+                                    onPress={() => AddSet(item.name)}>
+                                    <Text style={{ color: 'white' }}>+ Set</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.addSetButton}
+                                    onPress={() => RemoveSet(item.name)}>
+                                    <Text style={{ color: 'white' }}>Remove Set</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     ))}
+                    <TouchableOpacity style={styles.addSetButton}
+                        onPress={() => console.log("add exercise pressed")}>
+                        <Text style={{ color: 'white' }}>+ Exercise</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>
@@ -116,7 +215,30 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 8,
         alignItems: 'center',
-        width: 100,
+        width: 120,
+    },
+    popupOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    popup: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        width: '90%',
+    },
+    popupHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+
+    popupTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
     },
 });
 
