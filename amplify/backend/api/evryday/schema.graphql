@@ -1,3 +1,12 @@
+type ExerciseSet @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  reps: String
+  time: String
+  weight: String
+  ExerciseType: [ExerciseType] @manyToMany(relationName: "ExerciseSetExerciseType")
+  exerciseroutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseRoutineExerciseSet")
+}
+
 enum MealPeriod {
   breakfast
   lunch
@@ -24,7 +33,7 @@ type NutritionLog @model @auth(rules: [{allow: public}]) {
 type Meal @model @auth(rules: [{allow: public}]) {
   id: ID!
   mealPeriod: MealPeriod!
-  foodItems: [FoodItem] @hasMany
+  foodItems: [FoodItem] @manyToMany(relationName: "MealFoodItem")
 }
 
 type FoodItem @model @auth(rules: [{allow: public}]) {
@@ -35,6 +44,7 @@ type FoodItem @model @auth(rules: [{allow: public}]) {
   carbs: Float
   fat: Float
   serving: String
+  meals: [Meal] @manyToMany(relationName: "MealFoodItem")
 }
 
 type ExerciseLog @model @auth(rules: [{allow: public}]) {
@@ -42,7 +52,6 @@ type ExerciseLog @model @auth(rules: [{allow: public}]) {
   userId: ID!
   date: AWSDate!
   exerciseRoutine: ExerciseRoutine
-  exerciseType: ExerciseType
   durationMinutes: Int
   caloriesBurned: Int
 }
@@ -50,13 +59,15 @@ type ExerciseLog @model @auth(rules: [{allow: public}]) {
 type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
-  date: String!
-  exercises: [ExerciseType] @hasMany
+  exercises: [ExerciseSet] @manyToMany(relationName: "ExerciseRoutineExerciseSet")
+  name: String
 }
 
 type ExerciseType @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
+  target: String
+  exercisesets: [ExerciseSet] @manyToMany(relationName: "ExerciseSetExerciseType")
 }
 
 type SleepLog @model @auth(rules: [{allow: public}]) {
@@ -65,7 +76,6 @@ type SleepLog @model @auth(rules: [{allow: public}]) {
   date: AWSDate!
   hoursSlept: Float!
   sleepQuality: Int
-  restfulnessScore: Int
   dreamJournal: String
 }
 
