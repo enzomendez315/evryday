@@ -218,7 +218,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} value={hours.toString()}
+                <TextInput style={styles.textInput} placeholder={hours.toString()}
                   keyboardType='numeric'
                   onChangeText={(newText) => hours = parseInt(newText)} />
               </View>

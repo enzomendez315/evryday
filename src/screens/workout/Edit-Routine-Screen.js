@@ -62,7 +62,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
     // called every time the screen is opened
     useFocusEffect(
         React.useCallback(() => {
-            console.log("running useFocusEffect");
+            console.log("running useFocusEffect in edit routine screen");
             setRoutineName(route.params?.routineName);
             setWorkoutData(route.params?.workoutData);
         }, [route]));
@@ -73,8 +73,8 @@ const EditRoutineScreen = ({ route, navigation }) => {
         let exercise = newWorkoutData.find(item => item.name === exerciseName);
         let newSet = {
             setNumber: exercise.sets.length + 1,
-            reps: 0,
-            weight: 0,
+            reps: exercise.sets[0].reps,
+            weight: exercise.sets[0].weight,
         };
         exercise.sets.push(newSet);
         setWorkoutData(newWorkoutData);
@@ -92,7 +92,6 @@ const EditRoutineScreen = ({ route, navigation }) => {
         <View style={styles.container}>
             <DeleteExercisePopup showDeleteModal={showDeleteModal} handleConfirmDelete={handleConfirmDelete}
                 exerciseToDelete={exerciseToDelete} setShowDeleteModal={setShowDeleteModal} />
-            <Text style={styles.title}>Edit Routine Screen</Text>
             <ScrollView>
                 <View style={styles.routineContainer}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -100,12 +99,16 @@ const EditRoutineScreen = ({ route, navigation }) => {
                         <TouchableOpacity
                             style={styles.addSetButton}
                             onPress={() => {
-                                setRoutineName(route.params?.routineName);
-                                setWorkoutData(route.params?.workoutData)
+                                console.log('Save Changes');
+                                console.log(workoutData);
+                                //navigation.navigate("Routine List", { routineName: routineName, workoutData: workoutData });
                             }}>
                             <Text style={{ color: 'white' }}>Save Changes</Text>
                         </TouchableOpacity>
                     </View>
+
+
+                    {/* This is the loop for all the exercise types in the routine */}
                     {workoutData && workoutData.map((item, index) => (
                         <View style={styles.exercisesContainer} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -130,12 +133,24 @@ const EditRoutineScreen = ({ route, navigation }) => {
                                         style={styles.textInput}
                                         defaultValue={set.reps.toString()}
                                         inputMode='numeric'
+                                        onChange={(e) => {
+                                            let newWorkoutData = [...workoutData];
+                                            let exercise = newWorkoutData.find(exercise => exercise.name === item.name);
+                                            exercise.sets[setIndex].reps = e.nativeEvent.text;
+                                            setWorkoutData(newWorkoutData);
+                                        }}
                                     />
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <TextInput
                                             style={styles.textInputWeight}
                                             defaultValue={set.weight.toString().replace('lb', '')}
                                             inputMode='numeric'
+                                            onChange={(e) => {
+                                                let newWorkoutData = [...workoutData];
+                                                let exercise = newWorkoutData.find(exercise => exercise.name === item.name);
+                                                exercise.sets[setIndex].weight = e.nativeEvent.text;
+                                                setWorkoutData(newWorkoutData);
+                                            }}
                                         />
                                         <Text>lb</Text>
                                     </View>
