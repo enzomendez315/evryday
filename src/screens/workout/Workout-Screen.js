@@ -279,7 +279,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
           <Text style={styles.routineTitle}>Routines</Text>
 
           <TouchableOpacity style={styles.addRoutineButton}
-            onPress={() => navigation.navigate("Edit Routine", {})}>
+            onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', workoutData: [] })}>
             <Text style={styles.addRoutineButtonText}>+ Routine</Text>
           </TouchableOpacity>
 

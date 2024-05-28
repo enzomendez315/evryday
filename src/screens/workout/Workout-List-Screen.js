@@ -43,7 +43,12 @@ const exercises = [
     { name: 'Arnold Press', detail: '40 lbs (x8)', type: 'Shoulders' }
 ];
 
-const WorkoutListScreen = () => {
+const WorkoutListScreen = ({ route, navigation }) => {
+    let routineName = route.params?.routineName || '';
+    let initWorkoutData = route.params?.workoutData || [];
+
+    const [workoutData, setWorkoutData] = useState(initWorkoutData);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredExercises, setFilteredExercises] = useState(exercises);
 
@@ -58,6 +63,17 @@ const WorkoutListScreen = () => {
             setFilteredExercises(filteredData);
         }
     };
+
+    const handlePressed = (exerciseName, exerciseTarget) => {
+        console.log('Exercise clicked:', exerciseName);
+        const newWorkoutData = [...workoutData,
+        {
+            name: exerciseName,
+            sets: [{ setNumber: 1, weight: '0', reps: '0' }],
+            muscleGroup: exerciseTarget
+        }];
+        navigation.navigate("Edit Routine", { routineName: routineName, workoutData: newWorkoutData });
+    }
 
     return (
         <View style={styles.container}>
@@ -77,7 +93,12 @@ const WorkoutListScreen = () => {
             <ScrollView style={styles.listContainer}>
                 {filteredExercises.length > 0 ? (
                     filteredExercises.map((exercise, index) => (
-                        <TouchableOpacity key={index} style={styles.exerciseItem}>
+                        <TouchableOpacity
+                            key={index} style={styles.exerciseItem}
+                            onPress={() => {
+                                console.log('Exercise clicked:', exercise.name);
+                                if (routineName !== '') handlePressed(exercise.name, exercise.type);
+                            }}>
                             <Text style={styles.exerciseName}>{exercise.name}</Text>
                             <Text style={styles.exerciseDetail}>{exercise.detail}</Text>
                             <Text style={styles.exerciseType}>{exercise.type}</Text>
@@ -171,6 +192,5 @@ const styles = StyleSheet.create({
         marginTop: 20,
     }
 });
-
 
 export default WorkoutListScreen;

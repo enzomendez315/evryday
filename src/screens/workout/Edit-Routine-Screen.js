@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../../theme/theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 const DeleteExercisePopup = ({ setShowDeleteModal, showDeleteModal, exerciseToDelete, handleConfirmDelete }) => {
     return (
@@ -36,10 +37,10 @@ const DeleteExercisePopup = ({ setShowDeleteModal, showDeleteModal, exerciseToDe
 }
 
 const EditRoutineScreen = ({ route, navigation }) => {
-    navigation = useNavigation();
-    let routineName = route.params?.routineName || 'New Workout';
-    let initWorkoutData = route.params?.workoutData || [];
+    let tempRoutineName = route.params?.routineName;
+    let initWorkoutData = route.params?.workoutData;
     const [workoutData, setWorkoutData] = useState(initWorkoutData);
+    const [routineName, setRoutineName] = useState(tempRoutineName);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [exerciseToDelete, setExerciseToDelete] = useState('');
 
@@ -58,12 +59,13 @@ const EditRoutineScreen = ({ route, navigation }) => {
         setShowDeleteModal(false);
     };
 
-    const handleCancelDelete = () => {
-        setShowDeleteModal(false);
-    };
-
-    console.log("this is workoutData");
-    console.log(workoutData.find(item => item.name === 'Chest Press'));
+    // called every time the screen is opened
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("running useFocusEffect");
+            setRoutineName(route.params?.routineName);
+            setWorkoutData(route.params?.workoutData);
+        }, [route]));
 
     // called by + Set button
     const AddSet = (exerciseName) => {
@@ -97,11 +99,14 @@ const EditRoutineScreen = ({ route, navigation }) => {
                         <Text style={styles.title}>{routineName}</Text>
                         <TouchableOpacity
                             style={styles.addSetButton}
-                            onPress={() => console.log("save changes pressed")}>
+                            onPress={() => {
+                                setRoutineName(route.params?.routineName);
+                                setWorkoutData(route.params?.workoutData)
+                            }}>
                             <Text style={{ color: 'white' }}>Save Changes</Text>
                         </TouchableOpacity>
                     </View>
-                    {workoutData.map((item, index) => (
+                    {workoutData && workoutData.map((item, index) => (
                         <View style={styles.exercisesContainer} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={styles.title}>{item.name}</Text>
@@ -150,7 +155,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
                         </View>
                     ))}
                     <TouchableOpacity style={styles.addSetButton}
-                        onPress={() => console.log("add exercise pressed")}>
+                        onPress={() => navigation.navigate("Workout List", { routineName: routineName, workoutData: workoutData })}>
                         <Text style={{ color: 'white' }}>+ Exercise</Text>
                     </TouchableOpacity>
                 </View>
