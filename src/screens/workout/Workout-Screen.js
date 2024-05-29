@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
+import { AccountContext } from '../../../App';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
+let userID;
 
 const routineData = [
   {
@@ -236,6 +241,9 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 const WorkoutHomeScreen = ({ navigation }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
+  const [routineData2, setRoutineData2] = useState(null);
+
+  userID = React.useContext(AccountContext);
 
   // Function to open the popup with the selected routine
   const openPopup = (routine) => {
@@ -243,13 +251,9 @@ const WorkoutHomeScreen = ({ navigation }) => {
     setIsPopupVisible(true);
   };
 
-  const navigateToExerciseList = () => {
-    navigation.navigate('Workout List');
-  };
-
-  const navigateToExerciseHistory = () => {
-    navigation.navigate('Workout History');
-  };
+  useEffect(() => {
+    syncExerciseRoutines(userID, setRoutineData2);
+  }, []);
 
   return (
     <>
@@ -260,14 +264,14 @@ const WorkoutHomeScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.exerciseHistoryButton}
-          onPress={navigateToExerciseHistory}>
+          onPress={() => navigation.navigate('Workout History')}>
           <Text style={styles.exerciseListButtonText}>History</Text>
         </TouchableOpacity>
 
 
         <TouchableOpacity
           style={styles.exerciseListButton}
-          onPress={navigateToExerciseList}>
+          onPress={() => navigation.navigate('Workout List')}>
           <Text style={styles.exerciseListButtonText}>Exercise List</Text>
         </TouchableOpacity>
 
@@ -282,7 +286,7 @@ const WorkoutHomeScreen = ({ navigation }) => {
 
         </View>
         <ScrollView style={styles.routinesContainer}>
-          {routineData.map((routine, index) => (
+          {routineData2 && routineData2.map((routine, index) => (
             <RoutineTab
               key={index}
               routine={routine}

@@ -68,7 +68,6 @@ const DEBUG = false;
 // 2. connects that exercise type with its list of sets to the routine
 // 3. saves the routine in the database with a list of exercise types and their sets
 // 4. returns the routine
-
 export async function createExerciseRoutine(userId, routineName, routineData) {
     // creates a new routine object
     let routine = new ExerciseRoutine({
@@ -128,4 +127,36 @@ export async function createExerciseRoutine(userId, routineName, routineData) {
     }
     console.log("we are done with 0 bugs congratulashions!");
     return routine;
+}
+
+// write a function that gets the routine data from the database
+// the data it returns should be in the form of exampleRoutineData
+// the parameters will be userId and setRoutineData
+// it will get all routines for the user
+// and then for each routine, get the exercise types and their sets
+// and update the UI by calling setRoutineData with that data
+export async function syncExerciseRoutines(userId, setRoutineData) {
+    // get all the routines for the user
+    const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
+    let tempRoutineData = [];
+    // for each routine, get the exercise types and their sets
+    for (let routine of routines) {
+        const routineExerciseTypes = await DataStore.query(ExerciseRoutineExerciseType, (r) => r.exerciseRoutineId.eq(routine.id));
+        let exercises = [];
+        for (let routineExerciseType of routineExerciseTypes) {
+            const exerciseType = await DataStore.query(ExerciseType, (e) => e.id.eq(routineExerciseType.exerciseTypeId));
+            const exerciseSets = await DataStore.query(ExerciseSetExerciseType, (s) => s.exerciseTypeId.eq(exerciseType[0].id));
+            exercises.push({
+                name: exerciseType[0].name,
+                muscleGroup: exerciseType[0].target,
+                sets: exerciseSets,
+            });
+        }
+        tempRoutineData.push({
+            name: routine.name,
+            exercises: exercises,
+            lastPerformed: '1 day ago',
+        });
+    }
+    setRoutineData(tempRoutineData);
 }
