@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { createExerciseRoutine } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { useFocusEffect } from '@react-navigation/native';
+import { AccountContext } from '../../../App';
+
+let userID = '';
 
 const DeleteExercisePopup = ({ setShowDeleteModal, showDeleteModal, exerciseToDelete, handleConfirmDelete }) => {
     return (
@@ -44,6 +48,8 @@ const EditRoutineScreen = ({ route, navigation }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [exerciseToDelete, setExerciseToDelete] = useState('');
 
+    userID = React.useContext(AccountContext);
+
     const handleDeleteExercise = (exerciseName) => {
         setExerciseToDelete(exerciseName);
         setShowDeleteModal(true);
@@ -65,6 +71,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
             console.log("running useFocusEffect in edit routine screen");
             setRoutineName(route.params?.routineName);
             setWorkoutData(route.params?.workoutData);
+            console.log("this is userID: ", userID);
         }, [route]));
 
     // called by + Set button
@@ -101,6 +108,8 @@ const EditRoutineScreen = ({ route, navigation }) => {
                             onPress={() => {
                                 console.log('Save Changes');
                                 console.log(workoutData);
+                                console.log(workoutData[0].sets);
+                                createExerciseRoutine(userID, routineName, workoutData);
                                 //navigation.navigate("Routine List", { routineName: routineName, workoutData: workoutData });
                             }}>
                             <Text style={{ color: 'white' }}>Save Changes</Text>

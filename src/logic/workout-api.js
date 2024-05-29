@@ -1,103 +1,131 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseLog, ExerciseRoutine, ExerciseType } from '../models';
+import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
 // an exerciseSet contains an exerciseType and a number of reps/weight/time
 // an exercise routine is tracked in an exercise
 
+const exampleRoutineData = [
+    {
+        name: 'Hypertrophy 1',
+        exercises: [
+            {
+                name: 'Squat',
+                sets: [
+                    { setNumber: 1, weight: '185lb', reps: '10' },
+                    { setNumber: 2, weight: '185lb', reps: '10' },
+                    { setNumber: 3, weight: '185lb', reps: '10' },
+                ],
+                muscleGroup: 'Leg',
+            },
+            {
+                name: 'Chest Press',
+                sets: [
+                    { setNumber: 1, weight: '100lb', reps: '12' },
+                    { setNumber: 2, weight: '100lb', reps: '12' },
+                    { setNumber: 3, weight: '100lb', reps: '12' },
+                ],
+                muscleGroup: 'Chest',
+            },
+            {
+                name: 'Seated Row',
+                sets: [
+                    { setNumber: 1, weight: '110lb', reps: '12' },
+                    { setNumber: 2, weight: '110lb', reps: '12' },
+                    { setNumber: 3, weight: '110lb', reps: '12' },
+                ],
+                muscleGroup: 'Back',
+            },
+            {
+                name: 'Leg Extension',
+                sets: [
+                    { setNumber: 1, weight: '80lb', reps: '15' },
+                    { setNumber: 2, weight: '80lb', reps: '15' },
+                    { setNumber: 3, weight: '80lb', reps: '15' },
+                ],
+                muscleGroup: 'Leg',
+            },
+            {
+                name: 'Incline Chest Press',
+                sets: [
+                    { setNumber: 1, weight: '30lb', reps: '12' },
+                    { setNumber: 2, weight: '30lb', reps: '12' },
+                    { setNumber: 3, weight: '30lb', reps: '12' },
+                ],
+                muscleGroup: 'Chest',
+            },
+        ],
+        lastPerformed: '1 day ago',
+    },
+];
+
 const DEBUG = false;
 
-export async function getExerciseTypes(searchTerm) {
-    // Display exercise list if exercise doesn't exist
-    if (!searchTerm) {
-        const exercises = await DataStore.query(ExerciseType);
-        return exercises;
-    }
-    // Exercise was found in the list
-    const exercises = await DataStore.query(ExerciseType, (c) => c.name.contains(searchTerm));
-    return exercises;
-}
+// create a flow of data that is able to save data in the database
+// in this order when given data in the form of exampleRoutineData
+// 1. creates exercise sets and saves them in the relationship to exercise types
+// 2. connects that exercise type with its list of sets to the routine
+// 3. saves the routine in the database with a list of exercise types and their sets
+// 4. returns the routine
 
-// called one time to create the exercise types in the database
-// TODO: give users option for creating custom workouts
-export async function createExerciseType(name_, target_) {
-    if (!exerciseType) {
-        return;
-    }
-    try {
-        await DataStore.save(
-            new ExerciseType({
-                "name": name_,
-                "target": target_
-            })
-        );
-        DEBUG && console.log('Successfully added exerciseType: ', exerciseType);
-    } catch (err) {
-        console.log(err);
-    }
-}
+export async function createExerciseRoutine(userId, routineName, routineData) {
+    // creates a new routine object
+    let routine = new ExerciseRoutine({
+        userId: userId,
+        name: routineName,
+    });
+    let exerciseTypes = [];
+    // loops through all exercise types in a routine
+    routineData.forEach(async (exercise) => {
+        let exerciseType = new ExerciseType({
+            name: exercise.name,
+            target: exercise.muscleGroup,
+            exerciseroutine: routine,
+        });
+        // saves the type of exercise if it is new?
+        // TODO: make sure there aren't repeat saves to database
+        await DataStore.save(exerciseType);
+        exerciseTypes.push(exerciseType);
 
-// called during the creation of a new exercise routine
-export async function createExerciseSets(exerciseType, reps = 1, weight = 0, time = 0) {
-    try {
-        await DataStore.save(
-            new ExerciseSet({
-                "exerciseType": exerciseType,
-                "reps": reps,
-                "weight": weight,
-                "time": time
-            })
-        );
-        DEBUG && console.log('Successfully added exercieSet: ', exerciseType);
-    } catch (err) {
-        console.log(err);
-    }
-}
+        // goes through each set for the exercise type
+        for (let set of exercise.sets) {
+            let exerciseSet = new ExerciseSet({
+                weight: set.weight,
+                reps: set.reps,
+                time: '0',
+                exerciseType: exerciseType,
+            });
+            // saves each set
+            await DataStore.save(exerciseSet);
+            console.log("saved routineExerciseType: ");
 
-// creates a new routine for the user
-// the input is a list of exerciseSets
-export async function createExerciseRoutine(userID_, exercises_) {
-    DEBUG && console.log("Making a new exercise routine ");
-    if (await getSleepEntry(userID_, date_) === null) {
-        try {
-            const sleeplog = await DataStore.save(
-                new ExerciseRoutine({
-                    userId: userID_, //int
-                    exercises: exercises_, //list of exerciseSets
-                })
-            );
-            DEBUG && console.log('sleep log saved successfully!', sleeplog);
-        } catch (error) {
-            console.log('Error saving sleep log', error);
+            let setExerciseType = new ExerciseSetExerciseType({
+                exerciseSet: exerciseSet,
+                exerciseType: exerciseType,
+            });
+            // saves the relationship between the exercise set and the exercise type
+            await DataStore.save(setExerciseType);
         }
-    } else {
-        DEBUG && console.log("Entry already exists for this date and user");
-    }
-}
 
-export async function addExerciseLogEntry(logDetails) {
+        // saves the relationship between the exercise type and the routine
+        let routineExerciseType = new ExerciseRoutineExerciseType({
+            exerciseRoutine: routine,
+            exerciseType: exerciseType,
+        });
+        await DataStore.save(routineExerciseType);
+    });
+    // puts the list of exercise types into the routine object
+    routine.ExerciseTypes = exerciseTypes;
+    // saves routine to database
     try {
-        await DataStore.save(
-            new ExerciseLog({
-                "userId": "45c8ce94-ae73-4f6e-a2c8-dd5a87707c4d",
-                "date": "Lorem ipsum dolor sit amet",
-                "exerciseRoutine": "Lorem ipsum dolor sit amet",
-                "exerciseType": "1020",
-                "durationMinutes": 123.45,
-                "caloriesBurned": 12
-            })
-        );
-    } catch (err) {
+        const successVar = await DataStore.save(routine);
+        console.log("saved routine: ");
+        console.log(successVar);
+    }
+    catch (err) {
         console.log(err);
     }
-}
-
-export async function getAllExerciseLogEntries() {
-    try {
-        const models = await DataStore.query(ExerciseLog);
-        return models;
-    } catch (err) {
-        console.log(err);
-    }
+    console.log("we are done with 0 bugs congratulashions!");
+    return routine;
 }
