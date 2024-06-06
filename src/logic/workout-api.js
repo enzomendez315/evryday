@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType } from '../models';
+import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -84,21 +84,19 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
     });
     // saves the routine object
     await DataStore.save(routine);
+
     let exerciseTypes = [];
     // loops through all exercise types in a routine
 
     for (let exercise of exerciseData_) {
         // checks if exercise Type already exists
         const exerciseTypeCheck = await DataStore.query(ExerciseType, (e) => e.name.eq(exercise.name));
-
-
         let exerciseType;
         // if it doesn't exist, create a new exercise type
         if (exerciseTypeCheck.length === 0) {
             exerciseType = new ExerciseType({
                 name: exercise.name,
                 target: exercise.muscleGroup,
-                exerciseroutine: routine,
             });
             await DataStore.save(exerciseType);
         } else {
@@ -124,6 +122,13 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
             });
             // saves the relationship between the exercise set and the exercise type
             await DataStore.save(setExerciseType);
+
+            // save the relationship between the set and the routine
+            let routineExerciseSet = new ExerciseSetExerciseRoutine({
+                exerciseSet: exerciseSet,
+                exerciseRoutine: routine,
+            });
+            await DataStore.save(routineExerciseSet);
         }
 
         // saves the relationship between the exercise type and the routine
@@ -137,7 +142,7 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
     routine.ExerciseTypes = exerciseTypes;
     // saves routine to database
     try {
-        const successVar = await DataStore.save(routine);
+        await DataStore.save(routine);
     }
     catch (err) {
         console.log(err);
@@ -194,13 +199,18 @@ export async function syncExerciseRoutines(userId, setRoutineData) {
     for (let routine of routines) {
         const routineExerciseTypes = await DataStore.query(ExerciseRoutineExerciseType, (r) => r.exerciseRoutineId.eq(routine.id));
         let exercises = [];
+        // loops through all exercise types in a routine
         for (let routineExerciseType of routineExerciseTypes) {
+            // gets the type from exercise
             const exerciseType = await DataStore.query(ExerciseType, (e) => e.id.eq(routineExerciseType.exerciseTypeId));
 
-            const linkExerciseSets = await DataStore.query(ExerciseSetExerciseType, (s) => s.exerciseTypeId.eq(exerciseType[0].id));
+            // gets the sets associated with the exercise type and routine
+            const linkExerciseSetsRoutine = await DataStore.query(ExerciseSetExerciseRoutine, (s) => s.and(c =>
+                [s.exerciseRoutineId.eq(routine.id),]
+            ));
 
             let tempSets = [];
-            for (let set of linkExerciseSets) {
+            for (let set of linkExerciseSetsRoutine) {
                 const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(set.exerciseSetId));
                 tempSets.push(exerciseSet[0]);
             }
