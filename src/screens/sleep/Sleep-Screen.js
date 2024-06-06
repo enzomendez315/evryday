@@ -289,6 +289,7 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
+
 // takes in a date object and returns a string in the format "March 2024"
 // used for UI to display the month and year 
 function getMonthYearFormat(date) {

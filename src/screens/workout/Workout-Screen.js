@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
@@ -8,7 +8,7 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 let userID;
 
-const routineData = [
+const exampleRoutineData = [
   {
     name: 'Hypertrophy 1',
     exercises: [
@@ -238,7 +238,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
   );
 }
 
-const WorkoutHomeScreen = ({ navigation }) => {
+const WorkoutHomeScreen = ({ navigation, route }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [routineData2, setRoutineData2] = useState(null);
@@ -251,9 +251,18 @@ const WorkoutHomeScreen = ({ navigation }) => {
     setIsPopupVisible(true);
   };
 
+  // whenever the routine Data is updated, this is called
   useEffect(() => {
     syncExerciseRoutines(userID, setRoutineData2);
   }, []);
+
+  // called every time the screen is opened
+  useFocusEffect(
+    React.useCallback(() => {
+      syncExerciseRoutines(userID, setRoutineData2);
+      return;
+    }, [])
+  );
 
   return (
     <>
@@ -285,18 +294,6 @@ const WorkoutHomeScreen = ({ navigation }) => {
           </TouchableOpacity>
 
         </View>
-
-
-
-
-
-        {routineData2 && console.log(routineData2[0].exercises[0])}
-        {routineData2 && console.log(routineData2)}
-
-
-
-
-
         <ScrollView style={styles.routinesContainer}>
           {routineData2 && routineData2.map((routine, index) => (
             <RoutineTab

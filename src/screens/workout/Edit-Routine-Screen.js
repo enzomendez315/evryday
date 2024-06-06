@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createExerciseRoutine } from '../../logic/workout-api';
+import { createExerciseRoutine, updateExerciseRoutine, deleteExerciseRoutine } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { useFocusEffect } from '@react-navigation/native';
 import { AccountContext } from '../../../App';
+
+const exampleExerciseData = [
+    {
+        name: 'Bench Press',
+        sets: [
+            // more attributes exist in the AWS database, but these are the important ones
+            { reps: 10, weight: '185lb', time: '0', id: 'some big id string' },
+            { reps: 10, weight: '185lb', time: '0', id: 'some big id string' },
+            { reps: 10, weight: '185lb', time: '0', id: 'some big id string' },
+        ],
+        muscleGroup: 'Chest',
+    }
+];
 
 let userID = '';
 
@@ -46,6 +59,8 @@ const EditRoutineScreen = ({ route, navigation }) => {
     let tempRoutineName = route.params?.routineName;
     let initExerciseData = route.params?.exerciseData;
     let routineId = route.params?.routineId; // if it's a new routine, this will be undefined
+
+    // exercise data is 
     const [exerciseData, setExerciseData] = useState(initExerciseData);
     const [routineName, setRoutineName] = useState(tempRoutineName);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -74,8 +89,6 @@ const EditRoutineScreen = ({ route, navigation }) => {
             console.log("running useFocusEffect in edit routine screen");
             setRoutineName(route.params?.routineName);
             setExerciseData(route.params?.exerciseData);
-
-            console.log("this is userID: ", userID);
         }, [route]));
 
     // called by + Set button
@@ -121,19 +134,22 @@ const EditRoutineScreen = ({ route, navigation }) => {
 
                         <TouchableOpacity
                             style={styles.addSetButton}
-                            onPress={() => {
+                            onPress={async () => {
                                 if (routineId) {
                                     console.log('Update Routine');
                                     console.log(exerciseData);
-                                    //updateExerciseRoutine(routineId, routineName, sa);
+                                    await updateExerciseRoutine(routineId, routineName, exerciseData);
+                                    navigation.navigate("Workout Home");
                                 } else {
                                     console.log('Create Routine');
                                     console.log(exerciseData);
-                                    //createExerciseRoutine(userID, routineName, exerciseData);
+                                    await createExerciseRoutine(userID, routineName, exerciseData);
+                                    navigation.navigate("Workout Home");
                                 }
-                                navigation.navigate("Workout Home");
                             }}>
-                            {routineId ? <Text style={{ color: 'white' }}>Update Routine</Text> : <Text style={{ color: 'white' }}>Create Routine</Text>}
+                            {routineId ? <Text style={{ color: 'white' }}>Update Routine</Text> :
+                                <Text style={{ color: 'white' }}>Create Routine</Text>}
+
                         </TouchableOpacity>
                     </View>
 
@@ -200,8 +216,16 @@ const EditRoutineScreen = ({ route, navigation }) => {
                         </View>
                     ))}
                     <TouchableOpacity style={styles.addSetButton}
-                        onPress={() => navigation.navigate("Workout List", { routineName: routineName, exerciseData: exerciseData })}>
+                        onPress={() =>
+                            navigation.navigate("Workout List", { routineName: routineName, exerciseData: exerciseData, routineId: routineId })}>
                         <Text style={{ color: 'white' }}>+ Exercise</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.addSetButton}
+                        onPress={async () => {
+                            await deleteExerciseRoutine(routineId);
+                            navigation.navigate("Workout Home")
+                        }}>
+                        <Text style={{ color: 'white' }}>Delete Routine</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
