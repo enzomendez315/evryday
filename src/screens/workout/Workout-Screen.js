@@ -198,7 +198,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
             <Text style={styles.popupTitle}>{routine.name}</Text>
             <TouchableOpacity onPress={() => {
               onClose();
-              navigation.navigate("Edit Routine", { routineName: routine.name, workoutData: routine.exercises });
+              navigation.navigate("Edit Routine", { routineName: routine.name, exerciseData: routine.exercises, routineId: routine.id });
             }}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
@@ -210,7 +210,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               // Close the popup first
               onClose();
               // Navigate to ActiveWorkout screen with the routine's name and data
-              navigation.navigate('Active Workout', { routineName: routine.name, workoutData: routine.exercises });
+              navigation.navigate('Active Workout', { routineName: routine.name, exerciseData: routine.exercises });
             }}
           >
             <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
@@ -225,7 +225,7 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 
               {exercise.sets.map((set, setIndex) => (
                 <Text key={setIndex} style={styles.exerciseSet}>
-                  {`Set ${set.setNumber}: ${set.weight} x ${set.reps} ${set.completed ? '(completed)' : ''}`}
+                  {`Set ${setIndex + 1}: ${set.weight} x ${set.reps}`}
                 </Text>
               ))}
 
@@ -280,11 +280,23 @@ const WorkoutHomeScreen = ({ navigation }) => {
           <Text style={styles.routineTitle}>Routines</Text>
 
           <TouchableOpacity style={styles.addRoutineButton}
-            onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', workoutData: [] })}>
+            onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', exerciseData: [] })}>
             <Text style={styles.addRoutineButtonText}>+ Routine</Text>
           </TouchableOpacity>
 
         </View>
+
+
+
+
+
+        {routineData2 && console.log(routineData2[0].exercises[0])}
+        {routineData2 && console.log(routineData2)}
+
+
+
+
+
         <ScrollView style={styles.routinesContainer}>
           {routineData2 && routineData2.map((routine, index) => (
             <RoutineTab

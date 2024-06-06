@@ -41,9 +41,12 @@ const DeleteExercisePopup = ({ setShowDeleteModal, showDeleteModal, exerciseToDe
 }
 
 const EditRoutineScreen = ({ route, navigation }) => {
+    // the ? will prevent the app from crashing if the value is undefined
+    // it will be undefined if params is null or undefined
     let tempRoutineName = route.params?.routineName;
-    let initWorkoutData = route.params?.workoutData;
-    const [workoutData, setWorkoutData] = useState(initWorkoutData);
+    let initExerciseData = route.params?.exerciseData;
+    let routineId = route.params?.routineId; // if it's a new routine, this will be undefined
+    const [exerciseData, setExerciseData] = useState(initExerciseData);
     const [routineName, setRoutineName] = useState(tempRoutineName);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [exerciseToDelete, setExerciseToDelete] = useState('');
@@ -57,10 +60,10 @@ const EditRoutineScreen = ({ route, navigation }) => {
 
     const handleConfirmDelete = () => {
         // Perform delete operation here
-        let newWorkoutData = [...workoutData];
-        // Remove the exercise from the workoutData array
-        newWorkoutData = newWorkoutData.filter(item => item.name !== exerciseToDelete);
-        setWorkoutData(newWorkoutData);
+        let newexerciseData = [...exerciseData];
+        // Remove the exercise from the exerciseData array
+        newexerciseData = newexerciseData.filter(item => item.name !== exerciseToDelete);
+        setExerciseData(newexerciseData);
         console.log(`Deleting exercise: ${exerciseToDelete}`);
         setShowDeleteModal(false);
     };
@@ -70,29 +73,39 @@ const EditRoutineScreen = ({ route, navigation }) => {
         React.useCallback(() => {
             console.log("running useFocusEffect in edit routine screen");
             setRoutineName(route.params?.routineName);
-            setWorkoutData(route.params?.workoutData);
+            setExerciseData(route.params?.exerciseData);
+
             console.log("this is userID: ", userID);
         }, [route]));
 
     // called by + Set button
     const AddSet = (exerciseName) => {
-        let newWorkoutData = [...workoutData];
-        let exercise = newWorkoutData.find(item => item.name === exerciseName);
+        let newExerciseData = [...exerciseData];
+        let exercise = newExerciseData.find(item => item.name === exerciseName);
+        if (exercise.sets.length === 0) {
+            let newSet = {
+                reps: 0,
+                weight: 0,
+            };
+            exercise.sets.push(newSet);
+            setExerciseData(newExerciseData);
+            return;
+        }
+        // if there is a set, copy the reps and weight from recent set
         let newSet = {
-            setNumber: exercise.sets.length + 1,
-            reps: exercise.sets[0].reps,
-            weight: exercise.sets[0].weight,
+            reps: exercise.sets[exercise.sets.length - 1].reps,
+            weight: exercise.sets[exercise.sets.length - 1].weight,
         };
         exercise.sets.push(newSet);
-        setWorkoutData(newWorkoutData);
+        setExerciseData(newExerciseData);
     }
 
     // called by Remove Set button
     const RemoveSet = (exerciseName) => {
-        let newWorkoutData = [...workoutData];
-        let exercise = newWorkoutData.find(item => item.name === exerciseName);
+        let newExerciseData = [...exerciseData];
+        let exercise = newExerciseData.find(item => item.name === exerciseName);
         exercise.sets.pop();
-        setWorkoutData(newWorkoutData);
+        setExerciseData(newExerciseData);
     }
 
     return (
@@ -102,23 +115,31 @@ const EditRoutineScreen = ({ route, navigation }) => {
             <ScrollView>
                 <View style={styles.routineContainer}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={styles.title}>{routineName}</Text>
+
+                        <TextInput style={styles.title} value={routineName}
+                            onChangeText={(newName) => setRoutineName(newName)} />
+
                         <TouchableOpacity
                             style={styles.addSetButton}
                             onPress={() => {
-                                console.log('Save Changes');
-                                console.log(workoutData);
-                                console.log(workoutData[0].sets);
-                                createExerciseRoutine(userID, routineName, workoutData);
-                                //navigation.navigate("Routine List", { routineName: routineName, workoutData: workoutData });
+                                if (routineId) {
+                                    console.log('Update Routine');
+                                    console.log(exerciseData);
+                                    //updateExerciseRoutine(routineId, routineName, sa);
+                                } else {
+                                    console.log('Create Routine');
+                                    console.log(exerciseData);
+                                    //createExerciseRoutine(userID, routineName, exerciseData);
+                                }
+                                navigation.navigate("Workout Home");
                             }}>
-                            <Text style={{ color: 'white' }}>Save Changes</Text>
+                            {routineId ? <Text style={{ color: 'white' }}>Update Routine</Text> : <Text style={{ color: 'white' }}>Create Routine</Text>}
                         </TouchableOpacity>
                     </View>
 
 
                     {/* This is the loop for all the exercise types in the routine */}
-                    {workoutData && workoutData.map((item, index) => (
+                    {exerciseData && exerciseData.map((item, index) => (
                         <View style={styles.exercisesContainer} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={styles.title}>{item.name}</Text>
@@ -137,16 +158,16 @@ const EditRoutineScreen = ({ route, navigation }) => {
 
                             {item.sets.map((set, setIndex) => (
                                 <View style={styles.setContainer} key={setIndex}>
-                                    <Text>{set.setNumber}</Text>
+                                    <Text>{setIndex + 1}</Text>
                                     <TextInput
                                         style={styles.textInput}
                                         defaultValue={set.reps.toString()}
                                         inputMode='numeric'
                                         onChange={(e) => {
-                                            let newWorkoutData = [...workoutData];
-                                            let exercise = newWorkoutData.find(exercise => exercise.name === item.name);
+                                            let newExerciseData = [...exerciseData];
+                                            let exercise = newExerciseData.find(exercise => exercise.name === item.name);
                                             exercise.sets[setIndex].reps = e.nativeEvent.text;
-                                            setWorkoutData(newWorkoutData);
+                                            setExerciseData(newExerciseData);
                                         }}
                                     />
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -155,10 +176,10 @@ const EditRoutineScreen = ({ route, navigation }) => {
                                             defaultValue={set.weight.toString().replace('lb', '')}
                                             inputMode='numeric'
                                             onChange={(e) => {
-                                                let newWorkoutData = [...workoutData];
-                                                let exercise = newWorkoutData.find(exercise => exercise.name === item.name);
+                                                let newexerciseData = [...exerciseData];
+                                                let exercise = newexerciseData.find(exercise => exercise.name === item.name);
                                                 exercise.sets[setIndex].weight = e.nativeEvent.text;
-                                                setWorkoutData(newWorkoutData);
+                                                setExerciseData(newexerciseData);
                                             }}
                                         />
                                         <Text>lb</Text>
@@ -179,7 +200,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
                         </View>
                     ))}
                     <TouchableOpacity style={styles.addSetButton}
-                        onPress={() => navigation.navigate("Workout List", { routineName: routineName, workoutData: workoutData })}>
+                        onPress={() => navigation.navigate("Workout List", { routineName: routineName, exerciseData: exerciseData })}>
                         <Text style={{ color: 'white' }}>+ Exercise</Text>
                     </TouchableOpacity>
                 </View>

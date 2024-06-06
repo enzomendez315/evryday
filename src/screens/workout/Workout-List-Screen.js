@@ -45,7 +45,8 @@ const exercises = [
 
 const WorkoutListScreen = ({ route, navigation }) => {
     let routineName = route.params?.routineName || '';
-    let initWorkoutData = route.params?.workoutData || [];
+    let initWorkoutData = route.params?.exerciseData || [];
+    let routineId = route.params?.routineId;
 
     const [workoutData, setWorkoutData] = useState(initWorkoutData);
 
@@ -65,14 +66,13 @@ const WorkoutListScreen = ({ route, navigation }) => {
     };
 
     const handlePressed = (exerciseName, exerciseTarget) => {
-        console.log('Exercise clicked:', exerciseName);
         const newWorkoutData = [...workoutData,
         {
             name: exerciseName,
             sets: [{ setNumber: 1, weight: '0', reps: '0' }],
             muscleGroup: exerciseTarget
         }];
-        navigation.navigate("Edit Routine", { routineName: routineName, workoutData: newWorkoutData });
+        navigation.navigate("Edit Routine", { routineName: routineName, exerciseData: newWorkoutData, routineId: routineId });
     }
 
     return (
@@ -96,7 +96,6 @@ const WorkoutListScreen = ({ route, navigation }) => {
                         <TouchableOpacity
                             key={index} style={styles.exerciseItem}
                             onPress={() => {
-                                console.log('Exercise clicked:', exercise.name);
                                 if (routineName !== '') handlePressed(exercise.name, exercise.type);
                             }}>
                             <Text style={styles.exerciseName}>{exercise.name}</Text>

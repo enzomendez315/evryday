@@ -68,7 +68,7 @@ const DEBUG = false;
 // 2. connects that exercise type with its list of sets to the routine
 // 3. saves the routine in the database with a list of exercise types and their sets
 // 4. returns the routine
-export async function createExerciseRoutine(userId, routineName, routineData) {
+export async function createExerciseRoutine(userId, routineName, exerciseData_) {
     // creates a new routine object
     let routine = new ExerciseRoutine({
         userId: userId,
@@ -76,7 +76,7 @@ export async function createExerciseRoutine(userId, routineName, routineData) {
     });
     let exerciseTypes = [];
     // loops through all exercise types in a routine
-    routineData.forEach(async (exercise) => {
+    exerciseData_.forEach(async (exercise) => {
         let exerciseType = new ExerciseType({
             name: exercise.name,
             target: exercise.muscleGroup,
@@ -145,17 +145,25 @@ export async function syncExerciseRoutines(userId, setRoutineData) {
         let exercises = [];
         for (let routineExerciseType of routineExerciseTypes) {
             const exerciseType = await DataStore.query(ExerciseType, (e) => e.id.eq(routineExerciseType.exerciseTypeId));
-            const exerciseSets = await DataStore.query(ExerciseSetExerciseType, (s) => s.exerciseTypeId.eq(exerciseType[0].id));
+
+            const linkExerciseSets = await DataStore.query(ExerciseSetExerciseType, (s) => s.exerciseTypeId.eq(exerciseType[0].id));
+
+            let tempSets = [];
+            for (let set of linkExerciseSets) {
+                const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(set.exerciseSetId));
+                tempSets.push(exerciseSet[0]);
+            }
+
             exercises.push({
                 name: exerciseType[0].name,
                 muscleGroup: exerciseType[0].target,
-                sets: exerciseSets,
+                sets: tempSets,
             });
         }
         tempRoutineData.push({
             name: routine.name,
+            id: routine.id,
             exercises: exercises,
-            lastPerformed: '1 day ago',
         });
     }
     setRoutineData(tempRoutineData);
