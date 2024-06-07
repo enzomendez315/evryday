@@ -238,8 +238,8 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={() => {
-                  editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                onPress={async () => {
+                  await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
                   syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
                 }}>
@@ -374,7 +374,7 @@ const SleepScreen = (props) => {
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-            <View>
+            <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
                 <Text>Select Month</Text>
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     textAlign: 'left',
-    marginTop: 10,
+    marginTop: 5,
   },
   addSleepButton: {
     backgroundColor: 'blue',

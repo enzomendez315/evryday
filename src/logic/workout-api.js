@@ -164,19 +164,15 @@ export async function updateExerciseRoutine(routineId, routineName, exerciseData
 export async function deleteExerciseRoutine(routineId) {
     // get the routine
     const routine = await DataStore.query(ExerciseRoutine, routineId);
-    // get the exercise types for the routine
-    const routineExerciseTypes = await DataStore.query(ExerciseRoutineExerciseType, (r) => r.exerciseRoutineId.eq(routine.id));
-    // for each exercise type, get the sets
-    for (let routineExerciseType of routineExerciseTypes) {
-        const linkExerciseSets = await DataStore.query(ExerciseSetExerciseType, (s) => s.exerciseTypeId.eq(routineExerciseType.exerciseTypeId));
-        // delete the sets
-        for (let set of linkExerciseSets) {
-            await DataStore.delete(set);
 
-            const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(set.exerciseSetId));
-            // delete the exercise set
-            await DataStore.delete(exerciseSet[0]);
-        }
+    // get the sets for the routine
+    const linkExerciseSetsRoutine = await DataStore.query(ExerciseSetExerciseRoutine, (s) => s.exerciseRoutineId.eq(routine.id));
+
+    // delete the sets
+    for (let routineSet of linkExerciseSetsRoutine) {
+        const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(routineSet.exerciseSetId));
+        // delete the exercise set
+        await DataStore.delete(exerciseSet[0]);
     }
     // delete the routine
     await DataStore.delete(routine);
@@ -192,8 +188,6 @@ export async function deleteExerciseRoutine(routineId) {
 export async function syncExerciseRoutines(userId, setRoutineData) {
     // get all the routines for the user
     const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
-    console.log("the routines are: ");
-    console.log(routines.length);
     let tempRoutineData = [];
     // for each routine, get the exercise types and their sets
     for (let routine of routines) {

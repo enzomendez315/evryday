@@ -194,6 +194,8 @@ function WorkoutStack() {
 async function RunOnStart(userId: string) {
   // userSignOut();
   // console.log("started initFoodItems() and initNutritionLog()");
+  await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
+  console.log("DataStore is cleared");
   await initFoodItems();
   await initNutritionLog(userId);
 }
@@ -219,7 +221,7 @@ function App() {
 }
 
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
-export function StartListening(user: string) {
+export async function StartListening(user: string) {
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {
     const { event, data } = hubData.payload;

@@ -256,7 +256,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
     syncExerciseRoutines(userID, setRoutineData2);
   }, []);
 
-  // called every time the screen is opened
+  // called every time the screen is opened, I think
   useFocusEffect(
     React.useCallback(() => {
       syncExerciseRoutines(userID, setRoutineData2);
