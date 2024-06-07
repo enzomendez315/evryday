@@ -69,7 +69,7 @@ const WorkoutListScreen = ({ route, navigation }) => {
         const newWorkoutData = [...workoutData,
         {
             name: exerciseName,
-            sets: [{ setNumber: 1, weight: '0', reps: '0' }],
+            sets: [{ weight: '10', reps: '8' }],
             muscleGroup: exerciseTarget
         }];
         navigation.navigate("Edit Routine", { routineName: routineName, exerciseData: newWorkoutData, routineId: routineId });

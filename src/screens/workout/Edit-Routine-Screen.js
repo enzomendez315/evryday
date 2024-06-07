@@ -95,16 +95,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
     const AddSet = (exerciseName) => {
         let newExerciseData = [...exerciseData];
         let exercise = newExerciseData.find(item => item.name === exerciseName);
-        if (exercise.sets.length === 0) {
-            let newSet = {
-                reps: 0,
-                weight: 0,
-            };
-            exercise.sets.push(newSet);
-            setExerciseData(newExerciseData);
-            return;
-        }
-        // if there is a set, copy the reps and weight from recent set
+        // copy the reps and weight from recent set
         let newSet = {
             reps: exercise.sets[exercise.sets.length - 1].reps,
             weight: exercise.sets[exercise.sets.length - 1].weight,
@@ -209,7 +200,10 @@ const EditRoutineScreen = ({ route, navigation }) => {
                                     <Text style={{ color: 'white' }}>+ Set</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.addSetButton}
-                                    onPress={() => RemoveSet(item.name)}>
+                                    onPress={() => {
+                                        if (item.sets.length > 1) RemoveSet(item.name)
+                                        else console.log("minimum one set required")
+                                    }}>
                                     <Text style={{ color: 'white' }}>Remove Set</Text>
                                 </TouchableOpacity>
                             </View>

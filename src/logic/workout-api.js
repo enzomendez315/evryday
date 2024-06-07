@@ -193,20 +193,32 @@ export async function syncExerciseRoutines(userId, setRoutineData) {
     for (let routine of routines) {
         const routineExerciseTypes = await DataStore.query(ExerciseRoutineExerciseType, (r) => r.exerciseRoutineId.eq(routine.id));
         let exercises = [];
+
         // loops through all exercise types in a routine
         for (let routineExerciseType of routineExerciseTypes) {
             // gets the type from exercise
             const exerciseType = await DataStore.query(ExerciseType, (e) => e.id.eq(routineExerciseType.exerciseTypeId));
 
-            // gets the sets associated with the exercise type and routine
+            // gets the sets associated with the routine
             const linkExerciseSetsRoutine = await DataStore.query(ExerciseSetExerciseRoutine, (s) => s.and(c =>
                 [s.exerciseRoutineId.eq(routine.id),]
             ));
 
+            // gets the sets for the exercise type
+            const linkExerciseSetsType = await DataStore.query(ExerciseSetExerciseType, (s) => s.and(c =>
+                [s.exerciseTypeId.eq(exerciseType[0].id),]
+            ));
+
             let tempSets = [];
+            // queries the sets for the routine and exercise type
             for (let set of linkExerciseSetsRoutine) {
-                const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(set.exerciseSetId));
-                tempSets.push(exerciseSet[0]);
+                for (let setType of linkExerciseSetsType) {
+                    if (set.exerciseSetId === setType.exerciseSetId) {
+                        const exerciseSet = await DataStore.query(ExerciseSet, (s) => s.id.eq(set.exerciseSetId));
+                        tempSets.push(exerciseSet[0]);
+                    }
+                }
+
             }
 
             exercises.push({
