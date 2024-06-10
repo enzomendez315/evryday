@@ -4,7 +4,7 @@ type ExerciseSet @model @auth(rules: [{allow: public}]) {
   time: String
   weight: String
   ExerciseType: [ExerciseType] @manyToMany(relationName: "ExerciseSetExerciseType")
-  exerciseroutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseRoutineExerciseSet")
+  ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseSetExerciseRoutine")
 }
 
 enum MealPeriod {
@@ -54,13 +54,16 @@ type ExerciseLog @model @auth(rules: [{allow: public}]) {
   exerciseRoutine: ExerciseRoutine
   durationMinutes: Int
   caloriesBurned: Int
+  ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseLogExerciseRoutine")
 }
 
 type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
-  exercises: [ExerciseSet] @manyToMany(relationName: "ExerciseRoutineExerciseSet")
   name: String
+  exerciselogs: [ExerciseLog] @manyToMany(relationName: "ExerciseLogExerciseRoutine")
+  ExerciseTypes: [ExerciseType] @manyToMany(relationName: "ExerciseRoutineExerciseType")
+  exercisesets: [ExerciseSet] @manyToMany(relationName: "ExerciseSetExerciseRoutine")
 }
 
 type ExerciseType @model @auth(rules: [{allow: public}]) {
@@ -68,6 +71,7 @@ type ExerciseType @model @auth(rules: [{allow: public}]) {
   name: String!
   target: String
   exercisesets: [ExerciseSet] @manyToMany(relationName: "ExerciseSetExerciseType")
+  exerciseroutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseRoutineExerciseType")
 }
 
 type SleepLog @model @auth(rules: [{allow: public}]) {
