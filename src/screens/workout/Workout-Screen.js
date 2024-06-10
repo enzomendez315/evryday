@@ -165,6 +165,17 @@ const exampleRoutineData = [
   }
 ];
 
+// gets date in format 'Weekday, Month DD'
+// takes input from getLocalDate
+function getFormattedDate() {
+  let tempDate = new Date();
+  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+  const month = tempDate.toLocaleString('default', { month: 'long' });
+  const day = tempDate.getDate();
+  const formattedDate = `${weekDay}, ${month} ${day}`;
+  return formattedDate;
+}
+
 // Individual routine tab component
 const RoutineTab = ({ routine, onPress }) => (
   <TouchableOpacity style={styles.routineTab} onPress={onPress}>
@@ -176,7 +187,6 @@ const RoutineTab = ({ routine, onPress }) => (
     ))}
   </TouchableOpacity>
 );
-
 
 const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
 
@@ -242,6 +252,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [routineData2, setRoutineData2] = useState(null);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   userID = React.useContext(AccountContext);
 
@@ -251,15 +262,14 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
     setIsPopupVisible(true);
   };
 
-  // whenever the routine Data is updated, this is called
   useEffect(() => {
-    syncExerciseRoutines(userID, setRoutineData2);
+    syncExerciseRoutines(userID, setRoutineData2, setIsDataLoading);
   }, []);
 
   // called every time the screen is opened, I think
   useFocusEffect(
     React.useCallback(() => {
-      syncExerciseRoutines(userID, setRoutineData2);
+      syncExerciseRoutines(userID, setRoutineData2, setIsDataLoading);
       return;
     }, [])
   );
@@ -268,6 +278,8 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
+
+        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate()}</Text>
 
         <Text style={styles.title}>Workout</Text>
 
@@ -295,6 +307,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 
         </View>
         <ScrollView style={styles.routinesContainer}>
+          {isDataLoading && <Text>Loading...</Text>}
           {routineData2 && routineData2.map((routine, index) => (
             <RoutineTab
               key={index}

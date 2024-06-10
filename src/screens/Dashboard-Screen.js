@@ -185,14 +185,14 @@ function getLocalDate() {
   return formattedDate;
 }
 
-// gets date in format 'Month DD, YYYY'
+// gets date in format 'Weekday, Month DD'
 // takes input from getLocalDate
 function getFormattedDate() {
   let tempDate = new Date();
+  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
   const month = tempDate.toLocaleString('default', { month: 'long' });
   const day = tempDate.getDate();
-  const year = tempDate.getFullYear();
-  const formattedDate = `${month} ${day}, ${year}`;
+  const formattedDate = `${weekDay}, ${month} ${day}`;
   return formattedDate;
 }
 

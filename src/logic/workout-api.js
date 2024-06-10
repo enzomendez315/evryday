@@ -185,7 +185,7 @@ export async function deleteExerciseRoutine(routineId) {
 // it will get all routines for the user
 // and then for each routine, get the exercise types and their sets
 // and update the UI by calling setRoutineData with that data
-export async function syncExerciseRoutines(userId, setRoutineData) {
+export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoading) {
     // get all the routines for the user
     const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
     let tempRoutineData = [];
@@ -234,4 +234,5 @@ export async function syncExerciseRoutines(userId, setRoutineData) {
         });
     }
     setRoutineData(tempRoutineData);
+    setIsDataLoading(false);
 }

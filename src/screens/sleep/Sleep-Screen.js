@@ -26,6 +26,17 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 let userID;
 let date;
 
+// gets date in format 'Weekday, Month DD'
+// takes input from getLocalDate
+function getFormattedDate() {
+  let tempDate = new Date();
+  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+  const month = tempDate.toLocaleString('default', { month: 'long' });
+  const day = tempDate.getDate();
+  const formattedDate = `${weekDay}, ${month} ${day}`;
+  return formattedDate;
+}
+
 // gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
 // converts UTC to local, subtracts local offset from hours
 // this is hacky and causes some bugs with dates being off by 1 day
@@ -372,6 +383,8 @@ const SleepScreen = (props) => {
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
+
+          <Text style={styles.title}>{getFormattedDate()}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
             <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
