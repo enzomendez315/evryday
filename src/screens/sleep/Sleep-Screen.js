@@ -26,6 +26,17 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 let userID;
 let date;
 
+// gets date in format 'Weekday, Month DD'
+// takes input from getLocalDate
+function getFormattedDate() {
+  let tempDate = new Date();
+  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+  const month = tempDate.toLocaleString('default', { month: 'long' });
+  const day = tempDate.getDate();
+  const formattedDate = `${weekDay}, ${month} ${day}`;
+  return formattedDate;
+}
+
 // gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
 // converts UTC to local, subtracts local offset from hours
 // this is hacky and causes some bugs with dates being off by 1 day
@@ -218,7 +229,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} value={hours.toString()}
+                <TextInput style={styles.textInput} placeholder={hours.toString()}
                   keyboardType='numeric'
                   onChangeText={(newText) => hours = parseInt(newText)} />
               </View>
@@ -238,8 +249,8 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={() => {
-                  editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                onPress={async () => {
+                  await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
                   syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
                 }}>
@@ -289,6 +300,7 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
+
 // takes in a date object and returns a string in the format "March 2024"
 // used for UI to display the month and year 
 function getMonthYearFormat(date) {
@@ -372,8 +384,10 @@ const SleepScreen = (props) => {
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
+          <Text style={styles.title}>{getFormattedDate()}</Text>
+
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-            <View>
+            <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
                 <Text>Select Month</Text>
@@ -439,7 +453,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     textAlign: 'left',
-    marginTop: 10,
+    marginTop: 5,
   },
   addSleepButton: {
     backgroundColor: 'blue',

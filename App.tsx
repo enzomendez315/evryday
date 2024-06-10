@@ -20,6 +20,7 @@ import WorkoutHomeScreen from './src/screens/workout/Workout-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
+import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
@@ -184,6 +185,7 @@ function WorkoutStack() {
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
       <Stack.Screen name="Workout List" component={WorkoutListScreen} />
+      <Stack.Screen name="Edit Routine" component={EditRoutineScreen} />
     </Stack.Navigator>
   );
 }
@@ -192,6 +194,8 @@ function WorkoutStack() {
 async function RunOnStart(userId: string) {
   // userSignOut();
   // console.log("started initFoodItems() and initNutritionLog()");
+  await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
+  console.log("DataStore is cleared");
   await initFoodItems();
   await initNutritionLog(userId);
 }
@@ -217,7 +221,7 @@ function App() {
 }
 
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
-export function StartListening(user: string) {
+export async function StartListening(user: string) {
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {
     const { event, data } = hubData.payload;

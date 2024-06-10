@@ -12,6 +12,17 @@ import { COLORS } from '../../theme/theme';
 
 let userId;
 
+// gets date in format 'Weekday, Month DD'
+// takes input from getLocalDate
+function getFormattedDate() {
+  let tempDate = new Date();
+  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+  const month = tempDate.toLocaleString('default', { month: 'long' });
+  const day = tempDate.getDate();
+  const formattedDate = `${weekDay}, ${month} ${day}`;
+  return formattedDate;
+}
+
 const DietScreen = ({ navigation }) => {
   const [mealData, setMealData] = useState();
   const [calorieData, setCalorieData] = useState({
@@ -38,7 +49,7 @@ const DietScreen = ({ navigation }) => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+      //getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
       return;
     }, [])
   );
@@ -69,7 +80,7 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{new Date().toDateString()}</Text>
+        <Text style={styles.mealText}>{getFormattedDate()}</Text>
 
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>

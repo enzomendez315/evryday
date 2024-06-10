@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; 
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SetItem = ({ setNumber, previous, onUpdate, onCheck }) => {
 
@@ -39,9 +39,10 @@ const SetItem = ({ setNumber, previous, onUpdate, onCheck }) => {
     </View>
   );
 };
+
 const ActiveWorkoutTab = ({ exerciseData }) => {
   const [sets, setSets] = useState(exerciseData.sets);
-  
+
   // Function to add new set
   const addSet = () => {
     const newSetData = {
@@ -99,7 +100,7 @@ const ActiveWorkoutTab = ({ exerciseData }) => {
   );
 };
 
-const ActiveWorkout = ({route, navigation}) => {
+const ActiveWorkout = ({ route, navigation }) => {
   navigation = useNavigation();
   const routineName = route.params?.routineName || 'Workout';
   const [secondsElapsed, setSecondsElapsed] = useState(0);
@@ -148,79 +149,79 @@ const ActiveWorkout = ({route, navigation}) => {
   );
 };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: 'white',
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    finishButton: {
-      // Style for the finish button
-    },
-    finishButtonText: {
-      // Style for the finish button text
-    },
-    clockIcon: {
-      // Style for the clock icon
-    },
-    routineName: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    activeClock: {
-      fontSize: 22,
-      textAlign: 'center',
-      marginVertical: 20,
-    },
-    placeholderContainer: {
-      // Style for the placeholder container
-    },
-    placeholderText: {
-      // Style for the placeholder text
-    },
-    addButton: {
-      // Style for the add exercise button
-    },
-    addButtonText: {
-      // Style for the add exercise button text
-    },
-    cancelButton: {
-      // Style for the cancel workout button
-    },
-    cancelButtonText: {
-      // Style for the cancel workout button text
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  finishButton: {
+    // Style for the finish button
+  },
+  finishButtonText: {
+    // Style for the finish button text
+  },
+  clockIcon: {
+    // Style for the clock icon
+  },
+  routineName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  activeClock: {
+    fontSize: 22,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  placeholderContainer: {
+    // Style for the placeholder container
+  },
+  placeholderText: {
+    // Style for the placeholder text
+  },
+  addButton: {
+    // Style for the add exercise button
+  },
+  addButtonText: {
+    // Style for the add exercise button text
+  },
+  cancelButton: {
+    // Style for the cancel workout button
+  },
+  cancelButtonText: {
+    // Style for the cancel workout button text
+  },
 
-    workoutTabContainer: {
-      // ... style for the workout tab container ...
-    },
-    setRow: {
-      // ... style for each set row ...
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 10,
-    },
-    setText: {
-      // ... style for the set text ...
-    },
-    previousText: {
-      // ... style for the previous text ...
-    },
-    input: {
-      // ... style for the input fields ...
-    },
-    addSetText: {
-      // ... style for the add set text ...
-    },
-    // Add additional styles as needed
-  });
-  
-  export default ActiveWorkout;
+  workoutTabContainer: {
+    // ... style for the workout tab container ...
+  },
+  setRow: {
+    // ... style for each set row ...
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  setText: {
+    // ... style for the set text ...
+  },
+  previousText: {
+    // ... style for the previous text ...
+  },
+  input: {
+    // ... style for the input fields ...
+  },
+  addSetText: {
+    // ... style for the add set text ...
+  },
+  // Add additional styles as needed
+});
+
+export default ActiveWorkout;

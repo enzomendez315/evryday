@@ -19,7 +19,6 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
                     date: date_, //string
                     hoursSlept: hoursSlept_,  //int
                     sleepQuality: sleepQuality_, //int
-                    restfulnessScore: 5, //int
                     dreamJournal: "no journal" //string
                 })
             );
