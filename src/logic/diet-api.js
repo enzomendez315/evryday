@@ -1,8 +1,46 @@
-import { generateClient } from 'aws-amplify/api';
-import { DataStore, Predicates } from 'aws-amplify/datastore';
+import { DataStore } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 
-const DEBUG = false;
+const DEBUG = true;
+
+// called when user presses add meal in main diet screen
+// if a nutrition log doesn't exist for the user and date, it creates one
+export async function createMeal(userId, date) {
+    p = new Promise(async (resolve, reject) => {
+        try {
+            await getUsersNutritionLog(userId, date).then((nutLog) => {
+                DEBUG && console.log(`createMeal nutLog: ${nutLog.id} userId: ${userId} date: ${date}`);
+                const meal = new Meal({
+                    nutritionLogMealsId: nutLog.id,
+                    mealPeriod: MealPeriod.BREAKFAST,
+                    foodItems: []
+                });
+                DataStore.save(meal).then(() => {
+                    DEBUG && console.log(`createMeal meal created: ${meal.id}`);
+                    resolve(meal);
+                });
+            });
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
+    return p;
+}
+
+// called when user presses delete meal in edit meal screen
+export async function deleteMeal() { }
+
+// called when user presses complete meal in edit meal screen
+// this is called rather than createMeal if meal Id exists
+export async function updateMeal() { }
+
+// called by main diet screen to update the nutrition log data
+export async function syncDailyMealData() { }
+
+
+
+
 
 // called by main Diet page
 export async function getUsersLog(userId, date, setCalorieData, setMealData = () => { }) {
@@ -58,10 +96,10 @@ export const NUTLOG = async (userId, date) => {
                         await DataStore.save(dinner).then(() => { DEBUG && console.log(`NUTLOG: Dinner created`) });
                         await DataStore.save(
                             NutritionLog.copyOf(nutLog, updated => {
-                                updated = log;
+                                updated = nutLog;
                                 updated.Meals = [breakfast, lunch, dinner];
                             })
-                        ).then((m) => { console.log(DEBUG && `NUTLOG: Finished Creating meals`) });
+                        ).then((m) => { DEBUG && console.log(`NUTLOG: Finished Creating meals`) });
                     }
                     resolve({
                         nutLog,
@@ -76,6 +114,25 @@ export const NUTLOG = async (userId, date) => {
         }
     });
     return p;
+}
+
+// calls NUTLOG to make a new nutrition log
+// called at startup in App.js
+export function initNutritionLog(userId) {
+    DEBUG && console.log("Started initNutritionLog");
+    date = new Date(Date.now()).toISOString().substring(0, 10);
+    DEBUG && console.log(`Date init: ${date}`);
+    NUTLOG(userId, date).then(async ({ nutLog, meals, userId, date }) => {
+
+        if (nutLog.length == 0) {
+            DEBUG && console.log("could not initialise nutrition log");
+        }
+        DEBUG && console.log(`Nutrition Log: ${nutLog.id}`);
+        DEBUG && console.log("Finished initNutritionLog");
+
+    }).catch((err) => {
+        console.log(err);
+    });
 }
 
 // queries the datastore for a meal with mealId
@@ -109,21 +166,9 @@ export async function getFoodItems(searchTerm) {
     return foodItems;
 }
 
-// adds foodItem to the datastore
-async function createFoodItem(foodItem) {
-    if (!foodItem) {
-        return;
-    }
-    try {
-        await DataStore.save(foodItem);
-        DEBUG && console.log('Successfully added: ', foodItem);
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 // creates a new nutrition log and adds to the datastore
-export async function addNutritionLog(userId, date) {
+// helper for getUsersNutritionLog
+async function addNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => {
         try {
             let log = new NutritionLog({
@@ -145,7 +190,8 @@ export async function addNutritionLog(userId, date) {
 
 // gets nutrition log for a user and date
 // if no log is found, creates a new one
-export async function getUsersNutritionLog(userId, date) {
+// helper for NUTLOG
+async function getUsersNutritionLog(userId, date) {
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(NutritionLog, (u) => u.and(c => [
@@ -171,7 +217,8 @@ export async function getUsersNutritionLog(userId, date) {
 
 // gets the total macros for all meals
 // loops through each meal and calls calcMealMacros
-export function getMealMacros(meals) {
+// helper for syncing meal data to main diet screen UI
+async function getMealMacros(meals) {
     p = new Promise((resolve, reject) => {
         DEBUG && console.log("Started GetMealMacros");
         let macros = [];
@@ -192,6 +239,8 @@ export function getMealMacros(meals) {
 }
 
 // gets macros for a meal
+// helper function for getMealMacros and
+// called in add meal screen UI
 export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = await meal.foodItems.toArray();
@@ -210,6 +259,7 @@ export async function calcMealMacros(meal) {
 }
 
 // adds a food item to a meal
+// called in Add-Food-Screen.js
 export async function addFoodToMeal(mealId, foodId) {
     p = new Promise(async (resolve, reject) => {
         DEBUG && console.log(`addFoodToMeal mealId: ${mealId} Date: ${foodId}`);
@@ -240,7 +290,7 @@ export async function addFoodToMeal(mealId, foodId) {
                             updated.mealFoodItemsId = meal.id;
                         })
                     ).then(async (m) => {
-                        console.log(m);
+                        //DEBUG && console.log(m);
                         DEBUG && console.log(`Added mealid to food item: ${foods[0].id}`);
                         mealFoodArr = await meal.foodItems.toArray();
                         await DataStore.save(
@@ -263,27 +313,10 @@ export async function addFoodToMeal(mealId, foodId) {
     return p;
 }
 
-// calls NUTLOG to make a new nutrition log
-export function initNutritionLog(userId) {
-    DEBUG && console.log("Started initNutritionLog");
-    date = new Date(Date.now()).toISOString().substring(0, 10);
-    DEBUG && console.log(`Date init: ${date}`);
-    NUTLOG(userId, date).then(async ({ nutLog, meals, userId, date }) => {
-
-        if (nutLog.length == 0) {
-            DEBUG && console.log("could not initialise nutrition log");
-        }
-        DEBUG && console.log(`Nutrition Log: ${nutLog.id}`);
-        DEBUG && console.log("Finished initNutritionLog");
-
-    }).catch((err) => {
-        console.log(err);
-    });
-}
-
 // calls getFoodItems
 // calls bulkCreateFood if no food items are found
-export async function initFoodItems() {
+// only called once to make items in database
+async function initFoodItems() {
     DEBUG && console.log("Started initFoodItems");
     getFoodItems("").then((foods) => {
         DEBUG && console.log(`Food Items: ${foods.length}`);
@@ -297,6 +330,7 @@ export async function initFoodItems() {
 
 // takes a list of foods and turns them into FoodItems
 // calls createFoodItem to save them to the database
+// only called once to make items in database
 function bulkCreateFood(foodArr) {
     foodArr.forEach(item => {
         let foodItem = new FoodItem({
@@ -311,7 +345,22 @@ function bulkCreateFood(foodArr) {
     });
 }
 
+// adds foodItem to the datastore
+// only called once to make items in database
+async function createFoodItem(foodItem) {
+    if (!foodItem) {
+        return;
+    }
+    try {
+        await DataStore.save(foodItem);
+        DEBUG && console.log('Successfully added: ', foodItem);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 // list of foods for the search page
+// once the database is populated, this isn't needed
 const bulkFoodsList = [
     { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
     { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
-import { FoodItem } from '../../models';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 // let initialisedDiet = false;
 let oldSearchInput = "INITIALISED";

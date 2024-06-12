@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { currentUserDetails } from '../../logic/account';
 import { getMeal, calcMealMacros } from '../../logic/diet-api'
 
 // const foodsList = [
@@ -122,9 +121,8 @@ const AddMealScreen = (props) => {
 
   useEffect(() => {
     // setMealData(route.params.meal);
-    console.log('route.params', route.params);
-    getUsersLog(setMealData, setFoodList, mealId);
-
+    //console.log('route.params', route.params);
+    //getUsersLog(setMealData, setFoodList, mealId);
   }, [route.params]);
 
   if (foodListView != undefined) {

@@ -3,9 +3,6 @@ import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity
 import PieChart from 'react-native-pie-chart';
 import { getUsersLog } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
-import { NutritionLog, Meal } from '../../models';
-import { currentUserDetails } from '../../logic/account';
-import { DataStore } from 'aws-amplify/datastore';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
@@ -13,7 +10,6 @@ import { COLORS } from '../../theme/theme';
 let userId;
 
 // gets date in format 'Weekday, Month DD'
-// takes input from getLocalDate
 function getFormattedDate() {
   let tempDate = new Date();
   const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
@@ -24,7 +20,10 @@ function getFormattedDate() {
 }
 
 const DietScreen = ({ navigation }) => {
+  // meal data is the day's meals (id and name)
   const [mealData, setMealData] = useState();
+
+  // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState({
     proteinCurrent: 0,
     proteinGoal: 150,
@@ -40,10 +39,10 @@ const DietScreen = ({ navigation }) => {
   userId = React.useContext(AccountContext);
 
   useEffect(() => {
-    if (!logChanged) return;
+    //if (!logChanged) return;
     console.log('DIET SCREEN useEffect');
     setLogChanged(false);
-    getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+    //getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
   }, [logChanged]);
 
   // called every time the screen is opened
@@ -56,7 +55,7 @@ const DietScreen = ({ navigation }) => {
 
   let mealButtons = <></>
 
-  if (mealData != undefined) {
+  if (mealData) {
     mealButtons = (
       <>
         {mealData?.map((meal, index) => (
@@ -80,7 +79,7 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <Text style={styles.mealText}>{getFormattedDate()}</Text>
+        <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate()}</Text>
 
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>
@@ -134,7 +133,6 @@ const DietScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.addMealButton} disabled={false}
               onPress={() => {
                 //navigation.navigate('Add Meal', {});
-                console.log("pressed");
                 setLogChanged(true);
               }}>
               <Text style={styles.addMealButtonText}>Add Meal</Text>

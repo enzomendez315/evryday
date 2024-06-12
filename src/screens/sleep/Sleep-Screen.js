@@ -337,7 +337,7 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
 )
 
 // Main Screen
-const SleepScreen = (props) => {
+const SleepScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);

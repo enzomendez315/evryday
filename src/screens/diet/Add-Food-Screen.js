@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
-import { FoodItem } from '../../models';
 import { addFoodToMeal } from '../../logic/diet-api'
 
 
@@ -54,10 +53,13 @@ const AddFoodScreen = (props) => {
         <TouchableOpacity
           onPress={() => {
             //Uncomment to add food to a meal
-            addFood(meal.mealId, item.id).then((m) => {
-              // navigation.navigate('Add Meal', {meal});
-              navigation.navigate('Diet Home');
+
+            /*
+            addFood(meal.mealId, item.id).then(() => {
+              navigation.navigate('Add Meal', {meal});
             });
+            */
+
           }}
           style={styles.button}>
           <Text style={styles.buttonText}>Add Food</Text>
