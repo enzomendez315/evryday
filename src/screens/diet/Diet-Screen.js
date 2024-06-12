@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
-import { getUsersLog } from '../../logic/diet-api'
+import { syncDailyLogData, createMeal, calcMealMacros } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
 
 let userId;
+
+const exampleMealData = [
+  {
+    name: 'Breakfast',
+    id: 1, // some big identifier
+    calories: 500,
+  },
+];
 
 // gets date in format 'Weekday, Month DD'
 function getFormattedDate() {
@@ -20,7 +28,8 @@ function getFormattedDate() {
 }
 
 const DietScreen = ({ navigation }) => {
-  // meal data is the day's meals (id and name)
+  // meal data contains information about meals
+  // it is created in syncDailyLogData
   const [mealData, setMealData] = useState();
 
   // calorie data is the data from the day's meals
@@ -42,26 +51,26 @@ const DietScreen = ({ navigation }) => {
     //if (!logChanged) return;
     console.log('DIET SCREEN useEffect');
     setLogChanged(false);
-    //getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+    syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
   }, [logChanged]);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      //getUsersLog(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
       return;
     }, [])
   );
 
   let mealButtons = <></>
 
-  if (mealData) {
+  if (mealData !== undefined) {
     mealButtons = (
       <>
         {mealData?.map((meal, index) => (
           <TouchableOpacity style={{ padding: 5 }}
             key={index} margin={5}
-            onPress={() => navigation.navigate('Add Meal', { meal })}>
+            onPress={() => navigation.navigate('Add Meal', { meal: meal })}>
             <Text style={styles.mealNameText}>{meal.name}</Text>
             <Text style={styles.mealText}>
               {meal.calories}
@@ -73,7 +82,7 @@ const DietScreen = ({ navigation }) => {
   }
 
   let pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
-  calorieData.caloriesCurrent]
+  calorieData.caloriesCurrent];
 
   return (
     <>
@@ -131,16 +140,16 @@ const DietScreen = ({ navigation }) => {
             </ScrollView>
 
             <TouchableOpacity style={styles.addMealButton} disabled={false}
-              onPress={() => {
-                //navigation.navigate('Add Meal', {});
-                setLogChanged(true);
+              onPress={async () => {
+                let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10));
+                let tempVar = await calcMealMacros(newMeal);
+                navigation.navigate('Add Meal', { meal: tempVar });
               }}>
               <Text style={styles.addMealButtonText}>Add Meal</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
-
     </>
   );
 };

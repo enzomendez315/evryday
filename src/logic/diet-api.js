@@ -1,141 +1,111 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 
-const DEBUG = true;
+const DEBUG = false;
 
 // called when user presses add meal in main diet screen
 // if a nutrition log doesn't exist for the user and date, it creates one
 export async function createMeal(userId, date) {
-    p = new Promise(async (resolve, reject) => {
+    // gets the nutrition log for the user and date
+    let userLog = await DataStore.query(NutritionLog, (u) => u.and(c => [
+        u.userId.eq(userId),
+        u.date.eq(date)
+    ]));
+    // if no log is found, create a new one
+    if (userLog.length == 0) {
+        // replace empty query with the new created log
+        userLog = await createNewLog(userId, date);
+    }
+
+    // create a new meal
+    const meal = new Meal({
+        nutritionLogMealsId: userLog[0].id,
+        mealPeriod: MealPeriod.BREAKFAST,
+        foodItems: []
+    });
+    await DataStore.save(meal);
+    return meal;
+}
+
+// called when user adds the first meal of the day
+// called in createMeal if no nutrition log is found
+async function createNewLog(userId, date) {
+    const log = new NutritionLog({
+        userId: userId,
+        date: date,
+        Meals: []
+    });
+    await DataStore.save(log);
+    return log;
+}
+
+// called when user presses delete meal in edit meal screen
+export async function deleteMeal(mealId) {
+    await DataStore.delete(Meal, (m) => m.id.eq(mealId));
+}
+
+// gets nutrition log for a user and date
+// helper for syncDailyLogData
+async function getUsersNutritionLog(userId, date) {
+    p = new Promise((resolve, reject) => {
         try {
-            await getUsersNutritionLog(userId, date).then((nutLog) => {
-                DEBUG && console.log(`createMeal nutLog: ${nutLog.id} userId: ${userId} date: ${date}`);
-                const meal = new Meal({
-                    nutritionLogMealsId: nutLog.id,
-                    mealPeriod: MealPeriod.BREAKFAST,
-                    foodItems: []
-                });
-                DataStore.save(meal).then(() => {
-                    DEBUG && console.log(`createMeal meal created: ${meal.id}`);
-                    resolve(meal);
-                });
+            DataStore.query(NutritionLog, (u) => u.and(c => [
+                u.userId.eq(userId),
+                u.date.eq(date)
+            ])).then((oldLog) => {
+                DEBUG && console.log(`Nutrition log found logID: ${oldLog.id} UserId: ${userId} Date: ${date}`);
+                resolve(oldLog[0]);
             });
         } catch (err) {
-            console.log(err);
+            console.log(`Failed to find a nutrition log for UserId: ${userId} Date: ${date} error: ${err}`);
             reject(err);
         }
     });
     return p;
 }
 
-// called when user presses delete meal in edit meal screen
-export async function deleteMeal() { }
-
-// called when user presses complete meal in edit meal screen
-// this is called rather than createMeal if meal Id exists
-export async function updateMeal() { }
-
 // called by main diet screen to update the nutrition log data
-export async function syncDailyMealData() { }
+export async function syncDailyLogData(userId, date, setCalorieData, setMealData, setIsLoading = () => { }) {
+    // get the nutrition log for the user and date
+    const userLog = await getUsersNutritionLog(userId, date);
 
-
-
-
-
-// called by main Diet page
-export async function getUsersLog(userId, date, setCalorieData, setMealData = () => { }) {
-    await NUTLOG(userId, date).then(async ({ nutLog, meals, userId, date }) => {
-        DEBUG && console.log(`Got nutLog: ${nutLog.id} ${meals} ${userId} ${date}`);
-
-        await getMealMacros(meals).then((macro) => {
-            DEBUG && console.log(`Got meals: ${macro[0].calories} ${macro[0].carbs} ${macro[0].fat} ${macro[0].protein}`);
-            setMealData(macro);
-            setCalorieData({
-                proteinCurrent: macro.reduce((acc, meal) => acc + meal.protein, 0),
-                proteinGoal: 150,
-                carbsCurrent: macro.reduce((acc, meal) => acc + meal.carbs, 0),
-                carbsGoal: 250,
-                fatCurrent: macro.reduce((acc, meal) => acc + meal.fat, 0),
-                fatGoal: 75,
-                caloriesCurrent: macro.reduce((acc, meal) => acc + meal.calories, 0),
-                caloriesGoal: 2000,
-            });
+    // if no log is found set the calorie and meal data to 0
+    if (!userLog) {
+        setCalorieData({
+            proteinCurrent: 0,
+            proteinGoal: 150,
+            carbsCurrent: 0,
+            carbsGoal: 250,
+            fatCurrent: 0,
+            fatGoal: 75,
+            caloriesCurrent: 0,
+            caloriesGoal: 2000,
         });
+        setMealData([]);
+        return;
+    }
+    // get the meals for the log
+    const meals = await userLog.Meals.toArray();
+    // get the macros for each meal
+    const macros = await getMealMacros(meals);
+    // set the calorie data
+    setCalorieData({
+        proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
+        proteinGoal: 150,
+        carbsCurrent: macros.reduce((acc, meal) => acc + meal.carbs, 0),
+        carbsGoal: 250,
+        fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
+        fatGoal: 75,
+        caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
+        caloriesGoal: 2000,
     });
-}
 
-// calls getUsersNutritionLog
-// if there are no meals in the log it creates 3 meals
-export const NUTLOG = async (userId, date) => {
-    p = new Promise(async (resolve, reject) => {
-        try {
-            await getUsersNutritionLog(userId, date).then(async (nutLog) => {
-                DEBUG && console.log(`Retreiving Nutrition Log id: ${nutLog.id} userId: ${userId} date: ${date}`);
-                await nutLog.Meals.toArray().then(async (meals) => {
-                    DEBUG && console.log(`NUTLOG meal: ${meals}`);
-                    DEBUG && console.log(`meals: ${meals.length}`);
-                    if (meals.length == 0) {
-                        DEBUG && console.log("Creating meals");
-                        const breakfast = new Meal({
-                            nutritionLogMealsId: nutLog.id,
-                            mealPeriod: MealPeriod.BREAKFAST,
-                            foodItems: []
-                        });
-                        await DataStore.save(breakfast).then(() => { DEBUG && console.log(`NUTLOG: Breakfast created`) });
-                        const lunch = new Meal({
-                            nutritionLogMealsId: nutLog.id,
-                            mealPeriod: MealPeriod.LUNCH,
-                            foodItems: []
-                        })
-                        await DataStore.save(lunch).then(() => { DEBUG && console.log(`NUTLOG: Lunch created`) });
-                        const dinner = new Meal({
-                            nutritionLogMealsId: nutLog.id,
-                            mealPeriod: MealPeriod.DINNER,
-                            foodItems: []
-                        })
-                        await DataStore.save(dinner).then(() => { DEBUG && console.log(`NUTLOG: Dinner created`) });
-                        await DataStore.save(
-                            NutritionLog.copyOf(nutLog, updated => {
-                                updated = nutLog;
-                                updated.Meals = [breakfast, lunch, dinner];
-                            })
-                        ).then((m) => { DEBUG && console.log(`NUTLOG: Finished Creating meals`) });
-                    }
-                    resolve({
-                        nutLog,
-                        meals,
-                        userId: userId,
-                        date: date
-                    });
-                });
-            });
-        } catch (error) {
-            reject(error);
-        }
-    });
-    return p;
-}
-
-// calls NUTLOG to make a new nutrition log
-// called at startup in App.js
-export function initNutritionLog(userId) {
-    DEBUG && console.log("Started initNutritionLog");
-    date = new Date(Date.now()).toISOString().substring(0, 10);
-    DEBUG && console.log(`Date init: ${date}`);
-    NUTLOG(userId, date).then(async ({ nutLog, meals, userId, date }) => {
-
-        if (nutLog.length == 0) {
-            DEBUG && console.log("could not initialise nutrition log");
-        }
-        DEBUG && console.log(`Nutrition Log: ${nutLog.id}`);
-        DEBUG && console.log("Finished initNutritionLog");
-
-    }).catch((err) => {
-        console.log(err);
-    });
+    // set the meal data
+    setMealData(macros);
 }
 
 // queries the datastore for a meal with mealId
+// called in add meal screen UI
 //TODO: verify inputs for createMeal
 export async function getMeal(mealId) {
     p = new Promise(async (resolve, reject) => {
@@ -166,58 +136,9 @@ export async function getFoodItems(searchTerm) {
     return foodItems;
 }
 
-// creates a new nutrition log and adds to the datastore
-// helper for getUsersNutritionLog
-async function addNutritionLog(userId, date) {
-    p = new Promise((resolve, reject) => {
-        try {
-            let log = new NutritionLog({
-                "userId": userId,
-                "date": date,
-                "Meals": []
-            });
-            DataStore.save(log).then(() => {
-                DEBUG && console.log(`Nutrition log created logID: ${log.id} UserId: ${userId} Date: ${date}`);
-                resolve(log)
-            });
-        } catch (err) {
-            console.log(`Failed to create nutrition log: ${err}`);
-            reject(err);
-        }
-    });
-    return p;
-}
-
-// gets nutrition log for a user and date
-// if no log is found, creates a new one
-// helper for NUTLOG
-async function getUsersNutritionLog(userId, date) {
-    p = new Promise((resolve, reject) => {
-        try {
-            DataStore.query(NutritionLog, (u) => u.and(c => [
-                u.userId.eq(userId),
-                u.date.eq(date)
-            ])).then((oldLog) => {
-                // console.log(oldLog.length)
-                if (oldLog.length == 0) {
-                    addNutritionLog(userId, date).then((newLog) => {
-                        resolve(newLog);
-                    });
-                }
-                DEBUG && console.log(`Nutrition log found logID: ${oldLog.id} UserId: ${userId} Date: ${date}`);
-                resolve(oldLog[0]);
-            });
-        } catch (err) {
-            console.log(`Failed to find or create a nutrition log for UserId: ${userId} Date: ${date} error: ${err}`);
-            reject(err);
-        }
-    });
-    return p;
-}
-
 // gets the total macros for all meals
 // loops through each meal and calls calcMealMacros
-// helper for syncing meal data to main diet screen UI
+// helper for syncDailyMealData
 async function getMealMacros(meals) {
     p = new Promise((resolve, reject) => {
         DEBUG && console.log("Started GetMealMacros");
@@ -245,7 +166,7 @@ export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = await meal.foodItems.toArray();
         let mealData = {
-            mealId: meal.id,
+            id: meal.id,
             name: meal.mealPeriod,
             calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
             protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
@@ -270,7 +191,7 @@ export async function addFoodToMeal(mealId, foodId) {
                     console.log("No meal");
                     reject("No meal");
                 }
-                let foodItem = await DataStore.query(FoodItem, (f) => f.id.eq(foodId)).then(async (foods) => {
+                await DataStore.query(FoodItem, (f) => f.id.eq(foodId)).then(async (foods) => {
                     if (foods.length == 0) {
                         console.log("No food items");
                         reject("No food items");
@@ -312,6 +233,16 @@ export async function addFoodToMeal(mealId, foodId) {
     });
     return p;
 }
+
+
+
+
+
+
+
+
+
+
 
 // calls getFoodItems
 // calls bulkCreateFood if no food items are found

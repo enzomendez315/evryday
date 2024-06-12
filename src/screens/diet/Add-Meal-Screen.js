@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { getMeal, calcMealMacros } from '../../logic/diet-api'
+import { getMeal, calcMealMacros, deleteMeal } from '../../logic/diet-api'
 
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -107,7 +107,7 @@ async function getUsersLog(setMealData, setFoodList, mealId) {
 
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const mealId = route.params.meal.mealId;
+  const mealId = route.params.meal.id;
   console.log(`mealId: ${mealId}`);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
@@ -120,8 +120,8 @@ const AddMealScreen = (props) => {
   }
 
   useEffect(() => {
-    // setMealData(route.params.meal);
-    //console.log('route.params', route.params);
+    setMealData(route.params.meal);
+    console.log('route.params', route.params);
     //getUsersLog(setMealData, setFoodList, mealId);
   }, [route.params]);
 
@@ -263,6 +263,14 @@ const AddMealScreen = (props) => {
             girls in front of the grocery store are selling. They're not
             cookies. They're rocks. I learned that the hard way.
           </Text>
+
+          <TouchableOpacity style={styles.Button}
+            onPress={() => {
+              deleteMeal(mealId);
+              navigation.navigate('Diet Home');
+            }}>
+            <Text style={styles.ButtonText}>Delete Meal</Text>
+          </TouchableOpacity>
 
         </ScrollView>
       </SafeAreaView>
