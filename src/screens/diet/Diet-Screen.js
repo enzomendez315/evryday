@@ -9,13 +9,28 @@ import { COLORS } from '../../theme/theme';
 
 let userId;
 
-const exampleMealData = [
+// this is the format logData should be in
+const exampleLogData = [
   {
     name: 'Breakfast',
-    id: 1, // some big identifier
+    id: 1,
     calories: 500,
+    protein: 20,
+    carbs: 50,
+    fat: 10,
   },
 ];
+
+const exampleCalorieData = {
+  proteinCurrent: 0,
+  proteinGoal: 150,
+  carbsCurrent: 0,
+  carbsGoal: 250,
+  fatCurrent: 0,
+  fatGoal: 75,
+  caloriesCurrent: 0,
+  caloriesGoal: 2000,
+};
 
 // gets date in format 'Weekday, Month DD'
 function getFormattedDate() {
@@ -28,21 +43,12 @@ function getFormattedDate() {
 }
 
 const DietScreen = ({ navigation }) => {
-  // meal data contains information about meals
+  // log data contains information about meals
   // it is created in syncDailyLogData
-  const [mealData, setMealData] = useState();
+  const [logData, setLogData] = useState(null);
 
   // calorie data is the data from the day's meals
-  const [calorieData, setCalorieData] = useState({
-    proteinCurrent: 0,
-    proteinGoal: 150,
-    carbsCurrent: 0,
-    carbsGoal: 250,
-    fatCurrent: 0,
-    fatGoal: 75,
-    caloriesCurrent: 0,
-    caloriesGoal: 2000,
-  });
+  const [calorieData, setCalorieData] = useState(null);
   const [logChanged, setLogChanged] = useState(true);
 
   userId = React.useContext(AccountContext);
@@ -51,23 +57,23 @@ const DietScreen = ({ navigation }) => {
     //if (!logChanged) return;
     console.log('DIET SCREEN useEffect');
     setLogChanged(false);
-    syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+    syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
   }, [logChanged]);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setMealData);
+      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
       return;
     }, [])
   );
 
   let mealButtons = <></>
 
-  if (mealData !== undefined) {
+  if (logData !== undefined) {
     mealButtons = (
       <>
-        {mealData?.map((meal, index) => (
+        {logData?.map((meal, index) => (
           <TouchableOpacity style={{ padding: 5 }}
             key={index} margin={5}
             onPress={() => navigation.navigate('Add Meal', { meal: meal })}>
@@ -81,8 +87,11 @@ const DietScreen = ({ navigation }) => {
     );
   }
 
-  let pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
-  calorieData.caloriesCurrent];
+  let pieSeries;
+  if (calorieData !== null) {
+    pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
+    calorieData.caloriesCurrent];
+  }
 
   return (
     <>
@@ -93,51 +102,71 @@ const DietScreen = ({ navigation }) => {
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>
           <View style={styles.calorieContainer}>
-            <Text style={styles.calorieText}>
-              {calorieData.caloriesCurrent}/{calorieData.caloriesGoal}
-            </Text>
 
-            <PieChart
-              style={styles.pieChart}
-              widthAndHeight={150}
-              series={pieSeries}
-              sliceColor={['#86A184', '#7CFC00']}
-              coverFill={'#FFF'}
-              doughnut={true}
-            />
+            {calorieData === null ? <Text style={styles.calorieHeader}>Loading...</Text> :
+              <>
+                <Text style={styles.calorieText}>
+                  {calorieData.caloriesCurrent}/{calorieData.caloriesGoal}
+                </Text>
 
+                <PieChart
+                  style={styles.pieChart}
+                  widthAndHeight={150}
+                  series={pieSeries}
+                  sliceColor={['#86A184', '#7CFC00']}
+                  coverFill={'#FFF'}
+                  doughnut={true}
+                />
+              </>
+            }
           </View>
 
           <Text style={styles.tabHeaderText}>Macros</Text>
           <View style={styles.macroContainer}>
-            <View style={styles.macroRectangleContainer}>
-              <Text style={styles.macroText}>
-                Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
-              <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
-                width={125}
-                color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
-            </View>
-            <View style={styles.macroRectangleContainer}>
-              <Text style={styles.macroText}>
-                Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
-              <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
-                width={125}
-                color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
-            </View>
-            <View style={styles.macroRectangleContainer}>
-              <Text style={styles.macroText}>
-                Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
-              <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
-                width={125}
-                color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
-            </View>
+
+            {calorieData === null ? <Text style={styles.calorieHeader}>Loading...</Text> :
+              <>
+                <View style={styles.macroRectangleContainer}>
+                  <Text style={styles.macroText}>
+                    Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
+                  <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
+                    width={125}
+                    color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+                </View>
+                <View style={styles.macroRectangleContainer}>
+                  <Text style={styles.macroText}>
+                    Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
+                  <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
+                    width={125}
+                    color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+                </View>
+                <View style={styles.macroRectangleContainer}>
+                  <Text style={styles.macroText}>
+                    Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
+                  <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
+                    width={125}
+                    color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+                </View>
+              </>
+            }
+
           </View>
 
           <Text style={styles.tabHeaderText}>Meals</Text>
           <View style={styles.mealsContainer}>
-            <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
-              {mealButtons}
-            </ScrollView>
+
+            {/* if log data is null it's loading, if not it checks if there are meals*/}
+            {logData ?
+              <>
+                {logData.length === 0 ? <Text>No Meals For You</Text> :
+                  <>
+                    <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+                      {mealButtons}
+                    </ScrollView>
+                  </>
+                }
+              </> : <Text>Loading...</Text>
+            }
 
             <TouchableOpacity style={styles.addMealButton} disabled={false}
               onPress={async () => {

@@ -32,7 +32,6 @@ import { Hub } from 'aws-amplify/utils';
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
 import { currentUserDetails, userSignOut } from './src/logic/account'
-import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
 Amplify.configure(awsconfig);
 
 const DEBUG = false;
@@ -190,13 +189,13 @@ function WorkoutStack() {
   );
 }
 
-// Initializes the FoodItems and NutritionLog tables on app start
+// clears the datastore
+// Sometimes duplicate data shows up in UI
+// clearing helps that but causes some data to not load on first request
+// TODO: decide if this is needed or not
 async function RunOnStart(userId: string) {
-  // userSignOut();
-  // console.log("started initFoodItems() and initNutritionLog()");
   await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
   console.log("DataStore is cleared");
-  // await initNutritionLog(userId);
 }
 
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
@@ -207,7 +206,7 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      RunOnStart(user);
+      // RunOnStart(user);
     }
   })
 }

@@ -1,18 +1,32 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { NutritionLog, FoodItem, Meal, MealPeriod } from '../models';
 
-const DEBUG = false;
+const DEBUG = true;
+
+// this is the format logData should be in
+const exampleLogData = [
+    {
+        name: 'Breakfast',
+        id: 1,
+        calories: 500,
+        protein: 20,
+        carbs: 50,
+        fat: 10,
+    },
+];
 
 // called when user presses add meal in main diet screen
 // if a nutrition log doesn't exist for the user and date, it creates one
 export async function createMeal(userId, date) {
+    DEBUG && console.log(`createMeal userId: ${userId} Date: ${date}`);
     // gets the nutrition log for the user and date
     let userLog = await DataStore.query(NutritionLog, (u) => u.and(c => [
         u.userId.eq(userId),
         u.date.eq(date)
     ]));
     // if no log is found, create a new one
-    if (userLog.length == 0) {
+    if (userLog.length === 0) {
+        DEBUG && console.log("No log found in create meal");
         // replace empty query with the new created log
         userLog = await createNewLog(userId, date);
     }
@@ -30,6 +44,7 @@ export async function createMeal(userId, date) {
 // called when user adds the first meal of the day
 // called in createMeal if no nutrition log is found
 async function createNewLog(userId, date) {
+    DEBUG && console.log(`createNewLog userId: ${userId} Date: ${date}`);
     const log = new NutritionLog({
         userId: userId,
         date: date,
@@ -41,6 +56,7 @@ async function createNewLog(userId, date) {
 
 // called when user presses delete meal in edit meal screen
 export async function deleteMeal(mealId) {
+    DEBUG && console.log(`deleteMeal mealId: ${mealId}`);
     await DataStore.delete(Meal, (m) => m.id.eq(mealId));
 }
 
@@ -53,7 +69,7 @@ async function getUsersNutritionLog(userId, date) {
                 u.userId.eq(userId),
                 u.date.eq(date)
             ])).then((oldLog) => {
-                DEBUG && console.log(`Nutrition log found logID: ${oldLog.id} UserId: ${userId} Date: ${date}`);
+                DEBUG && console.log(`Nutrition log found logID: ${oldLog[0].id} UserId: ${userId} Date: ${date}`);
                 resolve(oldLog[0]);
             });
         } catch (err) {
@@ -65,12 +81,15 @@ async function getUsersNutritionLog(userId, date) {
 }
 
 // called by main diet screen to update the nutrition log data
-export async function syncDailyLogData(userId, date, setCalorieData, setMealData, setIsLoading = () => { }) {
+// used to update hooks with all the meal data
+export async function syncDailyLogData(userId, date, setCalorieData, setLogData, setIsLoading = () => { }) {
+    DEBUG && console.log(`syncDailyLogData userId: ${userId} Date: ${date}`);
     // get the nutrition log for the user and date
     const userLog = await getUsersNutritionLog(userId, date);
 
     // if no log is found set the calorie and meal data to 0
     if (!userLog) {
+        DEBUG && console.log("No log found in syncDailyLogData");
         setCalorieData({
             proteinCurrent: 0,
             proteinGoal: 150,
@@ -81,13 +100,18 @@ export async function syncDailyLogData(userId, date, setCalorieData, setMealData
             caloriesCurrent: 0,
             caloriesGoal: 2000,
         });
-        setMealData([]);
+        setLogData([]);
         return;
     }
+
     // get the meals for the log
     const meals = await userLog.Meals.toArray();
+    DEBUG && console.log(`syncDailyLogs Meals: ${meals}`);
+
     // get the macros for each meal
-    const macros = await getMealMacros(meals);
+    const macros = await getAllMealsMacros(meals);
+    DEBUG && console.log(`syncDailyLogs Macros: ${macros}`);
+
     // set the calorie data
     setCalorieData({
         proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
@@ -101,7 +125,26 @@ export async function syncDailyLogData(userId, date, setCalorieData, setMealData
     });
 
     // set the meal data
-    setMealData(macros);
+    setLogData(macros);
+}
+
+// gets the total macros for all meals
+// calls calcMealMacros for each meal
+// helper for syncDailyMealData
+async function getAllMealsMacros(meals) {
+    p = new Promise(async (resolve, reject) => {
+        DEBUG && console.log("Started GetAllMealsMacros");
+        let macros = [];
+
+        for (let meal of meals) {
+            await calcMealMacros(meal).then((macro) => {
+                DEBUG && console.log(`macro: ${macro.calories} ${macro.protein} ${macro.carbs} ${macro.fat}`);
+                macros.push(macro);
+            });
+        }
+        resolve(macros);
+    });
+    return p;
 }
 
 // queries the datastore for a meal with mealId
@@ -136,31 +179,8 @@ export async function getFoodItems(searchTerm) {
     return foodItems;
 }
 
-// gets the total macros for all meals
-// loops through each meal and calls calcMealMacros
-// helper for syncDailyMealData
-async function getMealMacros(meals) {
-    p = new Promise((resolve, reject) => {
-        DEBUG && console.log("Started GetMealMacros");
-        let macros = [];
-        let count = 0;
-        meals.forEach(m => {
-            let macro = calcMealMacros(m).then((macro) => {
-                DEBUG && console.log(`macro: ${macro.calories} ${macro.protein} ${macro.carbs} ${macro.fat}`);
-                macros.push(macro);
-                count++;
-                if (count == meals.length) {
-                    DEBUG && console.log("Finished GetMealMacros");
-                    resolve(macros);
-                }
-            });
-        });
-    });
-    return p;
-}
-
 // gets macros for a meal
-// helper function for getMealMacros and
+// helper function for getAllMealsMacros and
 // called in add meal screen UI
 export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
@@ -173,7 +193,7 @@ export async function calcMealMacros(meal) {
             carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
             fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
         };
-        DEBUG && console.log(`name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
+        DEBUG && console.log(`calcMealMacros name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
         resolve(mealData);
     });
     return p;
