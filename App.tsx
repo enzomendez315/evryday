@@ -206,7 +206,7 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      // RunOnStart(user);
+      // RunOnStart(user); // run this function to clear local datastore
     }
   })
 }

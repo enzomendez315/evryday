@@ -55,7 +55,6 @@ const DietScreen = ({ navigation }) => {
 
   useEffect(() => {
     //if (!logChanged) return;
-    console.log('DIET SCREEN useEffect');
     setLogChanged(false);
     syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
   }, [logChanged]);

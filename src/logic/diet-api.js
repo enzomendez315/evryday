@@ -195,6 +195,40 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     setLogData(macros);
 }
 
+// updates the UI in the edit meal screen
+export async function syncMealFoodsList(meal, setFoodList) {
+    DEBUG && console.log(`syncMealFoodList mealId: ${meal.id}`);
+    let foodsList = [];
+
+    // looks in the many to many table
+    const mealFoodRelationships = await DataStore.query(MealFoodItem, (mfi) => mfi.mealId.eq(meal.id));
+
+    for (let mealFoodRelationship of mealFoodRelationships) {
+        let foodLinks = await DataStore.query(FoodItem, (f) => f.id.eq(mealFoodRelationship.foodItemId));
+        for (let foodLink of foodLinks) {
+            DEBUG && console.log(`syncMealFoodList foodLink:`);
+            DEBUG && console.log(foodLink);
+            foodsList.push(foodLink);
+        }
+    }
+    setFoodList(foodsList);
+}
+
+export async function removeFoodFromMeal(meal, food) {
+    DEBUG && console.log(`removeFoodFromMeal mealId: ${meal.id} foodId: ${food.id}`);
+    const mealFoodRelationship = await DataStore.query(MealFoodItem, (mfi) => mfi.and(c => [
+        mfi.mealId.eq(meal.id),
+        mfi.foodItemId.eq(food.id)
+    ]));
+    await DataStore.delete(MealFoodItem, (mfi) => mfi.id.eq(mealFoodRelationship[0].id));
+    let tempMeal;
+    await calcMealMacros(meal).then((updatedMeal) => {
+        tempMeal = updatedMeal;
+    });
+    return tempMeal;
+
+}
+
 // gets the total macros for all meals
 // calls calcMealMacros for each meal
 // helper for syncDailyMealData

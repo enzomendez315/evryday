@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { getMeal, calcMealMacros, deleteMeal } from '../../logic/diet-api'
+import { syncMealFoodsList, deleteMeal, removeFoodFromMeal, getMeal } from '../../logic/diet-api'
 
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -105,16 +105,24 @@ const AddMealScreen = (props) => {
 
   useEffect(() => {
     setMealData(route.params.meal);
+    syncMealFoodsList(mealData, setFoodList);
     DEBUG && console.log('Add meal route.params', route.params);
-    //getUsersLog(setMealData, setFoodList, mealId);
   }, [route.params]);
 
   if (foodListView != undefined) {
     foodListView = (
       <>
         {foodList?.map((food, index) => (
-          <Text style={styles.foodItem}
-            key={index}>{food.name}, {food.calories}cal</Text>
+          <TouchableOpacity key={index}
+            onPress={async () => {
+              // this button should delete the food, and update the meal and UI
+              console.log(food.name + ' pressed');
+              // await removeFoodFromMeal(mealData, food);
+              // await syncMealFoodsList(mealData, setFoodList);
+            }}>
+            <Text style={styles.foodItem}>
+              {food.name}, {food.calories}cal</Text>
+          </TouchableOpacity>
         ))}
       </>
     );
