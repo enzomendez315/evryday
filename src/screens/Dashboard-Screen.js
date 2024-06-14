@@ -64,8 +64,6 @@ const DietTab = ({ calorieData }) => {
     finalFat = 1;
   }
 
-  console.log(finalCarbs, finalProtein, finalFat);
-
   const macros = [
     { name: 'Carbs', percentage: finalCarbs, color: 'skyblue' },
     { name: 'Protein', percentage: finalProtein, color: 'salmon' },
@@ -232,8 +230,7 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
-      // TODO: fix this from crashing on startup
-      // if (!tempLoading) getUsersLog(userID, date, setcalorieData);
+      syncDietDashboardData(userID, date, setCalorieData);
       return;
     }, [])
   );

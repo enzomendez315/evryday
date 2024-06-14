@@ -4,18 +4,23 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
 import { addFoodToMeal } from '../../logic/diet-api'
 
+let DEBUG = false;
 
 const AddFoodScreen = (props) => {
   const { navigation, route } = props;
   const { item, meal } = route.params;
+
+  DEBUG && console.log(`Add Food meal:`);
+  DEBUG && console.log(meal);
+  DEBUG && console.log(`Add Food item:`);
+  DEBUG && console.log(item);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('gram');
   const [items, setItems] = useState([
     { label: 'Grams', value: 'gram' },
     { label: 'Count', value: 'count' }
   ]);
-
-  console.log(item);
 
   return (
     <>
@@ -51,14 +56,11 @@ const AddFoodScreen = (props) => {
         </View>
 
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             //Uncomment to add food to a meal
-
-            /*
-            addFood(meal.mealId, item.id).then(() => {
-              navigation.navigate('Add Meal', {meal});
+            await addFoodToMeal(meal, item).then((newMeal) => {
+              navigation.navigate('Add Meal', { meal: newMeal });
             });
-            */
 
           }}
           style={styles.button}>

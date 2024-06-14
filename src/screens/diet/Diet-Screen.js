@@ -168,7 +168,7 @@ const DietScreen = ({ navigation }) => {
               </> : <Text>Loading...</Text>
             }
 
-            <TouchableOpacity style={styles.addMealButton} disabled={false}
+            <TouchableOpacity style={styles.addMealButton}
               onPress={async () => {
                 let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10));
                 let tempVar = await calcMealMacros(newMeal);

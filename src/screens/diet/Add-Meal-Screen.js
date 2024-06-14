@@ -18,6 +18,8 @@ import { getMeal, calcMealMacros, deleteMeal } from '../../logic/diet-api'
 //   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 // };
 
+let DEBUG = false;
+
 const recipeData = [
   {
     name: 'Chicken and Rice',
@@ -87,28 +89,10 @@ const recipeData = [
   },
 ];
 
-async function getUsersLog(setMealData, setFoodList, mealId) {
-  await getMeal(mealId).then(async (meal) => {
-    console.log(`Got meal: ${meal.id}`);
-    await meal.foodItems.toArray().then(async (food) => {
-      if (food.length == 0) {
-        console.log('No food items');
-        return;
-      }
-      console.log(`Got food: ${food[0].name} ${food[0].calories} ${food[0].protein} ${food[0].carbs} ${food[0].fat}`);
-      setFoodList(food);
-      await calcMealMacros(meal).then((macro) => {
-        console.log(`Got macros calories: ${macro.calories} carbs: ${macro.carbs} fat: ${macro.fat} protein:${macro.protein}`);
-        setMealData(macro);
-      });
-    });
-  });
-}
-
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
   const mealId = route.params.meal.id;
-  console.log(`mealId: ${mealId}`);
+  DEBUG && console.log(`Add meal screen mealId: ${mealId}`);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
   const [foodList, setFoodList] = useState();
@@ -121,7 +105,7 @@ const AddMealScreen = (props) => {
 
   useEffect(() => {
     setMealData(route.params.meal);
-    console.log('route.params', route.params);
+    DEBUG && console.log('Add meal route.params', route.params);
     //getUsersLog(setMealData, setFoodList, mealId);
   }, [route.params]);
 
@@ -135,8 +119,6 @@ const AddMealScreen = (props) => {
       </>
     );
   }
-
-  console.log(route.params.meal);
 
   const RecipeListPopup = () => {
     navigation
@@ -187,7 +169,7 @@ const AddMealScreen = (props) => {
   )
 
   const onRecipePress = (recipe) => {
-    console.log(recipe.name + ' pressed')
+    DEBUG && console.log(recipe.name + ' pressed')
     setIsPopupVisible(false);
   }
 

@@ -154,7 +154,7 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
 // TODO: make this more efficient by updating the routine instead of deleting it
 // deleting it will probably mess with tracking exercise logs in the future
 // TODO: figure out how a past routine will be saved
-// (e.g. if a routine is updated, will the past exercise logs for that routine be updated?)
+// (e.g. if a routine is updated, will the past exercise logs for that routine also be updated?)
 export async function updateExerciseRoutine(routineId, routineName, exerciseData_) {
     // get the routine
     const routine = await DataStore.query(ExerciseRoutine, routineId);
