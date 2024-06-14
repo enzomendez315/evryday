@@ -116,7 +116,7 @@ const AddMealScreen = (props) => {
 
   let pieSeries = [mealData.protein, mealData.carbs, mealData.fat]
   if (pieSeries.reduce((acc, val) => acc + val, 0) == 0) {
-    pieSeries = [0, 0, 1]
+    pieSeries = [1, 1, 1]
   }
 
   useEffect(() => {

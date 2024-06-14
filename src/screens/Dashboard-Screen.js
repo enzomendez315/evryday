@@ -3,11 +3,9 @@ import { SafeAreaView, StatusBar, Text, View, StyleSheet, TouchableOpacity, Scro
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailyLog } from '../logic/sleep-api';
-import { getUsersLog } from '../logic/diet-api';
-import { currentUserDetails } from '../logic/account';
+import { syncDietDashboardData } from '../logic/diet-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { COLORS } from '../theme/theme';
-import { parse } from 'react-native-svg';
 
 let date;
 let userID;
@@ -36,7 +34,7 @@ const HealthScoreTab = () => {
 // Dieting Tab Component:
 const DietTab = ({ calorieData }) => {
   const navigation = useNavigation();
-  if (calorieData == null) {
+  if (calorieData === null) {
     return (
       <TouchableOpacity
         style={styles.dietTab}
@@ -45,6 +43,8 @@ const DietTab = ({ calorieData }) => {
       </TouchableOpacity>
     );
   }
+
+  // NOTE: if calories is 0, the percentage will be NaN and the pie chart will not render (it might crash the app)
 
   // gets calorie percentage, protein and carbs are 4 calories per gram, fat is 9
   let tempCarbs = (((calorieData.carbsCurrent * 4) / calorieData.caloriesCurrent) * 100).toFixed(0);
@@ -57,10 +57,19 @@ const DietTab = ({ calorieData }) => {
   let finalProtein = parseInt((parseInt(tempProtein) / total * 100).toFixed(0));
   let finalFat = parseInt((parseInt(tempFat) / total * 100).toFixed(0));
 
+  // if the total is NaN, set all to 1 so the pie chart renders
+  if (isNaN(total)) {
+    finalCarbs = 1;
+    finalProtein = 1;
+    finalFat = 1;
+  }
+
+  console.log(finalCarbs, finalProtein, finalFat);
+
   const macros = [
     { name: 'Carbs', percentage: finalCarbs, color: 'skyblue' },
     { name: 'Protein', percentage: finalProtein, color: 'salmon' },
-    { name: 'Fat', percentage: finalFat, color: 'lightgreen' },
+    { name: 'Fat', percentage: finalFat, color: 'purple' },
   ];
 
   const chartWidth = 80;
@@ -84,12 +93,13 @@ const DietTab = ({ calorieData }) => {
     <TouchableOpacity
       style={styles.dietTab}
       onPress={() => navigation.navigate('Diet')}>
-      {calorieData != null ? (
+      {calorieData !== null ? (
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.circle}>
             <Text style={styles.caloriesText}>{calorieData.caloriesCurrent}</Text>
             <Text>Calories</Text>
           </View>
+
           <PieChart
             data={pieChartData}
             width={chartWidth}
@@ -101,10 +111,12 @@ const DietTab = ({ calorieData }) => {
             hasLegend={false}
             absolute={false}
           />
+
           <View style={styles.macroList}>
             {macros.map((macro, index) => (
               <Text key={index} style={[styles.macroText, { color: macro.color }]}>
-                {macro.name}: {macro.percentage}%
+                {/* If they are all 1 to render pie chart, make them 0 */}
+                {macro.name}: {macro.percentage === 1 ? 0 : macro.percentage}%
               </Text>
             ))}
           </View>
@@ -198,7 +210,7 @@ function getFormattedDate() {
 
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
-  const [calorieData, setcalorieData] = useState(null);
+  const [calorieData, setCalorieData] = useState(null);
 
   // bool for diet tab loading too soon
   // TODO: fix diet api to handle null data calls
@@ -211,7 +223,7 @@ const Dashboard = (props) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
       // TODO: fix this from crashing on startup
-      // getUsersLog(userID, date, setcalorieData);
+      syncDietDashboardData(userID, date, setCalorieData);
       tempLoading = false;
     });
   }, []);
