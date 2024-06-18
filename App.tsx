@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -26,14 +25,14 @@ import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
 import awsconfig from './src/aws-exports';
-Amplify.configure(awsconfig);
+
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
 
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
 import { currentUserDetails, userSignOut } from './src/logic/account'
-import { initFoodItems, initNutritionLog } from './src/logic/diet-api'
+Amplify.configure(awsconfig);
 
 const DEBUG = false;
 
@@ -190,34 +189,13 @@ function WorkoutStack() {
   );
 }
 
-// Initializes the FoodItems and NutritionLog tables on app start
+// clears the datastore
+// Sometimes duplicate data shows up in UI
+// clearing helps that but causes some data to not load on first request
+// TODO: decide if this is needed or not
 async function RunOnStart(userId: string) {
-  // userSignOut();
-  // console.log("started initFoodItems() and initNutritionLog()");
   await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
   console.log("DataStore is cleared");
-  await initFoodItems();
-  await initNutritionLog(userId);
-}
-
-function App() {
-  const [userId, setUserId] = React.useState("");
-  // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
-  React.useEffect(() => {
-    currentUserDetails().then(async (user) => {
-      setUserId(user);
-      console.log(User); // Need to use a random model to initialize the DataStore
-      await DataStore.start();
-      await StartListening(user);
-    });
-  }, []);
-  return (
-    <AccountContext.Provider value={userId}>
-      <NavigationContainer>
-        <BottomNavBarTabs />
-      </NavigationContainer>
-    </AccountContext.Provider>
-  );
 }
 
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
@@ -228,9 +206,32 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      RunOnStart(user);
+      // RunOnStart(user); // run this function to clear local datastore
     }
   })
+}
+
+function App() {
+  const [userId, setUserId] = React.useState("");
+  // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
+
+  React.useEffect(() => {
+    currentUserDetails().then(async (user) => {
+      setUserId(user);
+      console.log(User); // Need to use a random model to initialize the DataStore
+      await DataStore.start();
+      await StartListening(user);
+    });
+  }, []);
+
+  return (
+    // This tag isn't being used, but it might be helpful in the future?
+    <AccountContext.Provider value={userId}>
+      <NavigationContainer>
+        <BottomNavBarTabs />
+      </NavigationContainer>
+    </AccountContext.Provider>
+  );
 }
 
 // Adds native ui for sign in functionality

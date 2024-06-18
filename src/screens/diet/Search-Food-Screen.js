@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
-import { FoodItem } from '../../models';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
+let DEBUG = false;
 
 // let initialisedDiet = false;
 let oldSearchInput = "INITIALISED";
@@ -15,11 +15,12 @@ async function updateFoodItems(setFoodItems, searchInput = "") {
   await getFoodItems(searchInput).then((getFood) => { setFoodItems(getFood) });
 }
 
-const SearchFoodScreen = ({ route, navigation }) => {
+const SearchFoodScreen = (props) => {
   // const [foodItems, setFoodItems] = useState<FoodItem>([]);
+  const { navigation, route } = props;
   const meal = route.params.meal;
-  const mealId = route.params.meal.mealId;
-  console.log(`mealId: ${mealId}`);
+  const mealId = route.params.meal.id;
+  DEBUG && console.log(`Search Food mealId: ${mealId}`);
   const [foodItems, setFoodItems] = useState();
   useEffect(() => {
     updateFoodItems(setFoodItems);

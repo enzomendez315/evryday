@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { currentUserDetails } from '../../logic/account';
-import { getMeal, calcMealMacros } from '../../logic/diet-api'
+import { syncMealFoodsList, deleteMeal, removeFoodFromMeal, getMeal } from '../../logic/diet-api'
 
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -18,6 +17,8 @@ import { getMeal, calcMealMacros } from '../../logic/diet-api'
 //   carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
 //   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 // };
+
+let DEBUG = false;
 
 const recipeData = [
   {
@@ -88,28 +89,10 @@ const recipeData = [
   },
 ];
 
-async function getUsersLog(setMealData, setFoodList, mealId) {
-  await getMeal(mealId).then(async (meal) => {
-    console.log(`Got meal: ${meal.id}`);
-    await meal.foodItems.toArray().then(async (food) => {
-      if (food.length == 0) {
-        console.log('No food items');
-        return;
-      }
-      console.log(`Got food: ${food[0].name} ${food[0].calories} ${food[0].protein} ${food[0].carbs} ${food[0].fat}`);
-      setFoodList(food);
-      await calcMealMacros(meal).then((macro) => {
-        console.log(`Got macros calories: ${macro.calories} carbs: ${macro.carbs} fat: ${macro.fat} protein:${macro.protein}`);
-        setMealData(macro);
-      });
-    });
-  });
-}
-
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const mealId = route.params.meal.mealId;
-  console.log(`mealId: ${mealId}`);
+  const mealId = route.params.meal.id;
+  DEBUG && console.log(`Add meal screen mealId: ${mealId}`);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
   const [foodList, setFoodList] = useState();
@@ -117,28 +100,33 @@ const AddMealScreen = (props) => {
 
   let pieSeries = [mealData.protein, mealData.carbs, mealData.fat]
   if (pieSeries.reduce((acc, val) => acc + val, 0) == 0) {
-    pieSeries = [0, 0, 1]
+    pieSeries = [1, 1, 1]
   }
 
   useEffect(() => {
-    // setMealData(route.params.meal);
-    console.log('route.params', route.params);
-    getUsersLog(setMealData, setFoodList, mealId);
-
+    setMealData(route.params.meal);
+    syncMealFoodsList(mealData, setFoodList);
+    DEBUG && console.log('Add meal route.params', route.params);
   }, [route.params]);
 
   if (foodListView != undefined) {
     foodListView = (
       <>
         {foodList?.map((food, index) => (
-          <Text style={styles.foodItem}
-            key={index}>{food.name}, {food.calories}cal</Text>
+          <TouchableOpacity key={index}
+            onPress={async () => {
+              // this button should delete the food, and update the meal and UI
+              console.log(food.name + ' pressed');
+              // await removeFoodFromMeal(mealData, food);
+              // await syncMealFoodsList(mealData, setFoodList);
+            }}>
+            <Text style={styles.foodItem}>
+              {food.name}, {food.calories}cal</Text>
+          </TouchableOpacity>
         ))}
       </>
     );
   }
-
-  console.log(route.params.meal);
 
   const RecipeListPopup = () => {
     navigation
@@ -189,7 +177,7 @@ const AddMealScreen = (props) => {
   )
 
   const onRecipePress = (recipe) => {
-    console.log(recipe.name + ' pressed')
+    DEBUG && console.log(recipe.name + ' pressed')
     setIsPopupVisible(false);
   }
 
@@ -265,6 +253,14 @@ const AddMealScreen = (props) => {
             girls in front of the grocery store are selling. They're not
             cookies. They're rocks. I learned that the hard way.
           </Text>
+
+          <TouchableOpacity style={styles.Button}
+            onPress={() => {
+              deleteMeal(mealId);
+              navigation.navigate('Diet Home');
+            }}>
+            <Text style={styles.ButtonText}>Delete Meal</Text>
+          </TouchableOpacity>
 
         </ScrollView>
       </SafeAreaView>
