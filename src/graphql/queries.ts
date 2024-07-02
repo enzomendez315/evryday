@@ -186,6 +186,7 @@ export const getNutritionLog = /* GraphQL */ `query GetNutritionLog($id: ID!) {
     _version
     _deleted
     _lastChangedAt
+    owner
     __typename
   }
 }
@@ -208,6 +209,7 @@ export const listNutritionLogs = /* GraphQL */ `query ListNutritionLogs(
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
     nextToken
@@ -240,6 +242,7 @@ export const syncNutritionLogs = /* GraphQL */ `query SyncNutritionLogs(
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
     nextToken
@@ -266,6 +269,7 @@ export const getMeal = /* GraphQL */ `query GetMeal($id: ID!) {
     _deleted
     _lastChangedAt
     nutritionLogMealsId
+    owner
     __typename
   }
 }
@@ -285,6 +289,7 @@ export const listMeals = /* GraphQL */ `query ListMeals(
       _deleted
       _lastChangedAt
       nutritionLogMealsId
+      owner
       __typename
     }
     nextToken
@@ -314,6 +319,7 @@ export const syncMeals = /* GraphQL */ `query SyncMeals(
       _deleted
       _lastChangedAt
       nutritionLogMealsId
+      owner
       __typename
     }
     nextToken
@@ -322,16 +328,203 @@ export const syncMeals = /* GraphQL */ `query SyncMeals(
   }
 }
 ` as GeneratedQuery<APITypes.SyncMealsQueryVariables, APITypes.SyncMealsQuery>;
+export const getMealToFood = /* GraphQL */ `query GetMealToFood($id: ID!) {
+  getMealToFood(id: $id) {
+    id
+    mealId
+    foodId
+    servingId
+    servingAmount
+    meal {
+      id
+      mealPeriod
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      nutritionLogMealsId
+      owner
+      __typename
+    }
+    foodItem {
+      id
+      foodItemMasterId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetMealToFoodQueryVariables,
+  APITypes.GetMealToFoodQuery
+>;
+export const listMealToFoods = /* GraphQL */ `query ListMealToFoods(
+  $filter: ModelMealToFoodFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listMealToFoods(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      mealId
+      foodId
+      servingId
+      servingAmount
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListMealToFoodsQueryVariables,
+  APITypes.ListMealToFoodsQuery
+>;
+export const syncMealToFoods = /* GraphQL */ `query SyncMealToFoods(
+  $filter: ModelMealToFoodFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncMealToFoods(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      mealId
+      foodId
+      servingId
+      servingAmount
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncMealToFoodsQueryVariables,
+  APITypes.SyncMealToFoodsQuery
+>;
+export const mealToFoodsByMealIdAndFoodId = /* GraphQL */ `query MealToFoodsByMealIdAndFoodId(
+  $mealId: ID!
+  $foodId: ModelIDKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelMealToFoodFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  mealToFoodsByMealIdAndFoodId(
+    mealId: $mealId
+    foodId: $foodId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      mealId
+      foodId
+      servingId
+      servingAmount
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.MealToFoodsByMealIdAndFoodIdQueryVariables,
+  APITypes.MealToFoodsByMealIdAndFoodIdQuery
+>;
+export const mealToFoodsByFoodIdAndMealId = /* GraphQL */ `query MealToFoodsByFoodIdAndMealId(
+  $foodId: ID!
+  $mealId: ModelIDKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelMealToFoodFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  mealToFoodsByFoodIdAndMealId(
+    foodId: $foodId
+    mealId: $mealId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      mealId
+      foodId
+      servingId
+      servingAmount
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.MealToFoodsByFoodIdAndMealIdQueryVariables,
+  APITypes.MealToFoodsByFoodIdAndMealIdQuery
+>;
 export const getFoodItem = /* GraphQL */ `query GetFoodItem($id: ID!) {
   getFoodItem(id: $id) {
     id
+    foodItemMasterId
     name
-    calories
-    protein
-    carbs
-    fat
-    serving
     meals {
+      nextToken
+      startedAt
+      __typename
+    }
+    servingOptions {
       nextToken
       startedAt
       __typename
@@ -341,6 +534,7 @@ export const getFoodItem = /* GraphQL */ `query GetFoodItem($id: ID!) {
     _version
     _deleted
     _lastChangedAt
+    owner
     __typename
   }
 }
@@ -356,17 +550,14 @@ export const listFoodItems = /* GraphQL */ `query ListFoodItems(
   listFoodItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      foodItemMasterId
       name
-      calories
-      protein
-      carbs
-      fat
-      serving
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
     nextToken
@@ -392,12 +583,183 @@ export const syncFoodItems = /* GraphQL */ `query SyncFoodItems(
   ) {
     items {
       id
+      foodItemMasterId
       name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFoodItemsQueryVariables,
+  APITypes.SyncFoodItemsQuery
+>;
+export const foodItemsByFoodItemMasterId = /* GraphQL */ `query FoodItemsByFoodItemMasterId(
+  $foodItemMasterId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelFoodItemFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  foodItemsByFoodItemMasterId(
+    foodItemMasterId: $foodItemMasterId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      foodItemMasterId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.FoodItemsByFoodItemMasterIdQueryVariables,
+  APITypes.FoodItemsByFoodItemMasterIdQuery
+>;
+export const getFoodItemServing = /* GraphQL */ `query GetFoodItemServing($id: ID!) {
+  getFoodItemServing(id: $id) {
+    id
+    servingSize
+    servingUnit
+    calories
+    protein
+    carbs
+    fat
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemServingOptionsId
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFoodItemServingQueryVariables,
+  APITypes.GetFoodItemServingQuery
+>;
+export const listFoodItemServings = /* GraphQL */ `query ListFoodItemServings(
+  $filter: ModelFoodItemServingFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFoodItemServings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      servingSize
+      servingUnit
       calories
       protein
       carbs
       fat
-      serving
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemServingOptionsId
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListFoodItemServingsQueryVariables,
+  APITypes.ListFoodItemServingsQuery
+>;
+export const syncFoodItemServings = /* GraphQL */ `query SyncFoodItemServings(
+  $filter: ModelFoodItemServingFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFoodItemServings(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      servingSize
+      servingUnit
+      calories
+      protein
+      carbs
+      fat
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemServingOptionsId
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFoodItemServingsQueryVariables,
+  APITypes.SyncFoodItemServingsQuery
+>;
+export const getFoodItemMaster = /* GraphQL */ `query GetFoodItemMaster($id: ID!) {
+  getFoodItemMaster(id: $id) {
+    id
+    name
+    servingOptions {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFoodItemMasterQueryVariables,
+  APITypes.GetFoodItemMasterQuery
+>;
+export const listFoodItemMasters = /* GraphQL */ `query ListFoodItemMasters(
+  $filter: ModelFoodItemMasterFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFoodItemMasters(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
       createdAt
       updatedAt
       _version
@@ -411,8 +773,133 @@ export const syncFoodItems = /* GraphQL */ `query SyncFoodItems(
   }
 }
 ` as GeneratedQuery<
-  APITypes.SyncFoodItemsQueryVariables,
-  APITypes.SyncFoodItemsQuery
+  APITypes.ListFoodItemMastersQueryVariables,
+  APITypes.ListFoodItemMastersQuery
+>;
+export const syncFoodItemMasters = /* GraphQL */ `query SyncFoodItemMasters(
+  $filter: ModelFoodItemMasterFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFoodItemMasters(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFoodItemMastersQueryVariables,
+  APITypes.SyncFoodItemMastersQuery
+>;
+export const getFoodItemServingMaster = /* GraphQL */ `query GetFoodItemServingMaster($id: ID!) {
+  getFoodItemServingMaster(id: $id) {
+    id
+    servingSize
+    servingUnit
+    calories
+    protein
+    carbs
+    fat
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemMasterServingOptionsId
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFoodItemServingMasterQueryVariables,
+  APITypes.GetFoodItemServingMasterQuery
+>;
+export const listFoodItemServingMasters = /* GraphQL */ `query ListFoodItemServingMasters(
+  $filter: ModelFoodItemServingMasterFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFoodItemServingMasters(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      servingSize
+      servingUnit
+      calories
+      protein
+      carbs
+      fat
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemMasterServingOptionsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListFoodItemServingMastersQueryVariables,
+  APITypes.ListFoodItemServingMastersQuery
+>;
+export const syncFoodItemServingMasters = /* GraphQL */ `query SyncFoodItemServingMasters(
+  $filter: ModelFoodItemServingMasterFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFoodItemServingMasters(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      servingSize
+      servingUnit
+      calories
+      protein
+      carbs
+      fat
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemMasterServingOptionsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFoodItemServingMastersQueryVariables,
+  APITypes.SyncFoodItemServingMastersQuery
 >;
 export const getExerciseLog = /* GraphQL */ `query GetExerciseLog($id: ID!) {
   getExerciseLog(id: $id) {
@@ -1271,175 +1758,6 @@ export const exerciseSetExerciseRoutinesByExerciseRoutineId = /* GraphQL */ `que
 ` as GeneratedQuery<
   APITypes.ExerciseSetExerciseRoutinesByExerciseRoutineIdQueryVariables,
   APITypes.ExerciseSetExerciseRoutinesByExerciseRoutineIdQuery
->;
-export const getMealFoodItem = /* GraphQL */ `query GetMealFoodItem($id: ID!) {
-  getMealFoodItem(id: $id) {
-    id
-    mealId
-    foodItemId
-    meal {
-      id
-      mealPeriod
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      nutritionLogMealsId
-      __typename
-    }
-    foodItem {
-      id
-      name
-      calories
-      protein
-      carbs
-      fat
-      serving
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.GetMealFoodItemQueryVariables,
-  APITypes.GetMealFoodItemQuery
->;
-export const listMealFoodItems = /* GraphQL */ `query ListMealFoodItems(
-  $filter: ModelMealFoodItemFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listMealFoodItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      mealId
-      foodItemId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.ListMealFoodItemsQueryVariables,
-  APITypes.ListMealFoodItemsQuery
->;
-export const syncMealFoodItems = /* GraphQL */ `query SyncMealFoodItems(
-  $filter: ModelMealFoodItemFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncMealFoodItems(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      mealId
-      foodItemId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.SyncMealFoodItemsQueryVariables,
-  APITypes.SyncMealFoodItemsQuery
->;
-export const mealFoodItemsByMealId = /* GraphQL */ `query MealFoodItemsByMealId(
-  $mealId: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelMealFoodItemFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  mealFoodItemsByMealId(
-    mealId: $mealId
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      mealId
-      foodItemId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.MealFoodItemsByMealIdQueryVariables,
-  APITypes.MealFoodItemsByMealIdQuery
->;
-export const mealFoodItemsByFoodItemId = /* GraphQL */ `query MealFoodItemsByFoodItemId(
-  $foodItemId: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelMealFoodItemFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  mealFoodItemsByFoodItemId(
-    foodItemId: $foodItemId
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      mealId
-      foodItemId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.MealFoodItemsByFoodItemIdQueryVariables,
-  APITypes.MealFoodItemsByFoodItemIdQuery
 >;
 export const getExerciseLogExerciseRoutine = /* GraphQL */ `query GetExerciseLogExerciseRoutine($id: ID!) {
   getExerciseLogExerciseRoutine(id: $id) {
