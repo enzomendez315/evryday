@@ -6,7 +6,7 @@ export enum MealPeriod {
   BREAKFAST = "breakfast",
   LUNCH = "lunch",
   DINNER = "dinner",
-  CUSTOM = "custom"
+  SNACK = "snack"
 }
 
 

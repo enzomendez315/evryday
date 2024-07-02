@@ -6,7 +6,7 @@ const MealPeriod = {
   "BREAKFAST": "breakfast",
   "LUNCH": "lunch",
   "DINNER": "dinner",
-  "CUSTOM": "custom"
+  "SNACK": "snack"
 };
 
 const { ExerciseSet, User, NutritionLog, Meal, FoodItem, ExerciseLog, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, MealFoodItem, ExerciseLogExerciseRoutine, ExerciseRoutineExerciseType } = initSchema(schema);

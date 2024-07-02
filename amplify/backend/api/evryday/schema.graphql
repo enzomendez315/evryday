@@ -11,7 +11,7 @@ enum MealPeriod {
   breakfast
   lunch
   dinner
-  custom
+  snack
 }
 
 type User @model @auth(rules: [{allow: public}]) {

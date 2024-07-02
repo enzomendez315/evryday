@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView, Button } from 'react-native';
 import { getFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
 
@@ -30,6 +30,23 @@ const SearchFoodScreen = (props) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
         <View style={styles.header}>
+          <View style={styles.tableHeadContainer}> 
+            <Button 
+              style = {styles.button}
+              title='All Food'
+              onPress={() => console.log("Pressed 1")}
+            />
+            <Button 
+              style = {styles.button}
+              title='My Food'
+              onPress={() => console.log("Pressed 2")}
+            />
+            <Button 
+              style = {styles.button}
+              title='Favorites'
+              onPress={() => console.log("Pressed 3")}
+            />
+          </View>
           <Text style={styles.title}>Search Food</Text>
           <TextInput
             style={styles.searchInputText}
@@ -136,4 +153,8 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'black',
   },
+  button: {
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+  }
 });

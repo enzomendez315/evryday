@@ -1530,7 +1530,7 @@ export const schema = {
                 "breakfast",
                 "lunch",
                 "dinner",
-                "custom"
+                "snack"
             ]
         }
     },
