@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView, Button } from 'react-native';
-import { getFoodItems } from '../../logic/diet-api'
+import { searchFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 let DEBUG = false;
 
 // let initialisedDiet = false;
 let oldSearchInput = "INITIALISED";
 
-async function updateFoodItems(setFoodItems, searchInput = "") {
-  // initialisedDiet = true;
-  if (searchInput == oldSearchInput) return;
-  oldSearchInput = searchInput;
-  await getFoodItems(searchInput).then((getFood) => { setFoodItems(getFood) });
-}
+// async function updateFoodItems(setFoodItems, searchInput = "") {
+//   // initialisedDiet = true;
+//   if (searchInput == oldSearchInput) return;
+//   oldSearchInput = searchInput;
+//   await getFoodItems(searchInput).then(async (getFood) => { 
+//     console.log(`food: ${getFood[0]}`);
+//     if(getFood[0]) {
+//       for await (const serving of getFood[0].servingOptions) {
+//         console.log(`serving options: ${serving.calories}`);
+//       }
+//     }
+//     setFoodItems(getFood) 
+//   });
+// }
 
 const SearchFoodScreen = (props) => {
   // const [foodItems, setFoodItems] = useState<FoodItem>([]);
@@ -22,8 +31,10 @@ const SearchFoodScreen = (props) => {
   const mealId = route.params.meal.id;
   DEBUG && console.log(`Search Food mealId: ${mealId}`);
   const [foodItems, setFoodItems] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
+  const MAX_NAME_LENGTH = 45;
   useEffect(() => {
-    updateFoodItems(setFoodItems);
+    searchFoodItems(searchTerm, setFoodItems);
   }, []);
   return (
     <>
@@ -51,16 +62,16 @@ const SearchFoodScreen = (props) => {
           <TextInput
             style={styles.searchInputText}
             placeholder="Enter Food Here"
-            //  onChangeText={async (input) => { setFoodItems(await getFoodItems(input)); }}/>
-            onChangeText={async (input) => { await updateFoodItems(setFoodItems, input); }} />
+            onChangeText={async (input) => { 
+              setSearchTerm(input);
+              await searchFoodItems(searchTerm, setFoodItems); }} 
+            />
         </View>
 
         <Text style={styles.resultsText}>Search Results:</Text>
 
         <View style={styles.tableHeadContainer}>
           <Text style={styles.tableHeadText}>Food Name</Text>
-          <Text style={styles.tableHeadText}>Serving</Text>
-          <Text style={styles.tableHeadText}>Calories</Text>
         </View>
 
         <ScrollView>
@@ -74,9 +85,9 @@ const SearchFoodScreen = (props) => {
                 <>
                   <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item, meal })}>
                     <View style={styles.tableTextContainer}>
-                      <Text style={styles.tableText}>{item.name}</Text>
-                      <Text style={styles.tableText}>{item.serving}</Text>
-                      <Text style={styles.tableText}>{item.calories}</Text>
+                      <Text style={styles.tableText}>{item.name.length < MAX_NAME_LENGTH
+                        ? `${item.name}`
+                        : `${item.name.substring(0,MAX_NAME_LENGTH)}`}</Text>
                     </View>
                   </TouchableOpacity>
                   <View style={styles.separator} />

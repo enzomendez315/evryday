@@ -93,3 +93,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 src/logic/diet-api-tsconversion.ts
 amplify/README.md
+/src/sampleData

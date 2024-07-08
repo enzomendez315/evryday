@@ -49,17 +49,19 @@ const DietScreen = ({ navigation }) => {
 
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
-  const [logChanged, setLogChanged] = useState(true);
+  //TODO:: REMOVE dont need this if use effect is removed
+  // const [logChanged, setLogChanged] = useState(true);
 
   userId = React.useContext(AccountContext);
 
-  useEffect(() => {
-    //if (!logChanged) return;
-    setLogChanged(false);
-    syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
-  }, [logChanged]);
+  // TODO:: REMOVE dont need this and useFocus as they both update the same data
+  // useEffect(() => {
+  //   //if (!logChanged) return;
+  //   setLogChanged(false);
+  //   syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
+  // }, [logChanged]);
 
-  // called every time the screen is opened
+  // Called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);

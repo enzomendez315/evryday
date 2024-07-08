@@ -191,7 +191,7 @@ type EagerFoodItem = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly foodItemMasterId: string;
+  readonly owner: string;
   readonly name: string;
   readonly meals?: (MealToFood | null)[] | null;
   readonly servingOptions?: (FoodItemServing | null)[] | null;
@@ -205,7 +205,7 @@ type LazyFoodItem = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly foodItemMasterId: string;
+  readonly owner: string;
   readonly name: string;
   readonly meals: AsyncCollection<MealToFood>;
   readonly servingOptions: AsyncCollection<FoodItemServing>;
@@ -225,6 +225,7 @@ type EagerFoodItemServing = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
+  readonly foodItem?: FoodItem | null;
   readonly servingSize: number;
   readonly servingUnit?: string | null;
   readonly calories?: number | null;
@@ -242,6 +243,7 @@ type LazyFoodItemServing = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
+  readonly foodItem: AsyncItem<FoodItem | undefined>;
   readonly servingSize: number;
   readonly servingUnit?: string | null;
   readonly calories?: number | null;
@@ -257,76 +259,6 @@ export declare type FoodItemServing = LazyLoading extends LazyLoadingDisabled ? 
 
 export declare const FoodItemServing: (new (init: ModelInit<FoodItemServing>) => FoodItemServing) & {
   copyOf(source: FoodItemServing, mutator: (draft: MutableModel<FoodItemServing>) => MutableModel<FoodItemServing> | void): FoodItemServing;
-}
-
-type EagerFoodItemMaster = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<FoodItemMaster, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly servingOptions?: (FoodItemServingMaster | null)[] | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyFoodItemMaster = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<FoodItemMaster, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly servingOptions: AsyncCollection<FoodItemServingMaster>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type FoodItemMaster = LazyLoading extends LazyLoadingDisabled ? EagerFoodItemMaster : LazyFoodItemMaster
-
-export declare const FoodItemMaster: (new (init: ModelInit<FoodItemMaster>) => FoodItemMaster) & {
-  copyOf(source: FoodItemMaster, mutator: (draft: MutableModel<FoodItemMaster>) => MutableModel<FoodItemMaster> | void): FoodItemMaster;
-}
-
-type EagerFoodItemServingMaster = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<FoodItemServingMaster, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly servingSize: number;
-  readonly servingUnit?: string | null;
-  readonly calories?: number | null;
-  readonly protein?: number | null;
-  readonly carbs?: number | null;
-  readonly fat?: number | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly foodItemMasterServingOptionsId?: string | null;
-}
-
-type LazyFoodItemServingMaster = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<FoodItemServingMaster, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly servingSize: number;
-  readonly servingUnit?: string | null;
-  readonly calories?: number | null;
-  readonly protein?: number | null;
-  readonly carbs?: number | null;
-  readonly fat?: number | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly foodItemMasterServingOptionsId?: string | null;
-}
-
-export declare type FoodItemServingMaster = LazyLoading extends LazyLoadingDisabled ? EagerFoodItemServingMaster : LazyFoodItemServingMaster
-
-export declare const FoodItemServingMaster: (new (init: ModelInit<FoodItemServingMaster>) => FoodItemServingMaster) & {
-  copyOf(source: FoodItemServingMaster, mutator: (draft: MutableModel<FoodItemServingMaster>) => MutableModel<FoodItemServingMaster> | void): FoodItemServingMaster;
 }
 
 type EagerExerciseLog = {

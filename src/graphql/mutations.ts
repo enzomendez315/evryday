@@ -188,7 +188,6 @@ export const createNutritionLog = /* GraphQL */ `mutation CreateNutritionLog(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -214,7 +213,6 @@ export const updateNutritionLog = /* GraphQL */ `mutation UpdateNutritionLog(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -240,7 +238,6 @@ export const deleteNutritionLog = /* GraphQL */ `mutation DeleteNutritionLog(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -266,7 +263,6 @@ export const createMeal = /* GraphQL */ `mutation CreateMeal(
     _deleted
     _lastChangedAt
     nutritionLogMealsId
-    owner
     __typename
   }
 }
@@ -292,7 +288,6 @@ export const updateMeal = /* GraphQL */ `mutation UpdateMeal(
     _deleted
     _lastChangedAt
     nutritionLogMealsId
-    owner
     __typename
   }
 }
@@ -318,7 +313,6 @@ export const deleteMeal = /* GraphQL */ `mutation DeleteMeal(
     _deleted
     _lastChangedAt
     nutritionLogMealsId
-    owner
     __typename
   }
 }
@@ -345,19 +339,17 @@ export const createMealToFood = /* GraphQL */ `mutation CreateMealToFood(
       _deleted
       _lastChangedAt
       nutritionLogMealsId
-      owner
       __typename
     }
     foodItem {
       id
-      foodItemMasterId
+      owner
       name
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      owner
       __typename
     }
     createdAt
@@ -365,7 +357,6 @@ export const createMealToFood = /* GraphQL */ `mutation CreateMealToFood(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -392,19 +383,17 @@ export const updateMealToFood = /* GraphQL */ `mutation UpdateMealToFood(
       _deleted
       _lastChangedAt
       nutritionLogMealsId
-      owner
       __typename
     }
     foodItem {
       id
-      foodItemMasterId
+      owner
       name
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      owner
       __typename
     }
     createdAt
@@ -412,7 +401,6 @@ export const updateMealToFood = /* GraphQL */ `mutation UpdateMealToFood(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -439,19 +427,17 @@ export const deleteMealToFood = /* GraphQL */ `mutation DeleteMealToFood(
       _deleted
       _lastChangedAt
       nutritionLogMealsId
-      owner
       __typename
     }
     foodItem {
       id
-      foodItemMasterId
+      owner
       name
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      owner
       __typename
     }
     createdAt
@@ -459,7 +445,6 @@ export const deleteMealToFood = /* GraphQL */ `mutation DeleteMealToFood(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -473,7 +458,7 @@ export const createFoodItem = /* GraphQL */ `mutation CreateFoodItem(
 ) {
   createFoodItem(input: $input, condition: $condition) {
     id
-    foodItemMasterId
+    owner
     name
     meals {
       nextToken
@@ -490,7 +475,6 @@ export const createFoodItem = /* GraphQL */ `mutation CreateFoodItem(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -504,7 +488,7 @@ export const updateFoodItem = /* GraphQL */ `mutation UpdateFoodItem(
 ) {
   updateFoodItem(input: $input, condition: $condition) {
     id
-    foodItemMasterId
+    owner
     name
     meals {
       nextToken
@@ -521,7 +505,6 @@ export const updateFoodItem = /* GraphQL */ `mutation UpdateFoodItem(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -535,7 +518,7 @@ export const deleteFoodItem = /* GraphQL */ `mutation DeleteFoodItem(
 ) {
   deleteFoodItem(input: $input, condition: $condition) {
     id
-    foodItemMasterId
+    owner
     name
     meals {
       nextToken
@@ -552,7 +535,6 @@ export const deleteFoodItem = /* GraphQL */ `mutation DeleteFoodItem(
     _version
     _deleted
     _lastChangedAt
-    owner
     __typename
   }
 }
@@ -566,6 +548,17 @@ export const createFoodItemServing = /* GraphQL */ `mutation CreateFoodItemServi
 ) {
   createFoodItemServing(input: $input, condition: $condition) {
     id
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
     servingSize
     servingUnit
     calories
@@ -578,7 +571,6 @@ export const createFoodItemServing = /* GraphQL */ `mutation CreateFoodItemServi
     _deleted
     _lastChangedAt
     foodItemServingOptionsId
-    owner
     __typename
   }
 }
@@ -592,6 +584,17 @@ export const updateFoodItemServing = /* GraphQL */ `mutation UpdateFoodItemServi
 ) {
   updateFoodItemServing(input: $input, condition: $condition) {
     id
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
     servingSize
     servingUnit
     calories
@@ -604,7 +607,6 @@ export const updateFoodItemServing = /* GraphQL */ `mutation UpdateFoodItemServi
     _deleted
     _lastChangedAt
     foodItemServingOptionsId
-    owner
     __typename
   }
 }
@@ -618,6 +620,17 @@ export const deleteFoodItemServing = /* GraphQL */ `mutation DeleteFoodItemServi
 ) {
   deleteFoodItemServing(input: $input, condition: $condition) {
     id
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
     servingSize
     servingUnit
     calories
@@ -630,160 +643,12 @@ export const deleteFoodItemServing = /* GraphQL */ `mutation DeleteFoodItemServi
     _deleted
     _lastChangedAt
     foodItemServingOptionsId
-    owner
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteFoodItemServingMutationVariables,
   APITypes.DeleteFoodItemServingMutation
->;
-export const createFoodItemMaster = /* GraphQL */ `mutation CreateFoodItemMaster(
-  $input: CreateFoodItemMasterInput!
-  $condition: ModelFoodItemMasterConditionInput
-) {
-  createFoodItemMaster(input: $input, condition: $condition) {
-    id
-    name
-    servingOptions {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateFoodItemMasterMutationVariables,
-  APITypes.CreateFoodItemMasterMutation
->;
-export const updateFoodItemMaster = /* GraphQL */ `mutation UpdateFoodItemMaster(
-  $input: UpdateFoodItemMasterInput!
-  $condition: ModelFoodItemMasterConditionInput
-) {
-  updateFoodItemMaster(input: $input, condition: $condition) {
-    id
-    name
-    servingOptions {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateFoodItemMasterMutationVariables,
-  APITypes.UpdateFoodItemMasterMutation
->;
-export const deleteFoodItemMaster = /* GraphQL */ `mutation DeleteFoodItemMaster(
-  $input: DeleteFoodItemMasterInput!
-  $condition: ModelFoodItemMasterConditionInput
-) {
-  deleteFoodItemMaster(input: $input, condition: $condition) {
-    id
-    name
-    servingOptions {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteFoodItemMasterMutationVariables,
-  APITypes.DeleteFoodItemMasterMutation
->;
-export const createFoodItemServingMaster = /* GraphQL */ `mutation CreateFoodItemServingMaster(
-  $input: CreateFoodItemServingMasterInput!
-  $condition: ModelFoodItemServingMasterConditionInput
-) {
-  createFoodItemServingMaster(input: $input, condition: $condition) {
-    id
-    servingSize
-    servingUnit
-    calories
-    protein
-    carbs
-    fat
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    foodItemMasterServingOptionsId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateFoodItemServingMasterMutationVariables,
-  APITypes.CreateFoodItemServingMasterMutation
->;
-export const updateFoodItemServingMaster = /* GraphQL */ `mutation UpdateFoodItemServingMaster(
-  $input: UpdateFoodItemServingMasterInput!
-  $condition: ModelFoodItemServingMasterConditionInput
-) {
-  updateFoodItemServingMaster(input: $input, condition: $condition) {
-    id
-    servingSize
-    servingUnit
-    calories
-    protein
-    carbs
-    fat
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    foodItemMasterServingOptionsId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateFoodItemServingMasterMutationVariables,
-  APITypes.UpdateFoodItemServingMasterMutation
->;
-export const deleteFoodItemServingMaster = /* GraphQL */ `mutation DeleteFoodItemServingMaster(
-  $input: DeleteFoodItemServingMasterInput!
-  $condition: ModelFoodItemServingMasterConditionInput
-) {
-  deleteFoodItemServingMaster(input: $input, condition: $condition) {
-    id
-    servingSize
-    servingUnit
-    calories
-    protein
-    carbs
-    fat
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    foodItemMasterServingOptionsId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteFoodItemServingMasterMutationVariables,
-  APITypes.DeleteFoodItemServingMasterMutation
 >;
 export const createExerciseLog = /* GraphQL */ `mutation CreateExerciseLog(
   $input: CreateExerciseLogInput!

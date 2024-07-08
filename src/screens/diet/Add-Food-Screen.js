@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
-import { addFoodToMeal } from '../../logic/diet-api'
+import { addFoodToMeal, getServingOptions } from '../../logic/diet-api'
+import { useFocusEffect } from '@react-navigation/native';
 
 let DEBUG = false;
 
@@ -16,11 +17,19 @@ const AddFoodScreen = (props) => {
   DEBUG && console.log(item);
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('gram');
-  const [items, setItems] = useState([
-    { label: 'Grams', value: 'gram' },
-    { label: 'Count', value: 'count' }
+  const [dropDownValue, setDropDownValue] = useState(0);
+  const [servingOptions, setServingOptions] = useState([]);
+  const [servingAmount, setServingAmount] = useState(100);
+  const [dropDownItems, setDropDownItems] = useState([
+    { label: 'Grams', value: 0 },
+    { label: 'Count', value: 1 }
   ]);
+
+  useEffect(() => {
+    getServingOptions(item, setServingOptions, setDropDownItems, setServingAmount);
+    setDropDownValue(0);
+    return;
+  }, [item, meal])
 
   return (
     <>
@@ -34,34 +43,39 @@ const AddFoodScreen = (props) => {
           source={require('../../images/apple.png')} />
 
         <View style={styles.macroContainer}>
-          <Text style={styles.text}>Protein: {item.protein}g</Text>
-          <Text style={styles.text}>Carbs: {item.carbs}g</Text>
-          <Text style={styles.text}>Fat: {item.fat}g</Text>
+          <Text style={styles.text}>Protein: {servingOptions[dropDownValue]?.protein}g</Text>
+          <Text style={styles.text}>Carbs: {servingOptions[dropDownValue]?.carbs}g</Text>
+          <Text style={styles.text}>Fat: {servingOptions[dropDownValue]?.fat}g</Text>
         </View>
 
         <View style={styles.servingInputContainer}>
           <Text style={styles.text}>Serving: </Text>
-          <TextInput style={styles.textInput} placeholder='100' />
+          <TextInput 
+            style={styles.textInput} 
+            placeholder={String(servingOptions[dropDownValue]?.servingSize ?? 100)} 
+            keyboardType='numeric'
+            onChangeText={(input) => setServingAmount(input)}
+            value={servingAmount}
+          />
           <DropDownPicker
             containerStyle={{ height: 40, width: 100 }}
             defaultValue={'gram'}
             open={open}
-            value={value}
-            items={items}
+            value={dropDownValue}
+            items={dropDownItems}
             setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
+            setValue={setDropDownValue}
+            setItems={setDropDownItems}
           />
-          <Text style={styles.caloriesText}>Calories: {item.calories}</Text>
+          <Text style={styles.caloriesText}>Calories: {servingOptions[dropDownValue]?.calories}</Text>
         </View>
 
         <TouchableOpacity
           onPress={async () => {
-            //Uncomment to add food to a meal
-            await addFoodToMeal(meal, item).then((newMeal) => {
+            //TODO: Add food to meal
+            await addFoodToMeal(meal, item, servingOptions[dropDownValue]?.id, servingAmount).then((newMeal) => {
               navigation.navigate('Add Meal', { meal: newMeal });
             });
-
           }}
           style={styles.button}>
           <Text style={styles.buttonText}>Add Food</Text>
@@ -70,19 +84,6 @@ const AddFoodScreen = (props) => {
     </>
   );
 };
-
-async function addFood(mealId, foodId) {
-  p = new Promise((resolve, reject) => {
-    try {
-      addFoodToMeal(mealId, foodId).then((m) => {
-        resolve(m);
-      });
-    } catch (err) {
-      console.log(err);
-      reject(err);
-    }
-  })
-}
 
 export default AddFoodScreen;
 

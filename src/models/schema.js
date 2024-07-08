@@ -261,10 +261,7 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
-                                "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "public",
                                 "operations": [
                                     "create",
                                     "update",
@@ -357,10 +354,7 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
-                                "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "public",
                                 "operations": [
                                     "create",
                                     "update",
@@ -490,10 +484,7 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
-                                "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "public",
                                 "operations": [
                                     "create",
                                     "update",
@@ -516,8 +507,8 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "foodItemMasterId": {
-                    "name": "foodItemMasterId",
+                "owner": {
+                    "name": "owner",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
@@ -587,23 +578,11 @@ export const schema = {
                     "properties": {}
                 },
                 {
-                    "type": "key",
-                    "properties": {
-                        "name": "foodItemsByFoodItemMasterId",
-                        "fields": [
-                            "foodItemMasterId"
-                        ]
-                    }
-                },
-                {
                     "type": "auth",
                     "properties": {
                         "rules": [
                             {
-                                "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "public",
                                 "operations": [
                                     "create",
                                     "update",
@@ -626,10 +605,25 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "foodItem": {
+                    "name": "foodItem",
+                    "isArray": false,
+                    "type": {
+                        "model": "FoodItem"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "foodItemServingOptionsId"
+                        ]
+                    }
+                },
                 "servingSize": {
                     "name": "servingSize",
                     "isArray": false,
-                    "type": "Int",
+                    "type": "Float",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -700,206 +694,15 @@ export const schema = {
                     "properties": {}
                 },
                 {
-                    "type": "key",
-                    "properties": {
-                        "name": "gsi-FoodItem.servingOptions",
-                        "fields": [
-                            "foodItemServingOptionsId"
-                        ]
-                    }
-                },
-                {
                     "type": "auth",
                     "properties": {
                         "rules": [
                             {
-                                "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "public",
                                 "operations": [
                                     "create",
                                     "update",
                                     "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "FoodItemMaster": {
-            "name": "FoodItemMaster",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "servingOptions": {
-                    "name": "servingOptions",
-                    "isArray": true,
-                    "type": {
-                        "model": "FoodItemServingMaster"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "foodItemMasterServingOptionsId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "FoodItemMasters",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "FoodItemServingMaster": {
-            "name": "FoodItemServingMaster",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "servingSize": {
-                    "name": "servingSize",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "servingUnit": {
-                    "name": "servingUnit",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "calories": {
-                    "name": "calories",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "protein": {
-                    "name": "protein",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "carbs": {
-                    "name": "carbs",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "fat": {
-                    "name": "fat",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "foodItemMasterServingOptionsId": {
-                    "name": "foodItemMasterServingOptionsId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "FoodItemServingMasters",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "gsi-FoodItemMaster.servingOptions",
-                        "fields": [
-                            "foodItemMasterServingOptionsId"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
                                     "read"
                                 ]
                             }
@@ -1869,5 +1672,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "7dd879831c05415cedf92e32e071d882"
+    "version": "c7df063abf00c47d1447fbc7168a14b8"
 };
