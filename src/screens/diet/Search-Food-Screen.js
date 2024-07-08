@@ -6,26 +6,9 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 let DEBUG = false;
 
-// let initialisedDiet = false;
 let oldSearchInput = "INITIALISED";
 
-// async function updateFoodItems(setFoodItems, searchInput = "") {
-//   // initialisedDiet = true;
-//   if (searchInput == oldSearchInput) return;
-//   oldSearchInput = searchInput;
-//   await getFoodItems(searchInput).then(async (getFood) => { 
-//     console.log(`food: ${getFood[0]}`);
-//     if(getFood[0]) {
-//       for await (const serving of getFood[0].servingOptions) {
-//         console.log(`serving options: ${serving.calories}`);
-//       }
-//     }
-//     setFoodItems(getFood) 
-//   });
-// }
-
 const SearchFoodScreen = (props) => {
-  // const [foodItems, setFoodItems] = useState<FoodItem>([]);
   const { navigation, route } = props;
   const meal = route.params.meal;
   const mealId = route.params.meal.id;

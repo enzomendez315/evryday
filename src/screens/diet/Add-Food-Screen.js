@@ -26,6 +26,7 @@ const AddFoodScreen = (props) => {
 
   // [calories, carbs, fat, protein]
   const [macros, setMacros] = useState([0, 0, 0, 0]);
+  const [disableInput, setDisableInput] = useState(false);
   const calcMacros = (serving, servingAmount) => {
     let servingSize = serving?.servingSize ?? 100;
     let calories = serving?.calories ?? 0;
@@ -100,9 +101,11 @@ const AddFoodScreen = (props) => {
         </View>
 
         <TouchableOpacity
+        disabled={disableInput}
           onPress={async () => {
-            //TODO: Add food to meal
+            setDisableInput(true);
             await addFoodToMeal(meal, item, servingOptions[dropDownValue]?.id, parseFloat(servingAmount)).then((newMeal) => {
+              setDisableInput(false);
               navigation.navigate('Add Meal', { meal: newMeal });
             });
           }}

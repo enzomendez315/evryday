@@ -1,9 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails} from '../logic/account'
-//TODO:: REMOVE MealFoodItem
-import { NutritionLog, Meal, MealPeriod, MealFoodItem, FoodItem, FoodItemServing, MealToFood } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood } from '../models';
 
-// TODO:: REMOVE masterFoodItems and masterFoodItemServings after testing is complete
 const DEBUG = true;
 
 // this is the format logData should be in
@@ -64,9 +62,8 @@ async function createNewLog(userId, date) {
 
 // called when user presses delete meal in edit meal screen
 export async function deleteMeal(mealId) {
-    DEBUG && console.log(`deleteMeal unimplemented`);
-    // DEBUG && console.log(`deleteMeal mealId: ${mealId}`);
-    // await DataStore.delete(Meal, (m) => m.id.eq(mealId));
+    DEBUG && console.log(`deleteMeal mealId: ${mealId}`);
+    await DataStore.delete(Meal, (m) => m.id.eq(mealId));
 }
 
 // gets nutrition log for a user and date
@@ -97,57 +94,56 @@ async function getUsersNutritionLog(userId, date) {
 
 // called by dashboard to populate the diet tab
 export async function syncDietDashboardData(userId, date, setCalorieData) {
-    DEBUG && console.log(`syncDietDashboardData unimplemented`);
-    // DEBUG && console.log(`syncDietDashboardData userId: ${userId} Date: ${date}`);
-    // const userLog = await getUsersNutritionLog(userId, date);
+    DEBUG && console.log(`syncDietDashboardData userId: ${userId} Date: ${date}`);
+    const userLog = await getUsersNutritionLog(userId, date);
 
-    // if (userLog === null) {
-    //     DEBUG && console.log("No log found in syncDietDashboardData");
-    //     setCalorieData({
-    //         proteinCurrent: 0,
-    //         proteinGoal: 150,
-    //         carbsCurrent: 0,
-    //         carbsGoal: 250,
-    //         fatCurrent: 0,
-    //         fatGoal: 75,
-    //         caloriesCurrent: 0,
-    //         caloriesGoal: 2000,
-    //     });
-    // }
+    if (userLog === null) {
+        DEBUG && console.log("No log found in syncDietDashboardData");
+        setCalorieData({
+            proteinCurrent: 0,
+            proteinGoal: 150,
+            carbsCurrent: 0,
+            carbsGoal: 250,
+            fatCurrent: 0,
+            fatGoal: 75,
+            caloriesCurrent: 0,
+            caloriesGoal: 2000,
+        });
+    }
 
-    // else {
-    //     const meals = await userLog.Meals.toArray();
-    //     DEBUG && console.log(`syncDietDashboardData Meals: ${meals}`);
+    else {
+        const meals = await userLog.Meals.toArray();
+        DEBUG && console.log(`syncDietDashboardData Meals: ${meals}`);
 
-    //     const macros = await getAllMealsMacros(meals);
-    //     DEBUG && console.log(`syncDietDashboardData Macros: ${macros}`);
+        const macros = await getAllMealsMacros(meals);
+        DEBUG && console.log(`syncDietDashboardData Macros: ${macros}`);
 
-    //     // if a log is found but no macro
-    //     if (meals.length === 0) {
-    //         setCalorieData({
-    //             proteinCurrent: 0,
-    //             proteinGoal: 150,
-    //             carbsCurrent: 0,
-    //             carbsGoal: 250,
-    //             fatCurrent: 0,
-    //             fatGoal: 75,
-    //             caloriesCurrent: 0,
-    //             caloriesGoal: 2000,
-    //         });
-    //     }
-    //     else {
-    //         setCalorieData({
-    //             proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
-    //             proteinGoal: 150,
-    //             carbsCurrent: macros.reduce((acc, meal) => acc + meal.carbs, 0),
-    //             carbsGoal: 250,
-    //             fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
-    //             fatGoal: 75,
-    //             caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
-    //             caloriesGoal: 2000,
-    //         });
-    //     }
-    // }
+        // if a log is found but no macro
+        if (meals.length === 0) {
+            setCalorieData({
+                proteinCurrent: 0,
+                proteinGoal: 150,
+                carbsCurrent: 0,
+                carbsGoal: 250,
+                fatCurrent: 0,
+                fatGoal: 75,
+                caloriesCurrent: 0,
+                caloriesGoal: 2000,
+            });
+        }
+        else {
+            setCalorieData({
+                proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
+                proteinGoal: 150,
+                carbsCurrent: macros.reduce((acc, meal) => acc + meal.carbs, 0),
+                carbsGoal: 250,
+                fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
+                fatGoal: 75,
+                caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
+                caloriesGoal: 2000,
+            });
+        }
+    }
 
 }
 
@@ -201,24 +197,43 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     setLogData(macros);
 }
 
+// Combines a FoodItem, it serving information, and the amount of servings into a singular item
+function formatFoodItem(foodItem, serving, amount) {
+    let multiplier = amount / serving.servingSize;
+    return {
+        name: foodItem.name,
+        calories: Math.round(serving.calories * multiplier),
+        protein: Math.round(serving.protein * multiplier),
+        carbs: Math.round(serving.carbs * multiplier),
+        fat: Math.round(serving.fat * multiplier)
+    };
+
+}
+
+// Creates a list of formatted food items for a given meal using the relationships in the MealToFood table
+async function getFoodListForMeal(meal) {
+    p = new Promise(async (resolve, reject) => {
+        let foodsList = [];
+        const mealFoodRelationships = await DataStore.query(MealToFood, (mfr) => mfr.mealId.eq(meal.id));
+
+        for (let mealFoodRelationship of mealFoodRelationships) {
+            let food = await mealFoodRelationship.foodItem;
+            DEBUG && console.log(`getFoodListForMeal food: ${food.name}`);
+            let serving = await DataStore.query(FoodItemServing, (s) => s.id.eq(mealFoodRelationship.servingId));
+            DEBUG && console.log(`getFoodListForMeal serving: ${serving[0]}`);
+            let formattedFood = formatFoodItem(food, serving[0], mealFoodRelationship.servingAmount);
+            foodsList.push(formattedFood);
+        }
+        resolve(foodsList);
+    });
+    return p;
+}
+
 // updates the UI in the edit meal screen
 export async function syncMealFoodsList(meal, setFoodList) {
-    DEBUG && console.log(`syncMealFoodsList unimplemented`);
-    // DEBUG && console.log(`syncMealFoodList mealId: ${meal.id}`);
-    // let foodsList = [];
-
-    // // looks in the many to many table
-    // const mealFoodRelationships = await DataStore.query(MealFoodItem, (mfi) => mfi.mealId.eq(meal.id));
-
-    // for (let mealFoodRelationship of mealFoodRelationships) {
-    //     let foodLinks = await DataStore.query(FoodItem, (f) => f.id.eq(mealFoodRelationship.foodItemId));
-    //     for (let foodLink of foodLinks) {
-    //         DEBUG && console.log(`syncMealFoodList foodLink:`);
-    //         DEBUG && console.log(foodLink);
-    //         foodsList.push(foodLink);
-    //     }
-    // }
-    // setFoodList(foodsList);
+    DEBUG && console.log(`syncMealFoodList mealId: ${meal.id}`);
+    let foodsList = await getFoodListForMeal(meal);
+    setFoodList(foodsList);
 }
 
 export async function removeFoodFromMeal(meal, food) {
@@ -259,78 +274,25 @@ async function getAllMealsMacros(meals) {
 // gets macros for a meal
 // helper function for getAllMealsMacros and addFoodToMeal
 export async function calcMealMacros(meal) {
-    DEBUG && console.log(`calcMealMacros unimplemented`);
     p = new Promise(async (resolve, reject) => {
         DEBUG && console.log(`calcMealMacros mealId: ${meal.id}`);
-        let foodsList = [];
-
-        //const mealFoodRelation = await DataStore.query()
-            //TODO:: REWRITE returns 0s for macros until query is fixed
-            let mealData = {
-                id: meal.id,
-                name: meal.mealPeriod,
-                calories: 0,
-                protein: 0,
-                carbs: 0,
-                fat: 0
-            };
-            resolve(mealData);
+        let foodsList = await getFoodListForMeal(meal);
+        let mealData = {
+            id: meal.id,
+            name: meal.mealPeriod,
+            calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+            protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+            carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+            fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+        };
+        DEBUG && console.log(`calcMealMacros name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
+        resolve(mealData);
     });
     return p;
-
-
-    // p = new Promise(async (resolve, reject) => {
-    //     DEBUG && console.log(`calcMealMacros mealId: ${meal.id}`);
-
-    //     let foodsList = [];
-
-    //     // looks in the many to many table
-    //     const mealFoodRelationships = await DataStore.query(MealFoodItem, (mfi) => mfi.mealId.eq(meal.id));
-
-    //     for (let mealFoodRelationship of mealFoodRelationships) {
-    //         let foodLinks = await DataStore.query(FoodItem, (f) => f.id.eq(mealFoodRelationship.foodItemId));
-    //         for (let foodLink of foodLinks) {
-    //             DEBUG && console.log(`calcMealMacros foodLink:`);
-    //             DEBUG && console.log(foodLink);
-    //             foodsList.push(foodLink);
-    //         }
-    //     }
-
-    //     let mealData = {
-    //         id: meal.id,
-    //         name: meal.mealPeriod,
-    //         calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
-    //         protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
-    //         carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
-    //         fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
-    //     };
-    //     DEBUG && console.log(`calcMealMacros name: ${mealData.name} calories: ${mealData.calories} protein: ${mealData.protein} carbs: ${mealData.carbs} fat: ${mealData.fat}`);
-    //     resolve(mealData);
-    // });
-    // return p;
 }
 
-// queries the datastore for a meal with mealId
-// called in add meal screen UI
-//TODO: verify inputs for createMeal
-export async function getMeal(mealId) {
-    DEBUG && console.log(`getMeal unimplemented`);
-    // p = new Promise(async (resolve, reject) => {
-    //     try {
-    //         DEBUG && console.log(`getMeal mealId: ${mealId}`);
-    //         await DataStore.query(Meal, (m) => m.id.eq(mealId)).then((foundMeal) => {
-    //             DEBUG && console.log(`Found Meal: ${foundMeal}`);
-    //             resolve(foundMeal[0]);
-    //         });
-
-    //     } catch (err) {
-    //         console.log(err);
-    //         reject(err);
-    //     }
-    // });
-    // return p;
-}
-
+// Finds all serving options for a food item
+// sets the serving options and drop down items for the Add-Food-Screen
 export async function getServingOptions(foodItem, setServingOptions, setDropDownItems) {
     const servingOptions = await foodItem.servingOptions.toArray();
     setServingOptions(servingOptions);
@@ -346,31 +308,18 @@ export async function getServingOptions(foodItem, setServingOptions, setDropDown
     setDropDownItems(options);
 }
 
+// Helper function for the Search-Food-Screen
 export function searchFoodItems(searchTerm, setFoodItems) {
     DEBUG && console.log(`searchFoodItems searchTerm: ${searchTerm}`);
-    // let foodList = [];
     getFoodItems(searchTerm).then(async (foods) => {
-        // for (let food of foods) {
-        //     let servingOptions = await food.servingOptions.toArray();
-        //     if(servingOptions.length > 0) {
-        //         const foodItem = {
-        //             name: food.name,
-        //             calories: servingOptions[0].calories,
-        //             servingSize: servingOptions[0].servingSize,
-        //             servingUnit: servingOptions[0].servingUnit
-        //         }
-        //         foodList.push(food);
-        //     }
         setFoodItems(foods);
-        // }
     });
 }
-
 
 // queries all food items from the datastore
 // takes in a search term to filter the results
 // if no search term is provided, returns all food items
-export async function getFoodItems(searchTerm) {
+async function getFoodItems(searchTerm) {
     DEBUG && console.log(`getFoodItems searchTerm: ${searchTerm}`);
     if (!searchTerm || searchTerm == "") {
         DEBUG && console.log(`getFoodItems blank term`);
@@ -418,79 +367,7 @@ export async function initFoodItems() {
 }
 
 
-//TODO:: REMOVE if not used
-// takes a list of foods and turns them into FoodItems
-// calls createFoodItem to save them to the database
-// only called once to make items in database
-// function bulkCreateFood(foodArr) {
-//     foodArr.forEach(item => {
-//         let foodItem = new FoodItem({
-//             name: item.name,
-//             calories: item.calories,
-//             protein: item.protein,
-//             carbs: item.carbs,
-//             fat: item.fat,
-//             serving: item.serving
-//         })
-//         createFoodItem(foodItem);
-//     });
-// }
-
-
-//TODO:: REMOVE if not used
-// adds foodItem to the datastore
-// only called once to make items in database
-// async function createFoodItem(foodItem) {
-//     if (!foodItem) {
-//         return;
-//     }
-//     try {
-//         await DataStore.save(foodItem);
-//         DEBUG && console.log('Successfully added: ', foodItem);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-//TODO:: test if this method works and is quicker for bulk uploading
-// async function bulkCreateMasterFood(foodItems, foodServings) {
-//     let batch = [];
-//     for(let item of foodItems) {
-//         const foodItem = DataStore.save(
-//             new FoodItemMaster({
-//                 name: item.name
-//             })
-//         );
-//         batch.push(foodItem);
-//         let ref_id = item.ref_id;
-//         foodServings.forEach(async serving => {
-//             if (serving.ref_id == ref_id) {
-//                 batch.push(DataStore.save(
-//                     new FoodItemServingMaster ({
-//                         foodItemMaster: foodItem,
-//                         servingSize: serving.servingSize,
-//                         servingUnit: serving.servingUnit,
-//                         calories: serving.calories,
-//                         protein: serving.protein,
-//                         carbs: serving.carbs,
-//                         fat: serving.fat
-//                     }))
-//                 );
-//             }
-//         });
-//     }
-
-//     const results = await Promise.all(batch);
-//     for (let result of results) {
-//         if (result.status === 'rejected'){
-//             console.log(result.reason);
-//         }
-//     }
-//     console.log('Finished adding food items');
-//     return results;
-// }
-
-//TODO:: REMOVE if above method works and is faster
+// Creates food items and their servings
 async function bulkCreateFood(foodItems, foodServings) {
     const userId = await currentUserDetails();
     DEBUG && console.log(`bulkCreateFood userId: ${userId}`);
@@ -519,55 +396,6 @@ async function bulkCreateFood(foodItems, foodServings) {
         });
     });
 }
-
-//TODO:: REMOVE after testing is complete
-// async function datastoreSave(object) {
-
-//     //check if Master Food item already exists
-
-//     //create master food item if it doesn't exist
-
-//     //check if serving already exists
-
-//     //add serving to master food item
-
-//     if(!object) {return;}
-//     try {
-//         await DataStore.save(object);
-//         DEBUG && console.log('Successfully added: ', object);
-//     } catch (err) { 
-//         console.log(err);
-//     }
-// }
-
-// list of foods for the search page
-// once the database is populated, this isn't needed
-// const bulkFoodsList = [
-//     { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-//     { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-//     { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-//     { name: 'Salmon', calories: 250, protein: 20, carbs: 0, fat: 15, serving: '150g' },
-//     { name: 'Banana', calories: 100, protein: 1, carbs: 25, fat: 0, serving: '1 medium' },
-//     { name: 'Eggs', calories: 70, protein: 6, carbs: 0, fat: 5, serving: '1 large' },
-//     { name: 'Spinach', calories: 10, protein: 1, carbs: 2, fat: 0, serving: '100g' },
-//     { name: 'Milk', calories: 150, protein: 8, carbs: 12, fat: 8, serving: '1 cup' },
-//     { name: 'Pasta', calories: 250, protein: 10, carbs: 50, fat: 5, serving: '200g' },
-//     { name: 'Apple', calories: 50, protein: 0, carbs: 15, fat: 0, serving: '1 medium' },
-//     { name: 'Bread', calories: 100, protein: 5, carbs: 15, fat: 2, serving: '2 slices' },
-//     { name: 'Yogurt', calories: 150, protein: 10, carbs: 15, fat: 5, serving: '1 cup' },
-//     { name: 'Orange', calories: 50, protein: 1, carbs: 12, fat: 0, serving: '1 medium' },
-//     { name: 'Beef', calories: 200, protein: 20, carbs: 0, fat: 15, serving: '100g' },
-//     { name: 'Cheese', calories: 100, protein: 5, carbs: 0, fat: 10, serving: '1 slice' },
-//     { name: 'Carrots', calories: 25, protein: 1, carbs: 5, fat: 0, serving: '100g' },
-//     { name: 'Peanuts', calories: 200, protein: 10, carbs: 5, fat: 15, serving: '50g' },
-//     { name: 'Turkey', calories: 150, protein: 15, carbs: 0, fat: 10, serving: '100g' },
-//     { name: 'Potatoes', calories: 150, protein: 2, carbs: 30, fat: 0, serving: '150g' },
-//     { name: 'Tomatoes', calories: 20, protein: 1, carbs: 5, fat: 0, serving: '100g' },
-//     { name: 'Avocado', calories: 200, protein: 2, carbs: 10, fat: 15, serving: '1 medium' },
-//     { name: 'Grapes', calories: 50, protein: 1, carbs: 10, fat: 0, serving: '100g' },
-// ];
-
-
 
 //######################################## TESTING DATA #########################################
 const FoodItemsList = [
