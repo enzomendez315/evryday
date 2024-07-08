@@ -331,7 +331,7 @@ export async function getMeal(mealId) {
     // return p;
 }
 
-export async function getServingOptions(foodItem, setServingOptions, setDropDownItems, setServingAmount) {
+export async function getServingOptions(foodItem, setServingOptions, setDropDownItems) {
     const servingOptions = await foodItem.servingOptions.toArray();
     setServingOptions(servingOptions);
     let options = [];
@@ -340,8 +340,10 @@ export async function getServingOptions(foodItem, setServingOptions, setDropDown
         options.push({ label: option.servingUnit, value: i });
         i++
     }
+    if (options.length === 0) {
+        options.push({ label: 'Grams', value: 0 });
+    }
     setDropDownItems(options);
-    setServingAmount(options[0].servingSize);
 }
 
 export function searchFoodItems(searchTerm, setFoodItems) {
