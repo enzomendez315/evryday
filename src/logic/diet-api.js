@@ -61,8 +61,13 @@ async function createNewLog(userId, date) {
 }
 
 // called when user presses delete meal in edit meal screen
+// Deletes all meal to food relationships then deletes the meal
 export async function deleteMeal(mealId) {
     DEBUG && console.log(`deleteMeal mealId: ${mealId}`);
+    const mealFoodRelationships = await DataStore.query(MealToFood, (mfi) => mfi.mealId.eq(mealId));
+    for (let mealFoodRelationship of mealFoodRelationships) {
+        await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealFoodRelationship.id));
+    }
     await DataStore.delete(Meal, (m) => m.id.eq(mealId));
 }
 
@@ -237,19 +242,12 @@ export async function syncMealFoodsList(meal, setFoodList) {
 }
 
 export async function removeFoodFromMeal(meal, food) {
-    DEBUG && console.log(`removeFoodFromMeal unimplemented`);
-    // DEBUG && console.log(`removeFoodFromMeal mealId: ${meal.id} foodId: ${food.id}`);
-    // const mealFoodRelationship = await DataStore.query(MealFoodItem, (mfi) => mfi.and(c => [
-    //     mfi.mealId.eq(meal.id),
-    //     mfi.foodItemId.eq(food.id)
-    // ]));
-    // await DataStore.delete(MealFoodItem, (mfi) => mfi.id.eq(mealFoodRelationship[0].id));
-    // let tempMeal;
-    // await calcMealMacros(meal).then((updatedMeal) => {
-    //     tempMeal = updatedMeal;
-    // });
-    // return tempMeal;
-
+    DEBUG && console.log(`removeFoodFromMeal mealId: ${meal.id} foodId: ${food.id}`);
+    const mealFoodRelationships = await DataStore.query(MealToFood, (mfi) => mfi.and(mfi => [
+        mfi.mealId.eq(meal.id),
+        mfi.foodItemId.eq(food.id)
+    ]));
+    await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealFoodRelationships[0].id));
 }
 
 // gets the total macros for all meals
@@ -327,7 +325,7 @@ async function getFoodItems(searchTerm) {
         DEBUG && console.log(`getFoodItems foodItems: ${foodItems.length}`);
         return foodItems;
     }
-    const foodItems = await DataStore.query(FoodItemMaster, (c) => c.name.contains(searchTerm));
+    const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
     return foodItems;
 }
 

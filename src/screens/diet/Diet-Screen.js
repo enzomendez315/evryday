@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { syncDailyLogData, createMeal, calcMealMacros } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 let userId;
 
@@ -46,7 +47,7 @@ const DietScreen = ({ navigation }) => {
   // log data contains information about meals
   // it is created in syncDailyLogData
   const [logData, setLogData] = useState(null);
-
+  const [mealPeriodPopupVisible, setMealPeriodPopupVisible] = useState(false);
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
   //TODO:: REMOVE dont need this if use effect is removed
@@ -90,7 +91,8 @@ const DietScreen = ({ navigation }) => {
 
   let pieSeries;
   if (calorieData !== null) {
-    pieSeries = [calorieData.caloriesGoal - calorieData.caloriesCurrent,
+    let first = (calorieData.caloriesGoal - calorieData.caloriesCurrent) > 0 ? (calorieData.caloriesGoal - calorieData.caloriesCurrent) : 0;
+    pieSeries = [first,
     calorieData.caloriesCurrent];
   }
 
@@ -98,6 +100,7 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
+        <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation}/>
         <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate()}</Text>
 
         <ScrollView>
@@ -171,9 +174,10 @@ const DietScreen = ({ navigation }) => {
 
             <TouchableOpacity style={styles.addMealButton}
               onPress={async () => {
-                let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10));
-                let tempVar = await calcMealMacros(newMeal);
-                navigation.navigate('Add Meal', { meal: tempVar });
+                setMealPeriodPopupVisible(true);
+                // let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10));
+                // let tempVar = await calcMealMacros(newMeal);
+                // navigation.navigate('Add Meal', { meal: tempVar });
               }}>
               <Text style={styles.addMealButtonText}>Add Meal</Text>
             </TouchableOpacity>
@@ -183,6 +187,112 @@ const DietScreen = ({ navigation }) => {
     </>
   );
 };
+
+const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, navigation}) => {
+
+  const addMealNavigation = async (mealPeriod) => {
+    setMealPeriodPopupVisible(false)
+    let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10), mealPeriod);
+    let tempVar = await calcMealMacros(newMeal);
+    navigation.navigate('Add Meal', { meal: tempVar });
+  }
+
+  return (
+    <Modal
+      visible={mealPeriodPopupVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setMealPeriodPopupVisible(!mealPeriodPopupVisible)}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={styles.popupOverlay}>
+          <View style={styles.popup}>
+            <View style={styles.popupHeader}>
+              <TouchableOpacity onPress={() => setMealPeriodPopupVisible(false)}>
+                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.popupTitle}>New Sleep Data</Text>
+
+              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.popupContent}>
+            <TouchableOpacity
+                            onPress={() => {
+                              addMealNavigation('Breakfast');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Breakfast</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                              addMealNavigation('Lunch');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Lunch</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                              addMealNavigation('Dinner');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Dinner</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                              addMealNavigation('Snack');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Snack</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                        </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.addSleepButton, { marginTop: 20 }]}
+                onPress={async () => {
+                  // await makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
+                  // setMealPeriodPopupVisible(false);
+                  // syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
+                }}>
+                <Text style={styles.addSleepButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </View>
+      </GestureHandlerRootView>
+    </Modal>
+  );
+}
 
 export default DietScreen;
 
@@ -277,23 +387,124 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  verticalLine: {
-    height: '100%',
-    width: 1,
-    backgroundColor: 'black',
-  },
-  progressBar: {
-    height: 20,
-    width: '100%',
-    backgroundColor: 'white',
-    borderColor: '#000',
-    borderWidth: 2,
-    borderRadius: 5,
-  },
+  // verticalLine: {
+  //   height: '100%',
+  //   width: 1,
+  //   backgroundColor: 'black',
+  // },
+  // progressBar: {
+  //   height: 20,
+  //   width: '100%',
+  //   backgroundColor: 'white',
+  //   borderColor: '#000',
+  //   borderWidth: 2,
+  //   borderRadius: 5,
+  // },
   macroRectangleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 20,
+  },
+  popupOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  // image: {
+  //   width: 300,
+  //   height: 300,
+  //   marginLeft: 'auto',
+  //   marginRight: 'auto',
+  //   marginTop: 20,
+  //   marginBottom: 20,
+  // },
+  popup: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    width: '90%',
+  },
+  popupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  popupTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  editButton: {
+    fontSize: 18,
+    color: '#0000ff', // Replace with your theme color
+  },
+  popupContent: {
+    marginVertical: 20,
+  },
+  // contentContainer: {
+  //   flexDirection: 'column',
+  //   justifyContent: 'center',
+  //   height: '100%',
+  //   backgroundColor: 'rgba(0,0,0,0.5)',
+  // },
+  // content: {
+  //   backgroundColor: '#fff',
+  //   marginHorizontal: 20,
+  //   marginVertical: 70,
+  // },
+  // confirmButton: {
+  //   borderWidth: 0.5,
+  //   padding: 15,
+  //   margin: 10,
+  //   borderRadius: 5,
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  addSleepButton: {
+    backgroundColor: 'blue',
+    borderRadius: 8,
+    padding: 10,
+    margin: 10,
+    justifyContent: 'center',
+    height: 50,
+  },
+  addSleepButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: 50,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+    marginBottom: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
+},
+rowIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 9999,
+    marginRight: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+  rowLabel: {
+      fontSize: 17,
+      fontWeight: '400',
+      color: '#0c0c0c',
+  },
+  rowSpacer: {
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: 0,
   },
 });

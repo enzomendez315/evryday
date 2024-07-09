@@ -1663,10 +1663,10 @@ export const schema = {
         "MealPeriod": {
             "name": "MealPeriod",
             "values": [
-                "breakfast",
-                "lunch",
-                "dinner",
-                "snack"
+                "Breakfast",
+                "Lunch",
+                "Dinner",
+                "Snack"
             ]
         }
     },

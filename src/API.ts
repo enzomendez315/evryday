@@ -372,10 +372,10 @@ export type Meal = {
 };
 
 export enum MealPeriod {
-  breakfast = "breakfast",
-  lunch = "lunch",
-  dinner = "dinner",
-  snack = "snack",
+  Breakfast = "Breakfast",
+  Lunch = "Lunch",
+  Dinner = "Dinner",
+  Snack = "Snack",
 }
 
 

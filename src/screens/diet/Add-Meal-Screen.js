@@ -256,8 +256,7 @@ const AddMealScreen = (props) => {
 
           <TouchableOpacity style={styles.Button}
             onPress={() => {
-              deleteMeal(mealId);
-              navigation.navigate('Diet Home');
+              deleteMeal(mealId).then(() => navigation.navigate('Diet Home'));
             }}>
             <Text style={styles.ButtonText}>Delete Meal</Text>
           </TouchableOpacity>
