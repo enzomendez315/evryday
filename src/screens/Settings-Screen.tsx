@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { currentUserDetails } from '../logic/account';
+import { initFoodItems } from '../logic/diet-api';
 
 const SettingsScreen = () => {
     const [form, setForm] = useState({
@@ -183,6 +184,26 @@ const SettingsScreen = () => {
                             </View>
 
                             <Text style={styles.rowLabel}>Rate in App Store</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                // TODO:: REMOVE used to add sample date to master food and servings
+                                initFoodItems();
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                                <FeatherIcon color="#fff" name="star" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>ADD FOOD MASTER ITEMS</Text>
 
                             <View style={styles.rowSpacer} />
 

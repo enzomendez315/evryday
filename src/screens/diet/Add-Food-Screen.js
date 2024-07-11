@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
-import { addFoodToMeal } from '../../logic/diet-api'
+import { addFoodToMeal, getServingOptions } from '../../logic/diet-api'
+import { useFocusEffect } from '@react-navigation/native';
 
 let DEBUG = false;
 
@@ -16,11 +17,49 @@ const AddFoodScreen = (props) => {
   DEBUG && console.log(item);
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('gram');
-  const [items, setItems] = useState([
-    { label: 'Grams', value: 'gram' },
-    { label: 'Count', value: 'count' }
+  const [dropDownValue, setDropDownValue] = useState(0);
+  const [servingOptions, setServingOptions] = useState([]);
+  const [servingAmount, setServingAmount] = useState('100');
+  const [dropDownItems, setDropDownItems] = useState([
+    { label: 'Grams', value: 0 }
   ]);
+
+  // [calories, carbs, fat, protein]
+  const [macros, setMacros] = useState([0, 0, 0, 0]);
+  const [disableInput, setDisableInput] = useState(false);
+  const calcMacros = (serving, servingAmount) => {
+    let servingSize = serving?.servingSize ?? 100;
+    let calories = serving?.calories ?? 0;
+    let protein = serving?.protein ?? 0;
+    let carbs = serving?.carbs ?? 0;
+    let fat = serving?.fat ?? 0;
+    
+    let multiplier = (parseFloat(servingAmount) ?? 100) / servingSize;
+    calories = Math.round(calories * multiplier);
+    protein = Math.round(protein * multiplier);
+    carbs = Math.round(carbs * multiplier);
+    fat = Math.round(fat * multiplier);
+
+    setMacros([calories, carbs, fat, protein]);
+  }
+
+  //Updates the serving options when the screen is first opened or if the meal or item changes
+  useEffect(() => {
+    getServingOptions(item, setServingOptions, setDropDownItems);
+    setDropDownValue(0);
+    return;
+  }, [item, meal])
+
+  //Updates the serving amount when the dropdown value is changed
+  useEffect(() => {
+    setServingAmount(String(servingOptions[dropDownValue]?.servingSize ?? 100));
+  }, [dropDownValue, servingOptions])
+
+  //Updates the macros when the serving amount is changed
+  useEffect(() => {
+    if (servingOptions[dropDownValue] === undefined) {return;}
+    calcMacros(servingOptions[dropDownValue], servingAmount);
+  }, [dropDownValue, servingOptions, servingAmount])
 
   return (
     <>
@@ -34,34 +73,41 @@ const AddFoodScreen = (props) => {
           source={require('../../images/apple.png')} />
 
         <View style={styles.macroContainer}>
-          <Text style={styles.text}>Protein: {item.protein}g</Text>
-          <Text style={styles.text}>Carbs: {item.carbs}g</Text>
-          <Text style={styles.text}>Fat: {item.fat}g</Text>
+          <Text style={styles.text}>Protein: {macros[3]}g</Text>
+          <Text style={styles.text}>Carbs: {macros[1]}g</Text>
+          <Text style={styles.text}>Fat: {macros[2]}g</Text>
         </View>
 
         <View style={styles.servingInputContainer}>
           <Text style={styles.text}>Serving: </Text>
-          <TextInput style={styles.textInput} placeholder='100' />
+          <TextInput 
+            style={styles.textInput} 
+            placeholder={String(servingOptions[dropDownValue]?.servingSize ?? 100)} 
+            keyboardType='numeric'
+            onChangeText={(input) => setServingAmount(input)}
+            value={servingAmount}
+          />
           <DropDownPicker
             containerStyle={{ height: 40, width: 100 }}
             defaultValue={'gram'}
             open={open}
-            value={value}
-            items={items}
+            value={dropDownValue}
+            items={dropDownItems}
             setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
+            setValue={setDropDownValue}
+            setItems={setDropDownItems}
           />
-          <Text style={styles.caloriesText}>Calories: {item.calories}</Text>
+          <Text style={styles.caloriesText}>Calories: {macros[0]}</Text>
         </View>
 
         <TouchableOpacity
+        disabled={disableInput}
           onPress={async () => {
-            //Uncomment to add food to a meal
-            await addFoodToMeal(meal, item).then((newMeal) => {
+            setDisableInput(true);
+            await addFoodToMeal(meal, item, servingOptions[dropDownValue]?.id, parseFloat(servingAmount)).then((newMeal) => {
+              setDisableInput(false);
               navigation.navigate('Add Meal', { meal: newMeal });
             });
-
           }}
           style={styles.button}>
           <Text style={styles.buttonText}>Add Food</Text>
@@ -70,19 +116,6 @@ const AddFoodScreen = (props) => {
     </>
   );
 };
-
-async function addFood(mealId, foodId) {
-  p = new Promise((resolve, reject) => {
-    try {
-      addFoodToMeal(mealId, foodId).then((m) => {
-        resolve(m);
-      });
-    } catch (err) {
-      console.log(err);
-      reject(err);
-    }
-  })
-}
 
 export default AddFoodScreen;
 

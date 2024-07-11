@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { syncMealFoodsList, deleteMeal, removeFoodFromMeal, getMeal } from '../../logic/diet-api'
+import { syncMealFoodsList, deleteMeal, removeFoodFromMeal} from '../../logic/diet-api'
 
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -256,8 +256,7 @@ const AddMealScreen = (props) => {
 
           <TouchableOpacity style={styles.Button}
             onPress={() => {
-              deleteMeal(mealId);
-              navigation.navigate('Diet Home');
+              deleteMeal(mealId).then(() => navigation.navigate('Diet Home'));
             }}>
             <Text style={styles.ButtonText}>Delete Meal</Text>
           </TouchableOpacity>

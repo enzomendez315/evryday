@@ -8,10 +8,10 @@ type ExerciseSet @model @auth(rules: [{allow: public}]) {
 }
 
 enum MealPeriod {
-  breakfast
-  lunch
-  dinner
-  custom
+  Breakfast
+  Lunch
+  Dinner
+  Snack
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -33,18 +33,36 @@ type NutritionLog @model @auth(rules: [{allow: public}]) {
 type Meal @model @auth(rules: [{allow: public}]) {
   id: ID!
   mealPeriod: MealPeriod!
-  foodItems: [FoodItem] @manyToMany(relationName: "MealFoodItem")
+  foodItems: [MealToFood] @hasMany(indexName: "byMeal", fields: ["id"])
+}
+
+type MealToFood @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  mealId: ID! @index(name: "byMeal", sortKeyFields: ["foodId"])
+  foodId: ID! @index(name: "byFood", sortKeyFields: ["mealId"])
+  servingId: ID!
+  servingAmount: Float!
+  meal: Meal @belongsTo(fields: ["mealId"])
+  foodItem: FoodItem @belongsTo(fields: ["foodId"])
 }
 
 type FoodItem @model @auth(rules: [{allow: public}]) {
   id: ID!
+  owner: ID!
   name: String!
+  meals: [MealToFood] @hasMany(indexName: "byFood", fields: ["id"])
+  servingOptions: [FoodItemServing] @hasMany
+}
+
+type FoodItemServing @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  foodItem: FoodItem @belongsTo
+  servingSize: Float!
+  servingUnit: String
   calories: Int
   protein: Float
   carbs: Float
   fat: Float
-  serving: String
-  meals: [Meal] @manyToMany(relationName: "MealFoodItem")
 }
 
 type ExerciseLog @model @auth(rules: [{allow: public}]) {
