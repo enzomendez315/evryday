@@ -1,7 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
 
-const DEBUG = false;
+const DEBUG = true;
 
 // sleep date is in form dateVariable.toISOString().substring(0, 10)
 // this goes from a date object to a string in the format "YYYY-MM-DD"
