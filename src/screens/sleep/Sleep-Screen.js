@@ -41,6 +41,7 @@ function getFormattedDate() {
 // converts UTC to local, subtracts local offset from hours
 // this is hacky and causes some bugs with dates being off by 1 day
 // that or timezones shouldn't exist and there should be 1 earth time
+// TODO: fix the "off by 1 day" bug
 function getLocalDate(dateObject) {
   let offset = new Date().getTimezoneOffset() / 60;
   let tempDate = new Date(dateObject);

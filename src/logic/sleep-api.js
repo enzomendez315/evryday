@@ -1,7 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
 
-// Changed flag
 const DEBUG = true;
 
 // sleep date is in form dateVariable.toISOString().substring(0, 10)
@@ -10,6 +9,7 @@ const DEBUG = true;
 // creates a new sleep entry into the datastore
 // checks if one already exists for the user and date
 // called by UI when user submits a new sleep entry
+// TODO: throw error message and disallow creation of entries for future dates (later than today)
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     DEBUG && console.log("Making a new sleep entry with the date: ", date_);
     if (await getSleepEntry(userID_, date_) === null) {
@@ -28,6 +28,7 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
             console.log('Error saving sleep log', error);
         }
     } else {
+        // TODO: display message to user saying an entry with this date already exists
         DEBUG && console.log("Entry already exists for this date and user");
     }
 }
@@ -88,6 +89,7 @@ export async function syncDailyLog(userID_, setSleepData, date) {
 // month is 1-12, year is 4 digit number
 // can get with new Date().getMonth() + 1 and new Date().getFullYear()
 // setIsLoading is only passed when the screen first calls this function
+// TODO: display sleep logs by recency (most recent first)
 export async function syncUsersMonthLog(userID_, month, year, setSleepData, setIsLoading = () => { }) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's sleep log");
