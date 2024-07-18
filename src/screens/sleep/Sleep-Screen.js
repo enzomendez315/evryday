@@ -368,6 +368,10 @@ const SleepScreen = () => {
     }, [])
   );
 
+  // create a copy of the sleep data and sort it in ascending order for line chart
+  let ascendingSleepData = [...sleepData];
+  ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+  
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
   return (
@@ -406,9 +410,9 @@ const SleepScreen = () => {
           </Text> : null}
 
           {/* Chart */}
-          {!isLoading ? sleepData.length > 0 ?
+          {!isLoading ? ascendingSleepData.length > 0 ?
             <View style={styles.chartContainer}>
-              <MyLineChart sleepArray={sleepData} />
+              <MyLineChart sleepArray={ascendingSleepData} />
             </View>
             : <View>
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />

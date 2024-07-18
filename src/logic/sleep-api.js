@@ -89,7 +89,6 @@ export async function syncDailyLog(userID_, setSleepData, date) {
 // month is 1-12, year is 4 digit number
 // can get with new Date().getMonth() + 1 and new Date().getFullYear()
 // setIsLoading is only passed when the screen first calls this function
-// TODO: display sleep logs by recency (most recent first)
 export async function syncUsersMonthLog(userID_, month, year, setSleepData, setIsLoading = () => { }) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's sleep log");
@@ -106,8 +105,9 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
         data.forEach(element => {
             tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
         });
-        // sorts the sleep data by date
-        tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+        // sorts the sleep data by recency (most recent on top)
+        tempSleepData.sort((a, b) => new Date(b.day) - new Date(a.day));
+        //tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));  // this sorts in ascending order
         setSleepData(tempSleepData);
         setIsLoading(false);
     });
