@@ -98,7 +98,7 @@ const MyLineChart = ({ sleepArray }) => {
   );
 };
 
-// called by add slepp button and when a sleep tab is pressed
+// called by add sleep button and when a sleep tab is pressed
 // if a sleep tab is pressed, the user can edit the sleep data
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
