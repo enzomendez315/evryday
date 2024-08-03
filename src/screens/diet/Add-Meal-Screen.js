@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Modal, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { syncMealFoodsList, deleteMeal, removeFoodFromMeal} from '../../logic/diet-api'
+import { syncMealFoodsList, deleteMeal, removeFoodFromMeal, getFoodItemFromId} from '../../logic/diet-api'
 
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
@@ -91,12 +91,12 @@ const recipeData = [
 
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const mealId = route.params.meal.id;
-  DEBUG && console.log(`Add meal screen mealId: ${mealId}`);
+  // const mealId = route.params.meal.id;
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
   const [foodList, setFoodList] = useState();
   let foodListView = <></>;
+  DEBUG && console.log(`Add meal screen mealId: ${mealData.id} meal: ${mealData?.name}`);
 
   let pieSeries = [mealData.protein, mealData.carbs, mealData.fat]
   if (pieSeries.reduce((acc, val) => acc + val, 0) == 0) {
@@ -115,8 +115,12 @@ const AddMealScreen = (props) => {
         {foodList?.map((food, index) => (
           <TouchableOpacity key={index}
             onPress={async () => {
+              //TODO:: REMOVE extra
               // this button should delete the food, and update the meal and UI
-              console.log(food.name + ' pressed');
+              DEBUG && console.log(food.name + ' pressed');
+              let mealToFoodId = food?.mealToFoodId;
+              const foodItem = await getFoodItemFromId(food.id);
+              navigation.navigate('Edit Food', { foodItem:foodItem, meal:mealData, mealToFoodId });
               // await removeFoodFromMeal(mealData, food);
               // await syncMealFoodsList(mealData, setFoodList);
             }}>
@@ -256,7 +260,7 @@ const AddMealScreen = (props) => {
 
           <TouchableOpacity style={styles.Button}
             onPress={() => {
-              deleteMeal(mealId).then(() => navigation.navigate('Diet Home'));
+              deleteMeal(mealData?.id).then(() => navigation.navigate('Diet Home'));
             }}>
             <Text style={styles.ButtonText}>Delete Meal</Text>
           </TouchableOpacity>

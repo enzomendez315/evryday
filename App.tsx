@@ -14,6 +14,7 @@ import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 import SleepScreen from './src/screens/sleep/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
+import ModifyFoodScreen from './src/screens/diet/Modify-Food-Obj-Screen';
 
 import WorkoutHomeScreen from './src/screens/workout/Workout-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
@@ -153,6 +154,14 @@ function DietStack() {
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
+      <Stack.Screen name="Edit Food" component={AddFoodScreen}
+                    options={({ navigation, route}) => ({
+                      title: "Edit Food",
+                      headerRight: () => (
+                        <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+                      ),
+                    })} />
+      <Stack.Screen name="Modify Food" component={ModifyFoodScreen} />
     </Stack.Navigator>
   );
 }

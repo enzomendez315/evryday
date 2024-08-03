@@ -40,6 +40,11 @@ const SearchFoodScreen = (props) => {
               title='Favorites'
               onPress={() => console.log("Pressed 3")}
             />
+            <Button 
+              style = {styles.button}
+              title='New'
+              onPress={() => navigation.navigate('Modify Food', { meal })} 
+            />
           </View>
           <Text style={styles.title}>Search Food</Text>
           <TextInput
@@ -66,7 +71,7 @@ const SearchFoodScreen = (props) => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>
-                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { item, meal })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { foodItem:item, meal })}>
                     <View style={styles.tableTextContainer}>
                       <Text style={styles.tableText}>{item.name.length < MAX_NAME_LENGTH
                         ? `${item.name}`

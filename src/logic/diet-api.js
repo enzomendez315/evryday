@@ -2,7 +2,7 @@ import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails} from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood } from '../models';
 
-const DEBUG = true;
+const DEBUG = false;
 
 // this is the format logData should be in
 // calcMealMacros returns this format
@@ -203,35 +203,50 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
 }
 
 // Combines a FoodItem, it serving information, and the amount of servings into a singular item
-function formatFoodItem(foodItem, serving, amount) {
-    let multiplier = amount / serving.servingSize;
-    return {
+function formatFoodItem(foodItem, serving, mealFoodRelationship) {
+    let multiplier = mealFoodRelationship.servingAmount / serving.servingSize;
+
+    const tempFoodItem = {
+        id: foodItem.id,
         name: foodItem.name,
+        servingId: serving.id,
+        servingAmount: mealFoodRelationship.servingAmount,
+        mealToFoodId: mealFoodRelationship?.id ?? null,
         calories: Math.round(serving.calories * multiplier),
         protein: Math.round(serving.protein * multiplier),
         carbs: Math.round(serving.carbs * multiplier),
-        fat: Math.round(serving.fat * multiplier)
+        fat: Math.round(serving.fat * multiplier),
     };
 
+    return tempFoodItem;
 }
 
 // Creates a list of formatted food items for a given meal using the relationships in the MealToFood table
 async function getFoodListForMeal(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = [];
+
+        if (meal?.id === undefined) {
+            resolve(foodsList);
+        }
+
         const mealFoodRelationships = await DataStore.query(MealToFood, (mfr) => mfr.mealId.eq(meal.id));
 
         for (let mealFoodRelationship of mealFoodRelationships) {
             let food = await mealFoodRelationship.foodItem;
             DEBUG && console.log(`getFoodListForMeal food: ${food.name}`);
             let serving = await DataStore.query(FoodItemServing, (s) => s.id.eq(mealFoodRelationship.servingId));
-            DEBUG && console.log(`getFoodListForMeal serving: ${serving[0]}`);
-            let formattedFood = formatFoodItem(food, serving[0], mealFoodRelationship.servingAmount);
+            let formattedFood = formatFoodItem(food, serving[0], mealFoodRelationship);
             foodsList.push(formattedFood);
         }
         resolve(foodsList);
     });
     return p;
+}
+
+export async function getFoodItemFromId(foodItemId) {
+    const foodItems = await DataStore.query(FoodItem, (c) => c.id.eq(foodItemId));
+    return foodItems[0];
 }
 
 // updates the UI in the edit meal screen
@@ -241,13 +256,18 @@ export async function syncMealFoodsList(meal, setFoodList) {
     setFoodList(foodsList);
 }
 
-export async function removeFoodFromMeal(meal, food) {
-    DEBUG && console.log(`removeFoodFromMeal mealId: ${meal.id} foodId: ${food.id}`);
-    const mealFoodRelationships = await DataStore.query(MealToFood, (mfi) => mfi.and(mfi => [
-        mfi.mealId.eq(meal.id),
-        mfi.foodItemId.eq(food.id)
-    ]));
-    await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealFoodRelationships[0].id));
+// Removes a food item from a meal and returns the meals updated macros
+export async function removeFoodFromMeal(mealToFoodId) {
+    DEBUG && console.log(`removeFoodFromMeal mealToFoodId: ${mealToFoodId}`);
+    const mealToFood = await DataStore.query(MealToFood, mealToFoodId);
+    const mealId = mealToFood.mealId;
+    await DataStore.delete(MealToFood, mealToFood);
+    const meal = await DataStore.query(Meal, mealId);
+    let tempMeal;
+    await calcMealMacros(meal).then((updatedMeal) => {
+        tempMeal = updatedMeal;
+    });
+    return tempMeal;
 }
 
 // gets the total macros for all meals
@@ -271,13 +291,14 @@ async function getAllMealsMacros(meals) {
 
 // gets macros for a meal
 // helper function for getAllMealsMacros and addFoodToMeal
+// TODO:: Some meals passed in are datastore meals and some are macro meals
 export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
-        DEBUG && console.log(`calcMealMacros mealId: ${meal.id}`);
+        DEBUG && console.log(`calcMealMacros mealId: ${meal?.id} mealPeriod: ${meal?.mealPeriod} mealName: ${meal?.name}`);
         let foodsList = await getFoodListForMeal(meal);
         let mealData = {
             id: meal.id,
-            name: meal.mealPeriod,
+            name: meal.mealPeriod ?? meal.name,
             calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
             protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
             carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
@@ -292,6 +313,13 @@ export async function calcMealMacros(meal) {
 // Finds all serving options for a food item
 // sets the serving options and drop down items for the Add-Food-Screen
 export async function getServingOptions(foodItem, setServingOptions, setDropDownItems) {
+
+    // const foodItems = await DataStore.query(FoodItem, (c) => c.id.eq(foodItemId));
+    // DEBUG && console.log(`FoodItem`);
+    // DEBUG && console.log(foodItems);
+    // DEBUG && console.log(`food item serving options`);
+    // DEBUG && console.log(foodItems[0].servingOptions.toArray());
+    // const servingOptions = await foodItems[0].servingOptions.toArray();
     const servingOptions = await foodItem.servingOptions.toArray();
     setServingOptions(servingOptions);
     let options = [];
@@ -327,6 +355,27 @@ async function getFoodItems(searchTerm) {
     }
     const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
     return foodItems;
+}
+
+// adds a food item to a meal
+// called in Add-Food-Screen.js
+export async function addOrUpdateFoodToMeal(meal, food, servingId, servingAmount, mealToFoodId) {
+    DEBUG && console.log('addOrUpdateFoodToMeal');
+    p = new Promise(async (resolve,reject) => {
+        if(mealToFoodId !== undefined){
+        DEBUG && console.log('update');
+            await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealToFoodId)).then(async () => {
+                const newMeal = await addFoodToMeal(meal, food, servingId, servingAmount);
+                resolve(newMeal);
+            });
+        } else {
+            DEBUG && console.log('add');
+            await addFoodToMeal(meal, food, servingId, servingAmount).then((newMeal) => {
+                resolve(newMeal);
+            });
+        }
+    });
+    return p;
 }
 
 // adds a food item to a meal

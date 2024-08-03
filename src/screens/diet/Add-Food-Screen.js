@@ -2,19 +2,24 @@ import React, { useEffect, useState} from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
-import { addFoodToMeal, getServingOptions } from '../../logic/diet-api'
+import { addOrUpdateFoodToMeal, getServingOptions, removeFoodFromMeal } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let DEBUG = false;
 
 const AddFoodScreen = (props) => {
   const { navigation, route } = props;
-  const { item, meal } = route.params;
+  const { foodItem, meal } = route.params;
+  const mealToFoodId = route.params?.mealToFoodId;
 
   DEBUG && console.log(`Add Food meal:`);
   DEBUG && console.log(meal);
   DEBUG && console.log(`Add Food item:`);
-  DEBUG && console.log(item);
+  DEBUG && console.log(foodItem);
+  DEBUG && console.log(`Meal to food id: ${mealToFoodId}`);
+
+  
 
   const [open, setOpen] = useState(false);
   const [dropDownValue, setDropDownValue] = useState(0);
@@ -45,10 +50,26 @@ const AddFoodScreen = (props) => {
 
   //Updates the serving options when the screen is first opened or if the meal or item changes
   useEffect(() => {
-    getServingOptions(item, setServingOptions, setDropDownItems);
+    if(mealToFoodId !== undefined) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+           onPress={async () => {
+            await removeFoodFromMeal(mealToFoodId).then((newMeal) => {
+              navigation.navigate('Add Meal', { meal: newMeal });
+            });
+           }}>
+            <View>
+              <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+            </View>
+          </TouchableOpacity>
+        ),
+      })
+    }
+    getServingOptions(foodItem, setServingOptions, setDropDownItems);
     setDropDownValue(0);
     return;
-  }, [item, meal])
+  }, [foodItem, meal])
 
   //Updates the serving amount when the dropdown value is changed
   useEffect(() => {
@@ -65,9 +86,9 @@ const AddFoodScreen = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
-        <Text style={styles.title}>{item.name} was selected</Text>
+        <Text style={styles.title}>{foodItem?.name} was selected</Text>
         <Text style={styles.text}>
-          I bet that {item.name} is gonna taste delicious</Text>
+          I bet that {foodItem.name} is gonna taste delicious</Text>
 
         <Image style={styles.image}
           source={require('../../images/apple.png')} />
@@ -104,7 +125,7 @@ const AddFoodScreen = (props) => {
         disabled={disableInput}
           onPress={async () => {
             setDisableInput(true);
-            await addFoodToMeal(meal, item, servingOptions[dropDownValue]?.id, parseFloat(servingAmount)).then((newMeal) => {
+            await addOrUpdateFoodToMeal(meal, foodItem, servingOptions[dropDownValue]?.id, parseFloat(servingAmount), mealToFoodId).then((newMeal) => {
               setDisableInput(false);
               navigation.navigate('Add Meal', { meal: newMeal });
             });

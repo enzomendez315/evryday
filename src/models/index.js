@@ -9,10 +9,9 @@ const MealPeriod = {
   "SNACK": "Snack"
 };
 
-const { ExerciseSet, User, NutritionLog, Meal, MealToFood, FoodItem, FoodItemServing, ExerciseLog, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, ExerciseLogExerciseRoutine, ExerciseRoutineExerciseType } = initSchema(schema);
+const { User, NutritionLog, Meal, MealToFood, FoodItem, FoodItemServing, ExerciseLog, ExerciseSet, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog, ExerciseLogExerciseRoutine, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, ExerciseRoutineExerciseType } = initSchema(schema);
 
 export {
-  ExerciseSet,
   User,
   NutritionLog,
   Meal,
@@ -20,14 +19,15 @@ export {
   FoodItem,
   FoodItemServing,
   ExerciseLog,
+  ExerciseSet,
   ExerciseRoutine,
   ExerciseType,
   SleepLog,
   HealthScore,
   GoalLog,
+  ExerciseLogExerciseRoutine,
   ExerciseSetExerciseType,
   ExerciseSetExerciseRoutine,
-  ExerciseLogExerciseRoutine,
   ExerciseRoutineExerciseType,
   MealPeriod
 };
