@@ -2,8 +2,10 @@ const { setConflictHandler } = require('aws-amplify/in-app-messaging');
 const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
 
+const DEBUG = true;
+
 // This class helps authenticate clients while encapsulating all the logic
-class OAuth2 {
+export class OAuth2 {
     // We only need a clientId, clientSecret and endpoints for authentication
     // All other arguments are optional, and used to get users' data
     constructor(clientId, clientSecret, apiEndpoint, authEndpoint, accessToken = null, 
@@ -44,6 +46,8 @@ class OAuth2 {
                 },
             });
 
+            DEBUG && console.log(`The authorization code is ${this.oAuthClient}`);
+
             this.axiosInstance = axios.create({
                 baseURL: this.API_ENDPOINT,
                 timeout: this.token.expires_in,
@@ -70,7 +74,13 @@ class OAuth2 {
                 data: data,
             });
 
-            return response.data;
+            DEBUG && console.log(`Making request from oauth2\n
+                                url: ${url}\n
+                                method: ${method}\n
+                                data: ${data}\n
+                                response: ${response.data}`);
+
+            return response;
         } catch (error) { 
             // Refresh access token if status is "Unauthorized"
             if (error.response && error.response.status === 401) {
@@ -122,7 +132,7 @@ class OAuth2 {
             this.setAxiosHeaders();
             return accessToken.token;
         } catch (error) {
-            console.error('Access token error: ${error.message}');
+            console.error(`Access token error: ${error.message}`);
         }
     }
 
@@ -144,7 +154,7 @@ class OAuth2 {
                 this.refreshCallback(this.token);
             }
         } catch (error) {
-            console.error('Error refreshing access token: ${error.message}');
+            console.error(`Error refreshing access token: ${error.message}`);
         }
     }
 }
