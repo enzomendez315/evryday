@@ -2,7 +2,7 @@ import { OAuth2 } from "./oauth2";
 
 const DEBUG = true;
 
-class Fitbit {
+export class Fitbit {
     static US = "en_US";
     static API_ENDPOINT = "https://api.fitbit.com";
     static AUTHORIZE_ENDPOINT = "https://www.fitbit.com";

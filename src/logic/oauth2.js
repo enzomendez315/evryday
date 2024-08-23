@@ -8,14 +8,16 @@ const DEBUG = true;
 export class OAuth2 {
     // We only need a clientId, clientSecret and endpoints for authentication
     // All other arguments are optional, and used to get users' data
-    constructor(clientId, clientSecret, apiEndpoint, authEndpoint, accessToken = null, 
-        refreshToken = null, expiresIn = null, refreshCallback = null, redirectUri = null) {
+    constructor(clientId, clientSecret, apiEndpoint, authEndpoint, 
+        accessToken = null, refreshToken = null, expiresIn = null, 
+        refreshCallback = null, redirectUri = null, scope = null) {
             this.clientId = clientId;
             this.clientSecret = clientSecret;
             this.API_ENDPOINT = apiEndpoint;
             this.AUTHORIZE_ENDPOINT = authEndpoint;
             this.refreshCallback = refreshCallback;
             this.redirectUri = redirectUri;
+            this.scope = scope;
             this.token = {};
 
             // Add accessToken and refreshToken if defined
@@ -25,12 +27,8 @@ export class OAuth2 {
                 this.token['refresh_token'] = refreshToken;
             }
 
-            // Add timeout
-            if (expiresIn) {
-                this.token['expires_in'] = expiresIn;
-            } else {
-                this.token['expires_in'] = 1000;
-            }
+            // The token defaults to 1 hour if not provided
+            this.token['expires_in'] = expiresIn || 3600;
 
             // Grants access to restricted resources
             this.oAuthClient = new AuthorizationCode({
@@ -46,11 +44,11 @@ export class OAuth2 {
                 },
             });
 
-            DEBUG && console.log(`The authorization code is ${this.oAuthClient}`);
+            DEBUG && console.log(`Authorization client initialized: ${this.oAuthClient}`);
 
             this.axiosInstance = axios.create({
                 baseURL: this.API_ENDPOINT,
-                timeout: this.token.expires_in,
+                timeout: 5000,  // 5 seconds
             });
 
             this.setAxiosHeaders();
@@ -94,20 +92,7 @@ export class OAuth2 {
 
     // Step 1
     // Returns the url the user needs to go to in order to grant authorization
-    getAuthorizationUri(scope = null) {
-        // Use the defaults if no scope is provided
-        this.scope = scope || [
-            "activity",
-            "heartrate",
-            "location",
-            "nutrition",
-            "profile",
-            "settings",
-            "sleep",
-            "social",
-            "weight",
-        ];
-        
+    getAuthorizationUri() {        
         const authorizationUri = this.oAuthClient.authorizeURL({
             redirect_uri: this.redirectUri,
             scope: this.scope.join(' '), // Converted to a single string separated by spaces
