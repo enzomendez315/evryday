@@ -1,7 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
 
-const DEBUG = false;
+const DEBUG = true;
 
 // sleep date is in form dateVariable.toISOString().substring(0, 10)
 // this goes from a date object to a string in the format "YYYY-MM-DD"
@@ -9,6 +9,7 @@ const DEBUG = false;
 // creates a new sleep entry into the datastore
 // checks if one already exists for the user and date
 // called by UI when user submits a new sleep entry
+// TODO: throw error message and disallow creation of entries for future dates (later than today)
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     DEBUG && console.log("Making a new sleep entry with the date: ", date_);
     if (await getSleepEntry(userID_, date_) === null) {
@@ -27,6 +28,7 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
             console.log('Error saving sleep log', error);
         }
     } else {
+        // TODO: display message to user saying an entry with this date already exists
         DEBUG && console.log("Entry already exists for this date and user");
     }
 }
@@ -103,8 +105,9 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
         data.forEach(element => {
             tempSleepData.push({ day: element.date, hours: element.hoursSlept, quality: element.sleepQuality });
         });
-        // sorts the sleep data by date
-        tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+        // sorts the sleep data by recency (most recent on top)
+        tempSleepData.sort((a, b) => new Date(b.day) - new Date(a.day));
+        //tempSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));  // this sorts in ascending order
         setSleepData(tempSleepData);
         setIsLoading(false);
     });

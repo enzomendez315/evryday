@@ -98,6 +98,7 @@ async function getUsersNutritionLog(userId, date) {
 }
 
 // called by dashboard to populate the diet tab
+// TODO: make the charts bigger and more user-friendly
 export async function syncDietDashboardData(userId, date, setCalorieData) {
     DEBUG && console.log(`syncDietDashboardData userId: ${userId} Date: ${date}`);
     const userLog = await getUsersNutritionLog(userId, date);
@@ -154,6 +155,7 @@ export async function syncDietDashboardData(userId, date, setCalorieData) {
 
 // called by main diet screen to update the nutrition log data
 // used to update hooks with all the meal data
+// TODO: adjust macros goals based on user's original goals and physical attributes
 export async function syncDailyLogData(userId, date, setCalorieData, setLogData, setIsLoading = () => { }) {
     DEBUG && console.log(`syncDailyLogData userId: ${userId} Date: ${date}`);
     // get the nutrition log for the user and date
@@ -186,7 +188,7 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     DEBUG && console.log(`syncDailyLogs Macros:`);
     DEBUG && console.log(macros);
 
-    // set the calorie data
+    // set the calorie data by summing up the values in each array
     setCalorieData({
         proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
         proteinGoal: 150,
@@ -199,10 +201,11 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     });
 
     // set the meal data
+    // TODO: specify what macros are being displayed for readability
     setLogData(macros);
 }
 
-// Combines a FoodItem, it serving information, and the amount of servings into a singular item
+// combines a FoodItem, its serving information, and the amount of servings into a singular item
 function formatFoodItem(foodItem, serving, amount) {
     let multiplier = amount / serving.servingSize;
     return {
@@ -215,7 +218,7 @@ function formatFoodItem(foodItem, serving, amount) {
 
 }
 
-// Creates a list of formatted food items for a given meal using the relationships in the MealToFood table
+// creates a list of formatted food items for a given meal using the relationships in the MealToFood table
 async function getFoodListForMeal(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = [];
