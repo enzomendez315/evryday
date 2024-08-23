@@ -41,6 +41,7 @@ function getFormattedDate() {
 // converts UTC to local, subtracts local offset from hours
 // this is hacky and causes some bugs with dates being off by 1 day
 // that or timezones shouldn't exist and there should be 1 earth time
+// TODO: fix the "off by 1 day" bug
 function getLocalDate(dateObject) {
   let offset = new Date().getTimezoneOffset() / 60;
   let tempDate = new Date(dateObject);
@@ -97,7 +98,7 @@ const MyLineChart = ({ sleepArray }) => {
   );
 };
 
-// called by add slepp button and when a sleep tab is pressed
+// called by add sleep button and when a sleep tab is pressed
 // if a sleep tab is pressed, the user can edit the sleep data
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
@@ -367,6 +368,10 @@ const SleepScreen = () => {
     }, [])
   );
 
+  // create a copy of the sleep data and sort it in ascending order for line chart
+  let ascendingSleepData = [...sleepData];
+  ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+  
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
   return (
@@ -405,9 +410,9 @@ const SleepScreen = () => {
           </Text> : null}
 
           {/* Chart */}
-          {!isLoading ? sleepData.length > 0 ?
+          {!isLoading ? ascendingSleepData.length > 0 ?
             <View style={styles.chartContainer}>
-              <MyLineChart sleepArray={sleepData} />
+              <MyLineChart sleepArray={ascendingSleepData} />
             </View>
             : <View>
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
