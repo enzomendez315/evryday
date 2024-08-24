@@ -1,10 +1,12 @@
 import React, { useEffect, useState} from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity, Modal, TouchableWithoutFeedback  } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
-import { addOrUpdateFoodToMeal, getServingOptions, removeFoodFromMeal } from '../../logic/diet-api'
+import { addOrUpdateFoodToMeal, getServingOptions, removeFoodFromMeal, deleteFoodItem } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { AccountContext } from '../../../App';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 let DEBUG = false;
 
@@ -12,15 +14,11 @@ const AddFoodScreen = (props) => {
   const { navigation, route } = props;
   const { foodItem, meal } = route.params;
   const mealToFoodId = route.params?.mealToFoodId;
+  const userId = React.useContext(AccountContext);
 
-  DEBUG && console.log(`Add Food meal:`);
-  DEBUG && console.log(meal);
-  DEBUG && console.log(`Add Food item:`);
-  DEBUG && console.log(foodItem);
-  DEBUG && console.log(`Meal to food id: ${mealToFoodId}`);
+  DEBUG && console.log('Add Food route.params', route.params);
 
-  
-
+  const [menuPopUpVisible, setMenuPopupVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [dropDownValue, setDropDownValue] = useState(0);
   const [servingOptions, setServingOptions] = useState([]);
@@ -29,7 +27,6 @@ const AddFoodScreen = (props) => {
     { label: 'Grams', value: 0 }
   ]);
 
-  // [calories, carbs, fat, protein]
   const [macros, setMacros] = useState([0, 0, 0, 0]);
   const [disableInput, setDisableInput] = useState(false);
   const calcMacros = (serving, servingAmount) => {
@@ -48,6 +45,32 @@ const AddFoodScreen = (props) => {
     setMacros([calories, carbs, fat, protein]);
   }
 
+  const onDelete = async () => {
+    setMenuPopupVisible(false);
+    await deleteFoodItem(foodItem.id).then(() => {
+      navigation.navigate('Search Food', { meal: meal });
+    });
+  }
+  const onEdit = async () => {
+    setMenuPopupVisible(false);
+    DEBUG && console.log(servingOptions[dropDownValue]);
+    let newFoodItem = {
+      name: foodItem.name,
+      id: foodItem.id,
+      servingSize: servingOptions[dropDownValue]?.servingSize,
+      servingSizeUnit: servingOptions[dropDownValue]?.servingUnit,
+      calories: servingOptions[dropDownValue]?.calories,
+      carbs: servingOptions[dropDownValue]?.carbs,
+      fat: servingOptions[dropDownValue]?.fat,
+      protein: servingOptions[dropDownValue]?.protein
+    }
+    navigation.navigate('Edit Food Item', { meal:meal, nextPage:'Add Food', foodItem:newFoodItem })
+  }
+  const onAdd = async () => {
+    setMenuPopupVisible(false);
+    navigation.navigate('Add Serving Option', { meal:meal, nextPage:'Add Food', foodItem:foodItem })
+  }
+
   //Updates the serving options when the screen is first opened or if the meal or item changes
   useEffect(() => {
     if(mealToFoodId !== undefined) {
@@ -61,6 +84,17 @@ const AddFoodScreen = (props) => {
            }}>
             <View>
               <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+            </View>
+          </TouchableOpacity>
+        ),
+      })
+    // } else if (foodItem?.owner === userId) {
+    } else if (true) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity onPress={() => setMenuPopupVisible(!menuPopUpVisible)}>
+            <View>
+              <Ionicons name="menu-outline" size={24} color={COLORS.darkBlue} />
             </View>
           </TouchableOpacity>
         ),
@@ -86,6 +120,7 @@ const AddFoodScreen = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
+        <MenuPopup isVisable={menuPopUpVisible} setIsVisable={setMenuPopupVisible} navigation={navigation} onAdd={onAdd} onEdit={onEdit} onDelete={onDelete} />
         <Text style={styles.title}>{foodItem?.name} was selected</Text>
         <Text style={styles.text}>
           I bet that {foodItem.name} is gonna taste delicious</Text>
@@ -137,6 +172,46 @@ const AddFoodScreen = (props) => {
     </>
   );
 };
+
+const MenuPopup = ({isVisable, setIsVisable, onAdd, onEdit, onDelete}) => {
+
+  const closePopup = () => {isVisable && setIsVisable(false) }
+  
+  return (
+    <Modal
+      visible={isVisable}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={() => setIsVisable(!isVisable)}
+    >
+      <TouchableWithoutFeedback onPress={closePopup}> 
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.menuPopupOverlay}>
+            <View style={styles.menuPopup}>
+              <View>
+                <TouchableOpacity
+                    onPress={onAdd}
+                    style={styles.menuRow}>
+                    <Text style={styles.rowLabel}>Add</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={onEdit}
+                    style={styles.menuRow}>
+                    <Text style={styles.rowLabel}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={onDelete}
+                    style={styles.menuRow}>
+                    <Text style={styles.rowLabel}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+}
 
 export default AddFoodScreen;
 
@@ -208,5 +283,35 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textAlign: 'center',
+  },
+  menuPopupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    marginTop: 60,
+    marginRight: 0,
+    marginLeft: 'auto'
+  },
+  menuPopup: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    width: '90%',
+  },
+  menuRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+    marginBottom: 6,
+    marginTop: 6,
+    paddingLeft: 50,
+    paddingRight: 50,
+  },
+  rowLabel: {
+      fontSize: 17,
+      fontWeight: '400',
+      color: '#0c0c0c',
   },
 });

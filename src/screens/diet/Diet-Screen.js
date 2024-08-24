@@ -50,17 +50,8 @@ const DietScreen = ({ navigation }) => {
   const [mealPeriodPopupVisible, setMealPeriodPopupVisible] = useState(false);
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
-  //TODO:: REMOVE dont need this if use effect is removed
-  // const [logChanged, setLogChanged] = useState(true);
 
   userId = React.useContext(AccountContext);
-
-  // TODO:: REMOVE dont need this and useFocus as they both update the same data
-  // useEffect(() => {
-  //   //if (!logChanged) return;
-  //   setLogChanged(false);
-  //   syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
-  // }, [logChanged]);
 
   // Called every time the screen is opened
   useFocusEffect(
@@ -175,9 +166,6 @@ const DietScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.addMealButton}
               onPress={async () => {
                 setMealPeriodPopupVisible(true);
-                // let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10));
-                // let tempVar = await calcMealMacros(newMeal);
-                // navigation.navigate('Add Meal', { meal: tempVar });
               }}>
               <Text style={styles.addMealButtonText}>Add Meal</Text>
             </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { currentUserDetails} from '../logic/account'
+import { currentUserDetails } from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood } from '../models';
 
 const DEBUG = false;
@@ -313,13 +313,6 @@ export async function calcMealMacros(meal) {
 // Finds all serving options for a food item
 // sets the serving options and drop down items for the Add-Food-Screen
 export async function getServingOptions(foodItem, setServingOptions, setDropDownItems) {
-
-    // const foodItems = await DataStore.query(FoodItem, (c) => c.id.eq(foodItemId));
-    // DEBUG && console.log(`FoodItem`);
-    // DEBUG && console.log(foodItems);
-    // DEBUG && console.log(`food item serving options`);
-    // DEBUG && console.log(foodItems[0].servingOptions.toArray());
-    // const servingOptions = await foodItems[0].servingOptions.toArray();
     const servingOptions = await foodItem.servingOptions.toArray();
     setServingOptions(servingOptions);
     let options = [];
@@ -398,6 +391,77 @@ export async function addFoodToMeal(meal, food, servingId, servingAmount) {
     return tempMeal;
 }
 
+// Modify-Food-obj
+// Updates a food item and/or a serving option if they exist and the user owns the items, else creates new items
+export async function modifyFoodObject(name, servingSize, servingUnit, calories, carbs, fat, protein, foodId, servingId, userId) {
+    // TODO:: Return foodItem as promise
+    let foodItem = null;
+
+    if(foodId !== null || foodId !== undefined) {
+        const foundFoodItem = await DataStore.query(FoodItem, foodId);
+        if(foundFoodItem === null || foundFoodItem === undefined || foundFoodItem.owner !== userId){
+            const newFoodItem = await DataStore.save(
+                new FoodItem({
+                    name: name,
+                    owner: userId
+                })
+            );
+            foodItem = newFoodItem;
+        } else {
+            if (foundFoodItem.name !== name) {
+                const foodCopy = await DataStore.save(
+                    FoodItem.copyOf(foundFoodItem, updated => {
+                        updated.name = name;
+                        updated.owner = userId;
+                    })
+                );
+                foodItem = foodCopy;
+            } else {
+                foodItem = foundFoodItem;
+            }
+        }
+    }
+
+    if(servingId !== null || servingId !== undefined) {
+        const foundFoodServing = await DataStore.query(FoodItemServing, servingId);
+        if(foundFoodServing === null || foundFoodServing === undefined || foundFoodServing.owner !== userId){
+            const foodItemServing = await DataStore.save(
+                new FoodItemServing ({
+                    foodItem: foodItem,
+                    servingSize: servingSize,
+                    servingUnit: servingUnit,
+                    calories: calories,
+                    protein: protein,
+                    carbs: carbs,
+                    fat: fat
+                })
+            );
+        } else {
+            if(foundFoodServing.calories !== calories
+                || foundFoodServing.servingSize !== servingSize
+                || foundFoodServing.servingUnit !== servingUnit
+                || foundFoodServing.protein !== protein
+                || foundFoodServing.fat !== fat
+                || foundFoodServing.carbs !== carbs) {
+                    const servingCopy = await DataStore.save(
+                        FoodItemServing.copyOf(foundFoodServing, updated => {
+                            updated.servingSize = servingSize,
+                            updated.servingUnit = servingUnit,
+                            updated.calories = calories,
+                            updated.carbs = carbs,
+                            updated.fat = fat,
+                            updated.protein = protein
+                        })
+                    )
+            }
+        }
+    }
+    return foodItem;
+
+}
+
+
+
 // calls getFoodItems
 // calls bulkCreateFood if no food items are found
 // only called once to make items in database
@@ -411,6 +475,13 @@ export async function initFoodItems() {
         }
         DEBUG && console.log("Finished initFoodItems");
     });
+}
+
+export async function deleteFoodItem(foodId) {
+    DEBUG && console.log(`deleteFoodItem foodId: ${foodId}`);
+    const foodItem = await DataStore.query(FoodItem, foodId);
+    await DataStore.delete(FoodItem, foodItem);
+    return foodItem;
 }
 
 

@@ -43,7 +43,7 @@ const SearchFoodScreen = (props) => {
             <Button 
               style = {styles.button}
               title='New'
-              onPress={() => navigation.navigate('Modify Food', { meal })} 
+              onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })} 
             />
           </View>
           <Text style={styles.title}>Search Food</Text>

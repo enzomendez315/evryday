@@ -18,7 +18,7 @@ import { syncMealFoodsList, deleteMeal, removeFoodFromMeal, getFoodItemFromId} f
 //   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 // };
 
-let DEBUG = false;
+let DEBUG = true;
 
 const recipeData = [
   {
@@ -91,7 +91,6 @@ const recipeData = [
 
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  // const mealId = route.params.meal.id;
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
   const [foodList, setFoodList] = useState();
@@ -115,12 +114,12 @@ const AddMealScreen = (props) => {
         {foodList?.map((food, index) => (
           <TouchableOpacity key={index}
             onPress={async () => {
-              //TODO:: REMOVE extra
-              // this button should delete the food, and update the meal and UI
+              // makes a food item clickable and  to edit or remove e
               DEBUG && console.log(food.name + ' pressed');
               let mealToFoodId = food?.mealToFoodId;
               const foodItem = await getFoodItemFromId(food.id);
               navigation.navigate('Edit Food', { foodItem:foodItem, meal:mealData, mealToFoodId });
+              //TODO:: REMOVE
               // await removeFoodFromMeal(mealData, food);
               // await syncMealFoodsList(mealData, setFoodList);
             }}>

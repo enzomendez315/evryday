@@ -161,7 +161,9 @@ function DietStack() {
                         <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
                       ),
                     })} />
-      <Stack.Screen name="Modify Food" component={ModifyFoodScreen} />
+      <Stack.Screen name="Create Food Item"  component={ModifyFoodScreen} initialParams={{ editable:true }} />
+      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable:true }} />
+      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable:true }} />
     </Stack.Navigator>
   );
 }
