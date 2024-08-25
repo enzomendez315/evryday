@@ -13,14 +13,16 @@ const DEBUG = true;
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     DEBUG && console.log("Making a new sleep entry with the date: ", date_);
     if (await getSleepEntry(userID_, date_) === null) {
+        let restfulnessScore_ = getRestfulnessScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 new SleepLog({
                     userId: userID_, //int
                     date: date_, //string
-                    hoursSlept: hoursSlept_,  //int
+                    hoursSlept: hoursSlept_, //int
                     sleepQuality: sleepQuality_, //int
-                    dreamJournal: "no journal" //string
+                    dreamJournal: "no journal", //string
+                    restfulnessScore: restfulnessScore_, //int
                 })
             );
             DEBUG && console.log('sleep log saved successfully!', sleeplog);
@@ -37,11 +39,13 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
 // uses getSleepEntry to get the entry to update
 export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     if (await getSleepEntry(userID_, date_) !== null) {
+        let restfulnessScore_ = getRestfulnessScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 SleepLog.copyOf(await getSleepEntry(userID_, date_), updated => {
                     updated.hoursSlept = hoursSlept_;
                     updated.sleepQuality = sleepQuality_;
+                    updated.restfulnessScore = restfulnessScore_;
                 })
             );
             DEBUG && console.log('sleep log updated successfully!', sleeplog);
@@ -141,7 +145,7 @@ async function getSleepEntry(userId, date) {
     return p;
 }
 
-// write me a fucntion that gets the sleep logs for a user from a certain month and year from date in the format of "YYYY-MM-DD"
+// gets the sleep logs for a user from a certain month and year from date in the format of "YYYY-MM-DD"
 // Copilot Written - BEWARE
 // helper function for syncUsersMonthLog
 async function getSleepEntriesForMonth(userId, month, year) {
@@ -170,4 +174,31 @@ async function getSleepEntriesForMonth(userId, month, year) {
         }
     });
     return p;
+}
+
+// calculates the restfulness score based on the sleep duration and quality
+// this algorithm is for manual sleep entries
+// assigns weights to both metrics and combines them into a single score of 0-100
+function getRestfulnessScore(sleepDuration, sleepQuality) {
+    let durationScore = 0;
+    let qualityScore = 0;
+    let restfulnessScore = 0;
+
+    // normalize inputs
+    if (sleepDuration <= 8) {
+    // an 8+ hour duration gets the highest score
+    durationScore = (sleepDuration / 8) * 50;
+    } else {
+    durationScore = 50;
+    }
+    qualityScore = (sleepQuality / 10) * 50;
+
+    // add both scores and round to the nearest integer
+    restfulnessScore = Math.round(durationScore + qualityScore);
+
+    DEBUG && console.log(`sleep duration is ${sleepDuration} with a score of ${durationScore}`);
+    DEBUG && console.log(`sleep quality is ${sleepQuality} with a score of ${qualityScore}`);
+    DEBUG && console.log(`restfulness score is ${restfulnessScore}`);
+
+    return restfulnessScore;
 }

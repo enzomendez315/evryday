@@ -1,110 +1,5 @@
 export const schema = {
     "models": {
-        "ExerciseSet": {
-            "name": "ExerciseSet",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "reps": {
-                    "name": "reps",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "time": {
-                    "name": "time",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "weight": {
-                    "name": "weight",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "ExerciseType": {
-                    "name": "ExerciseType",
-                    "isArray": true,
-                    "type": {
-                        "model": "ExerciseSetExerciseType"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "exerciseSet"
-                        ]
-                    }
-                },
-                "ExerciseRoutines": {
-                    "name": "ExerciseRoutines",
-                    "isArray": true,
-                    "type": {
-                        "model": "ExerciseSetExerciseRoutine"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "exerciseSet"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "ExerciseSets",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         "User": {
             "name": "User",
             "fields": {
@@ -807,6 +702,111 @@ export const schema = {
                 }
             ]
         },
+        "ExerciseSet": {
+            "name": "ExerciseSet",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "reps": {
+                    "name": "reps",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "time": {
+                    "name": "time",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "weight": {
+                    "name": "weight",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "ExerciseType": {
+                    "name": "ExerciseType",
+                    "isArray": true,
+                    "type": {
+                        "model": "ExerciseSetExerciseType"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "exerciseSet"
+                        ]
+                    }
+                },
+                "ExerciseRoutines": {
+                    "name": "ExerciseRoutines",
+                    "isArray": true,
+                    "type": {
+                        "model": "ExerciseSetExerciseRoutine"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "exerciseSet"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ExerciseSets",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "ExerciseRoutine": {
             "name": "ExerciseRoutine",
             "fields": {
@@ -1266,6 +1266,104 @@ export const schema = {
                 }
             ]
         },
+        "ExerciseLogExerciseRoutine": {
+            "name": "ExerciseLogExerciseRoutine",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "exerciseLogId": {
+                    "name": "exerciseLogId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "exerciseRoutineId": {
+                    "name": "exerciseRoutineId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "exerciseLog": {
+                    "name": "exerciseLog",
+                    "isArray": false,
+                    "type": {
+                        "model": "ExerciseLog"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "exerciseLogId"
+                        ]
+                    }
+                },
+                "exerciseRoutine": {
+                    "name": "exerciseRoutine",
+                    "isArray": false,
+                    "type": {
+                        "model": "ExerciseRoutine"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "exerciseRoutineId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ExerciseLogExerciseRoutines",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byExerciseLog",
+                        "fields": [
+                            "exerciseLogId"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byExerciseRoutine",
+                        "fields": [
+                            "exerciseRoutineId"
+                        ]
+                    }
+                }
+            ]
+        },
         "ExerciseSetExerciseType": {
             "name": "ExerciseSetExerciseType",
             "fields": {
@@ -1448,104 +1546,6 @@ export const schema = {
                         "name": "byExerciseSet",
                         "fields": [
                             "exerciseSetId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byExerciseRoutine",
-                        "fields": [
-                            "exerciseRoutineId"
-                        ]
-                    }
-                }
-            ]
-        },
-        "ExerciseLogExerciseRoutine": {
-            "name": "ExerciseLogExerciseRoutine",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "exerciseLogId": {
-                    "name": "exerciseLogId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "exerciseRoutineId": {
-                    "name": "exerciseRoutineId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "exerciseLog": {
-                    "name": "exerciseLog",
-                    "isArray": false,
-                    "type": {
-                        "model": "ExerciseLog"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "exerciseLogId"
-                        ]
-                    }
-                },
-                "exerciseRoutine": {
-                    "name": "exerciseRoutine",
-                    "isArray": false,
-                    "type": {
-                        "model": "ExerciseRoutine"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "exerciseRoutineId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "ExerciseLogExerciseRoutines",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byExerciseLog",
-                        "fields": [
-                            "exerciseLogId"
                         ]
                     }
                 },

@@ -97,8 +97,9 @@ type SleepLog @model @auth(rules: [{allow: public}]) {
   userId: ID!
   date: AWSDate!
   hoursSlept: Float!
-  sleepQuality: Int
+  sleepQuality: Int!
   dreamJournal: String
+  restfulnessScore: Int!
 }
 
 type HealthScore @model @auth(rules: [{allow: public}]) {
