@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { currentUserDetails} from '../logic/account'
+import { currentUserDetails } from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood } from '../models';
 
 const DEBUG = false;
@@ -205,36 +205,51 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     setLogData(macros);
 }
 
-// combines a FoodItem, its serving information, and the amount of servings into a singular item
-function formatFoodItem(foodItem, serving, amount) {
-    let multiplier = amount / serving.servingSize;
-    return {
+// Combines a FoodItem, it serving information, and the amount of servings into a singular item
+function formatFoodItem(foodItem, serving, mealFoodRelationship) {
+    let multiplier = mealFoodRelationship.servingAmount / serving.servingSize;
+
+    const tempFoodItem = {
+        id: foodItem.id,
         name: foodItem.name,
+        servingId: serving.id,
+        servingAmount: mealFoodRelationship.servingAmount,
+        mealToFoodId: mealFoodRelationship?.id ?? null,
         calories: Math.round(serving.calories * multiplier),
         protein: Math.round(serving.protein * multiplier),
         carbs: Math.round(serving.carbs * multiplier),
-        fat: Math.round(serving.fat * multiplier)
+        fat: Math.round(serving.fat * multiplier),
     };
 
+    return tempFoodItem;
 }
 
 // creates a list of formatted food items for a given meal using the relationships in the MealToFood table
 async function getFoodListForMeal(meal) {
     p = new Promise(async (resolve, reject) => {
         let foodsList = [];
+
+        if (meal?.id === undefined) {
+            resolve(foodsList);
+        }
+
         const mealFoodRelationships = await DataStore.query(MealToFood, (mfr) => mfr.mealId.eq(meal.id));
 
         for (let mealFoodRelationship of mealFoodRelationships) {
             let food = await mealFoodRelationship.foodItem;
             DEBUG && console.log(`getFoodListForMeal food: ${food.name}`);
             let serving = await DataStore.query(FoodItemServing, (s) => s.id.eq(mealFoodRelationship.servingId));
-            DEBUG && console.log(`getFoodListForMeal serving: ${serving[0]}`);
-            let formattedFood = formatFoodItem(food, serving[0], mealFoodRelationship.servingAmount);
+            let formattedFood = formatFoodItem(food, serving[0], mealFoodRelationship);
             foodsList.push(formattedFood);
         }
         resolve(foodsList);
     });
     return p;
+}
+
+export async function getFoodItemFromId(foodItemId) {
+    const foodItems = await DataStore.query(FoodItem, (c) => c.id.eq(foodItemId));
+    return foodItems[0];
 }
 
 // updates the UI in the edit meal screen
@@ -244,13 +259,18 @@ export async function syncMealFoodsList(meal, setFoodList) {
     setFoodList(foodsList);
 }
 
-export async function removeFoodFromMeal(meal, food) {
-    DEBUG && console.log(`removeFoodFromMeal mealId: ${meal.id} foodId: ${food.id}`);
-    const mealFoodRelationships = await DataStore.query(MealToFood, (mfi) => mfi.and(mfi => [
-        mfi.mealId.eq(meal.id),
-        mfi.foodItemId.eq(food.id)
-    ]));
-    await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealFoodRelationships[0].id));
+// Removes a food item from a meal and returns the meals updated macros
+export async function removeFoodFromMeal(mealToFoodId) {
+    DEBUG && console.log(`removeFoodFromMeal mealToFoodId: ${mealToFoodId}`);
+    const mealToFood = await DataStore.query(MealToFood, mealToFoodId);
+    const mealId = mealToFood.mealId;
+    await DataStore.delete(MealToFood, mealToFood);
+    const meal = await DataStore.query(Meal, mealId);
+    let tempMeal;
+    await calcMealMacros(meal).then((updatedMeal) => {
+        tempMeal = updatedMeal;
+    });
+    return tempMeal;
 }
 
 // gets the total macros for all meals
@@ -274,13 +294,14 @@ async function getAllMealsMacros(meals) {
 
 // gets macros for a meal
 // helper function for getAllMealsMacros and addFoodToMeal
+// TODO:: Some meals passed in are datastore meals and some are macro meals
 export async function calcMealMacros(meal) {
     p = new Promise(async (resolve, reject) => {
-        DEBUG && console.log(`calcMealMacros mealId: ${meal.id}`);
+        DEBUG && console.log(`calcMealMacros mealId: ${meal?.id} mealPeriod: ${meal?.mealPeriod} mealName: ${meal?.name}`);
         let foodsList = await getFoodListForMeal(meal);
         let mealData = {
             id: meal.id,
-            name: meal.mealPeriod,
+            name: meal.mealPeriod ?? meal.name,
             calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
             protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
             carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
@@ -334,6 +355,27 @@ async function getFoodItems(searchTerm) {
 
 // adds a food item to a meal
 // called in Add-Food-Screen.js
+export async function addOrUpdateFoodToMeal(meal, food, servingId, servingAmount, mealToFoodId) {
+    DEBUG && console.log('addOrUpdateFoodToMeal');
+    p = new Promise(async (resolve,reject) => {
+        if(mealToFoodId !== undefined){
+        DEBUG && console.log('update');
+            await DataStore.delete(MealToFood, (mfi) => mfi.id.eq(mealToFoodId)).then(async () => {
+                const newMeal = await addFoodToMeal(meal, food, servingId, servingAmount);
+                resolve(newMeal);
+            });
+        } else {
+            DEBUG && console.log('add');
+            await addFoodToMeal(meal, food, servingId, servingAmount).then((newMeal) => {
+                resolve(newMeal);
+            });
+        }
+    });
+    return p;
+}
+
+// adds a food item to a meal
+// called in Add-Food-Screen.js
 export async function addFoodToMeal(meal, food, servingId, servingAmount) {
     DEBUG && console.log(`addFoodToMeal servingId: ${servingId} servingAmount: ${servingAmount}`);
     const mealFoodItem = await DataStore.save(
@@ -352,6 +394,77 @@ export async function addFoodToMeal(meal, food, servingId, servingAmount) {
     return tempMeal;
 }
 
+// Modify-Food-obj
+// Updates a food item and/or a serving option if they exist and the user owns the items, else creates new items
+export async function modifyFoodObject(name, servingSize, servingUnit, calories, carbs, fat, protein, foodId, servingId, userId) {
+    // TODO:: Return foodItem as promise
+    let foodItem = null;
+
+    if(foodId !== null || foodId !== undefined) {
+        const foundFoodItem = await DataStore.query(FoodItem, foodId);
+        if(foundFoodItem === null || foundFoodItem === undefined || foundFoodItem.owner !== userId){
+            const newFoodItem = await DataStore.save(
+                new FoodItem({
+                    name: name,
+                    owner: userId
+                })
+            );
+            foodItem = newFoodItem;
+        } else {
+            if (foundFoodItem.name !== name) {
+                const foodCopy = await DataStore.save(
+                    FoodItem.copyOf(foundFoodItem, updated => {
+                        updated.name = name;
+                        updated.owner = userId;
+                    })
+                );
+                foodItem = foodCopy;
+            } else {
+                foodItem = foundFoodItem;
+            }
+        }
+    }
+
+    if(servingId !== null || servingId !== undefined) {
+        const foundFoodServing = await DataStore.query(FoodItemServing, servingId);
+        if(foundFoodServing === null || foundFoodServing === undefined || foundFoodServing.owner !== userId){
+            const foodItemServing = await DataStore.save(
+                new FoodItemServing ({
+                    foodItem: foodItem,
+                    servingSize: servingSize,
+                    servingUnit: servingUnit,
+                    calories: calories,
+                    protein: protein,
+                    carbs: carbs,
+                    fat: fat
+                })
+            );
+        } else {
+            if(foundFoodServing.calories !== calories
+                || foundFoodServing.servingSize !== servingSize
+                || foundFoodServing.servingUnit !== servingUnit
+                || foundFoodServing.protein !== protein
+                || foundFoodServing.fat !== fat
+                || foundFoodServing.carbs !== carbs) {
+                    const servingCopy = await DataStore.save(
+                        FoodItemServing.copyOf(foundFoodServing, updated => {
+                            updated.servingSize = servingSize,
+                            updated.servingUnit = servingUnit,
+                            updated.calories = calories,
+                            updated.carbs = carbs,
+                            updated.fat = fat,
+                            updated.protein = protein
+                        })
+                    )
+            }
+        }
+    }
+    return foodItem;
+
+}
+
+
+
 // calls getFoodItems
 // calls bulkCreateFood if no food items are found
 // only called once to make items in database
@@ -365,6 +478,13 @@ export async function initFoodItems() {
         }
         DEBUG && console.log("Finished initFoodItems");
     });
+}
+
+export async function deleteFoodItem(foodId) {
+    DEBUG && console.log(`deleteFoodItem foodId: ${foodId}`);
+    const foodItem = await DataStore.query(FoodItem, foodId);
+    await DataStore.delete(FoodItem, foodItem);
+    return foodItem;
 }
 
 

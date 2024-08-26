@@ -1,175 +1,173 @@
 import { Text, SafeAreaView, StyleSheet, TextInput, View, Button, Alert } from 'react-native';
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
+import { FoodItem } from '../../models';
+import { modifyFoodObject } from '../../logic/diet-api';
+import { AccountContext } from '../../../App';
 
-  const foodItemTest = {
-    id: 123213,
-    name: 'Pasta',
-    servingSize: 1,
-    servingSizeUnit: 'cup',
-    calories: 245,
-    carbs: 15,
-    fat: 5,
-    protein: 10
-  }
+const DEBUG = true;
+
+  // const foodItemTest = {
+  //   id: 123213,
+  //   name: 'Pasta',
+  //   servingSize: 1,
+  //   servingSizeUnit: 'cup',
+  //   calories: 245,
+  //   carbs: 15,
+  //   fat: 5,
+  //   protein: 10
+  // }
 
 const FoodItemForm = (props) => {
+
+  const userId = React.useContext(AccountContext);
+
   const { navigation, route } = props
-  const foodItem = route?.params?.item
-  // const foodItem = foodItemTest
-  const parentCallBack = route?.params?.callBack
-  const previousPage = route?.params?.previousPage
-  const [edit, setEdit] = useState(true)
-  const [isNew, setIsNew] = useState(true)
-  const [foodID, setFoodID] = useState(null);
+  const foodItem = route.params?.foodItem
+  const meal = route.params?.meal
+  const nextPage = route.params?.nextPage
+  const [editable, setEditable] = useState(true);
+  const [foodId, setFoodId] = useState(null);
+  const [servingId, setServingId] = useState(null);
   const [name, setName] = useState('');
-  const [servingSize, setServingSize] = useState(1);
-  const [servingSizeUnit, setServingSizeUnit] = useState('cup');
-  const [calories, setCalories] = useState(1);
-  const [carbs, setCarbs] = useState(1);
-  const [fat, setFat] = useState(1);
-  const [protein, setProtein] = useState(1);
+  const [servingSize, setServingSize] = useState(100);
+  const [servingSizeUnit, setServingSizeUnit] = useState('g');
+  const [calories, setCalories] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [fat, setFat] = useState(0);
+  const [protein, setProtein] = useState(0);
+
+  function setFloat(value, func){
+    if (isNaN(value)) {
+      func(0);
+    } else {
+      func(parseFloat(value));
+    }
+  }
 
   useEffect(() => {
+    DEBUG && console.log(`FoodItemForm`);
+    DEBUG && console.log(foodItem);
+    DEBUG && console.log(meal);
     if (foodItem) {
       if(foodItem?.id) {
-        setFoodID(foodItem?.id)
-        setEdit(false)
-        setIsNew(false)
+        setFoodId(foodItem?.id)
+        // setEditable(false)
+        if(foodItem?.servingId !== undefined) {
+          setServingId(foodItem?.servingId)
+        }
       }
-      setName(foodItem?.name)
-      setServingSize(foodItem?.servingSize)
-      setServingSizeUnit(foodItem?.servingSizeUnit)
-      setCalories(foodItem?.calories)
-      setCarbs(foodItem?.carbs)
-      setFat(foodItem?.fat)
-      setProtein(foodItem?.protein)
+      setName(foodItem?.name ?? '')
+      setServingSize(foodItem?.servingSize ?? 100)
+      setServingSizeUnit(foodItem?.servingSizeUnit ?? 'g')
+      setCalories(foodItem?.calories ?? 0)
+      setCarbs(foodItem?.carbs ?? 0)
+      setFat(foodItem?.fat ?? 0)
+      setProtein(foodItem?.protein ?? 0)
+    } else {
+      DEBUG && console.log(`No Item Passed`);
     }
   }, [])
 
-  const createFoodItem = () => {
-    const foodItem = {
-      name: name,
-      servingSize: servingSize,
-      servingSizeUnit: servingSizeUnit,
-      calories: calories,
-      carbs: carbs,
-      fat: fat,
-      protein: protein
-    }
-    return foodItem
-  }
-
   const toggleEditable = () => {
-    setEdit(!edit)
+    setEditable(!editable)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log('handleSubmit Hit')
-    //TODO: Add new item or update existing item.
-    //if isNew then create new food item
+    //Validate inputs
+    // Must start with a letter and only contain letters and spaces
+    let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
+    if (name === null || !letterRegex.test(name)) {
+      console.log(`Invalid Name`);
+      return;
+    }
+    if (servingSizeUnit === null || !letterRegex.test(servingSizeUnit)) {
+      console.log(`Invalid Serving Size Unit`);
+      return;
+    }
+    if (isNaN(servingSize) || servingSize < 0) { setServingSize(1) }
+    if (isNaN(calories) || calories < 0) { setCalories(0) }
+    if (isNaN(carbs) || carbs < 0) { setCarbs(0) }
+    if (isNaN(fat) || fat < 0) { setFat(0) }
+    if (isNaN(protein) || protein < 0) { setProtein(0) }
 
-
-    // else update excisting item
-
-
-    // navigate back to previous page
-    // parentCallBack()
+    await modifyFoodObject(name, servingSize, servingSizeUnit, calories, carbs, fat, protein, foodId, servingId, userId).then((newFoodItem) => {
+      navigation.navigate(nextPage, { meal: meal, foodItem: newFoodItem });
+    })
   }
   
   return (
-  <View>
-    <View>
-      <View style={foodItemFormStyle.container}>
-        <View style={foodItemFormStyle.row}>
-          <Button style={foodItemFormStyle.button}
-            title='Return'
-            onPress={() => console.log('return pressed')}
-          />
-          <Button style={foodItemFormStyle.button}
-            title='Edit'
-            onPress={() => toggleEditable()}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Name </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newName => setName(newName)}
-            value={name}
-            editable={edit}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Serving Size </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newSS=> setServingSize(newSS)}
-            value={servingSize}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Serving Size Unit </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newSSU => setServingSizeUnit(newSSU)}
-            value={servingSizeUnit}
-            editable={edit}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Calories </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newCal => setCalories(newCal)}
-            value={calories}
-            editable={edit}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Carbohydrate </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newCarbs => setCarbs(newCarbs)}
-            value={carbs}
-            editable={edit}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Fat </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newFat => setFat(newFat)}
-            value={fat}
-            editable={edit}
-          />
-        </View>
-        <View style={foodItemFormStyle.row}>
-          <Text style={foodItemFormStyle.text}> Protein </Text>
-          <TextInput 
-            style={foodItemFormStyle.textInput}
-            onChangeText={newProtein=> setProtein(newProtein)}
-            value={protein}
-            editable={edit}
-          />
-        </View>
-          <Button style={foodItemFormStyle.button}
-            title='Submit'
-            onPress={() => Alert.alert('Button pressed')}
-          />
+    <View style={foodItemFormStyle.container}>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Name </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newName => setName(newName)}
+          value={name}
+          editable={editable}
+        />
       </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Serving Size </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newSS=> setFloat(newSS, setServingSize)}
+          value={servingSize.toString()}
+        />
+      </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Serving Size Unit </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newSSU => setServingSizeUnit(newSSU)}
+          value={servingSizeUnit}
+          editable={editable}
+        />
+      </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Calories </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newCal => setFloat(newCal, setCalories)}
+          value={calories.toString()}
+          editable={editable}
+        />
+      </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Carbohydrate </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newCarbs => setFloat(newCarbs, setCarbs)}
+          value={carbs.toString()}
+          editable={editable}
+        />
+      </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Fat </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newFat => setFloat(newFat, setFat)}
+          value={fat.toString()}
+          editable={editable}
+        />
+      </View>
+      <View style={foodItemFormStyle.row}>
+        <Text style={foodItemFormStyle.text}> Protein </Text>
+        <TextInput 
+          style={foodItemFormStyle.textInput}
+          onChangeText={newProtein=> setFloat(newProtein, setProtein)}
+          value={protein.toString()}
+          editable={editable}
+        />
+      </View>
+        <Button style={foodItemFormStyle.button}
+          title='Create Item'
+          onPress={() => handleSubmit()}
+        />
     </View>
-  </View>
   );
 }
-
-// export default function App() {
-//   return (
-//     <View>
-//       {FoodItemForm(foodItemTest)}
-//     </View>
-//   );
-// }
-
+export default FoodItemForm;
 
 const foodItemFormStyle = StyleSheet.create({
   container: {
