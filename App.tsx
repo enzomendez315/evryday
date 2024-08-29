@@ -22,6 +22,8 @@ import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
+import BasicInfoScreen from './src/screens/Basic-Info-Screen';
+
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
@@ -29,6 +31,7 @@ import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
+
 
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
@@ -132,6 +135,13 @@ function SettingsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Settings Home" component={SettingsScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.lightGreen,
+          },
+        }} />
+
+        <Stack.Screen name="User Info" component={BasicInfoScreen} 
         options={{
           headerStyle: {
             backgroundColor: COLORS.lightGreen,
