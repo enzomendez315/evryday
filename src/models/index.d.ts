@@ -22,6 +22,7 @@ type EagerUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
+  readonly isProfileComplete?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -37,6 +38,7 @@ type LazyUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
+  readonly isProfileComplete?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
