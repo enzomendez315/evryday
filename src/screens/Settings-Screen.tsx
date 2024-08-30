@@ -11,8 +11,12 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { currentUserDetails } from '../logic/account';
 import { initFoodItems } from '../logic/diet-api';
+import { useNavigation } from '@react-navigation/native';
+import { userSignOut } from '../logic/account';
+
 
 const SettingsScreen = () => {
+    const navigation = useNavigation();
     const [form, setForm] = useState({
         userID: "",
         darkMode: false,
@@ -212,6 +216,21 @@ const SettingsScreen = () => {
                                 name="chevron-right"
                                 size={20} />
                         </TouchableOpacity>
+
+                        <TouchableOpacity
+                                onPress={async () => {
+                                    await userSignOut();
+                                }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                                <FeatherIcon color="#fff" name="user" size={20} />
+                            </View>
+                            <Text style={styles.rowLabel}>Sign Out</Text>
+                            <View style={styles.rowSpacer} />
+                            <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                        </TouchableOpacity>
+
+
                     </View>
                 </ScrollView>
             </View>

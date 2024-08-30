@@ -45,6 +45,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "isFirstTime": {
+                    "name": "isFirstTime",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1054,7 +1061,7 @@ export const schema = {
                     "name": "sleepQuality",
                     "isArray": false,
                     "type": "Int",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "dreamJournal": {
@@ -1062,6 +1069,13 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
+                    "attributes": []
+                },
+                "restfulnessScore": {
+                    "name": "restfulnessScore",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "createdAt": {
@@ -1672,5 +1686,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "c7df063abf00c47d1447fbc7168a14b8"
+    "version": "0eaabef6935fb6ee6e6c8075c5116bc1"
 };

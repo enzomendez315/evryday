@@ -22,6 +22,8 @@ import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
+import BasicInfoScreen from './src/screens/Basic-Info-Screen';
+
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
@@ -29,6 +31,7 @@ import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
+
 
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
@@ -123,6 +126,19 @@ function DashboardStack() {
             backgroundColor: COLORS.lightGreen,
           },
         }} />
+    </Stack.Navigator>
+  );
+}
+
+//Screen in Signup tab
+function BasicInfoStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen 
+        name="Basic Info" 
+        component={BasicInfoScreen} 
+        options={{ headerTitle: "Complete Your Profile" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -224,22 +240,31 @@ export async function StartListening(user: string) {
 
 function App() {
   const [userId, setUserId] = React.useState("");
+  const [isFirstTime, setIsFirstTime] = React.useState(false);
+  
   // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
 
   React.useEffect(() => {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
+
+      setIsFirstTime(user.isFirstTime);
+     
+      
       await DataStore.start();
       await StartListening(user);
     });
   }, []);
 
+
+
   return (
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
-        <BottomNavBarTabs />
+        {<BottomNavBarTabs />}
+        {/* {isFirstTime ? <BottomNavBarTabs /> : <BasicInfoStack/>} */}
       </NavigationContainer>
     </AccountContext.Provider>
   );
