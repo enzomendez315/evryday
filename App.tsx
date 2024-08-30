@@ -263,7 +263,8 @@ function App() {
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
-        {isFirstTime ? <BottomNavBarTabs /> : <BasicInfoStack/>}
+        {<BottomNavBarTabs />}
+        {/* {isFirstTime ? <BottomNavBarTabs /> : <BasicInfoStack/>} */}
       </NavigationContainer>
     </AccountContext.Provider>
   );
