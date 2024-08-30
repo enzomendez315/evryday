@@ -45,11 +45,11 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "isProfileComplete": {
-                    "name": "isProfileComplete",
+                "isFirstTime": {
+                    "name": "isFirstTime",
                     "isArray": false,
                     "type": "Boolean",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "createdAt": {
@@ -1061,7 +1061,7 @@ export const schema = {
                     "name": "sleepQuality",
                     "isArray": false,
                     "type": "Int",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "dreamJournal": {
@@ -1069,6 +1069,13 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
+                    "attributes": []
+                },
+                "restfulnessScore": {
+                    "name": "restfulnessScore",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "createdAt": {
@@ -1368,22 +1375,6 @@ export const schema = {
                             "exerciseRoutineId"
                         ]
                     }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
                 }
             ]
         },
@@ -1480,22 +1471,6 @@ export const schema = {
                         "name": "byExerciseType",
                         "fields": [
                             "exerciseTypeId"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
                         ]
                     }
                 }
@@ -1596,22 +1571,6 @@ export const schema = {
                             "exerciseRoutineId"
                         ]
                     }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
                 }
             ]
         },
@@ -1710,22 +1669,6 @@ export const schema = {
                             "exerciseTypeId"
                         ]
                     }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
                 }
             ]
         }
@@ -1743,5 +1686,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "0725c0601ef2ce8af474804396d24fc2"
+    "version": "0eaabef6935fb6ee6e6c8075c5116bc1"
 };

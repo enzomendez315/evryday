@@ -130,18 +130,24 @@ function DashboardStack() {
   );
 }
 
+//Screen in Signup tab
+function BasicInfoStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen 
+        name="Basic Info" 
+        component={BasicInfoScreen} 
+        options={{ headerTitle: "Complete Your Profile" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // screens in the settings tab
 function SettingsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Settings Home" component={SettingsScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
-        }} />
-
-        <Stack.Screen name="User Info" component={BasicInfoScreen} 
         options={{
           headerStyle: {
             backgroundColor: COLORS.lightGreen,
@@ -234,22 +240,30 @@ export async function StartListening(user: string) {
 
 function App() {
   const [userId, setUserId] = React.useState("");
+  const [isFirstTime, setIsFirstTime] = React.useState(false);
+  
   // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
 
   React.useEffect(() => {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
+
+      setIsFirstTime(user.isFirstTime);
+     
+      
       await DataStore.start();
       await StartListening(user);
     });
   }, []);
 
+
+
   return (
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
-        <BottomNavBarTabs />
+        {isFirstTime ? <BottomNavBarTabs /> : <BasicInfoStack/>}
       </NavigationContainer>
     </AccountContext.Provider>
   );

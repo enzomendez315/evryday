@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 
 
 const BasicInfoScreen = () => {
+    const [name, setName] = useState('');
     const [weight, setWeight] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
@@ -14,7 +15,18 @@ const BasicInfoScreen = () => {
     };
 
     return (
+
         <View style={styles.container}>
+
+            <Text style={styles.label}>Name:</Text>
+            <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+            />
+
+
             <Text style={styles.label}>Age:</Text>
             <TextInput
                 style={styles.input}
@@ -24,7 +36,7 @@ const BasicInfoScreen = () => {
                 placeholder="Enter your age"
             />
 
-            <Text style={styles.label}>Weight (kg):</Text>
+            <Text style={styles.label}>Weight (lbs):</Text>
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
@@ -48,7 +60,7 @@ const BasicInfoScreen = () => {
         </View>
     );
 
-   
+
 };
 
 

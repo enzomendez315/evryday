@@ -22,7 +22,7 @@ type EagerUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
-  readonly isProfileComplete?: boolean | null;
+  readonly isFirstTime: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -38,7 +38,7 @@ type LazyUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
-  readonly isProfileComplete?: boolean | null;
+  readonly isFirstTime: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -378,8 +378,9 @@ type EagerSleepLog = {
   readonly userId: string;
   readonly date: string;
   readonly hoursSlept: number;
-  readonly sleepQuality?: number | null;
+  readonly sleepQuality: number;
   readonly dreamJournal?: string | null;
+  readonly restfulnessScore: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -393,8 +394,9 @@ type LazySleepLog = {
   readonly userId: string;
   readonly date: string;
   readonly hoursSlept: number;
-  readonly sleepQuality?: number | null;
+  readonly sleepQuality: number;
   readonly dreamJournal?: string | null;
+  readonly restfulnessScore: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
