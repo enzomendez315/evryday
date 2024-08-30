@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { updateUserDetails } from '../logic/user-service';
+import { useNavigation } from '@react-navigation/native';
+import { userSignOut } from '../logic/account';
 
 
 const BasicInfoScreen = () => {
@@ -8,10 +11,29 @@ const BasicInfoScreen = () => {
     const [weight, setWeight] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
+    const navigation = useNavigation();
 
-    const handleSubmit = () => {
-        console.log('Submitting:', { weight, age, gender });
-        //Submition Logic Here
+    const handleSubmit = async () => {
+        console.log('Submitting:', { name, weight, age, gender });
+
+        //Currently does not work yet
+        // try {
+
+        //     const updateSuccess = await updateUserDetails(name, weight, age, gender);
+        //     if (updateSuccess) {
+        //         console.log("Update successful");
+        //     } else {
+        //         console.log("Update failed");
+        //     }
+        // } catch (error) {
+        //     console.error("Failed to update user info:", error);
+        // }
+        
+        // console.log('Attempting to navigate...');
+        // navigation.navigate('Dashboard', {
+        //     screen: 'Dashboard Home'
+        // });
+        
     };
 
     return (
@@ -57,6 +79,7 @@ const BasicInfoScreen = () => {
             </Picker>
 
             <Button title="Submit" onPress={handleSubmit} />
+            <Button title="Back to Sign In" onPress={userSignOut} />
         </View>
     );
 
