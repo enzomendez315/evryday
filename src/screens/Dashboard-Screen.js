@@ -5,6 +5,7 @@ import { PieChart } from 'react-native-chart-kit';
 import { syncDailyLog } from '../logic/sleep-api';
 import { syncDietDashboardData } from '../logic/diet-api';
 import { getCurrentUser } from 'aws-amplify/auth';
+import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
 
 let date;
@@ -220,7 +221,6 @@ const Dashboard = (props) => {
     getCurrentUser().then((user) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
-      // TODO: fix this from crashing on startup
       syncDietDashboardData(userID, date, setCalorieData);
       tempLoading = false;
     });
@@ -230,6 +230,13 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
+      getUserDBEntry().then((user) => {
+        if (user == null) {
+          console.log("no user found in database, gotta do something about that");
+          return;
+        }
+        console.log("the user name is: " + user.name);
+      });
       syncDietDashboardData(userID, date, setCalorieData);
       return;
     }, [])
