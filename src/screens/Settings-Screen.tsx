@@ -15,9 +15,10 @@ import { initFoodItems } from '../logic/diet-api';
 const SettingsScreen = () => {
     const [form, setForm] = useState({
         userID: "",
-        darkMode: false,
-        emailNotifications: true,
         pushNotifications: false,
+        dietTracking: true,
+        sleepTracking: true,
+        workoutTracking: true,
     });
 
     useEffect(() => {
@@ -64,58 +65,6 @@ const SettingsScreen = () => {
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Preferences</Text>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                // handle onPress
-                            }}
-                            style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                                <FeatherIcon color="#fff" name="globe" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Language</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <FeatherIcon
-                                color="#C6C6C6"
-                                name="chevron-right"
-                                size={20} />
-                        </TouchableOpacity>
-
-                        <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="moon" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Dark Mode</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <Switch
-                                onValueChange={darkMode => setForm({ ...form, darkMode })}
-                                value={form.darkMode} />
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                                <FeatherIcon
-                                    color="#fff"
-                                    name="at-sign"
-                                    size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Email Notifications</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <Switch
-                                onValueChange={emailNotifications =>
-                                    setForm({ ...form, emailNotifications })
-                                }
-                                value={form.emailNotifications} />
-                        </View>
-
                         <View style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
                                 <FeatherIcon color="#fff" name="bell" size={20} />
@@ -131,29 +80,58 @@ const SettingsScreen = () => {
                                 }
                                 value={form.pushNotifications} />
                         </View>
+
+                        <View style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                                <FeatherIcon color="#fff" name="home" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Diet Tracking</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <Switch
+                                onValueChange={dietTracking =>
+                                    setForm({ ...form, dietTracking })
+                                }
+                                value={form.dietTracking} />
+                        </View>
+
+                        <View style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                                <FeatherIcon color="#fff" name="home" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Sleep Tracking</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <Switch
+                                onValueChange={sleepTracking =>
+                                    setForm({ ...form, sleepTracking })
+                                }
+                                value={form.sleepTracking} />
+                        </View>
+
+                        <View style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                                <FeatherIcon color="#fff" name="home" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Workout Tracking</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <Switch
+                                onValueChange={workoutTracking =>
+                                    setForm({ ...form, workoutTracking })
+                                }
+                                value={form.workoutTracking} />
+                        </View>
                     </View>
 
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Resources</Text>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                                // handle onPress
-                            }}
-                            style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-                                <FeatherIcon color="#fff" name="flag" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Report Bug</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <FeatherIcon
-                                color="#C6C6C6"
-                                name="chevron-right"
-                                size={20} />
-                        </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={() => {
@@ -165,25 +143,6 @@ const SettingsScreen = () => {
                             </View>
 
                             <Text style={styles.rowLabel}>Contact Us</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <FeatherIcon
-                                color="#C6C6C6"
-                                name="chevron-right"
-                                size={20} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                                // handle onPress
-                            }}
-                            style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                                <FeatherIcon color="#fff" name="star" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Rate in App Store</Text>
 
                             <View style={styles.rowSpacer} />
 
