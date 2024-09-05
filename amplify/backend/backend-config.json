@@ -23,26 +23,12 @@
       "service": "API Gateway"
     },
     "evryday": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "evryday7b027c17"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
-            },
-            {
-              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-              "userPoolConfig": {
-                "userPoolId": "authevryday7b027c17"
-              }
             }
           ],
           "defaultAuthentication": {
