@@ -43,6 +43,7 @@ type FoodItem @model @auth(rules: [{allow: public}]) {
   owner: ID!
   name: String!
   meals: [MealToFood] @hasMany(indexName: "byFood", fields: ["id"])
+  recipes: [RecipeToFood] @hasMany(indexName: "byFood", fields: ["id"])
   servingOptions: [FoodItemServing] @hasMany
 }
 
@@ -55,6 +56,22 @@ type FoodItemServing @model @auth(rules: [{allow: public}]) {
   protein: Float
   carbs: Float
   fat: Float
+}
+
+type Recipe @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  foodItems: [RecipeToFood] @hasMany(indexName: "byRecipe", fields: ["id"])
+}
+
+type RecipeToFood @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  recipeId: ID! @index(name: "byRecipe", sortKeyFields: ["foodId"])
+  foodId: ID! @index(name: "byFood", sortKeyFields: ["recipeId"])
+  servingId: ID!
+  servingAmount: Float!
+  recipe: Recipe @belongsTo(fields: ["recipeId"])
+  foodItem: FoodItem @belongsTo(fields: ["foodId"])
 }
 
 type ExerciseLog @model @auth(rules: [{allow: public}]) {

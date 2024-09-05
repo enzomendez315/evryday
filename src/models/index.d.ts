@@ -160,6 +160,7 @@ type EagerFoodItem = {
   readonly owner: string;
   readonly name: string;
   readonly meals?: (MealToFood | null)[] | null;
+  readonly recipes?: (RecipeToFood | null)[] | null;
   readonly servingOptions?: (FoodItemServing | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -174,6 +175,7 @@ type LazyFoodItem = {
   readonly owner: string;
   readonly name: string;
   readonly meals: AsyncCollection<MealToFood>;
+  readonly recipes: AsyncCollection<RecipeToFood>;
   readonly servingOptions: AsyncCollection<FoodItemServing>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -225,6 +227,74 @@ export declare type FoodItemServing = LazyLoading extends LazyLoadingDisabled ? 
 
 export declare const FoodItemServing: (new (init: ModelInit<FoodItemServing>) => FoodItemServing) & {
   copyOf(source: FoodItemServing, mutator: (draft: MutableModel<FoodItemServing>) => MutableModel<FoodItemServing> | void): FoodItemServing;
+}
+
+type EagerRecipe = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Recipe, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly foodItems?: (RecipeToFood | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyRecipe = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Recipe, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly foodItems: AsyncCollection<RecipeToFood>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Recipe = LazyLoading extends LazyLoadingDisabled ? EagerRecipe : LazyRecipe
+
+export declare const Recipe: (new (init: ModelInit<Recipe>) => Recipe) & {
+  copyOf(source: Recipe, mutator: (draft: MutableModel<Recipe>) => MutableModel<Recipe> | void): Recipe;
+}
+
+type EagerRecipeToFood = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<RecipeToFood, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly recipeId: string;
+  readonly foodId: string;
+  readonly servingId: string;
+  readonly servingAmount: number;
+  readonly recipe?: Recipe | null;
+  readonly foodItem?: FoodItem | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyRecipeToFood = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<RecipeToFood, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly recipeId: string;
+  readonly foodId: string;
+  readonly servingId: string;
+  readonly servingAmount: number;
+  readonly recipe: AsyncItem<Recipe | undefined>;
+  readonly foodItem: AsyncItem<FoodItem | undefined>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type RecipeToFood = LazyLoading extends LazyLoadingDisabled ? EagerRecipeToFood : LazyRecipeToFood
+
+export declare const RecipeToFood: (new (init: ModelInit<RecipeToFood>) => RecipeToFood) & {
+  copyOf(source: RecipeToFood, mutator: (draft: MutableModel<RecipeToFood>) => MutableModel<RecipeToFood> | void): RecipeToFood;
 }
 
 type EagerExerciseLog = {

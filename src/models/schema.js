@@ -439,6 +439,22 @@ export const schema = {
                         ]
                     }
                 },
+                "recipes": {
+                    "name": "recipes",
+                    "isArray": true,
+                    "type": {
+                        "model": "RecipeToFood"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "foodItem"
+                        ]
+                    }
+                },
                 "servingOptions": {
                     "name": "servingOptions",
                     "isArray": true,
@@ -594,6 +610,211 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Recipe": {
+            "name": "Recipe",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "foodItems": {
+                    "name": "foodItems",
+                    "isArray": true,
+                    "type": {
+                        "model": "RecipeToFood"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "recipe"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Recipes",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "RecipeToFood": {
+            "name": "RecipeToFood",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "recipeId": {
+                    "name": "recipeId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "foodId": {
+                    "name": "foodId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "servingId": {
+                    "name": "servingId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "servingAmount": {
+                    "name": "servingAmount",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "recipe": {
+                    "name": "recipe",
+                    "isArray": false,
+                    "type": {
+                        "model": "Recipe"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "recipeId"
+                        ]
+                    }
+                },
+                "foodItem": {
+                    "name": "foodItem",
+                    "isArray": false,
+                    "type": {
+                        "model": "FoodItem"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "foodId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "RecipeToFoods",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byRecipe",
+                        "fields": [
+                            "recipeId",
+                            "foodId"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byFood",
+                        "fields": [
+                            "foodId",
+                            "recipeId"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -1686,5 +1907,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "0eaabef6935fb6ee6e6c8075c5116bc1"
+    "version": "0cafe2c8dbbb60cd4ab095877ffd3936"
 };
