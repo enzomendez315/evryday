@@ -14,12 +14,15 @@ import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
 import SleepScreen from './src/screens/sleep/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
 import AddFoodScreen from './src/screens/diet/Add-Food-Screen';
+import ModifyFoodScreen from './src/screens/diet/Modify-Food-Obj-Screen';
 
 import WorkoutHomeScreen from './src/screens/workout/Workout-Screen';
 import ActiveWorkoutScreen from './src/screens/workout/Active-Workout-Screen';
 import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen';
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
+
+import BasicInfoScreen from './src/screens/Basic-Info-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
@@ -28,6 +31,7 @@ import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
+
 
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
@@ -133,6 +137,19 @@ function DashboardStack() {
   );
 }
 
+//Screen in Signup tab
+function BasicInfoStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen 
+        name="Basic Info" 
+        component={BasicInfoScreen} 
+        options={{ headerTitle: "Complete Your Profile" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // screens in the settings tab
 function SettingsStack() {
   return (
@@ -160,6 +177,16 @@ function DietStack() {
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
+      <Stack.Screen name="Edit Food" component={AddFoodScreen}
+                    options={({ navigation, route}) => ({
+                      title: "Edit Food",
+                      headerRight: () => (
+                        <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+                      ),
+                    })} />
+      <Stack.Screen name="Create Food Item"  component={ModifyFoodScreen} initialParams={{ editable:true }} />
+      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable:true }} />
+      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable:true }} />
     </Stack.Navigator>
   );
 }
@@ -228,6 +255,10 @@ function App() {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
+
+      setIsFirstTime(user.isFirstTime);
+     
+      
       await DataStore.start();
       await StartListening(user);
       //TODO: Add a check for user settings to determine which tabs to show
@@ -236,6 +267,8 @@ function App() {
       // user settings will probably be stored in the user model
     });
   }, []);
+
+
 
   return (
     // This tag isn't being used, but it might be helpful in the future?
