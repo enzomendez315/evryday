@@ -371,7 +371,7 @@ const SleepScreen = () => {
   // create a copy of the sleep data and sort it in ascending order for line chart
   let ascendingSleepData = [...sleepData];
   ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
-  
+
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
   return (
