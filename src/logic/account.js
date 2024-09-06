@@ -4,7 +4,7 @@ import { User } from '../models';
 
 import { Auth } from 'aws-amplify';
 
-let DEBUG = false;
+let DEBUG = true;
 
 export async function currentUserDetails() {
     p = new Promise((resolve, reject) => {
@@ -21,19 +21,21 @@ export async function currentUserDetails() {
 }
 
 // checks if the user has a user entry in the database yet
+// called in the dashboard.js file in useEffect
 export async function getUserDBEntry(userID_) {
     p = new Promise((resolve, reject) => {
         try {
             // check if the user exists in the database
             DataStore.query(User, (u) =>
-                u.id.eq(userID_)
+                u.userId.eq(userID_)
             ).then((foundUser) => {
                 if (foundUser == null || foundUser.length == 0) {
-                    console.log("no user found");
-                    //createNewUser(); // TODO: Make this function
-                    resolve(null);
+                    console.log("no user DB entry found, making a new one");
+                    createUserDBEntry(userID_).then((newUser) => {
+                        resolve(newUser);
+                    });
                 } else {
-                    console.log(`User found: ${foundUser[0].name}`);
+                    DEBUG && console.log(`User found: ${foundUser[0].name}`);
                     resolve(foundUser[0]);
                 }
             });
@@ -45,20 +47,27 @@ export async function getUserDBEntry(userID_) {
     return p;
 }
 
-// called in the Basic-Info-Screen.js file
-export async function syncUserDetails(userID_, setUserData) {
-    DEBUG && console.debug("Getting user's day sleep log");
-    let userID = userID_;
-    DEBUG && console.log(`userid: ${userID}`)
-    await getUserDBEntry(userID).then(async (data) => {
-        if (data === null) {
-            DEBUG && console.log(`No user found for userId: ${userID}`);
-            setUserData(null);
-            return;
+export async function createUserDBEntry(userID_) {
+    p = new Promise((resolve, reject) => {
+        try {
+            const newUser = {
+                userId: userID_,
+                name: "Squidward Tentacles",
+                age: 0,
+                weight: 0,
+                height: 0,
+                isFirstTime: true,
+            };
+            DataStore.save(new User(newUser)).then((createdUser) => {
+                console.log(`Created user: ${createdUser.name}`);
+                resolve(createdUser);
+            });
+        } catch (err) {
+            console.log(`Failed to create user`);
+            reject(err);
         }
-        DEBUG && console.log(`User found: ${data.name}`);
-        setUserData(data);
     });
+    return p;
 }
 
 export async function userSignOut() {

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { updateUserDetails } from '../logic/user-service';
 import { useNavigation } from '@react-navigation/native';
-import { userSignOut } from '../logic/account';
+import { getUserDBEntry, userSignOut } from '../logic/account';
+import { AccountContext } from '../../App';
 
+let userID;
+let DEBUG = true;
 
 const BasicInfoScreen = () => {
     const [userInfo, setUserInfo] = useState({
@@ -14,6 +17,26 @@ const BasicInfoScreen = () => {
         gender: "",
     });
     const navigation = useNavigation();
+
+    userID = React.useContext(AccountContext);
+
+    // gets the user's info from the DB entry and fills in the hooks
+    useEffect(() => {
+        DEBUG && console.log("Getting user info...");
+        getUserDBEntry(userID).then((user) => {
+            if (user == null) {
+                console.error("User info isn't made yet");
+                return;
+            }
+            else {
+                setUserInfo({
+                    name: user.name,
+                    age: user.age,
+                    weight: user.weight,
+                });
+            }
+        });
+    }, []);
 
     const handleSubmit = async () => {
         // console.log('Submitting:', { name, weight, age, gender });
