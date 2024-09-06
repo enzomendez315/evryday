@@ -7,14 +7,16 @@ import { userSignOut } from '../logic/account';
 
 
 const BasicInfoScreen = () => {
-    const [name, setName] = useState('');
-    const [weight, setWeight] = useState('');
-    const [age, setAge] = useState('');
-    const [gender, setGender] = useState('');
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        age: 0,
+        weight: 0,
+        gender: "",
+    });
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        console.log('Submitting:', { name, weight, age, gender });
+        // console.log('Submitting:', { name, weight, age, gender });
 
         //Currently does not work yet
         // try {
@@ -28,12 +30,12 @@ const BasicInfoScreen = () => {
         // } catch (error) {
         //     console.error("Failed to update user info:", error);
         // }
-        
+
         // console.log('Attempting to navigate...');
         // navigation.navigate('Dashboard', {
         //     screen: 'Dashboard Home'
         // });
-        
+
     };
 
     return (
@@ -43,18 +45,17 @@ const BasicInfoScreen = () => {
             <Text style={styles.label}>Name:</Text>
             <TextInput
                 style={styles.input}
-                value={name}
-                onChangeText={setName}
+                value={userInfo.name}
+                onChangeText={text => setUserInfo({ ...userInfo, name: text })}
                 placeholder="Enter your name"
             />
-
 
             <Text style={styles.label}>Age:</Text>
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={age}
-                onChangeText={setAge}
+                value={userInfo.age.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, age: text })}
                 placeholder="Enter your age"
             />
 
@@ -62,17 +63,17 @@ const BasicInfoScreen = () => {
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={weight}
-                onChangeText={setWeight}
+                value={userInfo.weight.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, weight: text })}
                 placeholder="Enter your weight"
             />
 
             <Text style={styles.label}>Gender:</Text>
             <Picker
-                selectedValue={gender}
+                selectedValue={userInfo.gender}
                 style={styles.picker}
-                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
-            >
+                onValueChange={(itemValue, itemIndex) =>
+                    setUserInfo({ ...userInfo, gender: itemValue })}>
                 <Picker.Item label="Male" value="male" />
                 <Picker.Item label="Female" value="female" />
                 <Picker.Item label="Other" value="other" />
@@ -82,10 +83,7 @@ const BasicInfoScreen = () => {
             <Button title="Back to Sign In" onPress={userSignOut} />
         </View>
     );
-
-
 };
-
 
 const styles = StyleSheet.create({
     container: {

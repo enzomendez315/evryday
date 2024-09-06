@@ -139,6 +139,26 @@ const SettingsScreen = () => {
 
                         <TouchableOpacity
                             onPress={() => {
+                                // this shows an error, but it works
+                                navigation.navigate('Basic Info');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Edit User Information</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
                                 // handle onPress
                             }}
                             style={styles.row}>
@@ -177,9 +197,9 @@ const SettingsScreen = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                                onPress={async () => {
-                                    await userSignOut();
-                                }}
+                            onPress={async () => {
+                                await userSignOut();
+                            }}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
                                 <FeatherIcon color="#fff" name="user" size={20} />
