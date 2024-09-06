@@ -256,7 +256,6 @@ function App() {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
 
-      setIsFirstTime(user.isFirstTime);
      
       
       await DataStore.start();

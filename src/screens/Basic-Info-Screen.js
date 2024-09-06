@@ -15,25 +15,6 @@ const BasicInfoScreen = () => {
 
     const handleSubmit = async () => {
         console.log('Submitting:', { name, weight, age, gender });
-
-        //Currently does not work yet
-        // try {
-
-        //     const updateSuccess = await updateUserDetails(name, weight, age, gender);
-        //     if (updateSuccess) {
-        //         console.log("Update successful");
-        //     } else {
-        //         console.log("Update failed");
-        //     }
-        // } catch (error) {
-        //     console.error("Failed to update user info:", error);
-        // }
-        
-        // console.log('Attempting to navigate...');
-        // navigation.navigate('Dashboard', {
-        //     screen: 'Dashboard Home'
-        // });
-        
     };
 
     return (
