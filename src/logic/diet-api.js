@@ -487,6 +487,25 @@ export async function saveAsRecipe(mealId, recipeName) {
     }
 }
 
+// Add a recipe to a meal
+export async function addRecipeToMeal(mealId, recipeId) {
+
+    const recipeFoodRelationships = await DataStore.query(RecipeToFood, (rtf) => rtf.recipeId.eq(recipeId));
+    const meal = await DataStore.query(Meal, mealId);
+
+    for (let recipeFoodRelationship of recipeFoodRelationships) {
+        const food = await recipeFoodRelationship.foodItem;
+        await DataStore.save(
+            new MealToFood({
+                meal: meal,
+                foodItem: food,
+                servingId: recipeFoodRelationship.servingId,
+                servingAmount: recipeFoodRelationship.servingAmount
+            })
+        )
+    }
+}
+
 
 // Populates a list of all recipes
 export async function getAllRecipes(setRecipes) {

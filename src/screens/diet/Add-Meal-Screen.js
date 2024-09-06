@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View, TextInput, Button, Modal, TouchableWithoutFeedback, FlatList } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/theme';
-import { syncMealFoodsList, deleteMeal, getFoodItemFromId, getAllRecipes, saveAsRecipe } from '../../logic/diet-api'
+import { syncMealFoodsList, deleteMeal, getFoodItemFromId, getAllRecipes, saveAsRecipe, addRecipeToMeal } from '../../logic/diet-api'
 import PopupComponent from '../../components/PopupMenu';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
@@ -214,8 +214,11 @@ const AddMealScreen = (props) => {
     );
   }
 
-  const tempPress = (item) => {
+  //The onPress function for the recipe popup
+  const addToMeal = async (item) => {
     console.log(item.name,'pressed');
+    await addRecipeToMeal(mealId=mealData.id, recipeId=item.id);
+    syncMealFoodsList(mealData, setFoodList);
   };
 
   let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
@@ -241,7 +244,7 @@ const AddMealScreen = (props) => {
           setIsVisible={setRecipePopupVisible}
           data={recipeList}
           ItemComponent={RecipePopupItem}
-          onPress={tempPress}
+          onPress={addToMeal}
           Header={PopupHeader}
         />
 
