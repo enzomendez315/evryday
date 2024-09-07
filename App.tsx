@@ -137,19 +137,6 @@ function DashboardStack() {
   );
 }
 
-//Screen in Signup tab
-function BasicInfoStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen
-        name="Basic Info"
-        component={BasicInfoScreen}
-        options={{ headerTitle: "Complete Your Profile" }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 // screens in the settings tab
 function SettingsStack() {
   return (
@@ -224,15 +211,6 @@ function WorkoutStack() {
   );
 }
 
-// clears the datastore
-// Sometimes duplicate data shows up in UI
-// clearing helps that but causes some data to not load on first request
-// TODO: decide if this is needed or not
-async function RunOnStart(userId: string) {
-  await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
-  console.log("DataStore is cleared");
-}
-
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
 export async function StartListening(user: string) {
   console.log("DataStore is started");
@@ -241,7 +219,8 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      // RunOnStart(user); // run this function to clear local datastore
+      // await DataStore.clear(); // run this function to clear local datastore
+      // TODO: find a way to clear datastore more consistently
     }
   })
 }

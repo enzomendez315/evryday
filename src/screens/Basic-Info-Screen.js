@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { updateUserDetails } from '../logic/user-service';
 import { useNavigation } from '@react-navigation/native';
-import { getUserDBEntry, userSignOut } from '../logic/account';
+import { getUserDBEntry, userSignOut, updateUserDetails } from '../logic/account';
 import { AccountContext } from '../../App';
 
 let userID;
@@ -39,26 +38,9 @@ const BasicInfoScreen = () => {
     }, []);
 
     const handleSubmit = async () => {
-        // console.log('Submitting:', { name, weight, age, gender });
-
-        //Currently does not work yet
-        // try {
-
-        //     const updateSuccess = await updateUserDetails(name, weight, age, gender);
-        //     if (updateSuccess) {
-        //         console.log("Update successful");
-        //     } else {
-        //         console.log("Update failed");
-        //     }
-        // } catch (error) {
-        //     console.error("Failed to update user info:", error);
-        // }
-
-        // console.log('Attempting to navigate...');
-        // navigation.navigate('Dashboard', {
-        //     screen: 'Dashboard Home'
-        // });
-
+        DEBUG && console.log("Submitting user info...");
+        await updateUserDetails(userID, userInfo.name,
+            userInfo.weight, userInfo.age, 0, userInfo.gender);
     };
 
     return (

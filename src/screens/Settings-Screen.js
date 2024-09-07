@@ -9,26 +9,30 @@ import {
     Switch,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { currentUserDetails } from '../logic/account';
 import { initFoodItems } from '../logic/diet-api';
 import { useNavigation } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
+import { getUserDBEntry } from '../logic/account';
+import { AccountContext } from '../../App';
 
+let userID;
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
-        userID: "",
+        userName: "",
         pushNotifications: false,
         dietTracking: true,
         sleepTracking: true,
         workoutTracking: true,
     });
 
+    userID = React.useContext(AccountContext);
+
     useEffect(() => {
         // fetch user settings
-        currentUserDetails().then(async (user) => {
-            setForm({ ...form, userID: user });
+        getUserDBEntry(userID).then((user) => {
+            setForm({ ...form, userName: user.name });
         });
     }, []);
 
@@ -57,7 +61,7 @@ const SettingsScreen = () => {
                     </TouchableOpacity>
 
                     <View>
-                        <Text style={styles.profileName}>{form.userID}</Text>
+                        <Text style={styles.profileName}>{form.userName}</Text>
 
                         <Text style={styles.profileAddress}>
                             123 Maple Street. Anytown, PA 17101
@@ -139,7 +143,6 @@ const SettingsScreen = () => {
 
                         <TouchableOpacity
                             onPress={() => {
-                                // this shows an error, but it works
                                 navigation.navigate('Basic Info');
                             }}
                             style={styles.row}>
@@ -257,7 +260,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontSize: 19,
         fontWeight: '600',
-        color: '#fff',
+        color: 'black',
         textAlign: 'center',
     },
     profileAddress: {

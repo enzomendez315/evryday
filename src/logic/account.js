@@ -30,7 +30,7 @@ export async function getUserDBEntry(userID_) {
                 u.userId.eq(userID_)
             ).then((foundUser) => {
                 if (foundUser == null || foundUser.length == 0) {
-                    console.log("no user DB entry found, making a new one");
+                    DEBUG && console.log("no user DB entry found, making a new one");
                     createUserDBEntry(userID_).then((newUser) => {
                         resolve(newUser);
                     });
@@ -64,6 +64,42 @@ export async function createUserDBEntry(userID_) {
             });
         } catch (err) {
             console.log(`Failed to create user`);
+            reject(err);
+        }
+    });
+    return p;
+}
+
+
+export async function updateUserDetails(userID_, name_,
+    weight_, age_, height_, gender_) {
+    // make the age input an int from a string
+    age_ = parseInt(age_);
+    p = new Promise((resolve, reject) => {
+        try {
+            DataStore.query(User, (u) =>
+                u.userId.eq(userID_)
+            ).then((foundUser) => {
+                if (foundUser == null || foundUser.length == 0) {
+                    console.error("No user found to update");
+                    resolve(false);
+                } else {
+                    let user = foundUser[0];
+                    const updatedUser = User.copyOf(user, updated => {
+                        updated.name = name_;
+                        updated.weight = weight_;
+                        updated.age = age_;
+                        updated.height = 0;
+                        updated.gender = gender_;
+                    });
+                    DataStore.save(updatedUser).then(() => {
+                        console.log(`Updated user: ${updatedUser.name}`);
+                        resolve(true);
+                    });
+                }
+            });
+        } catch (err) {
+            console.log(`Failed to update user`);
             reject(err);
         }
     });
