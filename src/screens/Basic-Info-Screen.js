@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { getUserDBEntry, userSignOut, updateUserDetails } from '../logic/account';
+import { getUserDBEntry, updateUserDetails } from '../logic/account';
 import { AccountContext } from '../../App';
 
 let userID;
@@ -13,6 +13,7 @@ const BasicInfoScreen = () => {
         name: "",
         age: 0,
         weight: 0,
+        height: 0,
         gender: "",
     });
     const navigation = useNavigation();
@@ -32,6 +33,8 @@ const BasicInfoScreen = () => {
                     name: user.name,
                     age: user.age,
                     weight: user.weight,
+                    height: user.height,
+                    gender: user.gender,
                 });
             }
         });
@@ -40,7 +43,9 @@ const BasicInfoScreen = () => {
     const handleSubmit = async () => {
         DEBUG && console.log("Submitting user info...");
         await updateUserDetails(userID, userInfo.name,
-            userInfo.weight, userInfo.age, 0, userInfo.gender);
+            userInfo.weight, userInfo.age, userInfo.height, userInfo.gender);
+        DEBUG && console.log("Returning to settings home...");
+        navigation.navigate('Settings Home');
     };
 
     return (
@@ -73,6 +78,15 @@ const BasicInfoScreen = () => {
                 placeholder="Enter your weight"
             />
 
+            <Text style={styles.label}>Height (in):</Text>
+            <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={userInfo.height.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, height: text })}
+                placeholder="Enter your weight"
+            />
+
             <Text style={styles.label}>Gender:</Text>
             <Picker
                 selectedValue={userInfo.gender}
@@ -85,7 +99,6 @@ const BasicInfoScreen = () => {
             </Picker>
 
             <Button title="Submit" onPress={handleSubmit} />
-            <Button title="Back to Sign In" onPress={userSignOut} />
         </View>
     );
 };

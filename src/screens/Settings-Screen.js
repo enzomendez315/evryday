@@ -21,7 +21,6 @@ const SettingsScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
         userName: "",
-        pushNotifications: false,
         dietTracking: true,
         sleepTracking: true,
         workoutTracking: true,
@@ -72,22 +71,6 @@ const SettingsScreen = () => {
                 <ScrollView>
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Preferences</Text>
-
-                        <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                                <FeatherIcon color="#fff" name="bell" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Push Notifications</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <Switch
-                                onValueChange={pushNotifications =>
-                                    setForm({ ...form, pushNotifications })
-                                }
-                                value={form.pushNotifications} />
-                        </View>
 
                         <View style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
@@ -162,25 +145,6 @@ const SettingsScreen = () => {
 
                         <TouchableOpacity
                             onPress={() => {
-                                // handle onPress
-                            }}
-                            style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Contact Us</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <FeatherIcon
-                                color="#C6C6C6"
-                                name="chevron-right"
-                                size={20} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => {
                                 // TODO:: REMOVE used to add sample date to master food and servings
                                 initFoodItems();
                             }}
@@ -222,6 +186,7 @@ const SettingsScreen = () => {
 
 export default SettingsScreen;
 
+
 const styles = StyleSheet.create({
     container: {
         padding: 0,
@@ -239,11 +204,6 @@ const styles = StyleSheet.create({
     },
     profileAvatarWrapper: {
         position: 'relative',
-    },
-    profileAvatar: {
-        width: 72,
-        height: 72,
-        borderRadius: 9999,
     },
     profileAction: {
         position: 'absolute',

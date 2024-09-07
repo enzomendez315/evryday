@@ -6,6 +6,7 @@ type User @model @auth(rules: [{allow: public}]) {
   height: Float
   weight: Float
   isFirstTime: Boolean!
+  gender: String
 }
 
 type NutritionLog @model @auth(rules: [{allow: public}]) {

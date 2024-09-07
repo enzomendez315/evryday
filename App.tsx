@@ -25,20 +25,17 @@ import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
 
 import { Amplify } from 'aws-amplify';
-import { DataStore, Predicates } from 'aws-amplify/datastore';
-import { ConsoleLogger } from 'aws-amplify/utils';
+import { DataStore } from 'aws-amplify/datastore';
 import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
 
 
-import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
+import { withAuthenticator } from '@aws-amplify/ui-react-native';
 
-import { currentUserDetails, userSignOut } from './src/logic/account'
+import { currentUserDetails } from './src/logic/account'
 Amplify.configure(awsconfig);
-
-const DEBUG = false;
 
 // used to pass userID to all screens *in theory*
 export const AccountContext = React.createContext("");

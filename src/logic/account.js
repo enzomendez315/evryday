@@ -2,8 +2,6 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import { DataStore } from 'aws-amplify/datastore';
 import { User } from '../models';
 
-import { Auth } from 'aws-amplify';
-
 let DEBUG = true;
 
 export async function currentUserDetails() {
@@ -57,6 +55,7 @@ export async function createUserDBEntry(userID_) {
                 weight: 0,
                 height: 0,
                 isFirstTime: true,
+                gender: "male",
             };
             DataStore.save(new User(newUser)).then((createdUser) => {
                 console.log(`Created user: ${createdUser.name}`);
@@ -73,8 +72,6 @@ export async function createUserDBEntry(userID_) {
 
 export async function updateUserDetails(userID_, name_,
     weight_, age_, height_, gender_) {
-    // make the age input an int from a string
-    age_ = parseInt(age_);
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(User, (u) =>
@@ -87,9 +84,9 @@ export async function updateUserDetails(userID_, name_,
                     let user = foundUser[0];
                     const updatedUser = User.copyOf(user, updated => {
                         updated.name = name_;
-                        updated.weight = weight_;
-                        updated.age = age_;
-                        updated.height = 0;
+                        updated.weight = parseInt(weight_);
+                        updated.age = parseInt(age_);
+                        updated.height = parseInt(height_);
                         updated.gender = gender_;
                     });
                     DataStore.save(updatedUser).then(() => {
