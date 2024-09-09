@@ -206,10 +206,13 @@ const ActiveWorkout = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  backgroundColor: {
+    color: COLORS.whiteHex,
+  },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.whiteHex,
   },
   header: {
     flexDirection: 'row',
