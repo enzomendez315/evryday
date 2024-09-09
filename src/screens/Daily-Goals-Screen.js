@@ -6,7 +6,7 @@ import { getUserGoals, updateUserGoals, createUserGoals } from '../logic/user-go
 import { AccountContext } from '../../App';
 
 let userID;
-let DEBUG = true;
+let DEBUG = false;
 
 const DailyGoalsScreen = () => {
     const [goalsInfo, setGoalsInfo] = useState({

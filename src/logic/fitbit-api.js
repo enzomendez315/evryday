@@ -1,6 +1,6 @@
 import { OAuth2 } from "./oauth2";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export class Fitbit {
     static US = "en_US";
@@ -24,11 +24,11 @@ export class Fitbit {
     // creating a Fitbit app
     // TODO: Find the redirect url to take the user from the browser 
     // back to the EvryDay app after requesting permission
-    constructor(clientId, clientSecret, accessToken = null, refreshToken = null, 
+    constructor(clientId, clientSecret, accessToken = null, refreshToken = null,
         expiresIn = null, refreshCallback = null, redirectUri = null, system = Fitbit.US) {
 
-        this.client = new OAuth2(clientId, clientSecret, Fitbit.API_ENDPOINT, 
-            Fitbit.AUTHORIZE_ENDPOINT, accessToken, refreshToken, expiresIn, 
+        this.client = new OAuth2(clientId, clientSecret, Fitbit.API_ENDPOINT,
+            Fitbit.AUTHORIZE_ENDPOINT, accessToken, refreshToken, expiresIn,
             refreshCallback, redirectUri);
     }
 

@@ -7,7 +7,7 @@ import { AccountContext } from '../../App';
 import { getUser } from '../graphql/queries';
 
 let userID;
-let DEBUG = true;
+let DEBUG = false;
 
 const BasicInfoScreen = () => {
     const [userInfo, setUserInfo] = useState({

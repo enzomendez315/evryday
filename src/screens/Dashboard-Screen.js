@@ -7,6 +7,7 @@ import { syncDietDashboardData } from '../logic/diet-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
+import { getFormattedDate } from '../logic/date-time';
 
 let date;
 let userID;
@@ -196,17 +197,6 @@ function getLocalDate() {
   return formattedDate;
 }
 
-// gets date in format 'Weekday, Month DD'
-// takes input from getLocalDate
-function getFormattedDate() {
-  let tempDate = new Date();
-  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-  const month = tempDate.toLocaleString('default', { month: 'long' });
-  const day = tempDate.getDate();
-  const formattedDate = `${weekDay}, ${month} ${day}`;
-  return formattedDate;
-}
-
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
@@ -234,7 +224,6 @@ const Dashboard = (props) => {
           // to make user and daily goals
           return;
         }
-        console.log("the user name is: " + user.name);
       });
       tempLoading = false;
     });

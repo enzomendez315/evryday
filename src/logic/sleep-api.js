@@ -12,6 +12,8 @@ const DEBUG = false;
 // TODO: throw error message and disallow creation of entries for future dates (later than today)
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     DEBUG && console.log("Making a new sleep entry with the date: ", date_);
+    // convert the date object into form "YYYY-MM-DD"
+    date_ = date_.toISOString().substring(0, 10);
     if (await getSleepEntry(userID_, date_) === null) {
         let restfulnessScore_ = getRestfulnessScore(hoursSlept_, sleepQuality_);
         try {
@@ -120,7 +122,12 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
 // queries datastore and returns the entry from user and date
 // returns null if no entry is found
 // helper function for syncDailyLog
-async function getSleepEntry(userId, date) {
+// called in makeSleepEntry and editSleepEntry to check if an entry already exists
+export async function getSleepEntry(userId, date) {
+    // if date is not in the form "YYYY-MM-DD", convert it
+    if (date.length != 10) {
+        date = date.toISOString().substring(0, 10);
+    }
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(SleepLog, (u) => u.and(c => [

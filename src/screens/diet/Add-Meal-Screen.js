@@ -20,7 +20,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 //   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 // };
 
-let DEBUG = true;
+let DEBUG = false;
 
 const RecipePopupData = [
   {
@@ -105,17 +105,17 @@ function recipeOnPress(recipe, closePopup) {
 const RecipePopupItem = memo(
   ({ item, onPress }) => (
     <TouchableOpacity style={styles.recipeTab} onPress={onPress}>
-        <Text style={styles.recipeName}>{item.name}</Text>
-        <Text style={styles.recipeIngredients}>
-          Ingredients:{' '}
-          {item.ingredients
-            .map((ingredient) => `${ingredient.name} (${ingredient.serving})`)
-            .join(', ')}
-        </Text>
-        <Text style={styles.recipeNutrition}>
-          Calories: {item.calories} | Protein: {item.protein}g | Carbs:{' '}
-          {item.carbs}g | Fat: {item.fat}g
-        </Text>
+      <Text style={styles.recipeName}>{item.name}</Text>
+      <Text style={styles.recipeIngredients}>
+        Ingredients:{' '}
+        {item.ingredients
+          .map((ingredient) => `${ingredient.name} (${ingredient.serving})`)
+          .join(', ')}
+      </Text>
+      <Text style={styles.recipeNutrition}>
+        Calories: {item.calories} | Protein: {item.protein}g | Carbs:{' '}
+        {item.carbs}g | Fat: {item.fat}g
+      </Text>
     </TouchableOpacity>
   ),
   (prevProps, nextProps) => {
@@ -204,7 +204,7 @@ const AddMealScreen = (props) => {
               DEBUG && console.log(food.name + ' pressed');
               let mealToFoodId = food?.mealToFoodId;
               const foodItem = await getFoodItemFromId(food.id);
-              navigation.navigate('Edit Food', { foodItem:foodItem, meal:mealData, mealToFoodId });
+              navigation.navigate('Edit Food', { foodItem: foodItem, meal: mealData, mealToFoodId });
             }}>
             <Text style={styles.foodItem}>
               {food.name}, {food.calories}cal</Text>
@@ -216,14 +216,14 @@ const AddMealScreen = (props) => {
 
   //The onPress function for the recipe popup
   const addToMeal = async (item) => {
-    console.log(item.name,'pressed');
-    await addRecipeToMeal(mealId=mealData.id, recipeId=item.id);
+    console.log(item.name, 'pressed');
+    await addRecipeToMeal(mealId = mealData.id, recipeId = item.id);
     syncMealFoodsList(mealData, setFoodList);
   };
 
   let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
   const saveRecipe = async (name) => {
-    if(name === null || !letterRegex.test(name)){
+    if (name === null || !letterRegex.test(name)) {
       console.log('Bad Input')
       return;
     }
@@ -239,21 +239,21 @@ const AddMealScreen = (props) => {
       <SafeAreaView>
         <ScrollView>
 
-        <PopupComponent
-          isVisible={recipePopupVisible}
-          setIsVisible={setRecipePopupVisible}
-          data={recipeList}
-          ItemComponent={RecipePopupItem}
-          onPress={addToMeal}
-          Header={PopupHeader}
-        />
+          <PopupComponent
+            isVisible={recipePopupVisible}
+            setIsVisible={setRecipePopupVisible}
+            data={recipeList}
+            ItemComponent={RecipePopupItem}
+            onPress={addToMeal}
+            Header={PopupHeader}
+          />
 
-        <PopupComponent
-          isVisible={savePopupVisible}
-          setIsVisible={setSavePopupVisible}
-          Content={RecipeNameInput}
-          onPress={saveRecipe}
-        />
+          <PopupComponent
+            isVisible={savePopupVisible}
+            setIsVisible={setSavePopupVisible}
+            Content={RecipeNameInput}
+            onPress={saveRecipe}
+          />
 
           <Text style={styles.title}>{mealData.name}</Text>
 
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   popupContentContainer: {
-    flex:-1,
+    flex: -1,
     width: '100%',
     maxHeight: '100%',
     gap: 5

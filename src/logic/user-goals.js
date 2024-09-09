@@ -1,7 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { DailyGoals } from '../models';
 
-let DEBUG = true;
+let DEBUG = false;
 
 // auto-generated, not sure if it works
 export async function getUserGoals(userID_) {
