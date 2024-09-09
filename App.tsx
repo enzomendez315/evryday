@@ -141,9 +141,9 @@ function DashboardStack() {
 function BasicInfoStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen 
-        name="Basic Info" 
-        component={BasicInfoScreen} 
+      <Stack.Screen
+        name="Basic Info"
+        component={BasicInfoScreen}
         options={{ headerTitle: "Complete Your Profile" }}
       />
     </Stack.Navigator>
@@ -178,15 +178,15 @@ function DietStack() {
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
       <Stack.Screen name="Edit Food" component={AddFoodScreen}
-                    options={({ navigation, route}) => ({
-                      title: "Edit Food",
-                      headerRight: () => (
-                        <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
-                      ),
-                    })} />
-      <Stack.Screen name="Create Food Item"  component={ModifyFoodScreen} initialParams={{ editable:true }} />
-      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable:true }} />
-      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable:true }} />
+        options={({ navigation, route }) => ({
+          title: "Edit Food",
+          headerRight: () => (
+            <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
+      <Stack.Screen name="Create Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
+      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable: true }} />
+      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
     </Stack.Navigator>
   );
 }
@@ -256,8 +256,8 @@ function App() {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
 
-     
-      
+
+
       await DataStore.start();
       await StartListening(user);
       //TODO: Add a check for user settings to determine which tabs to show
@@ -273,9 +273,13 @@ function App() {
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
+
         <BottomNavBarTabs dietTrack={useDiet}
           sleepTrack={useSleep} workoutTrack={useWorkout} />
+
       </NavigationContainer>
+
+
     </AccountContext.Provider>
   );
 }

@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../../theme/theme';
+import { createExerciseRoutine } from '../../logic/workout-api';
+import { AccountContext } from '../../logic/account';
+
 
 const SetItem = ({ setNumber, weight, reps, completed, onUpdate, onCheck, backgroundColor }) => {
 
@@ -43,7 +46,7 @@ const SetItem = ({ setNumber, weight, reps, completed, onUpdate, onCheck, backgr
   );
 };
 
-const ActiveWorkoutTab = ({ exerciseData }) => {
+const ActiveWorkoutTab = ({ exerciseData, exerciseIndex, onUpdateSet }) => {
   const [sets, setSets] = useState(exerciseData.sets);
 
   // UPCOMING FEATURE** BREAKS APP IF USED
@@ -59,17 +62,17 @@ const ActiveWorkoutTab = ({ exerciseData }) => {
   //   setSets([...sets, newSetData]);
   // };
 
-  // // Function to update set data (weight, reps)
-  // const updateSetData = (setIndex, field, value) => {
-  //   const updatedSets = sets.map((set, index) => {
-  //     if (index === setIndex) {
-  //       return { ...set, [field]: value };
-  //     }
-  //     return set;
-  //   });
-  //   setSets(updatedSets);
-  //   onUpdateSet(exerciseIndex, setIndex, field, value);
-  // };
+  // Function to update set data (weight, reps)
+  const updateSetData = (setIndex, field, value) => {
+    const updatedSets = sets.map((set, index) => {
+      if (index === setIndex) {
+        return { ...set, [field]: value };
+      }
+      return set;
+    });
+    setSets(updatedSets);
+    onUpdateSet(exerciseIndex, setIndex, field, value);
+  };
 
   // Function to handle set completion
   const handleCheck = (setNumber, newCompleted) => {
@@ -99,7 +102,7 @@ const ActiveWorkoutTab = ({ exerciseData }) => {
             weight={item.weight}
             reps={item.reps}
             completed={item.completed}
-            // onUpdate={updateSetData}
+            onUpdate={updateSetData}
             onCheck={handleCheck}
             key={index}
             backgroundColor={index % 2 === 0 ? '#f5f5f5' : '#ffffff'}
@@ -123,7 +126,26 @@ const ActiveWorkout = ({ route, navigation }) => {
   const routineName = route.params?.routineName || 'Workout';
   const [secondsElapsed, setSecondsElapsed] = useState(0);
  
-  const workoutData = route.params?.workoutData || [];
+  const [workoutData, setWorkoutData] = useState(route.params?.workoutData || []);
+  const userID = useContext(AccountContext);
+
+  // This function will update the workout data when the user modifies a set
+  const onUpdateSet = (exerciseIndex, setIndex, field, value) => {
+    const updatedWorkoutData = workoutData.map((exercise, exIndex) => {
+      if (exIndex === exerciseIndex) {
+        const updatedSets = exercise.sets.map((set, sIndex) => {
+          if (sIndex === setIndex) {
+            return { ...set, [field]: value };  // Update weight or reps
+          }
+          return set;
+        });
+        return { ...exercise, sets: updatedSets };
+      }
+      return exercise;
+    });
+
+    setWorkoutData(updatedWorkoutData);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -132,6 +154,24 @@ const ActiveWorkout = ({ route, navigation }) => {
 
     return () => clearInterval(interval);
   }, []);
+
+    // Function to save workout data when finish is clicked
+    const handleFinishWorkout = async () => {
+      try {
+        if (!userID) {
+          console.error("User ID is missing");
+          return;
+        }
+  
+        // Save the updated workout data to the database
+        await createExerciseRoutine(userID, routineName, workoutData);
+  
+        // Navigate back after saving
+        navigation.goBack();
+      } catch (error) {
+        console.error("Error saving workout data:", error);
+      }
+    };
 
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -144,7 +184,7 @@ const ActiveWorkout = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.finishButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.finishButton} onPress={handleFinishWorkout}>
           <Text style={styles.finishButtonText}>Finish</Text>
         </TouchableOpacity>
         <Icon name="clock-o" size={24} style={styles.clockIcon} />

@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import { DataStore } from 'aws-amplify/datastore';
 import { User } from '../models';
@@ -56,3 +57,31 @@ export async function userSignOut() {
         console.log('error signing out: ', error);
     }
 }
+
+// Create the AccountContext
+export const AccountContext = createContext();
+
+// Define the AccountProvider to wrap your app
+export const AccountProvider = ({ children }) => {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Example: Fetch userId from Amplify Auth or other methods
+    const fetchUserId = async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser(); // Replace this with your authentication method
+        setUserId(user.username); // Set userId to the value from Auth
+      } catch (error) {
+        console.error('Failed to fetch user ID:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  return (
+    <AccountContext.Provider value={userId}>
+      {children}
+    </AccountContext.Provider>
+  );
+};
