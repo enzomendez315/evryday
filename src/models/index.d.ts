@@ -11,6 +11,42 @@ export enum MealPeriod {
 
 
 
+type EagerDailyGoals = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<DailyGoals, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId?: string | null;
+  readonly minCalories?: number | null;
+  readonly maxCalories?: number | null;
+  readonly minSleep?: number | null;
+  readonly dailyWorkout?: boolean | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyDailyGoals = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<DailyGoals, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId?: string | null;
+  readonly minCalories?: number | null;
+  readonly maxCalories?: number | null;
+  readonly minSleep?: number | null;
+  readonly dailyWorkout?: boolean | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type DailyGoals = LazyLoading extends LazyLoadingDisabled ? EagerDailyGoals : LazyDailyGoals
+
+export declare const DailyGoals: (new (init: ModelInit<DailyGoals>) => DailyGoals) & {
+  copyOf(source: DailyGoals, mutator: (draft: MutableModel<DailyGoals>) => MutableModel<DailyGoals> | void): DailyGoals;
+}
+
 type EagerUser = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<User, 'id'>;
@@ -22,7 +58,6 @@ type EagerUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
-  readonly isFirstTime: boolean;
   readonly gender?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -39,7 +74,6 @@ type LazyUser = {
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
-  readonly isFirstTime: boolean;
   readonly gender?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;

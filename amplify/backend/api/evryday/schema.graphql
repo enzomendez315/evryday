@@ -1,3 +1,12 @@
+type DailyGoals @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID
+  minCalories: Int
+  maxCalories: Int
+  minSleep: Float
+  dailyWorkout: Boolean
+}
+
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
@@ -5,7 +14,6 @@ type User @model @auth(rules: [{allow: public}]) {
   age: Int
   height: Float
   weight: Float
-  isFirstTime: Boolean!
   gender: String
 }
 

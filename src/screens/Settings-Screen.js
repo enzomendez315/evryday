@@ -145,6 +145,25 @@ const SettingsScreen = () => {
 
                         <TouchableOpacity
                             onPress={() => {
+                                navigation.navigate('Daily Goals');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Edit Daily Goals</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
                                 // TODO:: REMOVE used to add sample date to master food and servings
                                 initFoodItems();
                             }}
