@@ -14,6 +14,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
+import { getUserGoals } from '../logic/user-goals';
 
 let userID;
 
@@ -31,11 +32,13 @@ const SettingsScreen = () => {
     useEffect(() => {
         // fetch user settings
         getUserDBEntry(userID).then((user) => {
+            // if the user doesn't exist, redirect to the basic info screen
             if (user == null) {
                 console.log("User info isn't made yet");
                 navigation.navigate('Basic Info');
                 return;
             }
+            // set the user's name at top of screen
             setForm({ ...form, userName: user.name });
         });
     }, []);
@@ -51,6 +54,15 @@ const SettingsScreen = () => {
                     return;
                 }
                 setForm({ ...form, userName: user.name });
+                // if the user has already entered their basic info, 
+                // check if user goals are made
+                getUserGoals(userID).then((goals) => {
+                    if (goals == null) {
+                        console.log("User goals aren't made yet");
+                        navigation.navigate('Daily Goals');
+                        return;
+                    }
+                });
             });
             return;
         }, [])
@@ -82,15 +94,13 @@ const SettingsScreen = () => {
 
                     <View>
                         <Text style={styles.profileName}>{form.userName}</Text>
-
-                        <Text style={styles.profileAddress}>
-                            123 Maple Street. Anytown, PA 17101
-                        </Text>
                     </View>
                 </View>
 
                 <ScrollView>
+                    {/* Preferences , might use this later
                     <View style={styles.section}>
+                        
                         <Text style={styles.sectionTitle}>Preferences</Text>
 
                         <View style={styles.row}>
@@ -141,6 +151,7 @@ const SettingsScreen = () => {
                                 value={form.workoutTracking} />
                         </View>
                     </View>
+                    */}
 
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Resources</Text>
@@ -261,12 +272,6 @@ const styles = StyleSheet.create({
         fontSize: 19,
         fontWeight: '600',
         color: 'black',
-        textAlign: 'center',
-    },
-    profileAddress: {
-        marginTop: 5,
-        fontSize: 16,
-        color: '#989898',
         textAlign: 'center',
     },
     /** Section */

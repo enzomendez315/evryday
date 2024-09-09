@@ -10,34 +10,32 @@ export async function getUserGoals(userID_) {
             // check if the user's goals exist in the database
             DataStore.query(DailyGoals, (u) =>
                 u.userId.eq(userID_)
-            ).then((foundUser) => {
-                if (foundUser == null || foundUser.length == 0) {
-                    DEBUG && console.log("no user goals found, making a new DB entry");
-                    createUserGoals(userID_).then((newUser) => {
-                        resolve(newUser);
-                    });
+            ).then((foundGoals) => {
+                if (foundGoals == null || foundGoals.length == 0) {
+                    DEBUG && console.log("no user goals found");
+                    resolve(null);
                 } else {
-                    DEBUG && console.log(`User goals found: ${foundUser[0]}`);
-                    resolve(foundUser[0]);
+                    DEBUG && console.log(`User goals found: ${foundGoals[0]}`);
+                    resolve(foundGoals[0]);
                 }
             });
         } catch (err) {
-            console.log(`Failed to find user things bro`);
+            console.log(`Failed to find user goal things bro`);
             reject(err);
         }
     });
     return p;
 }
 
-export async function createUserGoals(userID_) {
+export async function createUserGoals(userID_, minCalories_, maxCalories_, minSleep_, dailyWorkout_) {
     p = new Promise((resolve, reject) => {
         try {
             const newGoals = {
                 userId: userID_,
-                minCalories: 1800,
-                maxCalories: 2200,
-                minSleep: 8,
-                dailyWorkout: false,
+                minCalories: parseInt(minCalories_),
+                maxCalories: parseInt(maxCalories_),
+                minSleep: parseFloat(minSleep_),
+                dailyWorkout: dailyWorkout_,
             };
             DataStore.save(new DailyGoals(newGoals)).then((createdGoals) => {
                 console.log(`Created user: ${createdGoals}`);

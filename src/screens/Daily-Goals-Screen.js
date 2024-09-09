@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { getUserGoals, updateUserGoals } from '../logic/user-goals';
+import { getUserGoals, updateUserGoals, createUserGoals } from '../logic/user-goals';
 import { AccountContext } from '../../App';
 
 let userID;
@@ -15,6 +15,7 @@ const DailyGoalsScreen = () => {
         minSleep: 0,
         dailyWorkout: false,
     });
+    const [missingInfo, setMissingInfo] = useState(false);
     const navigation = useNavigation();
 
     userID = React.useContext(AccountContext);
@@ -24,7 +25,7 @@ const DailyGoalsScreen = () => {
         DEBUG && console.log("Getting user goals info...");
         getUserGoals(userID).then((goals) => {
             if (goals == null) {
-                console.error("Goals info isn't made yet");
+                console.log("Goals info isn't made yet");
                 return;
             }
             else {
@@ -39,8 +40,21 @@ const DailyGoalsScreen = () => {
     }, []);
 
     const handleSubmit = async () => {
+        if (goalsInfo.minCalories == 0 || goalsInfo.maxCalories == 0 || goalsInfo.minSleep == 0) {
+            setMissingInfo(true);
+            return;
+        }
         DEBUG && console.log("Submitting goal info...");
-        await updateUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout);
+        getUserGoals(userID).then(async (goals) => {
+            if (goals == null) {
+                // make new goals
+                await createUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout);
+            }
+            else {
+                // update goals
+                await updateUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout);
+            }
+        });
         DEBUG && console.log("Returning to settings home...");
         navigation.navigate('Settings Home');
     };
@@ -48,6 +62,8 @@ const DailyGoalsScreen = () => {
     return (
 
         <View style={styles.container}>
+
+            {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
             <Text style={styles.label}>Minimum Calories:</Text>
             <TextInput
