@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { initFoodItems } from '../logic/diet-api';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
@@ -31,9 +31,30 @@ const SettingsScreen = () => {
     useEffect(() => {
         // fetch user settings
         getUserDBEntry(userID).then((user) => {
+            if (user == null) {
+                console.log("User info isn't made yet");
+                navigation.navigate('Basic Info');
+                return;
+            }
             setForm({ ...form, userName: user.name });
         });
     }, []);
+
+    // called every time the screen is opened
+    useFocusEffect(
+        React.useCallback(() => {
+            // fetch user settings
+            getUserDBEntry(userID).then((user) => {
+                if (user == null) {
+                    console.log("User info isn't made yet");
+                    navigation.navigate('Basic Info');
+                    return;
+                }
+                setForm({ ...form, userName: user.name });
+            });
+            return;
+        }, [])
+    );
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>

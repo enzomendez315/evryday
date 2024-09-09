@@ -209,7 +209,7 @@ function WorkoutStack() {
   );
 }
 
-// Fully syncs the local Datastore with the remote database before running RunOnStart()
+// Fully syncs the local Datastore with the remote database
 export async function StartListening(user: string) {
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {

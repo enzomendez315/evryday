@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { getUserDBEntry, updateUserDetails } from '../logic/account';
+import { getUserDBEntry, updateUserDetails, createUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
+import { getUser } from '../graphql/queries';
 
 let userID;
 let DEBUG = true;
@@ -14,8 +15,9 @@ const BasicInfoScreen = () => {
         age: 0,
         weight: 0,
         height: 0,
-        gender: "",
+        gender: "other",
     });
+    const [missingInfo, setMissingInfo] = useState(false);
     const navigation = useNavigation();
 
     userID = React.useContext(AccountContext);
@@ -25,7 +27,7 @@ const BasicInfoScreen = () => {
         DEBUG && console.log("Getting user info...");
         getUserDBEntry(userID).then((user) => {
             if (user == null) {
-                console.error("User info isn't made yet");
+                console.log("User info isn't made yet");
                 return;
             }
             else {
@@ -40,10 +42,33 @@ const BasicInfoScreen = () => {
         });
     }, []);
 
+    // checks that all fields are filled in and then submits the user info
     const handleSubmit = async () => {
+        if (userInfo.name == "" || userInfo.age == 0 || userInfo.weight == 0 ||
+            userInfo.height == 0) {
+            setMissingInfo(true);
+            return;
+        }
         DEBUG && console.log("Submitting user info...");
-        await updateUserDetails(userID, userInfo.name,
-            userInfo.weight, userInfo.age, userInfo.height, userInfo.gender);
+
+        // if there is no user entry, make one
+        await getUserDBEntry(userID).then(async (user) => {
+            if (user == null) {
+                // make new user
+                await createUserDBEntry(userID, userInfo.name,
+                    userInfo.weight, userInfo.age, userInfo.height, userInfo.gender).then(async (newUser) => {
+                        console.log(`Created user in basic info screen: ${newUser}`);
+                    });
+            }
+
+            // if submitting changes to a pre-existing user
+            else {
+                console.log("User already exists, updating...");
+                await updateUserDetails(userID, userInfo.name,
+                    userInfo.weight, userInfo.age, userInfo.height, userInfo.gender);
+            }
+        });
+
         DEBUG && console.log("Returning to settings home...");
         navigation.navigate('Settings Home');
     };
@@ -51,6 +76,8 @@ const BasicInfoScreen = () => {
     return (
 
         <View style={styles.container}>
+
+            {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
             <Text style={styles.label}>Name:</Text>
             <TextInput

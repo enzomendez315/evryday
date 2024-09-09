@@ -29,10 +29,8 @@ export async function getUserDBEntry(userID_) {
                 u.userId.eq(userID_)
             ).then((foundUser) => {
                 if (foundUser == null || foundUser.length == 0) {
-                    DEBUG && console.log("no user DB entry found, making a new one");
-                    createUserDBEntry(userID_).then((newUser) => {
-                        resolve(newUser);
-                    });
+                    DEBUG && console.log("no user DB entry found");
+                    resolve(null);
                 } else {
                     DEBUG && console.log(`User found: ${foundUser[0].name}`);
                     resolve(foundUser[0]);
@@ -46,17 +44,17 @@ export async function getUserDBEntry(userID_) {
     return p;
 }
 
-export async function createUserDBEntry(userID_) {
+export async function createUserDBEntry(userID_, name_,
+    weight_, age_, height_, gender_) {
     p = new Promise((resolve, reject) => {
         try {
             const newUser = {
                 userId: userID_,
-                name: "Squidward Tentacles",
-                age: 0,
-                weight: 0,
-                height: 0,
-                isFirstTime: true,
-                gender: "male",
+                name: name_,
+                age: parseInt(age_),
+                weight: parseInt(weight_),
+                height: parseInt(height_),
+                gender: gender_,
             };
             DataStore.save(new User(newUser)).then((createdUser) => {
                 console.log(`Created user: ${createdUser.name}`);
