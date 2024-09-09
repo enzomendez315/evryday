@@ -212,7 +212,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
+    paddingVertical: 5,  // Adjusted padding to reduce space
+    marginVertical: 2,   // Adjusted margin to reduce space between items
   },
   setText: {
     fontSize: 14,
