@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { initFoodItems } from '../logic/diet-api';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
+import { getUserGoals } from '../logic/user-goals';
 
 let userID;
 
@@ -31,9 +32,41 @@ const SettingsScreen = () => {
     useEffect(() => {
         // fetch user settings
         getUserDBEntry(userID).then((user) => {
+            // if the user doesn't exist, redirect to the basic info screen
+            if (user == null) {
+                console.log("User info isn't made yet");
+                navigation.navigate('Basic Info');
+                return;
+            }
+            // set the user's name at top of screen
             setForm({ ...form, userName: user.name });
         });
     }, []);
+
+    // called every time the screen is opened
+    useFocusEffect(
+        React.useCallback(() => {
+            // fetch user settings
+            getUserDBEntry(userID).then((user) => {
+                if (user == null) {
+                    console.log("User info isn't made yet");
+                    navigation.navigate('Basic Info');
+                    return;
+                }
+                setForm({ ...form, userName: user.name });
+                // if the user has already entered their basic info, 
+                // check if user goals are made
+                getUserGoals(userID).then((goals) => {
+                    if (goals == null) {
+                        console.log("User goals aren't made yet");
+                        navigation.navigate('Daily Goals');
+                        return;
+                    }
+                });
+            });
+            return;
+        }, [])
+    );
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -61,15 +94,13 @@ const SettingsScreen = () => {
 
                     <View>
                         <Text style={styles.profileName}>{form.userName}</Text>
-
-                        <Text style={styles.profileAddress}>
-                            123 Maple Street. Anytown, PA 17101
-                        </Text>
                     </View>
                 </View>
 
                 <ScrollView>
+                    {/* Preferences , might use this later
                     <View style={styles.section}>
+                        
                         <Text style={styles.sectionTitle}>Preferences</Text>
 
                         <View style={styles.row}>
@@ -120,6 +151,7 @@ const SettingsScreen = () => {
                                 value={form.workoutTracking} />
                         </View>
                     </View>
+                    */}
 
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Resources</Text>
@@ -134,6 +166,25 @@ const SettingsScreen = () => {
                             </View>
 
                             <Text style={styles.rowLabel}>Edit User Information</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('Daily Goals');
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Edit Daily Goals</Text>
 
                             <View style={styles.rowSpacer} />
 
@@ -221,12 +272,6 @@ const styles = StyleSheet.create({
         fontSize: 19,
         fontWeight: '600',
         color: 'black',
-        textAlign: 'center',
-    },
-    profileAddress: {
-        marginTop: 5,
-        fontSize: 16,
-        color: '#989898',
         textAlign: 'center',
     },
     /** Section */

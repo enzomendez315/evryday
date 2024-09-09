@@ -215,6 +215,8 @@ const Dashboard = (props) => {
   // TODO: fix diet api to handle null data calls
   let tempLoading = true;
 
+  const navigation = useNavigation();
+
   // called only once when the screen is first loaded
   useEffect(() => {
     date = getLocalDate();
@@ -222,7 +224,16 @@ const Dashboard = (props) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
       syncDietDashboardData(userID, date, setCalorieData);
+
       getUserDBEntry(userID).then((user) => {
+        // if a user entry doesn't exist, direct the user to the basic info screen
+        if (user == null) {
+          console.log("User info isn't made yet");
+          navigation.navigate('Settings')
+          // once in settings, the user will be directed to the basic info screen
+          // to make user and daily goals
+          return;
+        }
         console.log("the user name is: " + user.name);
       });
       tempLoading = false;

@@ -23,6 +23,7 @@ import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
+import DailyGoalsScreen from './src/screens/Daily-Goals-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore } from 'aws-amplify/datastore';
@@ -30,7 +31,6 @@ import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
-
 
 import { withAuthenticator } from '@aws-amplify/ui-react-native';
 
@@ -145,6 +145,7 @@ function SettingsStack() {
           },
         }} />
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
+      <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
     </Stack.Navigator>
   );
 }
@@ -208,7 +209,7 @@ function WorkoutStack() {
   );
 }
 
-// Fully syncs the local Datastore with the remote database before running RunOnStart()
+// Fully syncs the local Datastore with the remote database
 export async function StartListening(user: string) {
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {
@@ -216,8 +217,6 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      // await DataStore.clear(); // run this function to clear local datastore
-      // TODO: find a way to clear datastore more consistently
     }
   })
 }
@@ -232,12 +231,10 @@ function App() {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
-
-      //setIsFirstTime(user.isFirstTime);
-
-
+      // await DataStore.clear();
       await DataStore.start();
       await StartListening(user);
+
       //TODO: Add a check for user settings to determine which tabs to show
       // it will look something like
       // if (user.settings.dietTracking == true) { setUseDiet(true) }

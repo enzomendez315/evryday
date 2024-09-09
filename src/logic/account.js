@@ -29,10 +29,8 @@ export async function getUserDBEntry(userID_) {
                 u.userId.eq(userID_)
             ).then((foundUser) => {
                 if (foundUser == null || foundUser.length == 0) {
-                    DEBUG && console.log("no user DB entry found, making a new one");
-                    createUserDBEntry(userID_).then((newUser) => {
-                        resolve(newUser);
-                    });
+                    DEBUG && console.log("no user DB entry found");
+                    resolve(null);
                 } else {
                     DEBUG && console.log(`User found: ${foundUser[0].name}`);
                     resolve(foundUser[0]);
@@ -46,17 +44,17 @@ export async function getUserDBEntry(userID_) {
     return p;
 }
 
-export async function createUserDBEntry(userID_) {
+export async function createUserDBEntry(userID_, name_,
+    weight_, age_, height_, gender_) {
     p = new Promise((resolve, reject) => {
         try {
             const newUser = {
                 userId: userID_,
-                name: "Squidward Tentacles",
-                age: 0,
-                weight: 0,
-                height: 0,
-                isFirstTime: true,
-                gender: "male",
+                name: name_,
+                age: parseInt(age_),
+                weight: parseInt(weight_),
+                height: parseInt(height_),
+                gender: gender_,
             };
             DataStore.save(new User(newUser)).then((createdUser) => {
                 console.log(`Created user: ${createdUser.name}`);
@@ -106,36 +104,10 @@ export async function updateUserDetails(userID_, name_,
 
 export async function userSignOut() {
     try {
+        // await DataStore.clear();
         await signOut();
     } catch (error) {
         console.log('error signing out: ', error);
     }
 }
 
-// Create the AccountContext
-export const AccountContext = createContext();
-
-// Define the AccountProvider to wrap your app
-export const AccountProvider = ({ children }) => {
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    // Example: Fetch userId from Amplify Auth or other methods
-    const fetchUserId = async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser(); // Replace this with your authentication method
-        setUserId(user.username); // Set userId to the value from Auth
-      } catch (error) {
-        console.error('Failed to fetch user ID:', error);
-      }
-    };
-
-    fetchUserId();
-  }, []);
-
-  return (
-    <AccountContext.Provider value={userId}>
-      {children}
-    </AccountContext.Provider>
-  );
-};
