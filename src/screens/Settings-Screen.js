@@ -9,26 +9,29 @@ import {
     Switch,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { currentUserDetails } from '../logic/account';
 import { initFoodItems } from '../logic/diet-api';
 import { useNavigation } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
+import { getUserDBEntry } from '../logic/account';
+import { AccountContext } from '../../App';
 
+let userID;
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
-        userID: "",
-        pushNotifications: false,
+        userName: "",
         dietTracking: true,
         sleepTracking: true,
         workoutTracking: true,
     });
 
+    userID = React.useContext(AccountContext);
+
     useEffect(() => {
         // fetch user settings
-        currentUserDetails().then(async (user) => {
-            setForm({ ...form, userID: user });
+        getUserDBEntry(userID).then((user) => {
+            setForm({ ...form, userName: user.name });
         });
     }, []);
 
@@ -57,7 +60,7 @@ const SettingsScreen = () => {
                     </TouchableOpacity>
 
                     <View>
-                        <Text style={styles.profileName}>{form.userID}</Text>
+                        <Text style={styles.profileName}>{form.userName}</Text>
 
                         <Text style={styles.profileAddress}>
                             123 Maple Street. Anytown, PA 17101
@@ -68,22 +71,6 @@ const SettingsScreen = () => {
                 <ScrollView>
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Preferences</Text>
-
-                        <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                                <FeatherIcon color="#fff" name="bell" size={20} />
-                            </View>
-
-                            <Text style={styles.rowLabel}>Push Notifications</Text>
-
-                            <View style={styles.rowSpacer} />
-
-                            <Switch
-                                onValueChange={pushNotifications =>
-                                    setForm({ ...form, pushNotifications })
-                                }
-                                value={form.pushNotifications} />
-                        </View>
 
                         <View style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
@@ -139,14 +126,14 @@ const SettingsScreen = () => {
 
                         <TouchableOpacity
                             onPress={() => {
-                                // handle onPress
+                                navigation.navigate('Basic Info');
                             }}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
                                 <FeatherIcon color="#fff" name="mail" size={20} />
                             </View>
 
-                            <Text style={styles.rowLabel}>Contact Us</Text>
+                            <Text style={styles.rowLabel}>Edit User Information</Text>
 
                             <View style={styles.rowSpacer} />
 
@@ -177,9 +164,9 @@ const SettingsScreen = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                                onPress={async () => {
-                                    await userSignOut();
-                                }}
+                            onPress={async () => {
+                                await userSignOut();
+                            }}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
                                 <FeatherIcon color="#fff" name="user" size={20} />
@@ -199,6 +186,7 @@ const SettingsScreen = () => {
 
 export default SettingsScreen;
 
+
 const styles = StyleSheet.create({
     container: {
         padding: 0,
@@ -217,11 +205,6 @@ const styles = StyleSheet.create({
     profileAvatarWrapper: {
         position: 'relative',
     },
-    profileAvatar: {
-        width: 72,
-        height: 72,
-        borderRadius: 9999,
-    },
     profileAction: {
         position: 'absolute',
         right: -4,
@@ -237,7 +220,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontSize: 19,
         fontWeight: '600',
-        color: '#fff',
+        color: 'black',
         textAlign: 'center',
     },
     profileAddress: {

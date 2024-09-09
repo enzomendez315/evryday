@@ -25,20 +25,17 @@ import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
 
 import { Amplify } from 'aws-amplify';
-import { DataStore, Predicates } from 'aws-amplify/datastore';
-import { ConsoleLogger } from 'aws-amplify/utils';
+import { DataStore } from 'aws-amplify/datastore';
 import awsconfig from './src/aws-exports';
 
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
 
 
-import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
+import { withAuthenticator } from '@aws-amplify/ui-react-native';
 
-import { currentUserDetails, userSignOut } from './src/logic/account'
+import { currentUserDetails } from './src/logic/account'
 Amplify.configure(awsconfig);
-
-const DEBUG = false;
 
 // used to pass userID to all screens *in theory*
 export const AccountContext = React.createContext("");
@@ -137,19 +134,6 @@ function DashboardStack() {
   );
 }
 
-//Screen in Signup tab
-function BasicInfoStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen 
-        name="Basic Info" 
-        component={BasicInfoScreen} 
-        options={{ headerTitle: "Complete Your Profile" }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 // screens in the settings tab
 function SettingsStack() {
   return (
@@ -160,6 +144,7 @@ function SettingsStack() {
             backgroundColor: COLORS.lightGreen,
           },
         }} />
+      <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
     </Stack.Navigator>
   );
 }
@@ -178,15 +163,15 @@ function DietStack() {
       <Stack.Screen name="Search Food" component={SearchFoodScreen} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
       <Stack.Screen name="Edit Food" component={AddFoodScreen}
-                    options={({ navigation, route}) => ({
-                      title: "Edit Food",
-                      headerRight: () => (
-                        <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
-                      ),
-                    })} />
-      <Stack.Screen name="Create Food Item"  component={ModifyFoodScreen} initialParams={{ editable:true }} />
-      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable:true }} />
-      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable:true }} />
+        options={({ navigation, route }) => ({
+          title: "Edit Food",
+          headerRight: () => (
+            <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
+      <Stack.Screen name="Create Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
+      <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable: true }} />
+      <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
     </Stack.Navigator>
   );
 }
@@ -223,15 +208,6 @@ function WorkoutStack() {
   );
 }
 
-// clears the datastore
-// Sometimes duplicate data shows up in UI
-// clearing helps that but causes some data to not load on first request
-// TODO: decide if this is needed or not
-async function RunOnStart(userId: string) {
-  await DataStore.clear(); // Clear the local Datastore to prevent duplicate entries
-  console.log("DataStore is cleared");
-}
-
 // Fully syncs the local Datastore with the remote database before running RunOnStart()
 export async function StartListening(user: string) {
   console.log("DataStore is started");
@@ -240,7 +216,8 @@ export async function StartListening(user: string) {
     if (event === 'ready') {
       console.log("DataStore is ready");
       listener(); // Stops the listener
-      // RunOnStart(user); // run this function to clear local datastore
+      // await DataStore.clear(); // run this function to clear local datastore
+      // TODO: find a way to clear datastore more consistently
     }
   })
 }
@@ -256,9 +233,9 @@ function App() {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
 
-      setIsFirstTime(user.isFirstTime);
-     
-      
+      //setIsFirstTime(user.isFirstTime);
+
+
       await DataStore.start();
       await StartListening(user);
       //TODO: Add a check for user settings to determine which tabs to show

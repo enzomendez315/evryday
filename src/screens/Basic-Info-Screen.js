@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { updateUserDetails } from '../logic/user-service';
 import { useNavigation } from '@react-navigation/native';
-import { userSignOut } from '../logic/account';
+import { getUserDBEntry, updateUserDetails } from '../logic/account';
+import { AccountContext } from '../../App';
 
+let userID;
+let DEBUG = true;
 
 const BasicInfoScreen = () => {
-    const [name, setName] = useState('');
-    const [weight, setWeight] = useState('');
-    const [age, setAge] = useState('');
-    const [gender, setGender] = useState('');
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        age: 0,
+        weight: 0,
+        height: 0,
+        gender: "",
+    });
     const navigation = useNavigation();
 
+    userID = React.useContext(AccountContext);
+
+    // gets the user's info from the DB entry and fills in the hooks
+    useEffect(() => {
+        DEBUG && console.log("Getting user info...");
+        getUserDBEntry(userID).then((user) => {
+            if (user == null) {
+                console.error("User info isn't made yet");
+                return;
+            }
+            else {
+                setUserInfo({
+                    name: user.name,
+                    age: user.age,
+                    weight: user.weight,
+                    height: user.height,
+                    gender: user.gender,
+                });
+            }
+        });
+    }, []);
+
     const handleSubmit = async () => {
-        console.log('Submitting:', { name, weight, age, gender });
-
-        //Currently does not work yet
-        // try {
-
-        //     const updateSuccess = await updateUserDetails(name, weight, age, gender);
-        //     if (updateSuccess) {
-        //         console.log("Update successful");
-        //     } else {
-        //         console.log("Update failed");
-        //     }
-        // } catch (error) {
-        //     console.error("Failed to update user info:", error);
-        // }
-        
-        // console.log('Attempting to navigate...');
-        // navigation.navigate('Dashboard', {
-        //     screen: 'Dashboard Home'
-        // });
-        
+        DEBUG && console.log("Submitting user info...");
+        await updateUserDetails(userID, userInfo.name,
+            userInfo.weight, userInfo.age, userInfo.height, userInfo.gender);
+        DEBUG && console.log("Returning to settings home...");
+        navigation.navigate('Settings Home');
     };
 
     return (
@@ -43,18 +55,17 @@ const BasicInfoScreen = () => {
             <Text style={styles.label}>Name:</Text>
             <TextInput
                 style={styles.input}
-                value={name}
-                onChangeText={setName}
+                value={userInfo.name}
+                onChangeText={text => setUserInfo({ ...userInfo, name: text })}
                 placeholder="Enter your name"
             />
-
 
             <Text style={styles.label}>Age:</Text>
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={age}
-                onChangeText={setAge}
+                value={userInfo.age.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, age: text })}
                 placeholder="Enter your age"
             />
 
@@ -62,30 +73,35 @@ const BasicInfoScreen = () => {
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                value={weight}
-                onChangeText={setWeight}
+                value={userInfo.weight.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, weight: text })}
+                placeholder="Enter your weight"
+            />
+
+            <Text style={styles.label}>Height (in):</Text>
+            <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={userInfo.height.toString()}
+                onChangeText={text => setUserInfo({ ...userInfo, height: text })}
                 placeholder="Enter your weight"
             />
 
             <Text style={styles.label}>Gender:</Text>
             <Picker
-                selectedValue={gender}
+                selectedValue={userInfo.gender}
                 style={styles.picker}
-                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
-            >
+                onValueChange={(itemValue, itemIndex) =>
+                    setUserInfo({ ...userInfo, gender: itemValue })}>
                 <Picker.Item label="Male" value="male" />
                 <Picker.Item label="Female" value="female" />
                 <Picker.Item label="Other" value="other" />
             </Picker>
 
             <Button title="Submit" onPress={handleSubmit} />
-            <Button title="Back to Sign In" onPress={userSignOut} />
         </View>
     );
-
-
 };
-
 
 const styles = StyleSheet.create({
     container: {
