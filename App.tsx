@@ -251,9 +251,13 @@ function App() {
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
+
         <BottomNavBarTabs dietTrack={useDiet}
           sleepTrack={useSleep} workoutTrack={useWorkout} />
+
       </NavigationContainer>
+
+
     </AccountContext.Provider>
   );
 }
