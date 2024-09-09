@@ -1,6 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
-import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood } from '../models';
 
 const DEBUG = false;
 
@@ -463,6 +463,107 @@ export async function modifyFoodObject(name, servingSize, servingUnit, calories,
 
 }
 
+// Saves a meal as a recipe called recipeName
+export async function saveAsRecipe(mealId, recipeName) {
+    const recipe = await DataStore.save(
+        new Recipe({
+            name: recipeName
+        })
+    )
+
+    const mealFoodRelationships = await DataStore.query(MealToFood, (mfr) => mfr.mealId.eq(mealId));
+
+    for (let mealFoodRelationship of mealFoodRelationships) {
+        console.log("mealToFood: ", mealFoodRelationship)
+        const food = await mealFoodRelationship.foodItem;
+        await DataStore.save(
+            new RecipeToFood({
+                recipe: recipe,
+                foodItem: food,
+                servingId: mealFoodRelationship.servingId,
+                servingAmount: mealFoodRelationship.servingAmount
+            })
+        )
+    }
+}
+
+// Add a recipe to a meal
+export async function addRecipeToMeal(mealId, recipeId) {
+
+    const recipeFoodRelationships = await DataStore.query(RecipeToFood, (rtf) => rtf.recipeId.eq(recipeId));
+    const meal = await DataStore.query(Meal, mealId);
+
+    for (let recipeFoodRelationship of recipeFoodRelationships) {
+        const food = await recipeFoodRelationship.foodItem;
+        await DataStore.save(
+            new MealToFood({
+                meal: meal,
+                foodItem: food,
+                servingId: recipeFoodRelationship.servingId,
+                servingAmount: recipeFoodRelationship.servingAmount
+            })
+        )
+    }
+}
+
+
+// Populates a list of all recipes
+export async function getAllRecipes(setRecipes) {
+    const recipes = await DataStore.query(Recipe);
+    console.log("Recipes: ", recipes);
+    let recipeData = [];
+    for (let recipe of recipes) {
+        recipeData.push(await calcRecipeMacros(recipe))
+    }
+    setRecipes(recipeData);
+}
+
+export async function getRecipe(recipeId) {
+    console.log('getRecipe: ', recipeId);
+    const recipe = await DataStore.query(Recipe, recipeId);
+    const recipeMacros = await calcRecipeMacros(recipe);
+    console.log(recipeMacros);
+    return recipeMacros;
+}
+
+
+export async function calcRecipeMacros(recipe) {
+    p = new Promise(async (resolve, reject) => {
+        let foodsList = [];
+        const recipeToFoodRelationships = await DataStore.query(RecipeToFood, (rtf) => rtf.recipeId.eq(recipe.id));
+
+        for (let recipeToFoodRelationship of recipeToFoodRelationships) {
+            let food = await recipeToFoodRelationship.foodItem;
+            let serving = await DataStore.query(FoodItemServing, (s) => s.id.eq(recipeToFoodRelationship.servingId));
+            let multiplier = (parseFloat(recipeToFoodRelationship.servingAmount) / parseFloat(serving[0].servingSize));
+            let formattedFood = {
+                id: food.id,
+                name: food.name,
+                servingId: serving[0].id,
+                servingAmount: recipeToFoodRelationship.servingAmount,
+                serving: (recipeToFoodRelationship.servingAmount + " " + serving[0].servingUnit),
+                recipeToFoodId: recipeToFoodRelationship?.id ?? null,
+                calories: Math.round(serving[0].calories * multiplier),
+                protein: Math.round(serving[0].protein * multiplier),
+                carbs: Math.round(serving[0].carbs * multiplier),
+                fat: Math.round(serving[0].fat * multiplier),
+            }
+            foodsList.push(formattedFood);
+        }
+
+        let recipeData = {
+            id: recipe.id,
+            name: recipe.name,
+            ingredients: foodsList,
+            calories: foodsList.reduce((acc, food) => acc + food.calories, 0),
+            protein: foodsList.reduce((acc, food) => acc + food.protein, 0),
+            carbs: foodsList.reduce((acc, food) => acc + food.carbs, 0),
+            fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
+        };
+        resolve(recipeData);
+    });
+    return p;
+}
 
 
 // calls getFoodItems
