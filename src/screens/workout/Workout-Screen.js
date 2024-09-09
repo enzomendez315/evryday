@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   exerciseListButtonText: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold', // add more styling as needed
+    fontWeight: 'bold', 
   },
 
   popupOverlay: {

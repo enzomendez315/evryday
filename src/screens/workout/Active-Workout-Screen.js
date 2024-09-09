@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { COLORS } from '../../theme/theme';
 
-const SetItem = ({ setNumber, weight, reps, completed, onUpdate, onCheck }) => {
+const SetItem = ({ setNumber, weight, reps, completed, onUpdate, onCheck, backgroundColor }) => {
 
   const [inputWeight, setInputWeight] = useState(weight);
   const [inputReps, setInputReps] = useState(reps);
 
   const handleComplete = () => {
     onCheck(setNumber, !completed);
+
   };
 
   return (
-    <View style={styles.setRow}>
-      <Text style={styles.setText}>Set {setNumber}</Text>
+    <View style={[styles.setRow, { backgroundColor }]}> 
+
+      <Text style={styles.setText}>{setNumber}</Text>
       <TextInput
         style={styles.input}
         onChangeText={(value) => {
@@ -34,13 +37,13 @@ const SetItem = ({ setNumber, weight, reps, completed, onUpdate, onCheck }) => {
         keyboardType="numeric"
       />
       <TouchableOpacity onPress={handleComplete}>
-        <Icon name="check" size={24} color={completed ? 'green' : 'grey'} />
+        <Icon name="check" size={24} color={completed ? 'green' : 'grey'} />  
       </TouchableOpacity>
     </View>
   );
 };
 
-const ActiveWorkoutTab = ({ exerciseData, exerciseIndex, onUpdateSet }) => {
+const ActiveWorkoutTab = ({ exerciseData }) => {
   const [sets, setSets] = useState(exerciseData.sets);
 
   // UPCOMING FEATURE** BREAKS APP IF USED
@@ -78,18 +81,28 @@ const ActiveWorkoutTab = ({ exerciseData, exerciseIndex, onUpdateSet }) => {
 
   return (
     <View style={styles.workoutTabContainer}>
+
       <Text style={styles.exerciseTitle}>{exerciseData.name}</Text>
+
+      <View style={styles.labelsRow}>
+        <Text style={styles.labelText}>Set</Text>
+        <Text style={styles.labelText}>lbs</Text>
+        <Text style={styles.labelText}>Rep</Text>
+        <Icon name="check" size={24} color="grey" style={styles.labelIcon} />
+      </View>
+
       <FlatList
         data={sets}
         renderItem={({ item, index }) => (
           <SetItem
-            setNumber={item.setNumber}
+            setNumber={index + 1}
             weight={item.weight}
             reps={item.reps}
             completed={item.completed}
             // onUpdate={updateSetData}
             onCheck={handleCheck}
             key={index}
+            backgroundColor={index % 2 === 0 ? '#f5f5f5' : '#ffffff'}
           />
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -145,9 +158,9 @@ const ActiveWorkout = ({ route, navigation }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+      {/* <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={styles.cancelButtonText}>Cancel workout</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -162,13 +175,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+
   },
   finishButton: {
-    // Style for the finish button
+    backgroundColor: COLORS.primaryBlueHex,
+    padding: 10,
+    borderRadius: 15,
+    alignItems: 'center',
   },
   finishButtonText: {
-    // Style for the finish button text
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   clockIcon: {
     // Style for the clock icon
@@ -183,23 +201,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
-  placeholderContainer: {
-    // Style for the placeholder container
-  },
-  placeholderText: {
-    // Style for the placeholder text
-  },
+
   addButton: {
-    // Style for the add exercise button
+
   },
   addButtonText: {
-    // Style for the add exercise button text
+
   },
   cancelButton: {
-    // Style for the cancel workout button
+
   },
   cancelButtonText: {
-    // Style for the cancel workout button text
+
   },
 
   workoutTabContainer: {
@@ -212,8 +225,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 5,  // Adjusted padding to reduce space
-    marginVertical: 2,   // Adjusted margin to reduce space between items
+    
+
   },
   setText: {
     fontSize: 14,
@@ -222,10 +235,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   input: {
-    // ... style for the input fields ...
+
   },
   addSetText: {
-    // ... style for the add set text ...
+
+  },
+
+  labelsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+   
   },
   // Add additional styles as needed
 });
