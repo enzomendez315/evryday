@@ -222,6 +222,9 @@ const Dashboard = (props) => {
       userID = user.username;
       syncDailyLog(userID, setSleepData, date);
       syncDietDashboardData(userID, date, setCalorieData);
+      getUserDBEntry(userID).then((user) => {
+        console.log("the user name is: " + user.name);
+      });
       tempLoading = false;
     });
   }, []);
@@ -230,13 +233,6 @@ const Dashboard = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       syncDailyLog(userID, setSleepData, date);
-      getUserDBEntry().then((user) => {
-        if (user == null) {
-          console.log("no user found in database, gotta do something about that");
-          return;
-        }
-        console.log("the user name is: " + user.name);
-      });
       syncDietDashboardData(userID, date, setCalorieData);
       return;
     }, [])

@@ -23,6 +23,7 @@ type EagerUser = {
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly isFirstTime: boolean;
+  readonly gender?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -39,6 +40,7 @@ type LazyUser = {
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly isFirstTime: boolean;
+  readonly gender?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

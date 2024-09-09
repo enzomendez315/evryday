@@ -1,7 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { SleepLog } from '../models';
 
-const DEBUG = true;
+const DEBUG = false;
 
 // sleep date is in form dateVariable.toISOString().substring(0, 10)
 // this goes from a date object to a string in the format "YYYY-MM-DD"
@@ -186,10 +186,10 @@ function getRestfulnessScore(sleepDuration, sleepQuality) {
 
     // normalize inputs
     if (sleepDuration <= 8) {
-    // an 8+ hour duration gets the highest score
-    durationScore = (sleepDuration / 8) * 50;
+        // an 8+ hour duration gets the highest score
+        durationScore = (sleepDuration / 8) * 50;
     } else {
-    durationScore = 50;
+        durationScore = 50;
     }
     qualityScore = (sleepQuality / 10) * 50;
 

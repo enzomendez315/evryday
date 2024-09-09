@@ -2,27 +2,33 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateExerciseSetInput = {
+export type CreateUserInput = {
   id?: string | null,
-  reps?: string | null,
-  time?: string | null,
-  weight?: string | null,
+  userId: string,
+  name: string,
+  age?: number | null,
+  height?: number | null,
+  weight?: number | null,
+  isFirstTime: boolean,
   _version?: number | null,
 };
 
-export type ModelExerciseSetConditionInput = {
-  reps?: ModelStringInput | null,
-  time?: ModelStringInput | null,
-  weight?: ModelStringInput | null,
-  and?: Array< ModelExerciseSetConditionInput | null > | null,
-  or?: Array< ModelExerciseSetConditionInput | null > | null,
-  not?: ModelExerciseSetConditionInput | null,
+export type ModelUserConditionInput = {
+  userId?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  age?: ModelIntInput | null,
+  height?: ModelFloatInput | null,
+  weight?: ModelFloatInput | null,
+  isFirstTime?: ModelBooleanInput | null,
+  and?: Array< ModelUserConditionInput | null > | null,
+  or?: Array< ModelUserConditionInput | null > | null,
+  not?: ModelUserConditionInput | null,
   _deleted?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
 };
 
-export type ModelStringInput = {
+export type ModelIDInput = {
   ne?: string | null,
   eq?: string | null,
   le?: string | null,
@@ -62,195 +68,7 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ExerciseSet = {
-  __typename: "ExerciseSet",
-  id: string,
-  reps?: string | null,
-  time?: string | null,
-  weight?: string | null,
-  ExerciseType?: ModelExerciseSetExerciseTypeConnection | null,
-  ExerciseRoutines?: ModelExerciseSetExerciseRoutineConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelExerciseSetExerciseTypeConnection = {
-  __typename: "ModelExerciseSetExerciseTypeConnection",
-  items:  Array<ExerciseSetExerciseType | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ExerciseSetExerciseType = {
-  __typename: "ExerciseSetExerciseType",
-  id: string,
-  exerciseSetId: string,
-  exerciseTypeId: string,
-  exerciseSet: ExerciseSet,
-  exerciseType: ExerciseType,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ExerciseType = {
-  __typename: "ExerciseType",
-  id: string,
-  name: string,
-  target?: string | null,
-  exercisesets?: ModelExerciseSetExerciseTypeConnection | null,
-  exerciseroutines?: ModelExerciseRoutineExerciseTypeConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelExerciseRoutineExerciseTypeConnection = {
-  __typename: "ModelExerciseRoutineExerciseTypeConnection",
-  items:  Array<ExerciseRoutineExerciseType | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ExerciseRoutineExerciseType = {
-  __typename: "ExerciseRoutineExerciseType",
-  id: string,
-  exerciseRoutineId: string,
-  exerciseTypeId: string,
-  exerciseRoutine: ExerciseRoutine,
-  exerciseType: ExerciseType,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ExerciseRoutine = {
-  __typename: "ExerciseRoutine",
-  id: string,
-  userId: string,
-  name?: string | null,
-  exerciselogs?: ModelExerciseLogExerciseRoutineConnection | null,
-  ExerciseTypes?: ModelExerciseRoutineExerciseTypeConnection | null,
-  exercisesets?: ModelExerciseSetExerciseRoutineConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelExerciseLogExerciseRoutineConnection = {
-  __typename: "ModelExerciseLogExerciseRoutineConnection",
-  items:  Array<ExerciseLogExerciseRoutine | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ExerciseLogExerciseRoutine = {
-  __typename: "ExerciseLogExerciseRoutine",
-  id: string,
-  exerciseLogId: string,
-  exerciseRoutineId: string,
-  exerciseLog: ExerciseLog,
-  exerciseRoutine: ExerciseRoutine,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ExerciseLog = {
-  __typename: "ExerciseLog",
-  id: string,
-  userId: string,
-  date: string,
-  exerciseRoutine?: ExerciseRoutine | null,
-  durationMinutes?: number | null,
-  caloriesBurned?: number | null,
-  ExerciseRoutines?: ModelExerciseLogExerciseRoutineConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelExerciseSetExerciseRoutineConnection = {
-  __typename: "ModelExerciseSetExerciseRoutineConnection",
-  items:  Array<ExerciseSetExerciseRoutine | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ExerciseSetExerciseRoutine = {
-  __typename: "ExerciseSetExerciseRoutine",
-  id: string,
-  exerciseSetId: string,
-  exerciseRoutineId: string,
-  exerciseSet: ExerciseSet,
-  exerciseRoutine: ExerciseRoutine,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type UpdateExerciseSetInput = {
-  id: string,
-  reps?: string | null,
-  time?: string | null,
-  weight?: string | null,
-  _version?: number | null,
-};
-
-export type DeleteExerciseSetInput = {
-  id: string,
-  _version?: number | null,
-};
-
-export type CreateUserInput = {
-  id?: string | null,
-  userId: string,
-  name: string,
-  age?: number | null,
-  height?: number | null,
-  weight?: number | null,
-  _version?: number | null,
-};
-
-export type ModelUserConditionInput = {
-  userId?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  age?: ModelIntInput | null,
-  height?: ModelFloatInput | null,
-  weight?: ModelFloatInput | null,
-  and?: Array< ModelUserConditionInput | null > | null,
-  or?: Array< ModelUserConditionInput | null > | null,
-  not?: ModelUserConditionInput | null,
-  _deleted?: ModelBooleanInput | null,
-  createdAt?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-};
-
-export type ModelIDInput = {
+export type ModelStringInput = {
   ne?: string | null,
   eq?: string | null,
   le?: string | null,
@@ -290,6 +108,13 @@ export type ModelFloatInput = {
   attributeType?: ModelAttributeTypes | null,
 };
 
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type User = {
   __typename: "User",
   id: string,
@@ -298,6 +123,7 @@ export type User = {
   age?: number | null,
   height?: number | null,
   weight?: number | null,
+  isFirstTime: boolean,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -312,6 +138,7 @@ export type UpdateUserInput = {
   age?: number | null,
   height?: number | null,
   weight?: number | null,
+  isFirstTime?: boolean | null,
   _version?: number | null,
 };
 
@@ -408,7 +235,43 @@ export type FoodItem = {
   owner: string,
   name: string,
   meals?: ModelMealToFoodConnection | null,
+  recipes?: ModelRecipeToFoodConnection | null,
   servingOptions?: ModelFoodItemServingConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelRecipeToFoodConnection = {
+  __typename: "ModelRecipeToFoodConnection",
+  items:  Array<RecipeToFood | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type RecipeToFood = {
+  __typename: "RecipeToFood",
+  id: string,
+  recipeId: string,
+  foodId: string,
+  servingId: string,
+  servingAmount: number,
+  recipe?: Recipe | null,
+  foodItem?: FoodItem | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type Recipe = {
+  __typename: "Recipe",
+  id: string,
+  name: string,
+  foodItems?: ModelRecipeToFoodConnection | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -599,6 +462,69 @@ export type DeleteFoodItemServingInput = {
   _version?: number | null,
 };
 
+export type CreateRecipeInput = {
+  id?: string | null,
+  name: string,
+  _version?: number | null,
+};
+
+export type ModelRecipeConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelRecipeConditionInput | null > | null,
+  or?: Array< ModelRecipeConditionInput | null > | null,
+  not?: ModelRecipeConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type UpdateRecipeInput = {
+  id: string,
+  name?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteRecipeInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateRecipeToFoodInput = {
+  id?: string | null,
+  recipeId: string,
+  foodId: string,
+  servingId: string,
+  servingAmount: number,
+  _version?: number | null,
+};
+
+export type ModelRecipeToFoodConditionInput = {
+  recipeId?: ModelIDInput | null,
+  foodId?: ModelIDInput | null,
+  servingId?: ModelIDInput | null,
+  servingAmount?: ModelFloatInput | null,
+  and?: Array< ModelRecipeToFoodConditionInput | null > | null,
+  or?: Array< ModelRecipeToFoodConditionInput | null > | null,
+  not?: ModelRecipeToFoodConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type UpdateRecipeToFoodInput = {
+  id: string,
+  recipeId?: string | null,
+  foodId?: string | null,
+  servingId?: string | null,
+  servingAmount?: number | null,
+  _version?: number | null,
+};
+
+export type DeleteRecipeToFoodInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateExerciseLogInput = {
   id?: string | null,
   userId: string,
@@ -621,6 +547,150 @@ export type ModelExerciseLogConditionInput = {
   updatedAt?: ModelStringInput | null,
 };
 
+export type ExerciseLog = {
+  __typename: "ExerciseLog",
+  id: string,
+  userId: string,
+  date: string,
+  exerciseRoutine?: ExerciseRoutine | null,
+  durationMinutes?: number | null,
+  caloriesBurned?: number | null,
+  ExerciseRoutines?: ModelExerciseLogExerciseRoutineConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ExerciseRoutine = {
+  __typename: "ExerciseRoutine",
+  id: string,
+  userId: string,
+  name?: string | null,
+  exerciselogs?: ModelExerciseLogExerciseRoutineConnection | null,
+  ExerciseTypes?: ModelExerciseRoutineExerciseTypeConnection | null,
+  exercisesets?: ModelExerciseSetExerciseRoutineConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelExerciseLogExerciseRoutineConnection = {
+  __typename: "ModelExerciseLogExerciseRoutineConnection",
+  items:  Array<ExerciseLogExerciseRoutine | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ExerciseLogExerciseRoutine = {
+  __typename: "ExerciseLogExerciseRoutine",
+  id: string,
+  exerciseLogId: string,
+  exerciseRoutineId: string,
+  exerciseLog: ExerciseLog,
+  exerciseRoutine: ExerciseRoutine,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelExerciseRoutineExerciseTypeConnection = {
+  __typename: "ModelExerciseRoutineExerciseTypeConnection",
+  items:  Array<ExerciseRoutineExerciseType | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ExerciseRoutineExerciseType = {
+  __typename: "ExerciseRoutineExerciseType",
+  id: string,
+  exerciseRoutineId: string,
+  exerciseTypeId: string,
+  exerciseRoutine: ExerciseRoutine,
+  exerciseType: ExerciseType,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ExerciseType = {
+  __typename: "ExerciseType",
+  id: string,
+  name: string,
+  target?: string | null,
+  exercisesets?: ModelExerciseSetExerciseTypeConnection | null,
+  exerciseroutines?: ModelExerciseRoutineExerciseTypeConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelExerciseSetExerciseTypeConnection = {
+  __typename: "ModelExerciseSetExerciseTypeConnection",
+  items:  Array<ExerciseSetExerciseType | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ExerciseSetExerciseType = {
+  __typename: "ExerciseSetExerciseType",
+  id: string,
+  exerciseSetId: string,
+  exerciseTypeId: string,
+  exerciseSet: ExerciseSet,
+  exerciseType: ExerciseType,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ExerciseSet = {
+  __typename: "ExerciseSet",
+  id: string,
+  reps?: string | null,
+  time?: string | null,
+  weight?: string | null,
+  ExerciseType?: ModelExerciseSetExerciseTypeConnection | null,
+  ExerciseRoutines?: ModelExerciseSetExerciseRoutineConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelExerciseSetExerciseRoutineConnection = {
+  __typename: "ModelExerciseSetExerciseRoutineConnection",
+  items:  Array<ExerciseSetExerciseRoutine | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ExerciseSetExerciseRoutine = {
+  __typename: "ExerciseSetExerciseRoutine",
+  id: string,
+  exerciseSetId: string,
+  exerciseRoutineId: string,
+  exerciseSet: ExerciseSet,
+  exerciseRoutine: ExerciseRoutine,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
 export type UpdateExerciseLogInput = {
   id: string,
   userId?: string | null,
@@ -631,6 +701,39 @@ export type UpdateExerciseLogInput = {
 };
 
 export type DeleteExerciseLogInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateExerciseSetInput = {
+  id?: string | null,
+  reps?: string | null,
+  time?: string | null,
+  weight?: string | null,
+  _version?: number | null,
+};
+
+export type ModelExerciseSetConditionInput = {
+  reps?: ModelStringInput | null,
+  time?: ModelStringInput | null,
+  weight?: ModelStringInput | null,
+  and?: Array< ModelExerciseSetConditionInput | null > | null,
+  or?: Array< ModelExerciseSetConditionInput | null > | null,
+  not?: ModelExerciseSetConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type UpdateExerciseSetInput = {
+  id: string,
+  reps?: string | null,
+  time?: string | null,
+  weight?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteExerciseSetInput = {
   id: string,
   _version?: number | null,
 };
@@ -700,8 +803,9 @@ export type CreateSleepLogInput = {
   userId: string,
   date: string,
   hoursSlept: number,
-  sleepQuality?: number | null,
+  sleepQuality: number,
   dreamJournal?: string | null,
+  restfulnessScore: number,
   _version?: number | null,
 };
 
@@ -711,6 +815,7 @@ export type ModelSleepLogConditionInput = {
   hoursSlept?: ModelFloatInput | null,
   sleepQuality?: ModelIntInput | null,
   dreamJournal?: ModelStringInput | null,
+  restfulnessScore?: ModelIntInput | null,
   and?: Array< ModelSleepLogConditionInput | null > | null,
   or?: Array< ModelSleepLogConditionInput | null > | null,
   not?: ModelSleepLogConditionInput | null,
@@ -725,8 +830,9 @@ export type SleepLog = {
   userId: string,
   date: string,
   hoursSlept: number,
-  sleepQuality?: number | null,
+  sleepQuality: number,
   dreamJournal?: string | null,
+  restfulnessScore: number,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -741,6 +847,7 @@ export type UpdateSleepLogInput = {
   hoursSlept?: number | null,
   sleepQuality?: number | null,
   dreamJournal?: string | null,
+  restfulnessScore?: number | null,
   _version?: number | null,
 };
 
@@ -849,6 +956,36 @@ export type DeleteGoalLogInput = {
   _version?: number | null,
 };
 
+export type CreateExerciseLogExerciseRoutineInput = {
+  id?: string | null,
+  exerciseLogId: string,
+  exerciseRoutineId: string,
+  _version?: number | null,
+};
+
+export type ModelExerciseLogExerciseRoutineConditionInput = {
+  exerciseLogId?: ModelIDInput | null,
+  exerciseRoutineId?: ModelIDInput | null,
+  and?: Array< ModelExerciseLogExerciseRoutineConditionInput | null > | null,
+  or?: Array< ModelExerciseLogExerciseRoutineConditionInput | null > | null,
+  not?: ModelExerciseLogExerciseRoutineConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type UpdateExerciseLogExerciseRoutineInput = {
+  id: string,
+  exerciseLogId?: string | null,
+  exerciseRoutineId?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteExerciseLogExerciseRoutineInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateExerciseSetExerciseTypeInput = {
   id?: string | null,
   exerciseSetId: string,
@@ -909,36 +1046,6 @@ export type DeleteExerciseSetExerciseRoutineInput = {
   _version?: number | null,
 };
 
-export type CreateExerciseLogExerciseRoutineInput = {
-  id?: string | null,
-  exerciseLogId: string,
-  exerciseRoutineId: string,
-  _version?: number | null,
-};
-
-export type ModelExerciseLogExerciseRoutineConditionInput = {
-  exerciseLogId?: ModelIDInput | null,
-  exerciseRoutineId?: ModelIDInput | null,
-  and?: Array< ModelExerciseLogExerciseRoutineConditionInput | null > | null,
-  or?: Array< ModelExerciseLogExerciseRoutineConditionInput | null > | null,
-  not?: ModelExerciseLogExerciseRoutineConditionInput | null,
-  _deleted?: ModelBooleanInput | null,
-  createdAt?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-};
-
-export type UpdateExerciseLogExerciseRoutineInput = {
-  id: string,
-  exerciseLogId?: string | null,
-  exerciseRoutineId?: string | null,
-  _version?: number | null,
-};
-
-export type DeleteExerciseLogExerciseRoutineInput = {
-  id: string,
-  _version?: number | null,
-};
-
 export type CreateExerciseRoutineExerciseTypeInput = {
   id?: string | null,
   exerciseRoutineId: string,
@@ -969,26 +1076,6 @@ export type DeleteExerciseRoutineExerciseTypeInput = {
   _version?: number | null,
 };
 
-export type ModelExerciseSetFilterInput = {
-  id?: ModelIDInput | null,
-  reps?: ModelStringInput | null,
-  time?: ModelStringInput | null,
-  weight?: ModelStringInput | null,
-  createdAt?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-  and?: Array< ModelExerciseSetFilterInput | null > | null,
-  or?: Array< ModelExerciseSetFilterInput | null > | null,
-  not?: ModelExerciseSetFilterInput | null,
-  _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelExerciseSetConnection = {
-  __typename: "ModelExerciseSetConnection",
-  items:  Array<ExerciseSet | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
 export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
@@ -996,6 +1083,7 @@ export type ModelUserFilterInput = {
   age?: ModelIntInput | null,
   height?: ModelFloatInput | null,
   weight?: ModelFloatInput | null,
+  isFirstTime?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
@@ -1108,6 +1196,38 @@ export type ModelFoodItemServingFilterInput = {
   foodItemServingOptionsId?: ModelIDInput | null,
 };
 
+export type ModelRecipeFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelRecipeFilterInput | null > | null,
+  or?: Array< ModelRecipeFilterInput | null > | null,
+  not?: ModelRecipeFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelRecipeConnection = {
+  __typename: "ModelRecipeConnection",
+  items:  Array<Recipe | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelRecipeToFoodFilterInput = {
+  id?: ModelIDInput | null,
+  recipeId?: ModelIDInput | null,
+  foodId?: ModelIDInput | null,
+  servingId?: ModelIDInput | null,
+  servingAmount?: ModelFloatInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelRecipeToFoodFilterInput | null > | null,
+  or?: Array< ModelRecipeToFoodFilterInput | null > | null,
+  not?: ModelRecipeToFoodFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelExerciseLogFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
@@ -1125,6 +1245,26 @@ export type ModelExerciseLogFilterInput = {
 export type ModelExerciseLogConnection = {
   __typename: "ModelExerciseLogConnection",
   items:  Array<ExerciseLog | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelExerciseSetFilterInput = {
+  id?: ModelIDInput | null,
+  reps?: ModelStringInput | null,
+  time?: ModelStringInput | null,
+  weight?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelExerciseSetFilterInput | null > | null,
+  or?: Array< ModelExerciseSetFilterInput | null > | null,
+  not?: ModelExerciseSetFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelExerciseSetConnection = {
+  __typename: "ModelExerciseSetConnection",
+  items:  Array<ExerciseSet | null >,
   nextToken?: string | null,
   startedAt?: number | null,
 };
@@ -1174,6 +1314,7 @@ export type ModelSleepLogFilterInput = {
   hoursSlept?: ModelFloatInput | null,
   sleepQuality?: ModelIntInput | null,
   dreamJournal?: ModelStringInput | null,
+  restfulnessScore?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelSleepLogFilterInput | null > | null,
@@ -1231,6 +1372,18 @@ export type ModelGoalLogConnection = {
   startedAt?: number | null,
 };
 
+export type ModelExerciseLogExerciseRoutineFilterInput = {
+  id?: ModelIDInput | null,
+  exerciseLogId?: ModelIDInput | null,
+  exerciseRoutineId?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelExerciseLogExerciseRoutineFilterInput | null > | null,
+  or?: Array< ModelExerciseLogExerciseRoutineFilterInput | null > | null,
+  not?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelExerciseSetExerciseTypeFilterInput = {
   id?: ModelIDInput | null,
   exerciseSetId?: ModelIDInput | null,
@@ -1255,18 +1408,6 @@ export type ModelExerciseSetExerciseRoutineFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
-export type ModelExerciseLogExerciseRoutineFilterInput = {
-  id?: ModelIDInput | null,
-  exerciseLogId?: ModelIDInput | null,
-  exerciseRoutineId?: ModelIDInput | null,
-  createdAt?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-  and?: Array< ModelExerciseLogExerciseRoutineFilterInput | null > | null,
-  or?: Array< ModelExerciseLogExerciseRoutineFilterInput | null > | null,
-  not?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  _deleted?: ModelBooleanInput | null,
-};
-
 export type ModelExerciseRoutineExerciseTypeFilterInput = {
   id?: ModelIDInput | null,
   exerciseRoutineId?: ModelIDInput | null,
@@ -1279,15 +1420,18 @@ export type ModelExerciseRoutineExerciseTypeFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
-export type ModelSubscriptionExerciseSetFilterInput = {
+export type ModelSubscriptionUserFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  reps?: ModelSubscriptionStringInput | null,
-  time?: ModelSubscriptionStringInput | null,
-  weight?: ModelSubscriptionStringInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  age?: ModelSubscriptionIntInput | null,
+  height?: ModelSubscriptionFloatInput | null,
+  weight?: ModelSubscriptionFloatInput | null,
+  isFirstTime?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionExerciseSetFilterInput | null > | null,
-  or?: Array< ModelSubscriptionExerciseSetFilterInput | null > | null,
+  and?: Array< ModelSubscriptionUserFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -1321,20 +1465,6 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionUserFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  userId?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  age?: ModelSubscriptionIntInput | null,
-  height?: ModelSubscriptionFloatInput | null,
-  weight?: ModelSubscriptionFloatInput | null,
-  createdAt?: ModelSubscriptionStringInput | null,
-  updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionUserFilterInput | null > | null,
-  or?: Array< ModelSubscriptionUserFilterInput | null > | null,
-  _deleted?: ModelBooleanInput | null,
-};
-
 export type ModelSubscriptionIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -1357,6 +1487,11 @@ export type ModelSubscriptionFloatInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type ModelSubscriptionNutritionLogFilterInput = {
@@ -1421,6 +1556,29 @@ export type ModelSubscriptionFoodItemServingFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
+export type ModelSubscriptionRecipeFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionRecipeFilterInput | null > | null,
+  or?: Array< ModelSubscriptionRecipeFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionRecipeToFoodFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  recipeId?: ModelSubscriptionIDInput | null,
+  foodId?: ModelSubscriptionIDInput | null,
+  servingId?: ModelSubscriptionIDInput | null,
+  servingAmount?: ModelSubscriptionFloatInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionRecipeToFoodFilterInput | null > | null,
+  or?: Array< ModelSubscriptionRecipeToFoodFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelSubscriptionExerciseLogFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
@@ -1431,6 +1589,18 @@ export type ModelSubscriptionExerciseLogFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionExerciseLogFilterInput | null > | null,
   or?: Array< ModelSubscriptionExerciseLogFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionExerciseSetFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  reps?: ModelSubscriptionStringInput | null,
+  time?: ModelSubscriptionStringInput | null,
+  weight?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionExerciseSetFilterInput | null > | null,
+  or?: Array< ModelSubscriptionExerciseSetFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -1463,6 +1633,7 @@ export type ModelSubscriptionSleepLogFilterInput = {
   hoursSlept?: ModelSubscriptionFloatInput | null,
   sleepQuality?: ModelSubscriptionIntInput | null,
   dreamJournal?: ModelSubscriptionStringInput | null,
+  restfulnessScore?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionSleepLogFilterInput | null > | null,
@@ -1496,6 +1667,17 @@ export type ModelSubscriptionGoalLogFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
+export type ModelSubscriptionExerciseLogExerciseRoutineFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  exerciseLogId?: ModelSubscriptionIDInput | null,
+  exerciseRoutineId?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null > | null,
+  or?: Array< ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelSubscriptionExerciseSetExerciseTypeFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   exerciseSetId?: ModelSubscriptionIDInput | null,
@@ -1518,17 +1700,6 @@ export type ModelSubscriptionExerciseSetExerciseRoutineFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
-export type ModelSubscriptionExerciseLogExerciseRoutineFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  exerciseLogId?: ModelSubscriptionIDInput | null,
-  exerciseRoutineId?: ModelSubscriptionIDInput | null,
-  createdAt?: ModelSubscriptionStringInput | null,
-  updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null > | null,
-  or?: Array< ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null > | null,
-  _deleted?: ModelBooleanInput | null,
-};
-
 export type ModelSubscriptionExerciseRoutineExerciseTypeFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   exerciseRoutineId?: ModelSubscriptionIDInput | null,
@@ -1538,96 +1709,6 @@ export type ModelSubscriptionExerciseRoutineExerciseTypeFilterInput = {
   and?: Array< ModelSubscriptionExerciseRoutineExerciseTypeFilterInput | null > | null,
   or?: Array< ModelSubscriptionExerciseRoutineExerciseTypeFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type CreateExerciseSetMutationVariables = {
-  input: CreateExerciseSetInput,
-  condition?: ModelExerciseSetConditionInput | null,
-};
-
-export type CreateExerciseSetMutation = {
-  createExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type UpdateExerciseSetMutationVariables = {
-  input: UpdateExerciseSetInput,
-  condition?: ModelExerciseSetConditionInput | null,
-};
-
-export type UpdateExerciseSetMutation = {
-  updateExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type DeleteExerciseSetMutationVariables = {
-  input: DeleteExerciseSetInput,
-  condition?: ModelExerciseSetConditionInput | null,
-};
-
-export type DeleteExerciseSetMutation = {
-  deleteExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
 };
 
 export type CreateUserMutationVariables = {
@@ -1644,6 +1725,7 @@ export type CreateUserMutation = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1666,6 +1748,7 @@ export type UpdateUserMutation = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1688,6 +1771,7 @@ export type DeleteUserMutation = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1985,6 +2069,11 @@ export type CreateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -2014,6 +2103,11 @@ export type UpdateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -2040,6 +2134,11 @@ export type DeleteFoodItemMutation = {
     name: string,
     meals?:  {
       __typename: "ModelMealToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2161,6 +2260,201 @@ export type DeleteFoodItemServingMutation = {
   } | null,
 };
 
+export type CreateRecipeMutationVariables = {
+  input: CreateRecipeInput,
+  condition?: ModelRecipeConditionInput | null,
+};
+
+export type CreateRecipeMutation = {
+  createRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateRecipeMutationVariables = {
+  input: UpdateRecipeInput,
+  condition?: ModelRecipeConditionInput | null,
+};
+
+export type UpdateRecipeMutation = {
+  updateRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteRecipeMutationVariables = {
+  input: DeleteRecipeInput,
+  condition?: ModelRecipeConditionInput | null,
+};
+
+export type DeleteRecipeMutation = {
+  deleteRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateRecipeToFoodMutationVariables = {
+  input: CreateRecipeToFoodInput,
+  condition?: ModelRecipeToFoodConditionInput | null,
+};
+
+export type CreateRecipeToFoodMutation = {
+  createRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateRecipeToFoodMutationVariables = {
+  input: UpdateRecipeToFoodInput,
+  condition?: ModelRecipeToFoodConditionInput | null,
+};
+
+export type UpdateRecipeToFoodMutation = {
+  updateRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteRecipeToFoodMutationVariables = {
+  input: DeleteRecipeToFoodInput,
+  condition?: ModelRecipeToFoodConditionInput | null,
+};
+
+export type DeleteRecipeToFoodMutation = {
+  deleteRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
 export type CreateExerciseLogMutationVariables = {
   input: CreateExerciseLogInput,
   condition?: ModelExerciseLogConditionInput | null,
@@ -2261,6 +2555,96 @@ export type DeleteExerciseLogMutation = {
     caloriesBurned?: number | null,
     ExerciseRoutines?:  {
       __typename: "ModelExerciseLogExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateExerciseSetMutationVariables = {
+  input: CreateExerciseSetInput,
+  condition?: ModelExerciseSetConditionInput | null,
+};
+
+export type CreateExerciseSetMutation = {
+  createExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateExerciseSetMutationVariables = {
+  input: UpdateExerciseSetInput,
+  condition?: ModelExerciseSetConditionInput | null,
+};
+
+export type UpdateExerciseSetMutation = {
+  updateExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteExerciseSetMutationVariables = {
+  input: DeleteExerciseSetInput,
+  condition?: ModelExerciseSetConditionInput | null,
+};
+
+export type DeleteExerciseSetMutation = {
+  deleteExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2473,8 +2857,9 @@ export type CreateSleepLogMutation = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2495,8 +2880,9 @@ export type UpdateSleepLogMutation = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2517,8 +2903,9 @@ export type DeleteSleepLogMutation = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2645,6 +3032,135 @@ export type DeleteGoalLogMutation = {
     hoursSlept: number,
     dailyCalories: number,
     dailyExercise: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateExerciseLogExerciseRoutineMutationVariables = {
+  input: CreateExerciseLogExerciseRoutineInput,
+  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
+};
+
+export type CreateExerciseLogExerciseRoutineMutation = {
+  createExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateExerciseLogExerciseRoutineMutationVariables = {
+  input: UpdateExerciseLogExerciseRoutineInput,
+  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
+};
+
+export type UpdateExerciseLogExerciseRoutineMutation = {
+  updateExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteExerciseLogExerciseRoutineMutationVariables = {
+  input: DeleteExerciseLogExerciseRoutineInput,
+  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
+};
+
+export type DeleteExerciseLogExerciseRoutineMutation = {
+  deleteExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2905,135 +3421,6 @@ export type DeleteExerciseSetExerciseRoutineMutation = {
   } | null,
 };
 
-export type CreateExerciseLogExerciseRoutineMutationVariables = {
-  input: CreateExerciseLogExerciseRoutineInput,
-  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
-};
-
-export type CreateExerciseLogExerciseRoutineMutation = {
-  createExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type UpdateExerciseLogExerciseRoutineMutationVariables = {
-  input: UpdateExerciseLogExerciseRoutineInput,
-  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
-};
-
-export type UpdateExerciseLogExerciseRoutineMutation = {
-  updateExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type DeleteExerciseLogExerciseRoutineMutationVariables = {
-  input: DeleteExerciseLogExerciseRoutineInput,
-  condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
-};
-
-export type DeleteExerciseLogExerciseRoutineMutation = {
-  deleteExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
 export type CreateExerciseRoutineExerciseTypeMutationVariables = {
   input: CreateExerciseRoutineExerciseTypeInput,
   condition?: ModelExerciseRoutineExerciseTypeConditionInput | null,
@@ -3157,88 +3544,6 @@ export type DeleteExerciseRoutineExerciseTypeMutation = {
   } | null,
 };
 
-export type GetExerciseSetQueryVariables = {
-  id: string,
-};
-
-export type GetExerciseSetQuery = {
-  getExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type ListExerciseSetsQueryVariables = {
-  filter?: ModelExerciseSetFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListExerciseSetsQuery = {
-  listExerciseSets?:  {
-    __typename: "ModelExerciseSetConnection",
-    items:  Array< {
-      __typename: "ExerciseSet",
-      id: string,
-      reps?: string | null,
-      time?: string | null,
-      weight?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type SyncExerciseSetsQueryVariables = {
-  filter?: ModelExerciseSetFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncExerciseSetsQuery = {
-  syncExerciseSets?:  {
-    __typename: "ModelExerciseSetConnection",
-    items:  Array< {
-      __typename: "ExerciseSet",
-      id: string,
-      reps?: string | null,
-      time?: string | null,
-      weight?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
 export type GetUserQueryVariables = {
   id: string,
 };
@@ -3252,6 +3557,7 @@ export type GetUserQuery = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3277,6 +3583,7 @@ export type ListUsersQuery = {
       age?: number | null,
       height?: number | null,
       weight?: number | null,
+      isFirstTime: boolean,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3306,6 +3613,7 @@ export type SyncUsersQuery = {
       age?: number | null,
       height?: number | null,
       weight?: number | null,
+      isFirstTime: boolean,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3637,6 +3945,11 @@ export type GetFoodItemQuery = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -3796,6 +4109,233 @@ export type SyncFoodItemServingsQuery = {
   } | null,
 };
 
+export type GetRecipeQueryVariables = {
+  id: string,
+};
+
+export type GetRecipeQuery = {
+  getRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListRecipesQueryVariables = {
+  filter?: ModelRecipeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListRecipesQuery = {
+  listRecipes?:  {
+    __typename: "ModelRecipeConnection",
+    items:  Array< {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncRecipesQueryVariables = {
+  filter?: ModelRecipeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncRecipesQuery = {
+  syncRecipes?:  {
+    __typename: "ModelRecipeConnection",
+    items:  Array< {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetRecipeToFoodQueryVariables = {
+  id: string,
+};
+
+export type GetRecipeToFoodQuery = {
+  getRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListRecipeToFoodsQueryVariables = {
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListRecipeToFoodsQuery = {
+  listRecipeToFoods?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncRecipeToFoodsQueryVariables = {
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncRecipeToFoodsQuery = {
+  syncRecipeToFoods?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type RecipeToFoodsByRecipeIdAndFoodIdQueryVariables = {
+  recipeId: string,
+  foodId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type RecipeToFoodsByRecipeIdAndFoodIdQuery = {
+  recipeToFoodsByRecipeIdAndFoodId?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type RecipeToFoodsByFoodIdAndRecipeIdQueryVariables = {
+  foodId: string,
+  recipeId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type RecipeToFoodsByFoodIdAndRecipeIdQuery = {
+  recipeToFoodsByFoodIdAndRecipeId?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetExerciseLogQueryVariables = {
   id: string,
 };
@@ -3876,6 +4416,88 @@ export type SyncExerciseLogsQuery = {
       date: string,
       durationMinutes?: number | null,
       caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetExerciseSetQueryVariables = {
+  id: string,
+};
+
+export type GetExerciseSetQuery = {
+  getExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListExerciseSetsQueryVariables = {
+  filter?: ModelExerciseSetFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListExerciseSetsQuery = {
+  listExerciseSets?:  {
+    __typename: "ModelExerciseSetConnection",
+    items:  Array< {
+      __typename: "ExerciseSet",
+      id: string,
+      reps?: string | null,
+      time?: string | null,
+      weight?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncExerciseSetsQueryVariables = {
+  filter?: ModelExerciseSetFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncExerciseSetsQuery = {
+  syncExerciseSets?:  {
+    __typename: "ModelExerciseSetConnection",
+    items:  Array< {
+      __typename: "ExerciseSet",
+      id: string,
+      reps?: string | null,
+      time?: string | null,
+      weight?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4061,8 +4683,9 @@ export type GetSleepLogQuery = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4086,8 +4709,9 @@ export type ListSleepLogsQuery = {
       userId: string,
       date: string,
       hoursSlept: number,
-      sleepQuality?: number | null,
+      sleepQuality: number,
       dreamJournal?: string | null,
+      restfulnessScore: number,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4115,8 +4739,9 @@ export type SyncSleepLogsQuery = {
       userId: string,
       date: string,
       hoursSlept: number,
-      sleepQuality?: number | null,
+      sleepQuality: number,
       dreamJournal?: string | null,
+      restfulnessScore: number,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4267,6 +4892,153 @@ export type SyncGoalLogsQuery = {
       hoursSlept: number,
       dailyCalories: number,
       dailyExercise: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetExerciseLogExerciseRoutineQueryVariables = {
+  id: string,
+};
+
+export type GetExerciseLogExerciseRoutineQuery = {
+  getExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListExerciseLogExerciseRoutinesQueryVariables = {
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListExerciseLogExerciseRoutinesQuery = {
+  listExerciseLogExerciseRoutines?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncExerciseLogExerciseRoutinesQueryVariables = {
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncExerciseLogExerciseRoutinesQuery = {
+  syncExerciseLogExerciseRoutines?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseLogIdQueryVariables = {
+  exerciseLogId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseLogIdQuery = {
+  exerciseLogExerciseRoutinesByExerciseLogId?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQueryVariables = {
+  exerciseRoutineId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQuery = {
+  exerciseLogExerciseRoutinesByExerciseRoutineId?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4570,153 +5342,6 @@ export type ExerciseSetExerciseRoutinesByExerciseRoutineIdQuery = {
   } | null,
 };
 
-export type GetExerciseLogExerciseRoutineQueryVariables = {
-  id: string,
-};
-
-export type GetExerciseLogExerciseRoutineQuery = {
-  getExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type ListExerciseLogExerciseRoutinesQueryVariables = {
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListExerciseLogExerciseRoutinesQuery = {
-  listExerciseLogExerciseRoutines?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type SyncExerciseLogExerciseRoutinesQueryVariables = {
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncExerciseLogExerciseRoutinesQuery = {
-  syncExerciseLogExerciseRoutines?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseLogIdQueryVariables = {
-  exerciseLogId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseLogIdQuery = {
-  exerciseLogExerciseRoutinesByExerciseLogId?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQueryVariables = {
-  exerciseRoutineId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQuery = {
-  exerciseLogExerciseRoutinesByExerciseRoutineId?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
 export type GetExerciseRoutineExerciseTypeQueryVariables = {
   id: string,
 };
@@ -4862,93 +5487,6 @@ export type ExerciseRoutineExerciseTypesByExerciseTypeIdQuery = {
   } | null,
 };
 
-export type OnCreateExerciseSetSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseSetFilterInput | null,
-};
-
-export type OnCreateExerciseSetSubscription = {
-  onCreateExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnUpdateExerciseSetSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseSetFilterInput | null,
-};
-
-export type OnUpdateExerciseSetSubscription = {
-  onUpdateExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnDeleteExerciseSetSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseSetFilterInput | null,
-};
-
-export type OnDeleteExerciseSetSubscription = {
-  onDeleteExerciseSet?:  {
-    __typename: "ExerciseSet",
-    id: string,
-    reps?: string | null,
-    time?: string | null,
-    weight?: string | null,
-    ExerciseType?:  {
-      __typename: "ModelExerciseSetExerciseTypeConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ExerciseRoutines?:  {
-      __typename: "ModelExerciseSetExerciseRoutineConnection",
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
 export type OnCreateUserSubscriptionVariables = {
   filter?: ModelSubscriptionUserFilterInput | null,
 };
@@ -4962,6 +5500,7 @@ export type OnCreateUserSubscription = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4983,6 +5522,7 @@ export type OnUpdateUserSubscription = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -5004,6 +5544,7 @@ export type OnDeleteUserSubscription = {
     age?: number | null,
     height?: number | null,
     weight?: number | null,
+    isFirstTime: boolean,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -5291,6 +5832,11 @@ export type OnCreateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -5319,6 +5865,11 @@ export type OnUpdateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -5344,6 +5895,11 @@ export type OnDeleteFoodItemSubscription = {
     name: string,
     meals?:  {
       __typename: "ModelMealToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    recipes?:  {
+      __typename: "ModelRecipeToFoodConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -5462,6 +6018,195 @@ export type OnDeleteFoodItemServingSubscription = {
   } | null,
 };
 
+export type OnCreateRecipeSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeFilterInput | null,
+};
+
+export type OnCreateRecipeSubscription = {
+  onCreateRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateRecipeSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeFilterInput | null,
+};
+
+export type OnUpdateRecipeSubscription = {
+  onUpdateRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteRecipeSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeFilterInput | null,
+};
+
+export type OnDeleteRecipeSubscription = {
+  onDeleteRecipe?:  {
+    __typename: "Recipe",
+    id: string,
+    name: string,
+    foodItems?:  {
+      __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateRecipeToFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeToFoodFilterInput | null,
+};
+
+export type OnCreateRecipeToFoodSubscription = {
+  onCreateRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateRecipeToFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeToFoodFilterInput | null,
+};
+
+export type OnUpdateRecipeToFoodSubscription = {
+  onUpdateRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteRecipeToFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionRecipeToFoodFilterInput | null,
+};
+
+export type OnDeleteRecipeToFoodSubscription = {
+  onDeleteRecipeToFood?:  {
+    __typename: "RecipeToFood",
+    id: string,
+    recipeId: string,
+    foodId: string,
+    servingId: string,
+    servingAmount: number,
+    recipe?:  {
+      __typename: "Recipe",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
 export type OnCreateExerciseLogSubscriptionVariables = {
   filter?: ModelSubscriptionExerciseLogFilterInput | null,
 };
@@ -5559,6 +6304,93 @@ export type OnDeleteExerciseLogSubscription = {
     caloriesBurned?: number | null,
     ExerciseRoutines?:  {
       __typename: "ModelExerciseLogExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateExerciseSetSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseSetFilterInput | null,
+};
+
+export type OnCreateExerciseSetSubscription = {
+  onCreateExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateExerciseSetSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseSetFilterInput | null,
+};
+
+export type OnUpdateExerciseSetSubscription = {
+  onUpdateExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteExerciseSetSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseSetFilterInput | null,
+};
+
+export type OnDeleteExerciseSetSubscription = {
+  onDeleteExerciseSet?:  {
+    __typename: "ExerciseSet",
+    id: string,
+    reps?: string | null,
+    time?: string | null,
+    weight?: string | null,
+    ExerciseType?:  {
+      __typename: "ModelExerciseSetExerciseTypeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ExerciseRoutines?:  {
+      __typename: "ModelExerciseSetExerciseRoutineConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -5764,8 +6596,9 @@ export type OnCreateSleepLogSubscription = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -5785,8 +6618,9 @@ export type OnUpdateSleepLogSubscription = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -5806,8 +6640,9 @@ export type OnDeleteSleepLogSubscription = {
     userId: string,
     date: string,
     hoursSlept: number,
-    sleepQuality?: number | null,
+    sleepQuality: number,
     dreamJournal?: string | null,
+    restfulnessScore: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -5928,6 +6763,132 @@ export type OnDeleteGoalLogSubscription = {
     hoursSlept: number,
     dailyCalories: number,
     dailyExercise: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateExerciseLogExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
+};
+
+export type OnCreateExerciseLogExerciseRoutineSubscription = {
+  onCreateExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateExerciseLogExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
+};
+
+export type OnUpdateExerciseLogExerciseRoutineSubscription = {
+  onUpdateExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteExerciseLogExerciseRoutineSubscriptionVariables = {
+  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
+};
+
+export type OnDeleteExerciseLogExerciseRoutineSubscription = {
+  onDeleteExerciseLogExerciseRoutine?:  {
+    __typename: "ExerciseLogExerciseRoutine",
+    id: string,
+    exerciseLogId: string,
+    exerciseRoutineId: string,
+    exerciseLog:  {
+      __typename: "ExerciseLog",
+      id: string,
+      userId: string,
+      date: string,
+      durationMinutes?: number | null,
+      caloriesBurned?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
+    exerciseRoutine:  {
+      __typename: "ExerciseRoutine",
+      id: string,
+      userId: string,
+      name?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    },
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6157,132 +7118,6 @@ export type OnDeleteExerciseSetExerciseRoutineSubscription = {
       reps?: string | null,
       time?: string | null,
       weight?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnCreateExerciseLogExerciseRoutineSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
-};
-
-export type OnCreateExerciseLogExerciseRoutineSubscription = {
-  onCreateExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnUpdateExerciseLogExerciseRoutineSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
-};
-
-export type OnUpdateExerciseLogExerciseRoutineSubscription = {
-  onUpdateExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    exerciseRoutine:  {
-      __typename: "ExerciseRoutine",
-      id: string,
-      userId: string,
-      name?: string | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnDeleteExerciseLogExerciseRoutineSubscriptionVariables = {
-  filter?: ModelSubscriptionExerciseLogExerciseRoutineFilterInput | null,
-};
-
-export type OnDeleteExerciseLogExerciseRoutineSubscription = {
-  onDeleteExerciseLogExerciseRoutine?:  {
-    __typename: "ExerciseLogExerciseRoutine",
-    id: string,
-    exerciseLogId: string,
-    exerciseRoutineId: string,
-    exerciseLog:  {
-      __typename: "ExerciseLog",
-      id: string,
-      userId: string,
-      date: string,
-      durationMinutes?: number | null,
-      caloriesBurned?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
