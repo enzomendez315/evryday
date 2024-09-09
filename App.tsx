@@ -22,6 +22,8 @@ import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
+import BasicInfoScreen from './src/screens/Basic-Info-Screen';
+
 import { Amplify } from 'aws-amplify';
 import { DataStore, Predicates } from 'aws-amplify/datastore';
 import { ConsoleLogger } from 'aws-amplify/utils';
@@ -30,6 +32,7 @@ import awsconfig from './src/aws-exports';
 import { User } from './src/models';
 import { Hub } from 'aws-amplify/utils';
 
+
 import { withAuthenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 
 import { currentUserDetails, userSignOut } from './src/logic/account'
@@ -37,13 +40,20 @@ Amplify.configure(awsconfig);
 
 const DEBUG = false;
 
-// used to pass userID to all screens
+// used to pass userID to all screens *in theory*
 export const AccountContext = React.createContext("");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function BottomNavBarTabs() {
+// needed to remove tab(s) for beginners
+interface BottomNavBarTabsProps {
+  dietTrack?: boolean;
+  sleepTrack?: boolean;
+  workoutTrack?: boolean;
+}
+
+function BottomNavBarTabs({ dietTrack = true, sleepTrack = true, workoutTrack = true }: BottomNavBarTabsProps) {
   return (
     <Tab.Navigator
       initialRouteName="Feed"
@@ -61,7 +71,7 @@ function BottomNavBarTabs() {
           ),
         }}
       />
-      <Tab.Screen
+      {dietTrack && <Tab.Screen
         name="Diet"
         component={DietStack}
         options={{
@@ -70,8 +80,8 @@ function BottomNavBarTabs() {
             <Ionicons name="nutrition" color={color} size={size} />
           ),
         }}
-      />
-      <Tab.Screen
+      />}
+      {sleepTrack && <Tab.Screen
         name="Sleep"
         component={SleepStack}
         options={{
@@ -80,8 +90,8 @@ function BottomNavBarTabs() {
             <MaterialCommunityIcons name="sleep" color={color} size={size} />
           ),
         }}
-      />
-      <Tab.Screen
+      />}
+      {workoutTrack && <Tab.Screen
         name="Workout"
         component={WorkoutStack}
         options={{
@@ -94,7 +104,7 @@ function BottomNavBarTabs() {
             />
           ),
         }}
-      />
+      />}
       <Tab.Screen
         name="Settings"
         component={SettingsStack}
@@ -123,6 +133,19 @@ function DashboardStack() {
             backgroundColor: COLORS.lightGreen,
           },
         }} />
+    </Stack.Navigator>
+  );
+}
+
+//Screen in Signup tab
+function BasicInfoStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen 
+        name="Basic Info" 
+        component={BasicInfoScreen} 
+        options={{ headerTitle: "Complete Your Profile" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -224,22 +247,35 @@ export async function StartListening(user: string) {
 
 function App() {
   const [userId, setUserId] = React.useState("");
+  const [useDiet, setUseDiet] = React.useState(true);
+  const [useSleep, setUseSleep] = React.useState(true);
+  const [useWorkout, setUseWorkout] = React.useState(true);
   // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
-
   React.useEffect(() => {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
+
+      setIsFirstTime(user.isFirstTime);
+     
+      
       await DataStore.start();
       await StartListening(user);
+      //TODO: Add a check for user settings to determine which tabs to show
+      // it will look something like
+      // if (user.settings.dietTracking == true) { setUseDiet(true) }
+      // user settings will probably be stored in the user model
     });
   }, []);
+
+
 
   return (
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
       <NavigationContainer>
-        <BottomNavBarTabs />
+        <BottomNavBarTabs dietTrack={useDiet}
+          sleepTrack={useSleep} workoutTrack={useWorkout} />
       </NavigationContainer>
     </AccountContext.Provider>
   );
