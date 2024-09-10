@@ -179,7 +179,7 @@ async function getSleepEntriesForMonth(userId, month, year) {
 // calculates the restfulness score based on the sleep duration and quality
 // this algorithm is for manual sleep entries
 // assigns weights to both metrics and combines them into a single score of 0-100
-function getRestfulnessScore(sleepDuration, sleepQuality) {
+export function getRestfulnessScore(sleepDuration, sleepQuality) {
     let durationScore = 0;
     let qualityScore = 0;
     let restfulnessScore = 0;

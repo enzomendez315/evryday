@@ -619,6 +619,14 @@ async function bulkCreateFood(foodItems, foodServings) {
     });
 }
 
+// calculates a score based on the number of calories the user has consumed
+export function getNutritionScore() {
+    // get total calories for the day
+    // compare min and max
+    // normalize inputs
+    // compute a score based on 100
+}
+
 //######################################## TESTING DATA #########################################
 const FoodItemsList = [
     {'ref_id': 0, 'name': 'Hummus, commercial'},

@@ -240,3 +240,9 @@ export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoad
     setRoutineData(tempRoutineData);
     setIsDataLoading(false);
 }
+
+// calculates the exercise score based on the user's activity
+export function getExerciseScore() {
+    // check if there is activity for the current day
+    // all or nothing score
+}
