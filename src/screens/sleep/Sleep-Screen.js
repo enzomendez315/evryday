@@ -352,7 +352,8 @@ const SleepScreen = () => {
   // a list of all the sleep entries to show the user in the UI
   const [sleepData, setSleepData] = useState([]);
   // sort order of sleep entries
-  const [isAscending, setIsAscending] = useState(false);
+  const [isAscending, setIsAscending] = useState(true);
+  const [showChart, setShowChart] = useState(true);
 
   // gets the context created in the App.tsx file
   userID = React.useContext(AccountContext);
@@ -370,7 +371,7 @@ const SleepScreen = () => {
     }, [])
   );
 
-   // sorts the sleep data based on the order of dates (either ascending or descending)
+  // sorts the sleep data based on the order of dates (either ascending or descending)
   const sortEntriesByDate = () => {
     const sortedData = [...sleepData].sort((a, b) => {
       const dateA = new Date(a.day);
@@ -380,20 +381,6 @@ const SleepScreen = () => {
     setSleepData(sortedData);
     setIsAscending(!isAscending); // toggles the sort order after each press
   };
-
-  // // changes the order from ascending to descending or vice versa
-  // const toggleOrder = () => {
-  //   setIsAscending(!isAscending);
-  // };
-  // // create a copy of the sleep data and sort it in ascending order
-  // let ascendingSleepData = [...sleepData];
-  // if (isAscending) {
-  //   // ascending order
-  //   ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
-  // } else {
-  //   // descending order
-  //   sleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
-  // }
 
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
@@ -432,8 +419,14 @@ const SleepScreen = () => {
             Average Hours: {(totalHours / sleepData.length).toFixed(2)}
           </Text> : null}
 
-          {/* Chart */}
-          {!isLoading ? sleepData.length > 0 ?
+          <TouchableOpacity
+            style={styles.addSleepButton}
+            onPress={() => setShowChart(!showChart)}>
+            <Text style={styles.addSleepButtonText}>{showChart ? 'Hide Chart' : 'Show Chart'}</Text>
+          </TouchableOpacity>
+
+          {/* Chart*/}
+          {showChart ? !isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} />
             </View>
@@ -441,16 +434,20 @@ const SleepScreen = () => {
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
               <Text style={{ textAlign: 'center' }}>No sleep data found</Text>
             </View>
-            : <Text>Loading...</Text>
+            : <Text>Loading...</Text> // if showChart is true but still loading
+            : null // if showChart is false
           }
+
 
           {/* Sleep data rendered in tabs*/}
           {sleepData.length > 0 ? <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text> : null}
           {/* Toggle Button */}
-          <Button
-            title={isAscending ? 'Show Descending' : 'Show Ascending'}
-            onPress={sortEntriesByDate}
-          />
+          <TouchableOpacity
+            style={styles.addSleepButton}
+            onPress={sortEntriesByDate}>
+            <Text style={styles.addSleepButtonText}>
+              {isAscending ? 'Show Descending' : 'Show Ascending'}</Text>
+          </TouchableOpacity>
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>
