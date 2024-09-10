@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, SafeAreaView, StatusBar, Text, StyleSheet,
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button,
   ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -351,6 +351,8 @@ const SleepScreen = () => {
   const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });
   // a list of all the sleep entries to show the user in the UI
   const [sleepData, setSleepData] = useState([]);
+  // sort order of sleep entries
+  const [isAscending, setIsAscending] = useState(false);
 
   // gets the context created in the App.tsx file
   userID = React.useContext(AccountContext);
@@ -368,9 +370,30 @@ const SleepScreen = () => {
     }, [])
   );
 
-  // create a copy of the sleep data and sort it in ascending order for line chart
-  let ascendingSleepData = [...sleepData];
-  ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+   // sorts the sleep data based on the order of dates (either ascending or descending)
+  const sortEntriesByDate = () => {
+    const sortedData = [...sleepData].sort((a, b) => {
+      const dateA = new Date(a.day);
+      const dateB = new Date(b.day);
+      return isAscending ? dateA - dateB : dateB - dateA;
+    });
+    setSleepData(sortedData);
+    setIsAscending(!isAscending); // toggles the sort order after each press
+  };
+
+  // // changes the order from ascending to descending or vice versa
+  // const toggleOrder = () => {
+  //   setIsAscending(!isAscending);
+  // };
+  // // create a copy of the sleep data and sort it in ascending order
+  // let ascendingSleepData = [...sleepData];
+  // if (isAscending) {
+  //   // ascending order
+  //   ascendingSleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+  // } else {
+  //   // descending order
+  //   sleepData.sort((a, b) => new Date(a.day) - new Date(b.day));
+  // }
 
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
 
@@ -410,9 +433,9 @@ const SleepScreen = () => {
           </Text> : null}
 
           {/* Chart */}
-          {!isLoading ? ascendingSleepData.length > 0 ?
+          {!isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
-              <MyLineChart sleepArray={ascendingSleepData} />
+              <MyLineChart sleepArray={sleepData} />
             </View>
             : <View>
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
@@ -423,6 +446,11 @@ const SleepScreen = () => {
 
           {/* Sleep data rendered in tabs*/}
           {sleepData.length > 0 ? <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text> : null}
+          {/* Toggle Button */}
+          <Button
+            title={isAscending ? 'Show Descending' : 'Show Ascending'}
+            onPress={sortEntriesByDate}
+          />
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>
