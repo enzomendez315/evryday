@@ -48,10 +48,21 @@ const DietScreen = ({ navigation }) => {
   // Called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
+      // This if statement took me like an hour to figure out
+      // if it's not here, the callback will be called twice
+      // this is bad because syncDailyLogData is an async function
+      // and will sometimes cause the previous date to be loaded
+      if (dateHook !== getActiveDate()) {
+        setDateHook(getActiveDate());
+        return;
+      }
       setDateHook(getActiveDate());
+      console.log('Diet Screen Focused');
+      console.log('Date Hook: ' + dateHook);
       syncDailyLogData(userId, dateHook, setCalorieData, setLogData);
-    }, [getActiveDate()])
+    }, [dateHook])
   );
+
 
   let mealButtons = <></>
 

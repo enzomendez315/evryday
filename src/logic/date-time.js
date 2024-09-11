@@ -8,18 +8,6 @@ export function getActiveDate() {
     return activeDate;
 }
 
-// returns date in format 'Weekday, Month DD'
-// takes in active date 'YYYY-MM-DD'
-// just used for UI purposes
-export function getFormattedDate(activeDate_) {
-    let tempDate = convertToDate(activeDate_);
-    const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-    const month = tempDate.toLocaleString('default', { month: 'long' });
-    const day = tempDate.getDate();
-    const formattedDate = `${weekDay}, ${month} ${day}`;
-    return formattedDate;
-}
-
 // gets date in format 'YYYY-MM-DD'
 // offset is the number of days to add/subtract to the current date
 // used for backend purposes (i.e. the database uses the format 'YYYY-MM-DD')
@@ -34,6 +22,18 @@ export function setActiveDate(offset = 0) {
     activeDate = formattedDate;
 }
 
+// returns date in format 'Weekday, Month DD'
+// takes in active date 'YYYY-MM-DD'
+// just used for UI purposes
+export function getFormattedDate(activeDate_) {
+    let tempDate = convertToDate(activeDate_);
+    const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+    const month = tempDate.toLocaleString('default', { month: 'long' });
+    const day = tempDate.getDate();
+    const formattedDate = `${weekDay}, ${month} ${day}`;
+    return formattedDate;
+}
+
 // converts the formatted date string to a normal date object
 // used to convert the date string from getLocalDate to a date object
 export function convertToDate(formattedDate) {
@@ -41,6 +41,8 @@ export function convertToDate(formattedDate) {
     return new Date(year, month - 1, day);
 }
 
+// returns the current date in the format 'YYYY-MM-DD'
+// just here to initialize the active date
 function getLocalDate() {
     const date = new Date();
     const year = date.getFullYear();
