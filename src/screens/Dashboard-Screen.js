@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailyLog } from '../logic/sleep-api';
+import { syncDailySleepLog } from '../logic/sleep-api';
 import { syncDietDashboardData } from '../logic/diet-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
-import { getFormattedDate, getLocalDate } from '../logic/date-time';
+import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-time';
 
 let userID;
 
@@ -186,8 +186,7 @@ const SleepTab = ({ sleepData }) => {
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
-  const [dateHook, setDateHook] = useState(getLocalDate());
-  const [dayOffset, setDayOffset] = useState(7);
+  const [dateHook, setDateHook] = useState(getActiveDate());
 
   // bool for diet tab loading too soon
   // TODO: fix diet api to handle null data calls
@@ -210,7 +209,7 @@ const Dashboard = (props) => {
           return;
         }
       });
-      syncDailyLog(userID, setSleepData, dateHook);
+      syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
 
       tempLoading = false;
@@ -220,8 +219,7 @@ const Dashboard = (props) => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      console.log("calling useFocusEffect in dashboard with dateHook: " + dateHook);
-      syncDailyLog(userID, setSleepData, dateHook);
+      syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
       return;
     }, [dateHook])
@@ -232,13 +230,20 @@ const Dashboard = (props) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         {/* Render your components here */}
-        <Text style={styles.title}>{getFormattedDate()}</Text>
+        <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
 
 
-        <Button title="Go back one day" onPress={() => setDateHook(getLocalDate(-1))} />
-        <Button title="Make offset 3" onPress={() => setDayOffset(3)} />
+        <Button title="Go forward one day"
+          onPress={() => {
+            setActiveDate(1);
+            setDateHook(getActiveDate())
+          }} />
+        <Button title="Go back one day"
+          onPress={() => {
+            setActiveDate(-1);
+            setDateHook(getActiveDate())
+          }} />
         <Text>This is dateHook: {dateHook}</Text>
-        <Text>This is dayOffset: {dayOffset}</Text>
 
 
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>

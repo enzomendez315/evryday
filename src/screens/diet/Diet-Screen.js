@@ -7,7 +7,7 @@ import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { getFormattedDate } from '../../logic/date-time';
+import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
 
 let userId;
 
@@ -41,15 +41,16 @@ const DietScreen = ({ navigation }) => {
   const [mealPeriodPopupVisible, setMealPeriodPopupVisible] = useState(false);
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
+  const [dateHook, setDateHook] = useState(getActiveDate());
 
   userId = React.useContext(AccountContext);
 
   // Called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
-      return;
-    }, [])
+      setDateHook(getActiveDate());
+      syncDailyLogData(userId, dateHook, setCalorieData, setLogData);
+    }, [getActiveDate()])
   );
 
   let mealButtons = <></>
@@ -83,7 +84,7 @@ const DietScreen = ({ navigation }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation} />
-        <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate()}</Text>
+        <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate(dateHook)}</Text>
 
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>

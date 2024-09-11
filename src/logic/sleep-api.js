@@ -74,7 +74,7 @@ export async function deleteSleepEntry(userId, date) {
 }
 
 // called in dashboard to get the user's sleep log for the day
-export async function syncDailyLog(userID_, setSleepData, date) {
+export async function syncDailySleepLog(userID_, setSleepData, date) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's day sleep log");
     let userID = userID_;
