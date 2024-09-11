@@ -8,6 +8,14 @@ export function getActiveDate() {
     return activeDate;
 }
 
+export function getActiveDateMonth() {
+    return activeDate.split('-')[1];
+}
+
+export function getActiveDateYear() {
+    return activeDate.split('-')[0];
+}
+
 // gets date in format 'YYYY-MM-DD'
 // offset is the number of days to add/subtract to the current date
 // used for backend purposes (i.e. the database uses the format 'YYYY-MM-DD')

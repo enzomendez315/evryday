@@ -219,6 +219,11 @@ const Dashboard = (props) => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
+      if (dateHook !== getActiveDate()) {
+        setDateHook(getActiveDate());
+        return;
+      }
+      setDateHook(getActiveDate());
       syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
       return;
@@ -230,20 +235,21 @@ const Dashboard = (props) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         {/* Render your components here */}
-        <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
 
+          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
 
-        <Button title="Go forward one day"
-          onPress={() => {
-            setActiveDate(1);
-            setDateHook(getActiveDate())
-          }} />
-        <Button title="Go back one day"
-          onPress={() => {
-            setActiveDate(-1);
-            setDateHook(getActiveDate())
-          }} />
-        <Text>This is dateHook: {dateHook}</Text>
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
 
 
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>

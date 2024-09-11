@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal } from 'react-native';
+import { StyleSheet, Button, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { syncDailyLogData, createMeal, calcMealMacros } from '../../logic/diet-api'
 import { useFocusEffect } from '@react-navigation/native';
@@ -57,8 +57,6 @@ const DietScreen = ({ navigation }) => {
         return;
       }
       setDateHook(getActiveDate());
-      console.log('Diet Screen Focused');
-      console.log('Date Hook: ' + dateHook);
       syncDailyLogData(userId, dateHook, setCalorieData, setLogData);
     }, [dateHook])
   );
@@ -95,7 +93,22 @@ const DietScreen = ({ navigation }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation} />
-        <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate(dateHook)}</Text>
+
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
+
+          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
 
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>

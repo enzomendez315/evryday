@@ -4,7 +4,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
-import { getFormattedDate } from '../../logic/date-time';
+import { getActiveDate, getFormattedDate } from '../../logic/date-time';
 
 let userID;
 
@@ -114,7 +114,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
-        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate()}</Text>
+        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate(getActiveDate())}</Text>
 
         <Text style={styles.title}>Workout</Text>
 

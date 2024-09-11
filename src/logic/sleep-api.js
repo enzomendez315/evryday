@@ -100,10 +100,9 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
     DEBUG && console.debug("Getting user's sleep log");
     let userID = userID_;
     DEBUG && console.log(`userid: ${userID}`)
-    date = new Date(Date.now()).toISOString().substring(0, 10);
     await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
         if (data === null) {
-            DEBUG && console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            DEBUG && console.log(`No Sleep Log found for userId: ${userID} month: ${month} year: ${year}`);
             setSleepData([]);
             setIsLoading(false);
             return;
@@ -156,9 +155,10 @@ export async function getSleepEntry(userId, date) {
 // Copilot Written - BEWARE
 // helper function for syncUsersMonthLog
 async function getSleepEntriesForMonth(userId, month, year) {
-    // month is 1-12, if month is less than 10, add a 0 in front
-    if (month < 10) {
-        month = `0${month}`;
+    // if month is not in the form "MM", convert it
+    if (month.length != 2) {
+        // add 0 in front of month if it is a single digit
+        month = month.toString().padStart(2, '0');
     }
     p = new Promise((resolve, reject) => {
         try {

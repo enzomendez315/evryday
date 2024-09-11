@@ -13,7 +13,10 @@ import {
   getSleepEntry
 } from '../../logic/sleep-api'
 import { AccountContext } from '../../../App';
-import { getFormattedDate } from '../../logic/date-time';
+import {
+  getFormattedDate, getActiveDate,
+  getActiveDateMonth, getActiveDateYear
+} from '../../logic/date-time';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
@@ -332,14 +335,13 @@ const SleepScreen = () => {
   userID = React.useContext(AccountContext);
 
   useEffect(() => {
-    date = new Date();
-    syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
+    syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
   }, []);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
+      syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
       return;
     }, [])
   );
@@ -365,7 +367,7 @@ const SleepScreen = () => {
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
-          <Text style={styles.title}>{getFormattedDate()}</Text>
+          <Text style={styles.title}>{getFormattedDate(getActiveDate())}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
             <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
