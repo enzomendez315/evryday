@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView, Button } from 'react-native';
 import { searchFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let DEBUG = false;
-
-let oldSearchInput = "INITIALISED";
 
 const SearchFoodScreen = (props) => {
   const { navigation, route } = props;
@@ -17,6 +15,15 @@ const SearchFoodScreen = (props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const MAX_NAME_LENGTH = 45;
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })}>
+          <View>
+            <Ionicons name="add-outline" size={24} color={COLORS.darkBlue} />
+          </View>
+        </TouchableOpacity>
+      ),
+    })
     searchFoodItems(searchTerm, setFoodItems);
   }, []);
   return (
@@ -24,35 +31,12 @@ const SearchFoodScreen = (props) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
         <View style={styles.header}>
-          <View style={styles.tableHeadContainer}> 
-            <Button 
-              style = {styles.button}
-              title='All Food'
-              onPress={() => console.log("Pressed 1")}
-            />
-            <Button 
-              style = {styles.button}
-              title='My Food'
-              onPress={() => console.log("Pressed 2")}
-            />
-            <Button 
-              style = {styles.button}
-              title='Favorites'
-              onPress={() => console.log("Pressed 3")}
-            />
-            <Button 
-              style = {styles.button}
-              title='New'
-              onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })} 
-            />
-          </View>
-          <Text style={styles.title}>Search Food</Text>
           <TextInput
             style={styles.searchInputText}
             placeholder="Enter Food Here"
-            onChangeText={async (input) => { 
+            onChangeText={(input) => { 
               setSearchTerm(input);
-              await searchFoodItems(searchTerm, setFoodItems); }} 
+              searchFoodItems(input, setFoodItems); }} 
             />
         </View>
 

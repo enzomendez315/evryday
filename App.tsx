@@ -161,7 +161,13 @@ function DietStack() {
           },
         }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen} />
-      <Stack.Screen name="Search Food" component={SearchFoodScreen} />
+      <Stack.Screen name="Search Food" component={SearchFoodScreen}
+        options={({ navigation, route }) => ({
+          title: "Lookup Food",
+          headerRight: () => (
+            <Ionicons name="add-outline" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
       <Stack.Screen name="Edit Food" component={AddFoodScreen}
         options={({ navigation, route }) => ({

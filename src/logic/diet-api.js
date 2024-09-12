@@ -349,7 +349,20 @@ async function getFoodItems(searchTerm) {
         DEBUG && console.log(`getFoodItems foodItems: ${foodItems.length}`);
         return foodItems;
     }
-    const foodItems = await DataStore.query(FoodItem, (c) => c.name.contains(searchTerm));
+    let upperSearch = "";
+    let lowerSearch = "";
+    if(searchTerm.length > 1){
+        lowerSearch = searchTerm.charAt(0).toLowerCase() + searchTerm.slice(1);
+        upperSearch = searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1);
+    }
+    else {
+        lowerSearch = searchTerm.toLowerCase();
+        upperSearch = searchTerm.toUpperCase();
+    }
+    const foodItems = await DataStore.query(FoodItem, (u) => u.or((c) => [
+        c.name.contains(lowerSearch),
+        c.name.contains(upperSearch)
+    ]));
     return foodItems;
 }
 

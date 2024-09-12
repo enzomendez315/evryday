@@ -91,6 +91,7 @@ type ExerciseLog @model @auth(rules: [{allow: public}]) {
   durationMinutes: Int
   caloriesBurned: Int
   ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseLogExerciseRoutine")
+  ExerciseSets: [ExerciseSet] @manyToMany(relationName: "ExerciseLogExerciseSet")
 }
 
 type ExerciseSet @model @auth(rules: [{allow: public}]) {
@@ -100,6 +101,7 @@ type ExerciseSet @model @auth(rules: [{allow: public}]) {
   weight: String
   ExerciseType: [ExerciseType] @manyToMany(relationName: "ExerciseSetExerciseType")
   ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseSetExerciseRoutine")
+  exerciselogs: [ExerciseLog] @manyToMany(relationName: "ExerciseLogExerciseSet")
 }
 
 type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
