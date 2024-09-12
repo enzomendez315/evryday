@@ -975,6 +975,22 @@ export const schema = {
                         ]
                     }
                 },
+                "ExerciseSets": {
+                    "name": "ExerciseSets",
+                    "isArray": true,
+                    "type": {
+                        "model": "ExerciseLogExerciseSet"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "exerciseLog"
+                        ]
+                    }
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1069,6 +1085,22 @@ export const schema = {
                     "isArray": true,
                     "type": {
                         "model": "ExerciseSetExerciseRoutine"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "exerciseSet"
+                        ]
+                    }
+                },
+                "exerciselogs": {
+                    "name": "exerciselogs",
+                    "isArray": true,
+                    "type": {
+                        "model": "ExerciseLogExerciseSet"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -1683,20 +1715,102 @@ export const schema = {
                             "exerciseRoutineId"
                         ]
                     }
+                }
+            ]
+        },
+        "ExerciseLogExerciseSet": {
+            "name": "ExerciseLogExerciseSet",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "exerciseLogId": {
+                    "name": "exerciseLogId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "exerciseSetId": {
+                    "name": "exerciseSetId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "exerciseLog": {
+                    "name": "exerciseLog",
+                    "isArray": false,
+                    "type": {
+                        "model": "ExerciseLog"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "exerciseLogId"
+                        ]
+                    }
+                },
+                "exerciseSet": {
+                    "name": "exerciseSet",
+                    "isArray": false,
+                    "type": {
+                        "model": "ExerciseSet"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "exerciseSetId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ExerciseLogExerciseSets",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
                 },
                 {
-                    "type": "auth",
+                    "type": "key",
                     "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
+                        "name": "byExerciseLog",
+                        "fields": [
+                            "exerciseLogId"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byExerciseSet",
+                        "fields": [
+                            "exerciseSetId"
                         ]
                     }
                 }
@@ -1797,22 +1911,6 @@ export const schema = {
                             "exerciseTypeId"
                         ]
                     }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
                 }
             ]
         },
@@ -1909,22 +2007,6 @@ export const schema = {
                         "name": "byExerciseRoutine",
                         "fields": [
                             "exerciseRoutineId"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
                         ]
                     }
                 }
@@ -2025,22 +2107,6 @@ export const schema = {
                             "exerciseTypeId"
                         ]
                     }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
                 }
             ]
         }
@@ -2058,5 +2124,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "f303ac495880bf11396a28d499d66172"
+    "version": "f389d0747aaa797d3f9df07e74859d84"
 };

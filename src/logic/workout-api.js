@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
+import { ExerciseLog, ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -239,4 +239,44 @@ export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoad
     }
     setRoutineData(tempRoutineData);
     setIsDataLoading(false);
+}
+
+// Save the exercise log and sets in the database
+export async function saveWorkoutLog(userId, routineId, routineName, workoutData, secondsElapsed) {
+    try {
+        if (!userId) {
+            throw new Error("User ID is missing");
+        }
+        
+        // Create a new ExerciseLog entry
+        const newExerciseLog = new ExerciseLog({
+            userId: userId, // Current user's ID
+            date: new Date().toISOString().split('T')[0], // Current date
+            durationMinutes: Math.floor(secondsElapsed / 60),
+            caloriesBurned: 0, 
+            exerciseRoutineID: routineId || null,
+        });
+
+        // Save the ExerciseLog in the DataStore
+        const savedLog = await DataStore.save(newExerciseLog);
+
+        // Loop through the workoutData to save each exercise set
+        for (let exercise of workoutData) {
+            for (let set of exercise.sets) {
+                const newExerciseSet = new ExerciseSet({
+                    reps: set.reps,
+                    time: '0', // Placeholder, replace with your time logic
+                    weight: set.weight,
+                    exerciseLogID: savedLog.id, // Relating the set to the saved log
+                });
+                await DataStore.save(newExerciseSet);
+            }
+        }
+
+        return savedLog;
+
+    } catch (error) {
+        console.error("Error saving workout data:", error);
+        throw error;
+    }
 }
