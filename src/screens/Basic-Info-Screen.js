@@ -76,56 +76,70 @@ const BasicInfoScreen = () => {
     return (
 
         <View style={styles.container}>
+            <Text style={styles.title}>Welcome to the Basic Info Screen!</Text>
 
-            {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
+            <View style={styles.body}>
 
-            <Text style={styles.label}>Name:</Text>
-            <TextInput
-                style={styles.input}
-                value={userInfo.name}
-                onChangeText={text => setUserInfo({ ...userInfo, name: text })}
-                placeholder="Enter your name"
-            />
+                {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
-            <Text style={styles.label}>Age:</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={userInfo.age.toString()}
-                onChangeText={text => setUserInfo({ ...userInfo, age: text })}
-                placeholder="Enter your age"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Name:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={userInfo.name}
+                        onChangeText={text => setUserInfo({ ...userInfo, name: text })}
+                        placeholder="Enter your name"
+                    />
+                </View>
 
-            <Text style={styles.label}>Weight (lbs):</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={userInfo.weight.toString()}
-                onChangeText={text => setUserInfo({ ...userInfo, weight: text })}
-                placeholder="Enter your weight"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Age:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={userInfo.age.toString()}
+                        onChangeText={text => setUserInfo({ ...userInfo, age: text })}
+                        placeholder="Enter your age"
+                    />
+                </View>
 
-            <Text style={styles.label}>Height (in):</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={userInfo.height.toString()}
-                onChangeText={text => setUserInfo({ ...userInfo, height: text })}
-                placeholder="Enter your weight"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Weight (lbs):</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={userInfo.weight.toString()}
+                        onChangeText={text => setUserInfo({ ...userInfo, weight: text })}
+                        placeholder="Enter your weight"
+                    />
+                </View>
 
-            <Text style={styles.label}>Gender:</Text>
-            <Picker
-                selectedValue={userInfo.gender}
-                style={styles.picker}
-                onValueChange={(itemValue, itemIndex) =>
-                    setUserInfo({ ...userInfo, gender: itemValue })}>
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
-                <Picker.Item label="Other" value="other" />
-            </Picker>
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Height (in):</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={userInfo.height.toString()}
+                        onChangeText={text => setUserInfo({ ...userInfo, height: text })}
+                        placeholder="Enter your weight"
+                    />
+                </View>
 
-            <Button title="Submit" onPress={handleSubmit} />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Gender:</Text>
+                    <Picker
+                        selectedValue={userInfo.gender}
+                        style={styles.picker}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setUserInfo({ ...userInfo, gender: itemValue })}>
+                        <Picker.Item label="Male" value="male" />
+                        <Picker.Item label="Female" value="female" />
+                        <Picker.Item label="Other" value="other" />
+                    </Picker>
+                </View>
+
+                <Button title="Submit" onPress={handleSubmit} />
+            </View>
         </View>
     );
 };
@@ -133,26 +147,41 @@ const BasicInfoScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
     },
-    input: {
-        width: '100%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        padding: 10,
+    title: {
+        fontSize: 24,
         marginBottom: 20,
+        textAlign: 'center',
+        color: 'black',
+        padding: 10,
+    },
+    body: {
+        margin: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        flex: .9,
+    },
+    inputRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: 10,
     },
     label: {
-        width: '100%',
-        marginBottom: 10,
+        flex: .4,
+        padding: 10,
+    },
+    input: {
+        flex: .6,
+        height: 40,
+        padding: 10,
+        borderBottomWidth: 1,
+        textAlign: 'center',
     },
     picker: {
-        width: '100%',
-        height: 50,
-        marginBottom: 20,
+        flex: .6,
+        height: 40,
+        padding: 10,
+        textAlign: 'center',
     },
 });
 

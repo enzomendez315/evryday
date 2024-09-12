@@ -61,74 +61,97 @@ const DailyGoalsScreen = () => {
 
     return (
 
-        <View style={styles.container}>
+        <View style={{ flex: 1 }}>
+            <Text style={styles.title}>Set Your Daily Goals</Text>
 
-            {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
+            <View style={styles.body}>
+                {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
-            <Text style={styles.label}>Minimum Calories:</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={goalsInfo.minCalories.toString()}
-                onChangeText={text => setGoalsInfo({ ...goalsInfo, minCalories: text })}
-                placeholder="Enter your calorie goal"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Minimum Calories:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.minCalories.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, minCalories: text })}
+                        placeholder="Enter your calorie goal"
+                    />
+                </View>
 
-            <Text style={styles.label}>Maximum Calories:</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={goalsInfo.maxCalories.toString()}
-                onChangeText={text => setGoalsInfo({ ...goalsInfo, maxCalories: text })}
-                placeholder="Enter your calorie goal"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Maximum Calories:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.maxCalories.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, maxCalories: text })}
+                        placeholder="Enter your calorie goal"
+                    />
+                </View>
 
-            <Text style={styles.label}>Minimum Sleep Duration:</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                value={goalsInfo.minSleep.toString()}
-                onChangeText={text => setGoalsInfo({ ...goalsInfo, minSleep: text })}
-                placeholder="Enter your sleep goal"
-            />
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Minimum Sleep Duration:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.minSleep.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, minSleep: text })}
+                        placeholder="Enter your sleep goal"
+                    />
+                </View>
 
-            <Text style={styles.label}>Daily Workout:</Text>
-            <Picker
-                style={styles.picker}
-                selectedValue={goalsInfo.dailyWorkout}
-                onValueChange={itemValue => setGoalsInfo({ ...goalsInfo, dailyWorkout: itemValue })}>
-                <Picker.Item label="Yes" value={true} />
-                <Picker.Item label="No" value={false} />
-            </Picker>
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Daily Workout:</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={goalsInfo.dailyWorkout}
+                        onValueChange={itemValue => setGoalsInfo({ ...goalsInfo, dailyWorkout: itemValue })}>
+                        <Picker.Item label="Yes" value={true} />
+                        <Picker.Item label="No" value={false} />
+                    </Picker>
+                </View>
 
-            <Button title="Submit" onPress={handleSubmit} />
+                <Button title="Submit" onPress={handleSubmit} />
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    input: {
-        width: '100%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        padding: 10,
+    title: {
+        fontSize: 24,
         marginBottom: 20,
+        textAlign: 'center',
+        padding: 10,
+        color: 'black',
+    },
+    body: {
+        margin: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        flex: .9,
+    },
+    inputRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: 10,
     },
     label: {
-        width: '100%',
-        marginBottom: 10,
+        flex: .4,
+        padding: 10,
+    },
+    input: {
+        flex: .6,
+        height: 40,
+        padding: 10,
+        borderBottomWidth: 1,
+        textAlign: 'center',
     },
     picker: {
-        width: '100%',
-        height: 50,
-        marginBottom: 20,
+        flex: .6,
+        height: 40,
+        padding: 10,
+        textAlign: 'center',
     },
 });
 

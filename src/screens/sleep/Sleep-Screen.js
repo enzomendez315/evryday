@@ -366,7 +366,7 @@ const SleepScreen = () => {
     <>
       <StatusBar barStyle='default' />
       <SafeAreaView style={styles.container}>
-        <View>
+        <ScrollView>
           <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
@@ -435,7 +435,7 @@ const SleepScreen = () => {
             ))}
           </ScrollView>
 
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </>
   );
