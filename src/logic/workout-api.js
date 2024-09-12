@@ -280,3 +280,25 @@ export async function saveWorkoutLog(userId, routineId, routineName, workoutData
         throw error;
     }
 }
+
+// Fetch workout history
+export const fetchWorkoutHistory = async () => {
+    try {
+        // Fetch all ExerciseLog entries
+        const logs = await DataStore.query(ExerciseLog);
+        
+        // Map the logs to the desired format
+        const formattedLogs = logs.map(log => ({
+            id: log.id,
+            date: log.date, // Assuming date is already formatted as string in your schema
+            durationMinutes: log.durationMinutes,
+        }));
+        console.log("Formatted ExerciseLogs:", formattedLogs); // Log the formatted data
+
+        return formattedLogs;
+
+    } catch (error) {
+        console.error('Error fetching workout history:', error);
+        throw error;
+    }
+};
