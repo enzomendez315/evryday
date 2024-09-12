@@ -19,7 +19,7 @@ const SearchFoodScreen = (props) => {
       headerRight: () => (
         <TouchableOpacity onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })}>
           <View>
-            <Ionicons name="add-outline" size={24} color={COLORS.darkBlue} />
+            <Ionicons name="add-outline" size={36} color={COLORS.darkBlue} />
           </View>
         </TouchableOpacity>
       ),
@@ -39,11 +39,8 @@ const SearchFoodScreen = (props) => {
               searchFoodItems(input, setFoodItems); }} 
             />
         </View>
-
         <Text style={styles.resultsText}>Search Results:</Text>
-
         <View style={styles.tableHeadContainer}>
-          <Text style={styles.tableHeadText}>Food Name</Text>
         </View>
 
         <ScrollView>

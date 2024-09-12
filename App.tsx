@@ -173,7 +173,7 @@ function DietStack() {
         options={({ navigation, route }) => ({
           title: "Edit Food",
           headerRight: () => (
-            <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+            <Ionicons name="trash" size={36} color={COLORS.darkBlue} />
           ),
         })} />
       <Stack.Screen name="Create Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />

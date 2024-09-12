@@ -523,9 +523,8 @@ export async function addRecipeToMeal(mealId, recipeId) {
 // Populates a list of all recipes
 export async function getAllRecipes(setRecipes) {
     const recipes = await DataStore.query(Recipe);
-    console.log("Recipes: ", recipes);
     let recipeData = [];
-    for (let recipe of recipes) {
+    for await (let recipe of recipes) {
         recipeData.push(await calcRecipeMacros(recipe))
     }
     setRecipes(recipeData);

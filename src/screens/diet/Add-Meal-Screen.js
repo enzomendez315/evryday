@@ -20,88 +20,9 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 //   fat: foodsList.reduce((acc, food) => acc + food.fat, 0)
 // };
 
-let DEBUG = true;
+let DEBUG = false;
 
-const RecipePopupData = [
-  {
-    id: 0,
-    name: 'Chicken and Rice',
-    ingredients: [
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-    ],
-    calories: 500,
-    protein: 25,
-    carbs: 50,
-    fat: 20,
-  },
-  {
-    id: 1,
-    name: 'Chicken and Broccoli',
-    ingredients: [
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-    ],
-    calories: 350,
-    protein: 20,
-    carbs: 40,
-    fat: 15,
-  },
-  {
-    id: 2,
-    name: 'Rice and Broccoli',
-    ingredients: [
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-    ],
-    calories: 250,
-    protein: 15,
-    carbs: 30,
-    fat: 10,
-  },
-  {
-    id: 3,
-    name: 'Apple and Rice',
-    ingredients: [
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-    ],
-    calories: 300,
-    protein: 11,
-    carbs: 40,
-    fat: 5,
-  },
-  {
-    id: 4,
-    name: 'Chicken and Apple',
-    ingredients: [
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-    ],
-    calories: 400,
-    protein: 16,
-    carbs: 50,
-    fat: 15,
-  },
-  {
-    id: 5,
-    name: 'Broccoli and Apple',
-    ingredients: [
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-    ],
-    calories: 150,
-    protein: 6,
-    carbs: 30,
-    fat: 5,
-  }
-];
-
-function recipeOnPress(recipe, closePopup) {
-  console.log(recipe.name + ' pressed')
-  closePopup()
-}
-
+// A FlatList item for the recipe display popup
 const RecipePopupItem = memo(
   ({ item, onPress }) => (
     <TouchableOpacity style={styles.recipeTab} onPress={onPress}>
@@ -123,10 +44,9 @@ const RecipePopupItem = memo(
   }
 );
 
+// A popup item for the recipe name input
 const RecipeNameInput = ({ onPress, closePopup }) => {
-  const navigation = useNavigation();
   const [name, setName] = useState('');
-  let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
   return (
     <View style={styles.popupContentContainer}>
       <Text style={styles.popupTitle}>Recipe Name</Text>
@@ -148,6 +68,7 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
   )
 };
 
+// A header for both menu popups
 const PopupHeader = ({ title, closePopup }) => {
   return (
     <View style={styles.popupHeader}>
@@ -168,11 +89,9 @@ const PopupHeader = ({ title, closePopup }) => {
 
 
 
-/////
-
+// The main component for the Add Meal Screen
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [recipePopupVisible, setRecipePopupVisible] = useState(false);
   const [savePopupVisible, setSavePopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
@@ -229,7 +148,7 @@ const AddMealScreen = (props) => {
     }
     console.log('Good Input: ', name)
     await saveAsRecipe(mealData.id, name).then((newMeal) => {
-      // navigation.navigate('', {newMeal});
+      navigation.navigate('Diet Home');
     })
   }
 
@@ -317,11 +236,6 @@ const AddMealScreen = (props) => {
             </View>
           </View>
 
-          <Text>HUGE TIP: don't eat the mysterious cookies the little
-            girls in front of the grocery store are selling. They're not
-            cookies. They're rocks. I learned that the hard way.
-          </Text>
-
           <TouchableOpacity style={styles.Button}
             onPress={() => {
               deleteMeal(mealData?.id).then(() => navigation.navigate('Diet Home'));
@@ -333,6 +247,12 @@ const AddMealScreen = (props) => {
       </SafeAreaView>
     </>
   );
+  
+  // <Text>HUGE TIP: don't eat the mysterious cookies the little
+  // girls in front of the grocery store are selling. They're not
+  // cookies. They're rocks. I learned that the hard way.
+  // </Text>
+
 };
 
 export default AddMealScreen;
