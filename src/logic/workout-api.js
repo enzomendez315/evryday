@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseLog, ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
+import { ExerciseLog, ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, DailyGoals } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -302,3 +302,40 @@ export const fetchWorkoutHistory = async () => {
         throw error;
     }
 };
+
+// calculates the exercise score based on the user's activity
+export async function getExerciseScore(userId, date) {
+    try {
+        // check if there is a dailyGoals object
+        const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
+        let score = 0;
+
+        if (dailyGoals.length > 0 && dailyGoals[0].dailyWorkout) {
+            try {
+                // intentionally throw an error to trigger the catch block
+                // this is until we add date field to exercise routines
+                throw new Error("Skipping routine query and going to the catch block");
+                
+                // check if there is activity for the current day
+                const routines = await DataStore.query(ExerciseRoutine, (r) => 
+                    r.userId.eq(userId).ExerciseRoutine.date.eq(date)
+                );
+
+                // all or nothing score
+                if (routines.length > 0) {
+                    score = 100;
+                }
+            } catch (error) {
+                console.log(`Error querying routines for user ${userId} on ${today}:`, error);
+            }
+            
+            return score;
+        } else {
+            // don't count exercise for health score
+            return null;
+        }
+    } catch (error) {
+        console.log(`Error querying daily goals for user ${userId}:`, error);
+        return null;
+    }
+}
