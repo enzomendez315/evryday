@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: COLORS.whiteHex
-
   },
 
   exerciseRow: {

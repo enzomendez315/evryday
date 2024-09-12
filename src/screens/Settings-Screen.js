@@ -7,6 +7,7 @@ import {
     Text,
     TouchableOpacity,
     Switch,
+    Image,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { initFoodItems } from '../logic/diet-api';
@@ -22,6 +23,10 @@ const SettingsScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
         userName: "",
+        userAge: 0,
+        userHeight: 0,
+        userWeight: 0,
+        userGender: "",
         dietTracking: true,
         sleepTracking: true,
         workoutTracking: true,
@@ -39,7 +44,7 @@ const SettingsScreen = () => {
                 return;
             }
             // set the user's name at top of screen
-            setForm({ ...form, userName: user.name });
+            setForm({ ...form, userName: user.name, userAge: user.age, userHeight: user.height, userWeight: user.weight, userGender: user.gender });
         });
     }, []);
 
@@ -53,7 +58,7 @@ const SettingsScreen = () => {
                     navigation.navigate('Basic Info');
                     return;
                 }
-                setForm({ ...form, userName: user.name });
+                setForm({ ...form, userName: user.name, userAge: user.age, userHeight: user.height, userWeight: user.weight, userGender: user.gender });
                 // if the user has already entered their basic info, 
                 // check if user goals are made
                 getUserGoals(userID).then((goals) => {
@@ -71,29 +76,35 @@ const SettingsScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={styles.container}>
-                <View style={styles.profile}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            // handle onPress
-                        }}>
-                        <View style={styles.profileAvatarWrapper}>
+                <View style={styles.profileHeader}>
 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // handle onPress
-                                }}>
-                                <View style={styles.profileAction}>
-                                    <FeatherIcon
-                                        color="#fff"
-                                        name="edit-3"
-                                        size={15} />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </TouchableOpacity>
-
-                    <View>
+                    <View style={styles.nameAndPic}>
                         <Text style={styles.profileName}>{form.userName}</Text>
+                        <View>
+                            {form.userGender == "male" ? <Image style={styles.image}
+                                source={require('../images/boy_profile_icon.png')} />
+                                : <Image style={styles.image}
+                                    source={require('../images/girl_profile_icon.png')} />}
+                        </View>
+                    </View>
+
+                    <View style={styles.profileInfo}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text>Age: </Text>
+                            <Text>{form.userAge} yrs</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text>Height: </Text>
+                            <Text>{form.userHeight} in</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text>Weight: </Text>
+                            <Text>{form.userWeight} lbs</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text>Gender: </Text>
+                            <Text>{form.userGender}</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -246,33 +257,30 @@ const styles = StyleSheet.create({
         flexBasis: 0,
     },
     /** Profile */
-    profile: {
-        padding: 24,
+    profileHeader: {
+        padding: 10,
         backgroundColor: 'lightgray',
+        flexDirection: 'row',
+    },
+    nameAndPic: {
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
     },
-    profileAvatarWrapper: {
-        position: 'relative',
-    },
-    profileAction: {
-        position: 'absolute',
-        right: -4,
-        bottom: -10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 28,
-        height: 28,
-        borderRadius: 9999,
-        backgroundColor: '#007bff',
+    image: {
+        width: 100,
+        height: 100,
+        margin: 10,
     },
     profileName: {
-        marginTop: 20,
+        margin: 10,
         fontSize: 19,
-        fontWeight: '600',
         color: 'black',
-        textAlign: 'center',
+    },
+    profileInfo: {
+        margin: 10,
+        flex: .7,
+        justifyContent: 'space-evenly',
     },
     /** Section */
     section: {
