@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
+import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, DailyGoals } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -242,7 +242,28 @@ export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoad
 }
 
 // calculates the exercise score based on the user's activity
-export function getExerciseScore() {
-    // check if there is activity for the current day
-    // all or nothing score
+export async function getExerciseScore(userId) {
+    // check if there is a dailyGoals object
+    const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
+    let score = 0;
+
+    if (dailyGoals.length > 0 && dailyGoals[0].dailyWorkout) {
+        // Get the current date in 'YYYY-MM-DD' format
+        const today = new Date().toISOString().split('T')[0];
+
+        // check if there is activity for the current day
+        const routines = await DataStore.query(ExerciseRoutine, (r) => 
+            r.userId.eq(userId).exerciselogs.date.eq(today)
+        );
+
+        // all or nothing score
+        if (routines.length > 0) {
+            score = 100;
+        }
+        
+        return score;
+    } else {
+        // don't count exercise for health score
+        return null;
+    }
 }

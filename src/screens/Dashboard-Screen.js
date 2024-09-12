@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailySleepLog } from '../logic/sleep-api';
 import { syncDietDashboardData } from '../logic/diet-api';
+import { getExerciseScore } from '../logic/wrkout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
