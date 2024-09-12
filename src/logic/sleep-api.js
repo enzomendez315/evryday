@@ -15,7 +15,7 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
     // convert the date object into form "YYYY-MM-DD"
     date_ = date_.toISOString().substring(0, 10);
     if (await getSleepEntry(userID_, date_) === null) {
-        let restfulnessScore_ = getSleepScore(hoursSlept_, sleepQuality_);
+        let restfulnessScore_ = calculateSleepScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 new SleepLog({
@@ -41,7 +41,7 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
 // uses getSleepEntry to get the entry to update
 export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     if (await getSleepEntry(userID_, date_) !== null) {
-        let restfulnessScore_ = getSleepScore(hoursSlept_, sleepQuality_);
+        let restfulnessScore_ = calculateSleepScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 SleepLog.copyOf(await getSleepEntry(userID_, date_), updated => {
@@ -186,10 +186,29 @@ async function getSleepEntriesForMonth(userId, month, year) {
 // calculates the restfulness score based on the sleep duration and quality
 // this algorithm is for manual sleep entries
 // assigns weights to both metrics and combines them into a single score of 0-100
-export function getSleepScore(sleepDuration, sleepQuality) {
+export async function getSleepScore(userId, date) {
+    try {
+        const userLog = await getSleepEntry(userId, date);
+
+        if (userLog === null) {
+            return null;
+        }
+
+        const sleepDuration = userLog.hoursSlept;
+        const sleepQuality = userLog.sleepQuality;
+        const score = calculateSleepScore(sleepDuration, sleepQuality);
+
+        return score;
+    } catch (error) {
+        console.log(`Error retrieving user's sleep log: ${error}`);
+        return null;
+    }
+}
+
+function calculateSleepScore(sleepDuration, sleepQuality) {
     let durationScore = 0;
     let qualityScore = 0;
-    let restfulnessScore = 0;
+    let score = 0;
 
     // normalize inputs
     if (sleepDuration <= 8) {
@@ -198,14 +217,15 @@ export function getSleepScore(sleepDuration, sleepQuality) {
     } else {
         durationScore = 50;
     }
+
     qualityScore = (sleepQuality / 10) * 50;
 
     // add both scores and round to the nearest integer
-    restfulnessScore = Math.round(durationScore + qualityScore);
+    score = Math.round(durationScore + qualityScore);
 
     DEBUG && console.log(`sleep duration is ${sleepDuration} with a score of ${durationScore}`);
     DEBUG && console.log(`sleep quality is ${sleepQuality} with a score of ${qualityScore}`);
-    DEBUG && console.log(`restfulness score is ${restfulnessScore}`);
+    DEBUG && console.log(`restfulness score is ${score}`);
 
-    return restfulnessScore;
+    return score;
 }

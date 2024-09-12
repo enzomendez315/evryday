@@ -620,12 +620,7 @@ async function bulkCreateFood(foodItems, foodServings) {
 }
 
 // calculates a score based on the number of calories the user has consumed
-export async function getNutritionScore(userId) {
-    // get total calories for the day
-    // compare min and max
-    // normalize inputs
-    // compute a score based on 100
-
+export async function getNutritionScore(userId, date) {
     try {
         // check if there is a dailyGoals object
         const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
@@ -643,9 +638,7 @@ export async function getNutritionScore(userId) {
                 maxCalories = dailyGoals[0].maxCalories;
             }
             
-            // Get the current date in 'YYYY-MM-DD' format
-            const today = new Date().toISOString().split('T')[0];
-            const userLog = await getUsersNutritionLog(userId, today);
+            const userLog = await getUsersNutritionLog(userId, date);
 
             // get the meals from the log
             const meals = await userLog.Meals.toArray();

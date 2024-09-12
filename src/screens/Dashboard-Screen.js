@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog } from '../logic/sleep-api';
+import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
 import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -14,26 +14,30 @@ let userID;
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
-  // Dummy health score data
-  const healthScore = 85;
+  // Get the current date in 'YYYY-MM-DD' format
+  const today = new Date().toISOString().split('T')[0];
+
+  let sleepScore;
+  let nutritionScore;
+  //let exerciseScore; // uncomment when exercise routines have dates
+  let exerciseScore = 100;
+
+  const fetchScores = async () => {
+    try {
+      sleepScore = await getSleepScore(userID, today);
+      nutritionScore = await getNutritionScore(userID, today);
+      console.log(`Sleep score is ${sleepScore}`);
+      console.log(`Nutrition score is ${nutritionScore}`);
+    } catch (error) {
+      console.error('Error fetching scores:', error);
+    }
+  };
+  
+  fetchScores();
+
+  const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
-
-  // getExerciseScore(userID).then((exerciseScore) => {
-  //   if (exerciseScore !== null) {
-  //     console.log(`Exercise score is ${exerciseScore}`);
-  //   }
-  // }).catch((error) => {
-  //   console.log(`Error retrieving exercise score: ${error}`);
-  // });
-
-  // getNutritionScore(userID).then((nutritionScore) => {
-  //   if (nutritionScore !== null) {
-  //     console.log(`Exercise score is ${nutritionScore}`);
-  //   }
-  // }).catch((error) => {
-  //   console.log(`Error retrieving nutrition score: ${error}`);
-  // });
 
   return (
     <TouchableOpacity

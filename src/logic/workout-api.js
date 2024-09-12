@@ -242,16 +242,13 @@ export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoad
 }
 
 // calculates the exercise score based on the user's activity
-export async function getExerciseScore(userId) {
+export async function getExerciseScore(userId, date) {
     try {
         // check if there is a dailyGoals object
         const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
         let score = 0;
 
         if (dailyGoals.length > 0 && dailyGoals[0].dailyWorkout) {
-            // Get the current date in 'YYYY-MM-DD' format
-            const today = new Date().toISOString().split('T')[0];
-            
             try {
                 // intentionally throw an error to trigger the catch block
                 // this is until we add date field to exercise routines
@@ -259,7 +256,7 @@ export async function getExerciseScore(userId) {
                 
                 // check if there is activity for the current day
                 const routines = await DataStore.query(ExerciseRoutine, (r) => 
-                    r.userId.eq(userId).ExerciseRoutine.date.eq(today)
+                    r.userId.eq(userId).ExerciseRoutine.date.eq(date)
                 );
 
                 // all or nothing score
