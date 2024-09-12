@@ -1,6 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
-import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals } from '../models';
 
 const DEBUG = false;
 
@@ -620,11 +620,75 @@ async function bulkCreateFood(foodItems, foodServings) {
 }
 
 // calculates a score based on the number of calories the user has consumed
-export function getNutritionScore() {
+export async function getNutritionScore(userId) {
     // get total calories for the day
     // compare min and max
     // normalize inputs
     // compute a score based on 100
+
+    try {
+        // check if there is a dailyGoals object
+        const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
+        let score = 0;
+        let totalCalories = 0;
+        let minCalories = 1200; // minimum calories for basic bodily functions
+        let maxCalories = 2800; // random maximum if user did not input a daily max
+
+        if (dailyGoals.length > 0 && (dailyGoals[0].minCalories != null || dailyGoals[0].maxCalories != null)) {
+            if (dailyGoals[0].minCalories != null) {
+                minCalories = dailyGoals[0].minCalories;
+            }
+
+            if (dailyGoals[0].maxCalories != null) {
+                maxCalories = dailyGoals[0].maxCalories;
+            }
+            
+            // Get the current date in 'YYYY-MM-DD' format
+            const today = new Date().toISOString().split('T')[0];
+            const userLog = await getUsersNutritionLog(userId, today);
+
+            // get the meals from the log
+            const meals = await userLog.Meals.toArray();
+
+            // get the foods for each meal
+            for (let meal of meals) {
+                const foodList = await getFoodListForMeal(meal);
+
+                // get total calories for the day
+                for (let food of foodList) {
+                    totalCalories += food.calories;
+                }
+            }
+
+            DEBUG && console.log(`Total calories are ${totalCalories}`);
+
+            score = calculateNutritionScore(totalCalories, minCalories, maxCalories);
+
+            return score;
+        } else {
+            // there is no daily calories goal
+            // don't count nutrition for health score
+            return null;
+        }
+    } catch (error) {
+        console.log(`Error querying daily goals for user ${userId}:`, error);
+        return null;
+    }
+}
+
+function calculateNutritionScore(totalCalories, minCalories, maxCalories) {
+    const maxScore = 100;
+
+    // calculate the deviation from the range
+    if (totalCalories < minCalories || totalCalories > maxCalories) {
+        const deviation = Math.max(minCalories - totalCalories, totalCalories - maxCalories);
+
+        // score decreases as the deviation increases
+        return Math.max(0, maxScore - Math.round(deviation / 2));
+    } else {
+        // total calories are within range
+        return maxScore;
+    }
 }
 
 //######################################## TESTING DATA #########################################

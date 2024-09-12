@@ -3,7 +3,7 @@ import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpaci
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailySleepLog } from '../logic/sleep-api';
-import { syncDietDashboardData } from '../logic/diet-api';
+import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
@@ -19,13 +19,21 @@ const HealthScoreTab = () => {
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
 
-  getExerciseScore(userID).then((exerciseScore) => {
-    if (exerciseScore !== null) {
-      console.log(`Exercise score is ${exerciseScore}`);
-    }
-  }).catch((error) => {
-    console.log(`Error retrieving exercise score: ${error}`);
-  });
+  // getExerciseScore(userID).then((exerciseScore) => {
+  //   if (exerciseScore !== null) {
+  //     console.log(`Exercise score is ${exerciseScore}`);
+  //   }
+  // }).catch((error) => {
+  //   console.log(`Error retrieving exercise score: ${error}`);
+  // });
+
+  // getNutritionScore(userID).then((nutritionScore) => {
+  //   if (nutritionScore !== null) {
+  //     console.log(`Exercise score is ${nutritionScore}`);
+  //   }
+  // }).catch((error) => {
+  //   console.log(`Error retrieving nutrition score: ${error}`);
+  // });
 
   return (
     <TouchableOpacity
