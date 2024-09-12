@@ -9,6 +9,7 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
 import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-time';
+import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
 let userID;
 
@@ -151,28 +152,40 @@ const DietTab = ({ calorieData }) => {
 // Working Out Tab Component:
 const WorkoutTab = () => {
   const navigation = useNavigation();
-  // Dummy workout data
-  const workouts = [
-    { exercise: 'Squat', sets: '3 x', weight: '135lb', reps: 'x 8' },
-    { exercise: 'Bench Press', sets: '3 x', weight: '85lb', reps: 'x 8' },
-    { exercise: 'Deadlift', sets: '3 x', weight: '225lb', reps: 'x 8' },
-  ];
+  const [workout, setWorkout] = useState(null);
+
+  // Fetch the most recent workout log for today
+  useEffect(() => {
+    const fetchWorkoutForToday = async () => {
+      try {
+        const today = new Date(); // Get today's date
+        const recentLog = await syncMostRecentWorkoutLogForDate(today); // Fetch today's workout
+        setWorkout(recentLog); // Set the workout data
+      } catch (error) {
+        console.error('Error fetching recent workout for today:', error);
+      }
+    };
+
+    fetchWorkoutForToday();
+  }, []);
 
   return (
     <TouchableOpacity
       style={styles.workoutTab}
       onPress={() => navigation.navigate('Workout')}>
-      <Text style={styles.workoutHistoryTitle}>Workout History</Text>
-      {workouts.map((workout, index) => (
-        <View key={index} style={styles.workoutItem}>
+      <Text style={styles.workoutHistoryTitle}>Today's Workout</Text>
+      {workout ? (
+        <View style={styles.workoutItem}>
           <Text style={styles.workoutExercise}>
-            {workout.sets} {workout.exercise}
+            {`Date: ${workout.date}`} {/* Display the workout date */}
           </Text>
           <Text style={styles.workoutDetails}>
-            {workout.weight} {workout.reps}
+            {`Duration: ${workout.durationMinutes} minutes`} {/* Display workout duration */}
           </Text>
         </View>
-      ))}
+      ) : (
+        <Text>No workout yet</Text> // If no workout for today, show this message
+      )}
     </TouchableOpacity>
   );
 };
