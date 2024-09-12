@@ -339,3 +339,20 @@ export async function getExerciseScore(userId, date) {
         return null;
     }
 }
+
+export async function syncMostRecentWorkoutLogForDate(date = new Date()) {
+    try {
+      // Convert the provided date to YYYY-MM-DD format
+      const formattedDate = date.toISOString().split('T')[0];
+  
+      // Fetch workout logs for that day sorted by descending order of time
+      const [mostRecentWorkoutLog] = await DataStore.query(ExerciseLog, (c) =>
+        c.date.eq(formattedDate), { sort: s => s.createdAt('DESCENDING'), limit: 1 }
+      );
+  
+      return mostRecentWorkoutLog;
+    } catch (error) {
+      console.error("Error fetching workout log for the day:", error);
+      throw error;
+    }
+  }
