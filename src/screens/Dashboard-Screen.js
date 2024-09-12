@@ -4,7 +4,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { syncDailySleepLog } from '../logic/sleep-api';
 import { syncDietDashboardData } from '../logic/diet-api';
-import { getExerciseScore } from '../logic/wrkout-api';
+import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
@@ -18,6 +18,14 @@ const HealthScoreTab = () => {
   const healthScore = 85;
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
+
+  getExerciseScore(userID).then((exerciseScore) => {
+    if (exerciseScore !== null) {
+      console.log(`Exercise score is ${exerciseScore}`);
+    }
+  }).catch((error) => {
+    console.log(`Error retrieving exercise score: ${error}`);
+  });
 
   return (
     <TouchableOpacity
