@@ -4,19 +4,9 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
+import { getActiveDate, getFormattedDate } from '../../logic/date-time';
 
 let userID;
-
-// gets date in format 'Weekday, Month DD'
-// takes input from getLocalDate
-function getFormattedDate() {
-  let tempDate = new Date();
-  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-  const month = tempDate.toLocaleString('default', { month: 'long' });
-  const day = tempDate.getDate();
-  const formattedDate = `${weekDay}, ${month} ${day}`;
-  return formattedDate;
-}
 
 // Individual routine tab component
 const RoutineTab = ({ routine, onPress }) => (
@@ -62,8 +52,8 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
               // Close the popup first
               onClose();
               // Navigate to ActiveWorkout screen with the routine's name and data
-              navigation.navigate('Active Workout', { 
-                routineName: routine.name, 
+              navigation.navigate('Active Workout', {
+                routineName: routine.name,
                 workoutData: routine.exercises  // Pass the exercises to the ActiveWorkout screen
               });
             }}
@@ -124,7 +114,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
-        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate()}</Text>
+        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate(getActiveDate())}</Text>
 
         <Text style={styles.title}>Workout</Text>
 
@@ -254,7 +244,7 @@ const styles = StyleSheet.create({
   exerciseListButtonText: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
   },
 
   popupOverlay: {
@@ -282,7 +272,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     fontSize: 18,
-    color: COLORS.primaryBlueHex, 
+    color: COLORS.primaryBlueHex,
   },
 
   startWorkoutButton: {
