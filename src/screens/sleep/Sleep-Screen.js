@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DADADA',
-    padding: 20,
+   
   },
 
   title: {
