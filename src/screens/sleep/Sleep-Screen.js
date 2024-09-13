@@ -23,6 +23,8 @@ import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { COLORS } from '../../theme/theme';
+
 // sleep data comes in the form { day: string, hours: int, quality: int }
 // only in this format for sleep tab UI component, received from sync functions
 // the values are saved in the sleepData state as an array of objects
@@ -309,7 +311,7 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
           }]}>
             {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
           </View>
-          <Text>Quality</Text>
+          <Text style={styles.qualityLabel}>Quality</Text>
         </View>
       </View>
     </View>
@@ -379,8 +381,8 @@ const SleepScreen = () => {
 
           <Text style={styles.title}>{getFormattedDate(getActiveDate())}</Text>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
-            <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
+            <View style={{ backgroundColor: COLORS.primaryPurpleHex, borderRadius: 15, padding: 10 }}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
                 <Text>Select Month</Text>
@@ -393,12 +395,12 @@ const SleepScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {totalHours !== 0 ? <Text style={styles.monthText}>
+          {totalHours !== 0 ? <Text style={styles.heading3Text}>
             Average Hours: {(totalHours / sleepData.length).toFixed(2)}
           </Text> : null}
 
           <TouchableOpacity
-            style={styles.addSleepButton}
+            style={styles.showChartButton}
             onPress={() => setShowChart(!showChart)}>
             <Text style={styles.addSleepButtonText}>{showChart ? 'Hide Chart' : 'Show Chart'}</Text>
           </TouchableOpacity>
@@ -417,11 +419,11 @@ const SleepScreen = () => {
           }
 
 
-          {/* Sleep data rendered in tabs*/}
-          {sleepData.length > 0 ? <Text style={[styles.monthText, { marginLeft: 10 }]}>Sleep Logs</Text> : null}
+          {/* Sleep data rendered in tabs
+          {sleepData.length > 0 ? <Text style={[styles.heading3Text]}>Sleep Logs</Text> : null} */}
           {/* Toggle Button */}
           <TouchableOpacity
-            style={styles.addSleepButton}
+            style={styles.showChartButton}
             onPress={sortEntriesByDate}>
             <Text style={styles.addSleepButtonText}>
               {isAscending ? 'Show Descending' : 'Show Ascending'}</Text>
@@ -449,23 +451,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DADADA',
+    padding: 20,
   },
+
   title: {
     fontSize: 35,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    marginTop: 10,
+
   },
   monthText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     textAlign: 'left',
-    marginTop: 5,
+    fontWeight: 'bold',
+
   },
+
+  heading3Text: {
+    fontSize: 20,
+    color: COLORS.darkGray,
+    textAlign: 'left',
+    fontWeight: 'bold',
+
+  },
+
   addSleepButton: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryPurpleHex,
+    borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -476,36 +490,54 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+  showChartButton: {
+    backgroundColor: COLORS.primaryPurpleHex,
+    borderRadius: 15,
+    padding: 10,
+    justifyContent: 'center',
+    marginVertical: 5,
+    alignItems: 'center',
+
+  },
   chartContainer: {
-    margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   sleepScrollContainer: {
-    marginHorizontal: 1,
     marginVertical: 10,
   },
+
   sleepTabContainer: {
     marginVertical: 10,
-    borderRadius: 8,
+    borderRadius: 15,
     borderColor: 'black',
     //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: '#fff', // This is a placeholder color
-    borderRadius: 8,
-    padding: 16,
-    marginHorizontal: 10,
+    backgroundColor: COLORS.secondaryPurpleHex, // This is a placeholder color
+    borderRadius: 15,
+    padding: 10,
+    
+
   },
   dateName: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 10,
+    color: COLORS.whiteHex,
+    marginLeft: 20,
+    marginTop: 5,
   },
+
   hoursText: {
     fontSize: 16,
-    marginBottom: 4,
+    color: COLORS.lightPurple,
+    fontWeight: 'bold',
+    marginLeft: 20,
   },
+
   qualityCircle: {
     width: 50,
     height: 50,
@@ -518,6 +550,12 @@ const styles = StyleSheet.create({
   qualityText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+
+  qualityLabel: {
+    fontSize: 16,
+    color: COLORS.lightPurple,
+
   },
   popupOverlay: {
     flex: 1,

@@ -236,7 +236,7 @@ const AddMealScreen = (props) => {
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <SafeAreaView>
+      <SafeAreaView style = {styles.container}>
         <ScrollView>
 
           <PopupComponent
@@ -343,6 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   title: {
     fontSize: 30,
@@ -350,9 +351,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   mealContainer: {
     justifyContent: 'space-around',
-    marginTop: 40,
+    marginHorizontal: 10,
   },
   foodItem: {
     fontSize: 20,
@@ -360,10 +362,11 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     color: 'black',
+
   },
   Button: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryGreen,
+    borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -373,14 +376,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
+
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 40,
+    marginHorizontal: 10
   },
+
   pieMacroContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -500,4 +504,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center'
   }
+  
 });
