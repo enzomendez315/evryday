@@ -149,6 +149,7 @@ export const onCreateNutritionLog = /* GraphQL */ `subscription OnCreateNutritio
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -173,6 +174,7 @@ export const onUpdateNutritionLog = /* GraphQL */ `subscription OnUpdateNutritio
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -197,6 +199,7 @@ export const onDeleteNutritionLog = /* GraphQL */ `subscription OnDeleteNutritio
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version

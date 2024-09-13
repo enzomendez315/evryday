@@ -162,6 +162,7 @@ export const createNutritionLog = /* GraphQL */ `mutation CreateNutritionLog(
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -187,6 +188,7 @@ export const updateNutritionLog = /* GraphQL */ `mutation UpdateNutritionLog(
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -212,6 +214,7 @@ export const deleteNutritionLog = /* GraphQL */ `mutation DeleteNutritionLog(
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version

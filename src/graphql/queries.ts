@@ -180,6 +180,7 @@ export const getNutritionLog = /* GraphQL */ `query GetNutritionLog($id: ID!) {
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -202,6 +203,7 @@ export const listNutritionLogs = /* GraphQL */ `query ListNutritionLogs(
       id
       userId
       date
+      waterIntake
       createdAt
       updatedAt
       _version
@@ -234,6 +236,7 @@ export const syncNutritionLogs = /* GraphQL */ `query SyncNutritionLogs(
       id
       userId
       date
+      waterIntake
       createdAt
       updatedAt
       _version

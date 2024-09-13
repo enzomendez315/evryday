@@ -6,6 +6,7 @@ import { syncMealFoodsList, deleteMeal, getFoodItemFromId, getAllRecipes, saveAs
 import PopupComponent from '../../components/PopupMenu';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 // const foodsList = [
 //   { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
 //   { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
@@ -22,86 +23,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
 let DEBUG = false;
 
-const RecipePopupData = [
-  {
-    id: 0,
-    name: 'Chicken and Rice',
-    ingredients: [
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-    ],
-    calories: 500,
-    protein: 25,
-    carbs: 50,
-    fat: 20,
-  },
-  {
-    id: 1,
-    name: 'Chicken and Broccoli',
-    ingredients: [
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-    ],
-    calories: 350,
-    protein: 20,
-    carbs: 40,
-    fat: 15,
-  },
-  {
-    id: 2,
-    name: 'Rice and Broccoli',
-    ingredients: [
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-    ],
-    calories: 250,
-    protein: 15,
-    carbs: 30,
-    fat: 10,
-  },
-  {
-    id: 3,
-    name: 'Apple and Rice',
-    ingredients: [
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-      { name: 'Rice', calories: 200, protein: 10, carbs: 20, fat: 5, serving: '200g' },
-    ],
-    calories: 300,
-    protein: 11,
-    carbs: 40,
-    fat: 5,
-  },
-  {
-    id: 4,
-    name: 'Chicken and Apple',
-    ingredients: [
-      { name: 'Chicken', calories: 300, protein: 15, carbs: 30, fat: 15, serving: '100g' },
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-    ],
-    calories: 400,
-    protein: 16,
-    carbs: 50,
-    fat: 15,
-  },
-  {
-    id: 5,
-    name: 'Broccoli and Apple',
-    ingredients: [
-      { name: 'Broccoli', calories: 50, protein: 5, carbs: 10, fat: 5, serving: '100g' },
-      { name: 'Apple', calories: 100, protein: 1, carbs: 20, fat: 0, serving: '100g' },
-    ],
-    calories: 150,
-    protein: 6,
-    carbs: 30,
-    fat: 5,
-  }
-];
-
-function recipeOnPress(recipe, closePopup) {
-  console.log(recipe.name + ' pressed')
-  closePopup()
-}
-
+// A FlatList item for the recipe display popup
 const RecipePopupItem = memo(
   ({ item, onPress }) => (
     <TouchableOpacity style={styles.recipeTab} onPress={onPress}>
@@ -123,10 +45,9 @@ const RecipePopupItem = memo(
   }
 );
 
+// A popup item for the recipe name input
 const RecipeNameInput = ({ onPress, closePopup }) => {
-  const navigation = useNavigation();
   const [name, setName] = useState('');
-  let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
   return (
     <View style={styles.popupContentContainer}>
       <Text style={styles.popupTitle}>Recipe Name</Text>
@@ -148,6 +69,7 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
   )
 };
 
+// A header for both menu popups
 const PopupHeader = ({ title, closePopup }) => {
   return (
     <View style={styles.popupHeader}>
@@ -168,11 +90,10 @@ const PopupHeader = ({ title, closePopup }) => {
 
 
 
-/////
-
+// The main component for the Add Meal Screen
 const AddMealScreen = (props) => {
   const { navigation, route } = props;
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [navMenuVisible, setNavMenuVisible] = useState(false);
   const [recipePopupVisible, setRecipePopupVisible] = useState(false);
   const [savePopupVisible, setSavePopupVisible] = useState(false);
   const [mealData, setMealData] = useState(route.params.meal);
@@ -188,11 +109,29 @@ const AddMealScreen = (props) => {
   }
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => setNavMenuVisible(!navMenuVisible)}>
+          <View>
+            <Ionicons name="menu-outline" size={36} color={COLORS.darkBlue} />
+          </View>
+        </TouchableOpacity>
+      ),
+    })  
+  }, []);
+
+  useEffect(() => {
     getAllRecipes(setRecipeList);
     setMealData(route.params.meal);
     syncMealFoodsList(mealData, setFoodList);
     DEBUG && console.log('Add meal route.params', route.params);
   }, [route.params]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: mealData.name ?? 'New Meal',
+    });
+  }, [mealData]);
 
   if (foodListView != undefined) {
     foodListView = (
@@ -214,12 +153,60 @@ const AddMealScreen = (props) => {
     );
   }
 
+  const NavPopupData = [
+    {
+      id: 0,
+      name: 'Add new food',
+      onPress: () => {
+        navigation.navigate('Search Food', route.params);
+      },
+    },
+    {
+      id: 1,
+      name: 'Use a recipe',
+      onPress: () => {
+        setRecipePopupVisible(true);
+      },
+    },
+    {
+      id: 2,
+      name: 'Save as recipe',
+      onPress: () => {
+        setSavePopupVisible(true);
+      },
+    },
+    {
+      id: 3,
+      name: 'Delete meal',
+      onPress: () => {
+        deleteMeal(mealData?.id).then(() => navigation.navigate('Diet Home'));
+      },
+    },
+  ];
+
+  const NavPopupItem = memo(
+    ({ item, onPress }) => (
+      <TouchableOpacity onPress={() => {onPress(item)}} style={styles.menuRow}>
+        <Text style={styles.rowLabel}>{item.name}</Text>
+      </TouchableOpacity>
+    ),
+    (prevProps, nextProps) => {
+      return prevProps.item.id === nextProps.item.id;
+    }
+  );
+
   //The onPress function for the recipe popup
   const addToMeal = async (item) => {
     console.log(item.name, 'pressed');
     await addRecipeToMeal(mealId = mealData.id, recipeId = item.id);
     syncMealFoodsList(mealData, setFoodList);
   };
+
+  const navMenuOnPress = (item) => {
+    console.log(item.name,'pressed');
+    setNavMenuVisible(false);
+    item.onPress(); 
+  }
 
   let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
   const saveRecipe = async (name) => {
@@ -229,7 +216,7 @@ const AddMealScreen = (props) => {
     }
     console.log('Good Input: ', name)
     await saveAsRecipe(mealData.id, name).then((newMeal) => {
-      // navigation.navigate('', {newMeal});
+      navigation.navigate('Diet Home');
     })
   }
 
@@ -255,32 +242,14 @@ const AddMealScreen = (props) => {
             onPress={saveRecipe}
           />
 
-          <Text style={styles.title}>{mealData.name}</Text>
-
-          <View style={styles.mealContainer}>
-            <ScrollView>
-              {foodListView}
-            </ScrollView>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => navigation.navigate('Search Food', route.params)}>
-              <Text style={styles.ButtonText}>Add New Food</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => navigation.navigate('Diet Home')}>
-              <Text style={styles.ButtonText}>Complete Meal</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => setSavePopupVisible(true)}>
-              <Text style={styles.ButtonText}>Save as Recipe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => setRecipePopupVisible(true)}>
-              <Text style={styles.ButtonText}>Use a Recipe</Text>
-            </TouchableOpacity>
-          </View>
+        <PopupComponent
+          isVisible={navMenuVisible}
+          setIsVisible={setNavMenuVisible}
+          data={NavPopupData}
+          ItemComponent={NavPopupItem}
+          onPress={navMenuOnPress}
+          stylePrefix='rightSide'
+        />
 
           <View style={styles.pieMacroContainer}>
             <View style={styles.pieTextContainer}>
@@ -317,22 +286,26 @@ const AddMealScreen = (props) => {
             </View>
           </View>
 
-          <Text>HUGE TIP: don't eat the mysterious cookies the little
-            girls in front of the grocery store are selling. They're not
-            cookies. They're rocks. I learned that the hard way.
-          </Text>
-
-          <TouchableOpacity style={styles.Button}
-            onPress={() => {
-              deleteMeal(mealData?.id).then(() => navigation.navigate('Diet Home'));
-            }}>
-            <Text style={styles.ButtonText}>Delete Meal</Text>
-          </TouchableOpacity>
-
+          <View style={styles.mealContainer}>
+            <ScrollView>
+              {foodListView}
+            </ScrollView>
+            <TouchableOpacity style={styles.Button}
+              onPress={() => navigation.navigate('Search Food', route.params)}>
+              <Text style={styles.ButtonText}>Add New Food</Text>
+            </TouchableOpacity>
+          </View>
+          
         </ScrollView>
       </SafeAreaView>
     </>
   );
+  
+  // <Text>HUGE TIP: don't eat the mysterious cookies the little
+  // girls in front of the grocery store are selling. They're not
+  // cookies. They're rocks. I learned that the hard way.
+  // </Text>
+
 };
 
 export default AddMealScreen;

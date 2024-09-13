@@ -68,6 +68,7 @@ const FoodItemForm = (props) => {
     }
   }, [])
 
+  // The user can only edit the serving size unit when editable is false
   const toggleEditable = () => {
     setEditable(!editable)
   }
@@ -171,12 +172,12 @@ export default FoodItemForm;
 
 const foodItemFormStyle = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: -1,
     flexDirection: "column",
     padding: 10,
+    gap: 5,
   },
   row: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-inbetween",
     alignItems: "center",
@@ -187,13 +188,14 @@ const foodItemFormStyle = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    backgroundColor: '#c5fcfc',
+    backgroundColor: 'white', 
     borderColor: 'black',
-    borderRadius: 1,
+    borderRadius: 5,
     borderWidth: 1,
   },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
+    borderRadius: 5,
   }
 })

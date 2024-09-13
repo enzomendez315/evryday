@@ -160,14 +160,26 @@ function DietStack() {
             backgroundColor: COLORS.lightGreen,
           },
         }} />
-      <Stack.Screen name="Add Meal" component={AddMealScreen} />
-      <Stack.Screen name="Search Food" component={SearchFoodScreen} />
+      <Stack.Screen name="Add Meal" component={AddMealScreen}
+        options={({ navigation, route }) => ({
+          title: "Add Meal",
+          headerRight: () => (
+            <Ionicons name="menu-outline" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
+      <Stack.Screen name="Search Food" component={SearchFoodScreen}
+        options={({ navigation, route }) => ({
+          title: "Lookup Food",
+          headerRight: () => (
+            <Ionicons name="add-outline" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
       <Stack.Screen name="Add Food" component={AddFoodScreen} />
       <Stack.Screen name="Edit Food" component={AddFoodScreen}
         options={({ navigation, route }) => ({
           title: "Edit Food",
           headerRight: () => (
-            <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
+            <Ionicons name="trash" size={36} color={COLORS.darkBlue} />
           ),
         })} />
       <Stack.Screen name="Create Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />

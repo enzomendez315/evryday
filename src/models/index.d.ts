@@ -94,6 +94,7 @@ type EagerNutritionLog = {
   readonly userId: string;
   readonly date: string;
   readonly Meals?: (Meal | null)[] | null;
+  readonly waterIntake?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -107,6 +108,7 @@ type LazyNutritionLog = {
   readonly userId: string;
   readonly date: string;
   readonly Meals: AsyncCollection<Meal>;
+  readonly waterIntake?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
