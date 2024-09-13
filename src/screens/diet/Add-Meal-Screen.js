@@ -223,7 +223,7 @@ const AddMealScreen = (props) => {
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <SafeAreaView>
+      <SafeAreaView style = {styles.container}>
         <ScrollView>
 
           <PopupComponent
@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   title: {
     fontSize: 30,
@@ -323,9 +324,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   mealContainer: {
     justifyContent: 'space-around',
-    marginTop: 40,
+    marginHorizontal: 10,
   },
   foodItem: {
     fontSize: 20,
@@ -333,10 +335,11 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     color: 'black',
+
   },
   Button: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryGreen,
+    borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -346,14 +349,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
+
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 40,
+    marginHorizontal: 10
   },
+
   pieMacroContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -473,111 +477,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center'
   }
+  
 });
-
-
-// TODO:: REMOVE OLD CODE
-/*
-<>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <SafeAreaView>
-        <ScrollView>
-
-        <PopupComponent
-          isVisible={recipePopupVisible}
-          setIsVisible={setRecipePopupVisible}
-          data={recipeList}
-          ItemComponent={RecipePopupItem}
-          onPress={addToMeal}
-          Header={PopupHeader}
-        />
-
-        <PopupComponent
-          isVisible={savePopupVisible}
-          setIsVisible={setSavePopupVisible}
-          Content={RecipeNameInput}
-          onPress={saveRecipe}
-        />
-
-        <PopupComponent
-          isVisible={navMenuVisible}
-          setIsVisible={setNavMenuVisible}
-          data={NavPopupData}
-          ItemComponent={NavPopupItem}
-          onPress={navMenuOnPress}
-          stylePrefix='rightSide'
-        />
-
-          <Text style={styles.title}>{mealData.name}</Text>
-
-          <View style={styles.mealContainer}>
-            <ScrollView>
-              {foodListView}
-            </ScrollView>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => navigation.navigate('Search Food', route.params)}>
-              <Text style={styles.ButtonText}>Add New Food</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => navigation.navigate('Diet Home')}>
-              <Text style={styles.ButtonText}>Complete Meal</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => setSavePopupVisible(true)}>
-              <Text style={styles.ButtonText}>Save as Recipe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.Button}
-              onPress={() => setRecipePopupVisible(true)}>
-              <Text style={styles.ButtonText}>Use a Recipe</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.pieMacroContainer}>
-            <View style={styles.pieTextContainer}>
-              <Text style={styles.pieText}>Macro Breakdown:</Text>
-              <PieChart
-                style={styles.pieChart}
-                widthAndHeight={150}
-                series={pieSeries}
-                sliceColor={['lightblue', 'lightgreen', 'pink']}
-              />
-            </View>
-
-            <View style={styles.macroContainer}>
-              <Text style={styles.macroText}>
-                Calories: {mealData.calories}</Text>
-
-              <View style={styles.macroSquareTextContainer}>
-                <View style={styles.proteinSquare} />
-                <Text style={styles.macroText}>
-                  Protein: {mealData.protein}g</Text>
-              </View>
-
-              <View style={styles.macroSquareTextContainer}>
-                <View style={styles.carbsSquare} />
-                <Text style={styles.macroText}>
-                  Carbs: {mealData.carbs}g</Text>
-              </View>
-
-              <View style={styles.macroSquareTextContainer}>
-                <View style={styles.fatSquare} />
-                <Text style={styles.macroText}>
-                  Fat: {mealData.fat}g</Text>
-              </View>
-            </View>
-          </View>
-
-          <TouchableOpacity style={styles.Button}
-            onPress={() => {
-              deleteMeal(mealData?.id).then(() => navigation.navigate('Diet Home'));
-            }}>
-            <Text style={styles.ButtonText}>Delete Meal</Text>
-          </TouchableOpacity>
-
-        </ScrollView>
-      </SafeAreaView>
-    </>
-*/

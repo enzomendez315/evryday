@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     margin: 10,
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: 15,
   },
   macroText: {
     textAlign: 'left',
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     margin: 10,
-    borderRadius: 8,
+    borderRadius: 15,
   },
   mealNameText: {
     fontSize: 25,
@@ -411,8 +411,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   addMealButton: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryGreen,
+    borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -501,8 +501,8 @@ const styles = StyleSheet.create({
   //   alignItems: 'center',
   // },
   addSleepButton: {
-    backgroundColor: 'blue',
-    borderRadius: 8,
+    backgroundColor: COLORS.primaryGreen,
+    borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -514,6 +514,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     justifyContent: 'center',
   },
+  
   row: {
     flexDirection: 'row',
     alignItems: 'center',
