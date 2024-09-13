@@ -291,10 +291,10 @@ const Dashboard = (props) => {
           <HealthScoreTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
           <DietTab style={styles.tab} calorieData={calorieData} />
-          <Text style={styles.tabHeaderText}>Exercise</Text>
-          <WorkoutTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Sleep</Text>
           <SleepTab style={styles.tab} sleepData={sleepData} />
+          <Text style={styles.tabHeaderText}>Exercise</Text>
+          <WorkoutTab style={styles.tab} />
           {/* Add more components as needed */}
         </ScrollView>
       </SafeAreaView>
