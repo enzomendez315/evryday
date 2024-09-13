@@ -1,6 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood } from '../models';
+import { getUserGoals } from './user-goals'
 
 const DEBUG = false;
 
@@ -156,7 +157,7 @@ export async function syncDietDashboardData(userId, date, setCalorieData) {
 // called by main diet screen to update the nutrition log data
 // used to update hooks with all the meal data
 // TODO: adjust macros goals based on user's original goals and physical attributes
-export async function syncDailyLogData(userId, date, setCalorieData, setLogData, setIsLoading = () => { }) {
+export async function syncDailyLogData(userId, date, setCalorieData, setLogData, setWaterIntakeAmount, setIsLoading = () => { }) {
     DEBUG && console.log(`syncDailyLogData userId: ${userId} Date: ${date}`);
     // get the nutrition log for the user and date
     const userLog = await getUsersNutritionLog(userId, date);
@@ -175,6 +176,7 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
             caloriesGoal: 2000,
         });
         setLogData([]);
+        setWaterIntakeAmount(0);
         return;
     }
 
@@ -188,6 +190,8 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     DEBUG && console.log(`syncDailyLogs Macros:`);
     DEBUG && console.log(macros);
 
+    const goals = await getUserGoals(userId)
+
     // set the calorie data by summing up the values in each array
     setCalorieData({
         proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
@@ -197,12 +201,18 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
         fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
         fatGoal: 75,
         caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
-        caloriesGoal: 2000,
+        caloriesGoal: goals.maxCalories ?? 2000,
     });
 
     // set the meal data
     // TODO: specify what macros are being displayed for readability
     setLogData(macros);
+
+    if(userLog.waterIntake !== null || userLog.waterIntake !== undefined){
+        setWaterIntakeAmount(userLog.waterIntake);
+    } else {
+        setWaterIntakeAmount(0);
+    }
 }
 
 // Combines a FoodItem, it serving information, and the amount of servings into a singular item
@@ -575,6 +585,25 @@ export async function calcRecipeMacros(recipe) {
         resolve(recipeData);
     });
     return p;
+}
+
+
+export async function updateWaterIntake(userId, date, amount, setWaterIntakeAmount) {
+    const userLog = await getUsersNutritionLog(userId, date);
+    if (userLog === null) {
+        setWaterIntakeAmount(amount);
+    } else {
+        let updatedAmount = amount;
+        if (userLog.waterIntake !== null || userLog.waterIntake !== undefined) {
+            updatedAmount += userLog.waterIntake;
+        }
+        await DataStore.save(
+            NutritionLog.copyOf(userLog, updated => {
+                updated.waterIntake = updatedAmount;
+            })
+        );
+        setWaterIntakeAmount(updatedAmount);
+    }
 }
 
 

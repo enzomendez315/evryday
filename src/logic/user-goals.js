@@ -1,9 +1,8 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { DailyGoals } from '../models';
 
-let DEBUG = true;
+let DEBUG = false;
 
-// auto-generated, not sure if it works
 export async function getUserGoals(userID_) {
     p = new Promise((resolve, reject) => {
         try {
@@ -15,7 +14,7 @@ export async function getUserGoals(userID_) {
                     DEBUG && console.log("no user goals found");
                     resolve(null);
                 } else {
-                    DEBUG && console.log(`User goals found: ${foundGoals[0]}`);
+                    DEBUG && console.log(`User goals found:`, foundGoals[0]);
                     resolve(foundGoals[0]);
                 }
             });

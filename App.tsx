@@ -160,7 +160,13 @@ function DietStack() {
             backgroundColor: COLORS.lightGreen,
           },
         }} />
-      <Stack.Screen name="Add Meal" component={AddMealScreen} />
+      <Stack.Screen name="Add Meal" component={AddMealScreen}
+        options={({ navigation, route }) => ({
+          title: "Add Meal",
+          headerRight: () => (
+            <Ionicons name="menu-outline" size={24} color={COLORS.darkBlue} />
+          ),
+        })} />
       <Stack.Screen name="Search Food" component={SearchFoodScreen}
         options={({ navigation, route }) => ({
           title: "Lookup Food",

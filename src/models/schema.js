@@ -221,6 +221,13 @@ export const schema = {
                         ]
                     }
                 },
+                "waterIntake": {
+                    "name": "waterIntake",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -2124,5 +2131,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "f389d0747aaa797d3f9df07e74859d84"
+    "version": "c5420e3efab963958e08548e7b54634d"
 };

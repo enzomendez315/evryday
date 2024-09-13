@@ -8,6 +8,90 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getDailyGoals = /* GraphQL */ `query GetDailyGoals($id: ID!) {
+  getDailyGoals(id: $id) {
+    id
+    userId
+    minCalories
+    maxCalories
+    minSleep
+    dailyWorkout
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetDailyGoalsQueryVariables,
+  APITypes.GetDailyGoalsQuery
+>;
+export const listDailyGoals = /* GraphQL */ `query ListDailyGoals(
+  $filter: ModelDailyGoalsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDailyGoals(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userId
+      minCalories
+      maxCalories
+      minSleep
+      dailyWorkout
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListDailyGoalsQueryVariables,
+  APITypes.ListDailyGoalsQuery
+>;
+export const syncDailyGoals = /* GraphQL */ `query SyncDailyGoals(
+  $filter: ModelDailyGoalsFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncDailyGoals(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userId
+      minCalories
+      maxCalories
+      minSleep
+      dailyWorkout
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncDailyGoalsQueryVariables,
+  APITypes.SyncDailyGoalsQuery
+>;
 export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
@@ -16,7 +100,7 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     age
     height
     weight
-    isFirstTime
+    gender
     createdAt
     updatedAt
     _version
@@ -39,7 +123,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       age
       height
       weight
-      isFirstTime
+      gender
       createdAt
       updatedAt
       _version
@@ -72,7 +156,7 @@ export const syncUsers = /* GraphQL */ `query SyncUsers(
       age
       height
       weight
-      isFirstTime
+      gender
       createdAt
       updatedAt
       _version
@@ -96,6 +180,7 @@ export const getNutritionLog = /* GraphQL */ `query GetNutritionLog($id: ID!) {
       startedAt
       __typename
     }
+    waterIntake
     createdAt
     updatedAt
     _version
@@ -118,6 +203,7 @@ export const listNutritionLogs = /* GraphQL */ `query ListNutritionLogs(
       id
       userId
       date
+      waterIntake
       createdAt
       updatedAt
       _version
@@ -150,6 +236,7 @@ export const syncNutritionLogs = /* GraphQL */ `query SyncNutritionLogs(
       id
       userId
       date
+      waterIntake
       createdAt
       updatedAt
       _version
@@ -882,6 +969,11 @@ export const getExerciseLog = /* GraphQL */ `query GetExerciseLog($id: ID!) {
       startedAt
       __typename
     }
+    ExerciseSets {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -968,6 +1060,11 @@ export const getExerciseSet = /* GraphQL */ `query GetExerciseSet($id: ID!) {
       __typename
     }
     ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciselogs {
       nextToken
       startedAt
       __typename
@@ -1638,6 +1735,178 @@ export const exerciseLogExerciseRoutinesByExerciseRoutineId = /* GraphQL */ `que
 ` as GeneratedQuery<
   APITypes.ExerciseLogExerciseRoutinesByExerciseRoutineIdQueryVariables,
   APITypes.ExerciseLogExerciseRoutinesByExerciseRoutineIdQuery
+>;
+export const getExerciseLogExerciseSet = /* GraphQL */ `query GetExerciseLogExerciseSet($id: ID!) {
+  getExerciseLogExerciseSet(id: $id) {
+    id
+    exerciseLogId
+    exerciseSetId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetExerciseLogExerciseSetQueryVariables,
+  APITypes.GetExerciseLogExerciseSetQuery
+>;
+export const listExerciseLogExerciseSets = /* GraphQL */ `query ListExerciseLogExerciseSets(
+  $filter: ModelExerciseLogExerciseSetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listExerciseLogExerciseSets(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      exerciseLogId
+      exerciseSetId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListExerciseLogExerciseSetsQueryVariables,
+  APITypes.ListExerciseLogExerciseSetsQuery
+>;
+export const syncExerciseLogExerciseSets = /* GraphQL */ `query SyncExerciseLogExerciseSets(
+  $filter: ModelExerciseLogExerciseSetFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncExerciseLogExerciseSets(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      exerciseLogId
+      exerciseSetId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncExerciseLogExerciseSetsQueryVariables,
+  APITypes.SyncExerciseLogExerciseSetsQuery
+>;
+export const exerciseLogExerciseSetsByExerciseLogId = /* GraphQL */ `query ExerciseLogExerciseSetsByExerciseLogId(
+  $exerciseLogId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelExerciseLogExerciseSetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  exerciseLogExerciseSetsByExerciseLogId(
+    exerciseLogId: $exerciseLogId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      exerciseLogId
+      exerciseSetId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ExerciseLogExerciseSetsByExerciseLogIdQueryVariables,
+  APITypes.ExerciseLogExerciseSetsByExerciseLogIdQuery
+>;
+export const exerciseLogExerciseSetsByExerciseSetId = /* GraphQL */ `query ExerciseLogExerciseSetsByExerciseSetId(
+  $exerciseSetId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelExerciseLogExerciseSetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  exerciseLogExerciseSetsByExerciseSetId(
+    exerciseSetId: $exerciseSetId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      exerciseLogId
+      exerciseSetId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ExerciseLogExerciseSetsByExerciseSetIdQueryVariables,
+  APITypes.ExerciseLogExerciseSetsByExerciseSetIdQuery
 >;
 export const getExerciseSetExerciseType = /* GraphQL */ `query GetExerciseSetExerciseType($id: ID!) {
   getExerciseSetExerciseType(id: $id) {

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Button } from 'react-native';
 import PieChart from 'react-native-pie-chart';
-import { syncDailyLogData, createMeal, calcMealMacros } from '../../logic/diet-api'
+import { syncDailyLogData, createMeal, calcMealMacros, updateWaterIntake } from '../../logic/diet-api'
+import { getUserGoals } from '../../logic/user-goals'
 import { useFocusEffect } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import PopupComponent from '../../components/PopupMenu';
 
 let userId;
 
@@ -43,11 +45,39 @@ function getFormattedDate() {
   return formattedDate;
 }
 
+const WaterInputPopup = ({ onPress, closePopup }) => {
+  const [amount, setAmount] = useState('');
+  return (
+    <View style={styles.popupContentContainer}>
+      <Text style={styles.popupTitle}>Water Intake</Text>
+      <View>
+        <TextInput
+          keyboardType='numeric'
+          placeholder="Enter Amount of Water in Oz"
+          style={styles.textInput}
+          onChangeText={(newAmount) => setAmount(newAmount)}
+          value={amount}
+        />
+      </ View>
+      <Button
+        title="Add Water"
+        onPress={async () => {
+          closePopup();
+          onPress(amount);
+        }}
+      />
+    </View>
+  )
+};
+
 const DietScreen = ({ navigation }) => {
   // log data contains information about meals
   // it is created in syncDailyLogData
   const [logData, setLogData] = useState(null);
+  // const [userGoals, setUserGoals] = useState(null);
+  const [waterIntakeAmount, setWaterIntakeAmount] = useState(0);
   const [mealPeriodPopupVisible, setMealPeriodPopupVisible] = useState(false);
+  const [addWaterPopupVisible, setAddWaterPopupVisible] = useState(false);
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
 
@@ -56,7 +86,11 @@ const DietScreen = ({ navigation }) => {
   // Called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData);
+      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData, setWaterIntakeAmount);
+      // getUserGoals(userId).then((goals) => {
+      //   console.log(goals);
+      //   setUserGoals(goals);
+      // });
       return;
     }, [])
   );
@@ -87,11 +121,30 @@ const DietScreen = ({ navigation }) => {
     calorieData.caloriesCurrent];
   }
 
+  const addWater = async (amount) => {
+    let numberRegex = /^\d*$/;
+    if(amount === null || !numberRegex.test(amount)){
+      console.log('Bad Input')
+      return;
+    }
+    console.log('Good Input: ', amount)
+    
+    await updateWaterIntake(userId, new Date().toISOString().substring(0, 10), parseInt(amount), setWaterIntakeAmount).then(() => {
+      setAddWaterPopupVisible(false);
+    })
+  }
+
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation}/>
+        <PopupComponent
+          isVisible={addWaterPopupVisible}
+          setIsVisible={setAddWaterPopupVisible}
+          Content={WaterInputPopup}
+          onPress={addWater}
+        />
         <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate()}</Text>
 
         <ScrollView>
@@ -168,6 +221,25 @@ const DietScreen = ({ navigation }) => {
                 setMealPeriodPopupVisible(true);
               }}>
               <Text style={styles.addMealButtonText}>Add Meal</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.tabHeaderText}>Water Intake</Text>
+          <View style={styles.mealsContainer}>
+
+            {logData ?
+              <>
+                <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+                  <Text style={styles.macroText}>{waterIntakeAmount} Oz</Text>
+                </ScrollView>
+              </> : <Text>Loading...</Text>
+            }
+
+            <TouchableOpacity style={styles.addMealButton}
+              onPress={async () => {
+                setAddWaterPopupVisible(true);
+              }}>
+              <Text style={styles.addMealButtonText}>Add Water</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -388,6 +460,7 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: 'black'
   },
   editButton: {
     fontSize: 18,
@@ -460,4 +533,16 @@ rowIcon: {
       flexShrink: 1,
       flexBasis: 0,
   },
+  textInput: {
+    borderColor: 'black',
+    borderRadius: 1,
+    borderWidth: 1,
+    textAlign: 'center'
+  },
+  popupContentContainer: {
+    flex:-1,
+    width: '100%',
+    maxHeight: '100%',
+    gap: 5
+  }
 });
