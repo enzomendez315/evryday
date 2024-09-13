@@ -61,7 +61,7 @@ const DailyGoalsScreen = () => {
 
     return (
 
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             <Text style={styles.title}>Set Your Daily Goals</Text>
 
             <View style={styles.body}>
@@ -118,6 +118,10 @@ const DailyGoalsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'lightgray',
+    },
     title: {
         fontSize: 24,
         marginBottom: 20,
@@ -134,7 +138,9 @@ const styles = StyleSheet.create({
     inputRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: 10,
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
     },
     label: {
         flex: .4,

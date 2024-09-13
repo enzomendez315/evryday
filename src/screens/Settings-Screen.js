@@ -74,7 +74,7 @@ const SettingsScreen = () => {
     );
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "lightgray" }}>
             <View style={styles.container}>
                 <View style={styles.profileHeader}>
 
@@ -89,21 +89,21 @@ const SettingsScreen = () => {
                     </View>
 
                     <View style={styles.profileInfo}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text>Age: </Text>
-                            <Text>{form.userAge} yrs</Text>
+                        <View style={styles.profileInfoRow}>
+                            <Text style={styles.profileInfoLabel}>Age: </Text>
+                            <Text style={styles.profileInfoLabel}>{form.userAge} yrs</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text>Height: </Text>
-                            <Text>{form.userHeight} in</Text>
+                        <View style={styles.profileInfoRow}>
+                            <Text style={styles.profileInfoLabel}>Height: </Text>
+                            <Text style={styles.profileInfoLabel}>{form.userHeight} in</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text>Weight: </Text>
-                            <Text>{form.userWeight} lbs</Text>
+                        <View style={styles.profileInfoRow}>
+                            <Text style={styles.profileInfoLabel}>Weight: </Text>
+                            <Text style={styles.profileInfoLabel}>{form.userWeight} lbs</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text>Gender: </Text>
-                            <Text>{form.userGender}</Text>
+                        <View style={styles.profileInfoRow}>
+                            <Text style={styles.profileInfoLabel}>Gender: </Text>
+                            <Text style={styles.profileInfoLabel}>{form.userGender}</Text>
                         </View>
                     </View>
                 </View>
@@ -259,8 +259,8 @@ const styles = StyleSheet.create({
     /** Profile */
     profileHeader: {
         padding: 10,
-        backgroundColor: 'lightgray',
         flexDirection: 'row',
+        backgroundColor: 'white',
     },
     nameAndPic: {
         flexDirection: 'column',
@@ -279,8 +279,16 @@ const styles = StyleSheet.create({
     },
     profileInfo: {
         margin: 10,
-        flex: .7,
+        marginLeft: 40,
+        flex: .8,
         justifyContent: 'space-evenly',
+    },
+    profileInfoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    profileInfoLabel: {
+        color: 'black',
     },
     /** Section */
     section: {
@@ -290,7 +298,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         fontSize: 12,
         fontWeight: '600',
-        color: '#9e9e9e',
+        color: 'black',
         textTransform: 'uppercase',
         letterSpacing: 1.1,
     },
@@ -300,7 +308,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         height: 50,
-        backgroundColor: '#f2f2f2',
+        backgroundColor: 'white',
         borderRadius: 8,
         marginBottom: 12,
         paddingLeft: 12,

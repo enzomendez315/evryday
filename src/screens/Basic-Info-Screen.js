@@ -147,6 +147,7 @@ const BasicInfoScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'lightgray',
     },
     title: {
         fontSize: 24,
@@ -164,11 +165,14 @@ const styles = StyleSheet.create({
     inputRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: 10,
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
     },
     label: {
         flex: .4,
         padding: 10,
+        color: 'black',
     },
     input: {
         flex: .6,
