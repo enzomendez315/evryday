@@ -1,20 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailyLog } from '../logic/sleep-api';
-import { syncDietDashboardData } from '../logic/diet-api';
+import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
+import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
+import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
+import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-time';
+import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
-let date;
 let userID;
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
-  // Dummy health score data
-  const healthScore = 85;
+  // Get the current date in 'YYYY-MM-DD' format
+  const today = new Date().toISOString().split('T')[0];
+
+  let sleepScore;
+  let nutritionScore;
+  //let exerciseScore; // uncomment when exercise routines have dates
+  let exerciseScore = 100;
+
+  const fetchScores = async () => {
+    try {
+      sleepScore = await getSleepScore(userID, today);
+      nutritionScore = await getNutritionScore(userID, today);
+      console.log(`Sleep score is ${sleepScore}`);
+      console.log(`Nutrition score is ${nutritionScore}`);
+    } catch (error) {
+      console.error('Error fetching scores:', error);
+    }
+  };
+  
+  fetchScores();
+
+  const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
 
@@ -130,37 +152,46 @@ const DietTab = ({ calorieData }) => {
 // Working Out Tab Component:
 const WorkoutTab = () => {
   const navigation = useNavigation();
-  // Dummy workout data
-  const workouts = [
-    { exercise: 'Squat', sets: '4 x', weight: '185lb', reps: 'x 10' },
-    { exercise: 'Chest Press', sets: '3 x', weight: '100lb', reps: 'x 12' },
-    { exercise: 'Seated Row', sets: '3 x', weight: '110lb', reps: 'x 12' },
-    { exercise: 'Leg Extension', sets: '3 x', weight: '80lb', reps: 'x 15' },
-    // Add more workouts as needed
-  ];
+  const [workout, setWorkout] = useState(null);
+
+  // Fetch the most recent workout log for today
+  useEffect(() => {
+    const fetchWorkoutForToday = async () => {
+      try {
+        const today = new Date(); // Get today's date
+        const recentLog = await syncMostRecentWorkoutLogForDate(today); // Fetch today's workout
+        setWorkout(recentLog); // Set the workout data
+      } catch (error) {
+        console.error('Error fetching recent workout for today:', error);
+      }
+    };
+
+    fetchWorkoutForToday();
+  }, []);
 
   return (
     <TouchableOpacity
       style={styles.workoutTab}
       onPress={() => navigation.navigate('Workout')}>
-      <Text style={styles.workoutHistoryTitle}>Workout History</Text>
-      {workouts.map((workout, index) => (
-        <View key={index} style={styles.workoutItem}>
+      <Text style={styles.workoutHistoryTitle}>Today's Workout</Text>
+      {workout ? (
+        <View style={styles.workoutItem}>
           <Text style={styles.workoutExercise}>
-            {workout.sets} {workout.exercise}
+            {`Date: ${workout.date}`} {/* Display the workout date */}
           </Text>
           <Text style={styles.workoutDetails}>
-            {workout.weight} {workout.reps}
+            {`Duration: ${workout.durationMinutes} minutes`} {/* Display workout duration */}
           </Text>
         </View>
-      ))}
+      ) : (
+        <Text>No workout yet</Text> // If no workout for today, show this message
+      )}
     </TouchableOpacity>
   );
 };
 
 // Sleeping Tab Component:
 const SleepTab = ({ sleepData }) => {
-  const sleepRecommendation = "Snugly Sloth: You snagged 8 hours of quality dream time today!";
   const navigation = useNavigation();
 
   return (
@@ -186,30 +217,10 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
-// gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
-function getLocalDate() {
-  let tempDate = new Date();
-  const year = tempDate.getFullYear();
-  const month = String(tempDate.getMonth() + 1).padStart(2, '0');
-  const day = String(tempDate.getDate()).padStart(2, '0');
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
-}
-
-// gets date in format 'Weekday, Month DD'
-// takes input from getLocalDate
-function getFormattedDate() {
-  let tempDate = new Date();
-  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-  const month = tempDate.toLocaleString('default', { month: 'long' });
-  const day = tempDate.getDate();
-  const formattedDate = `${weekDay}, ${month} ${day}`;
-  return formattedDate;
-}
-
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
+  const [dateHook, setDateHook] = useState(getActiveDate());
 
   // bool for diet tab loading too soon
   // TODO: fix diet api to handle null data calls
@@ -219,12 +230,9 @@ const Dashboard = (props) => {
 
   // called only once when the screen is first loaded
   useEffect(() => {
-    date = getLocalDate();
     getCurrentUser().then((user) => {
       userID = user.username;
-      syncDailyLog(userID, setSleepData, date);
-      syncDietDashboardData(userID, date, setCalorieData);
-
+      // check if user info is made
       getUserDBEntry(userID).then((user) => {
         // if a user entry doesn't exist, direct the user to the basic info screen
         if (user == null) {
@@ -234,8 +242,10 @@ const Dashboard = (props) => {
           // to make user and daily goals
           return;
         }
-        console.log("the user name is: " + user.name);
       });
+      syncDailySleepLog(userID, setSleepData, dateHook);
+      syncDietDashboardData(userID, dateHook, setCalorieData);
+
       tempLoading = false;
     });
   }, []);
@@ -243,10 +253,15 @@ const Dashboard = (props) => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLog(userID, setSleepData, date);
-      syncDietDashboardData(userID, date, setCalorieData);
+      if (dateHook !== getActiveDate()) {
+        setDateHook(getActiveDate());
+        return;
+      }
+      setDateHook(getActiveDate());
+      syncDailySleepLog(userID, setSleepData, dateHook);
+      syncDietDashboardData(userID, dateHook, setCalorieData);
       return;
-    }, [])
+    }, [dateHook])
   );
 
   return (
@@ -254,16 +269,32 @@ const Dashboard = (props) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         {/* Render your components here */}
-        <Text style={styles.title}>{getFormattedDate()}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
+
+          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
+
+
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
           <Text style={styles.tabHeaderText}>Health Score</Text>
           <HealthScoreTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
           <DietTab style={styles.tab} calorieData={calorieData} />
-          <Text style={styles.tabHeaderText}>Exercise</Text>
-          <WorkoutTab style={styles.tab} />
           <Text style={styles.tabHeaderText}>Sleep</Text>
           <SleepTab style={styles.tab} sleepData={sleepData} />
+          <Text style={styles.tabHeaderText}>Exercise</Text>
+          <WorkoutTab style={styles.tab} />
           {/* Add more components as needed */}
         </ScrollView>
       </SafeAreaView>

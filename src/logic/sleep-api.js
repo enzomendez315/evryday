@@ -12,8 +12,10 @@ const DEBUG = false;
 // TODO: throw error message and disallow creation of entries for future dates (later than today)
 export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     DEBUG && console.log("Making a new sleep entry with the date: ", date_);
+    // convert the date object into form "YYYY-MM-DD"
+    date_ = date_.toISOString().substring(0, 10);
     if (await getSleepEntry(userID_, date_) === null) {
-        let restfulnessScore_ = getRestfulnessScore(hoursSlept_, sleepQuality_);
+        let restfulnessScore_ = calculateSleepScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 new SleepLog({
@@ -39,7 +41,7 @@ export async function makeSleepEntry(userID_, date_, hoursSlept_, sleepQuality_)
 // uses getSleepEntry to get the entry to update
 export async function editSleepEntry(userID_, date_, hoursSlept_, sleepQuality_) {
     if (await getSleepEntry(userID_, date_) !== null) {
-        let restfulnessScore_ = getRestfulnessScore(hoursSlept_, sleepQuality_);
+        let restfulnessScore_ = calculateSleepScore(hoursSlept_, sleepQuality_);
         try {
             const sleeplog = await DataStore.save(
                 SleepLog.copyOf(await getSleepEntry(userID_, date_), updated => {
@@ -72,7 +74,7 @@ export async function deleteSleepEntry(userId, date) {
 }
 
 // called in dashboard to get the user's sleep log for the day
-export async function syncDailyLog(userID_, setSleepData, date) {
+export async function syncDailySleepLog(userID_, setSleepData, date) {
     let tempSleepData = [];
     DEBUG && console.debug("Getting user's day sleep log");
     let userID = userID_;
@@ -98,10 +100,9 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
     DEBUG && console.debug("Getting user's sleep log");
     let userID = userID_;
     DEBUG && console.log(`userid: ${userID}`)
-    date = new Date(Date.now()).toISOString().substring(0, 10);
     await getSleepEntriesForMonth(userID, month, year).then(async (data) => {
         if (data === null) {
-            DEBUG && console.log(`No Sleep Log found for userId: ${userID} date: ${date}`);
+            DEBUG && console.log(`No Sleep Log found for userId: ${userID} month: ${month} year: ${year}`);
             setSleepData([]);
             setIsLoading(false);
             return;
@@ -120,7 +121,12 @@ export async function syncUsersMonthLog(userID_, month, year, setSleepData, setI
 // queries datastore and returns the entry from user and date
 // returns null if no entry is found
 // helper function for syncDailyLog
-async function getSleepEntry(userId, date) {
+// called in makeSleepEntry and editSleepEntry to check if an entry already exists
+export async function getSleepEntry(userId, date) {
+    // if date is not in the form "YYYY-MM-DD", convert it
+    if (date.length != 10) {
+        date = date.toISOString().substring(0, 10);
+    }
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(SleepLog, (u) => u.and(c => [
@@ -149,9 +155,10 @@ async function getSleepEntry(userId, date) {
 // Copilot Written - BEWARE
 // helper function for syncUsersMonthLog
 async function getSleepEntriesForMonth(userId, month, year) {
-    // month is 1-12, if month is less than 10, add a 0 in front
-    if (month < 10) {
-        month = `0${month}`;
+    // if month is not in the form "MM", convert it
+    if (month.length != 2) {
+        // add 0 in front of month if it is a single digit
+        month = month.toString().padStart(2, '0');
     }
     p = new Promise((resolve, reject) => {
         try {
@@ -179,10 +186,29 @@ async function getSleepEntriesForMonth(userId, month, year) {
 // calculates the restfulness score based on the sleep duration and quality
 // this algorithm is for manual sleep entries
 // assigns weights to both metrics and combines them into a single score of 0-100
-export function getRestfulnessScore(sleepDuration, sleepQuality) {
+export async function getSleepScore(userId, date) {
+    try {
+        const userLog = await getSleepEntry(userId, date);
+
+        if (userLog === null) {
+            return null;
+        }
+
+        const sleepDuration = userLog.hoursSlept;
+        const sleepQuality = userLog.sleepQuality;
+        const score = calculateSleepScore(sleepDuration, sleepQuality);
+
+        return score;
+    } catch (error) {
+        console.log(`Error retrieving user's sleep log: ${error}`);
+        return null;
+    }
+}
+
+function calculateSleepScore(sleepDuration, sleepQuality) {
     let durationScore = 0;
     let qualityScore = 0;
-    let restfulnessScore = 0;
+    let score = 0;
 
     // normalize inputs
     if (sleepDuration <= 8) {
@@ -191,14 +217,15 @@ export function getRestfulnessScore(sleepDuration, sleepQuality) {
     } else {
         durationScore = 50;
     }
+
     qualityScore = (sleepQuality / 10) * 50;
 
     // add both scores and round to the nearest integer
-    restfulnessScore = Math.round(durationScore + qualityScore);
+    score = Math.round(durationScore + qualityScore);
 
     DEBUG && console.log(`sleep duration is ${sleepDuration} with a score of ${durationScore}`);
     DEBUG && console.log(`sleep quality is ${sleepQuality} with a score of ${qualityScore}`);
-    DEBUG && console.log(`restfulness score is ${restfulnessScore}`);
+    DEBUG && console.log(`restfulness score is ${score}`);
 
-    return restfulnessScore;
+    return score;
 }

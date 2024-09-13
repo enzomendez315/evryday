@@ -2,56 +2,56 @@ const { setConflictHandler } = require('aws-amplify/in-app-messaging');
 const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
 
-const DEBUG = true;
+const DEBUG = false;
 
 // This class helps authenticate clients while encapsulating all the logic
 export class OAuth2 {
     // We only need a clientId, clientSecret and endpoints for authentication
     // All other arguments are optional, and used to get users' data
-    constructor(clientId, clientSecret, apiEndpoint, authEndpoint, 
-        accessToken = null, refreshToken = null, expiresIn = null, 
+    constructor(clientId, clientSecret, apiEndpoint, authEndpoint,
+        accessToken = null, refreshToken = null, expiresIn = null,
         refreshCallback = null, redirectUri = null, scope = null) {
-            this.clientId = clientId;
-            this.clientSecret = clientSecret;
-            this.API_ENDPOINT = apiEndpoint;
-            this.AUTHORIZE_ENDPOINT = authEndpoint;
-            this.refreshCallback = refreshCallback;
-            this.redirectUri = redirectUri;
-            this.scope = scope;
-            this.token = {};
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.API_ENDPOINT = apiEndpoint;
+        this.AUTHORIZE_ENDPOINT = authEndpoint;
+        this.refreshCallback = refreshCallback;
+        this.redirectUri = redirectUri;
+        this.scope = scope;
+        this.token = {};
 
-            // Add accessToken and refreshToken if defined
-            // These are obtained after the user grants permission
-            if (accessToken && refreshToken) {
-                this.token['access_token'] = accessToken;
-                this.token['refresh_token'] = refreshToken;
-            }
+        // Add accessToken and refreshToken if defined
+        // These are obtained after the user grants permission
+        if (accessToken && refreshToken) {
+            this.token['access_token'] = accessToken;
+            this.token['refresh_token'] = refreshToken;
+        }
 
-            // The token defaults to 1 hour if not provided
-            this.token['expires_in'] = expiresIn || 3600;
+        // The token defaults to 1 hour if not provided
+        this.token['expires_in'] = expiresIn || 3600;
 
-            // Grants access to restricted resources
-            this.oAuthClient = new AuthorizationCode({
-                client: {
-                    id: this.clientId,
-                    secret: this.clientSecret,
-                },
-                auth: {
-                    tokenHost: this.API_ENDPOINT,
-                    tokenPath: '/oauth2/token',
-                    authorizeHost: this.AUTHORIZE_ENDPOINT,
-                    authorizePath: '/oauth2/authorize',
-                },
-            });
+        // Grants access to restricted resources
+        this.oAuthClient = new AuthorizationCode({
+            client: {
+                id: this.clientId,
+                secret: this.clientSecret,
+            },
+            auth: {
+                tokenHost: this.API_ENDPOINT,
+                tokenPath: '/oauth2/token',
+                authorizeHost: this.AUTHORIZE_ENDPOINT,
+                authorizePath: '/oauth2/authorize',
+            },
+        });
 
-            DEBUG && console.log(`Authorization client initialized: ${this.oAuthClient}`);
+        DEBUG && console.log(`Authorization client initialized: ${this.oAuthClient}`);
 
-            this.axiosInstance = axios.create({
-                baseURL: this.API_ENDPOINT,
-                timeout: 5000,  // 5 seconds
-            });
+        this.axiosInstance = axios.create({
+            baseURL: this.API_ENDPOINT,
+            timeout: 5000,  // 5 seconds
+        });
 
-            this.setAxiosHeaders();
+        this.setAxiosHeaders();
     }
 
     // Sets default headers on Axios instance
@@ -79,7 +79,7 @@ export class OAuth2 {
                                 response: ${response.data}`);
 
             return response;
-        } catch (error) { 
+        } catch (error) {
             // Refresh access token if status is "Unauthorized"
             if (error.response && error.response.status === 401) {
                 await this.refreshAccessToken();
@@ -92,7 +92,7 @@ export class OAuth2 {
 
     // Step 1
     // Returns the url the user needs to go to in order to grant authorization
-    getAuthorizationUri() {        
+    getAuthorizationUri() {
         const authorizationUri = this.oAuthClient.authorizeURL({
             redirect_uri: this.redirectUri,
             scope: this.scope.join(' '), // Converted to a single string separated by spaces

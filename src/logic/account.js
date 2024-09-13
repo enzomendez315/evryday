@@ -3,7 +3,7 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import { DataStore } from 'aws-amplify/datastore';
 import { User } from '../models';
 
-let DEBUG = true;
+let DEBUG = false;
 
 export async function currentUserDetails() {
     p = new Promise((resolve, reject) => {

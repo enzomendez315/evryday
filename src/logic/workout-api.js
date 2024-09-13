@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify/datastore';
-import { ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine } from '../models';
+import { ExerciseLog, ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, DailyGoals } from '../models';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -241,8 +241,118 @@ export async function syncExerciseRoutines(userId, setRoutineData, setIsDataLoad
     setIsDataLoading(false);
 }
 
-// calculates the exercise score based on the user's activity
-export function getExerciseScore() {
-    // check if there is activity for the current day
-    // all or nothing score
+// Save the exercise log and sets in the database
+export async function saveWorkoutLog(userId, routineId, routineName, workoutData, secondsElapsed) {
+    try {
+        if (!userId) {
+            throw new Error("User ID is missing");
+        }
+        
+        // Create a new ExerciseLog entry
+        const newExerciseLog = new ExerciseLog({
+            userId: userId, // Current user's ID
+            date: new Date().toISOString().split('T')[0], // Current date
+            durationMinutes: Math.floor(secondsElapsed / 60),
+            caloriesBurned: 0, 
+            exerciseRoutineID: routineId || null,
+        });
+
+        // Save the ExerciseLog in the DataStore
+        const savedLog = await DataStore.save(newExerciseLog);
+
+        // Loop through the workoutData to save each exercise set
+        for (let exercise of workoutData) {
+            for (let set of exercise.sets) {
+                const newExerciseSet = new ExerciseSet({
+                    reps: set.reps,
+                    time: '0', // Placeholder, replace with your time logic
+                    weight: set.weight,
+                    exerciseLogID: savedLog.id, // Relating the set to the saved log
+                });
+                await DataStore.save(newExerciseSet);
+            }
+        }
+
+        return savedLog;
+
+    } catch (error) {
+        console.error("Error saving workout data:", error);
+        throw error;
+    }
 }
+
+// Fetch workout history
+export const fetchWorkoutHistory = async () => {
+    try {
+        // Fetch all ExerciseLog entries
+        const logs = await DataStore.query(ExerciseLog);
+        
+        // Map the logs to the desired format
+        const formattedLogs = logs.map(log => ({
+            id: log.id,
+            date: log.date, // Assuming date is already formatted as string in your schema
+            durationMinutes: log.durationMinutes,
+        }));
+        console.log("Formatted ExerciseLogs:", formattedLogs); // Log the formatted data
+
+        return formattedLogs;
+
+    } catch (error) {
+        console.error('Error fetching workout history:', error);
+        throw error;
+    }
+};
+
+// calculates the exercise score based on the user's activity
+export async function getExerciseScore(userId, date) {
+    try {
+        // check if there is a dailyGoals object
+        const dailyGoals = await DataStore.query(DailyGoals, (d) => d.userId.eq(userId));
+        let score = 0;
+
+        if (dailyGoals.length > 0 && dailyGoals[0].dailyWorkout) {
+            try {
+                // intentionally throw an error to trigger the catch block
+                // this is until we add date field to exercise routines
+                throw new Error("Skipping routine query and going to the catch block");
+                
+                // check if there is activity for the current day
+                const routines = await DataStore.query(ExerciseRoutine, (r) => 
+                    r.userId.eq(userId).ExerciseRoutine.date.eq(date)
+                );
+
+                // all or nothing score
+                if (routines.length > 0) {
+                    score = 100;
+                }
+            } catch (error) {
+                console.log(`Error querying routines for user ${userId} on ${today}:`, error);
+            }
+            
+            return score;
+        } else {
+            // don't count exercise for health score
+            return null;
+        }
+    } catch (error) {
+        console.log(`Error querying daily goals for user ${userId}:`, error);
+        return null;
+    }
+}
+
+export async function syncMostRecentWorkoutLogForDate(date = new Date()) {
+    try {
+      // Convert the provided date to YYYY-MM-DD format
+      const formattedDate = date.toISOString().split('T')[0];
+  
+      // Fetch workout logs for that day sorted by descending order of time
+      const [mostRecentWorkoutLog] = await DataStore.query(ExerciseLog, (c) =>
+        c.date.eq(formattedDate), { sort: s => s.createdAt('DESCENDING'), limit: 1 }
+      );
+  
+      return mostRecentWorkoutLog;
+    } catch (error) {
+      console.error("Error fetching workout log for the day:", error);
+      throw error;
+    }
+  }

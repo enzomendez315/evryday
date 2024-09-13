@@ -9,9 +9,14 @@ import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
 import {
   makeSleepEntry, deleteSleepEntry,
-  editSleepEntry, syncUsersMonthLog
+  editSleepEntry, syncUsersMonthLog,
+  getSleepEntry
 } from '../../logic/sleep-api'
 import { AccountContext } from '../../../App';
+import {
+  getFormattedDate, getActiveDate,
+  getActiveDateMonth, getActiveDateYear
+} from '../../logic/date-time';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
@@ -24,34 +29,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // these are defined once at the beginning of opening the page in useEfect
 let userID;
-let date;
-
-// gets date in format 'Weekday, Month DD'
-// takes input from getLocalDate
-function getFormattedDate() {
-  let tempDate = new Date();
-  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-  const month = tempDate.toLocaleString('default', { month: 'long' });
-  const day = tempDate.getDate();
-  const formattedDate = `${weekDay}, ${month} ${day}`;
-  return formattedDate;
-}
-
-// gets date in format 'YYYY-MM-DD', just new Date() is UTC not local time
-// converts UTC to local, subtracts local offset from hours
-// this is hacky and causes some bugs with dates being off by 1 day
-// that or timezones shouldn't exist and there should be 1 earth time
-// TODO: fix the "off by 1 day" bug
-function getLocalDate(dateObject) {
-  let offset = new Date().getTimezoneOffset() / 60;
-  let tempDate = new Date(dateObject);
-  tempDate.setHours(tempDate.getHours() - offset);
-  const year = tempDate.getFullYear();
-  const month = String(tempDate.getMonth() + 1).padStart(2, '0');
-  const day = String(tempDate.getDate()).padStart(2, '0');
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
-}
 
 // chart that renders sleepData on UI
 const MyLineChart = ({ sleepArray }) => {
@@ -105,7 +82,8 @@ const MyLineChart = ({ sleepArray }) => {
 const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, monthValue }) => {
   // these are not hooks because useSate re-renders the page
   let hours = 0;
-  let tempStartDate = new Date(getLocalDate(new Date()));
+  let tempStartDate = new Date();
+  // flags for when user makes an oopsie
 
   // for slider
   const progress = useSharedValue(5);
@@ -137,7 +115,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
                 <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={tempStartDate}
+                <DatePicker mode='date' date={new Date()}
                   onDateChange={(newDate) => {
                     tempStartDate = newDate;
                   }} />
@@ -165,10 +143,11 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={async () => {
-                  await makeSleepEntry(userID, getLocalDate(tempStartDate), hours, progress.value);
+                  await makeSleepEntry(userID, new Date(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
                   syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
-                }}>
+                }
+                }>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
               </TouchableOpacity>
             </View>
@@ -359,14 +338,13 @@ const SleepScreen = () => {
   userID = React.useContext(AccountContext);
 
   useEffect(() => {
-    date = getLocalDate(new Date());
-    syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
+    syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
   }, []);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncUsersMonthLog(userID, new Date().getMonth() + 1, new Date().getFullYear(), setSleepData, setIsLoading);
+      syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
       return;
     }, [])
   );
@@ -388,7 +366,7 @@ const SleepScreen = () => {
     <>
       <StatusBar barStyle='default' />
       <SafeAreaView style={styles.container}>
-        <View>
+        <ScrollView>
           <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
             setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
@@ -399,7 +377,7 @@ const SleepScreen = () => {
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
-          <Text style={styles.title}>{getFormattedDate()}</Text>
+          <Text style={styles.title}>{getFormattedDate(getActiveDate())}</Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20 }}>
             <View style={{ backgroundColor: 'white', borderRadius: 8, padding: 5, margin: 5 }}>
@@ -457,7 +435,7 @@ const SleepScreen = () => {
             ))}
           </ScrollView>
 
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </>
   );

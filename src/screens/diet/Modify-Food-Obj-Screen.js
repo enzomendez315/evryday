@@ -1,21 +1,21 @@
 import { Text, SafeAreaView, StyleSheet, TextInput, View, Button, Alert } from 'react-native';
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { FoodItem } from '../../models';
 import { modifyFoodObject } from '../../logic/diet-api';
 import { AccountContext } from '../../../App';
 
 const DEBUG = false;
 
-  // const foodItemTest = {
-  //   id: 123213,
-  //   name: 'Pasta',
-  //   servingSize: 1,
-  //   servingSizeUnit: 'cup',
-  //   calories: 245,
-  //   carbs: 15,
-  //   fat: 5,
-  //   protein: 10
-  // }
+// const foodItemTest = {
+//   id: 123213,
+//   name: 'Pasta',
+//   servingSize: 1,
+//   servingSizeUnit: 'cup',
+//   calories: 245,
+//   carbs: 15,
+//   fat: 5,
+//   protein: 10
+// }
 
 const FoodItemForm = (props) => {
 
@@ -36,7 +36,7 @@ const FoodItemForm = (props) => {
   const [fat, setFat] = useState(0);
   const [protein, setProtein] = useState(0);
 
-  function setFloat(value, func){
+  function setFloat(value, func) {
     if (isNaN(value)) {
       func(0);
     } else {
@@ -49,10 +49,10 @@ const FoodItemForm = (props) => {
     DEBUG && console.log(foodItem);
     DEBUG && console.log(meal);
     if (foodItem) {
-      if(foodItem?.id) {
+      if (foodItem?.id) {
         setFoodId(foodItem?.id)
         // setEditable(false)
-        if(foodItem?.servingId !== undefined) {
+        if (foodItem?.servingId !== undefined) {
           setServingId(foodItem?.servingId)
         }
       }
@@ -96,12 +96,12 @@ const FoodItemForm = (props) => {
       navigation.navigate(nextPage, { meal: meal, foodItem: newFoodItem });
     })
   }
-  
+
   return (
     <View style={foodItemFormStyle.container}>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Name </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
           onChangeText={newName => setName(newName)}
           value={name}
@@ -110,15 +110,15 @@ const FoodItemForm = (props) => {
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Serving Size </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
-          onChangeText={newSS=> setFloat(newSS, setServingSize)}
+          onChangeText={newSS => setFloat(newSS, setServingSize)}
           value={servingSize.toString()}
         />
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Serving Size Unit </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
           onChangeText={newSSU => setServingSizeUnit(newSSU)}
           value={servingSizeUnit}
@@ -127,7 +127,7 @@ const FoodItemForm = (props) => {
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Calories </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
           onChangeText={newCal => setFloat(newCal, setCalories)}
           value={calories.toString()}
@@ -136,7 +136,7 @@ const FoodItemForm = (props) => {
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Carbohydrate </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
           onChangeText={newCarbs => setFloat(newCarbs, setCarbs)}
           value={carbs.toString()}
@@ -145,7 +145,7 @@ const FoodItemForm = (props) => {
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Fat </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
           onChangeText={newFat => setFloat(newFat, setFat)}
           value={fat.toString()}
@@ -154,17 +154,17 @@ const FoodItemForm = (props) => {
       </View>
       <View style={foodItemFormStyle.row}>
         <Text style={foodItemFormStyle.text}> Protein </Text>
-        <TextInput 
+        <TextInput
           style={foodItemFormStyle.textInput}
-          onChangeText={newProtein=> setFloat(newProtein, setProtein)}
+          onChangeText={newProtein => setFloat(newProtein, setProtein)}
           value={protein.toString()}
           editable={editable}
         />
       </View>
-        <Button style={foodItemFormStyle.button}
-          title='Create Item'
-          onPress={() => handleSubmit()}
-        />
+      <Button style={foodItemFormStyle.button}
+        title='Create Item'
+        onPress={() => handleSubmit()}
+      />
     </View>
   );
 }

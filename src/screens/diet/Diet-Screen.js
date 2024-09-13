@@ -9,6 +9,7 @@ import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PopupComponent from '../../components/PopupMenu';
+import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
 
 let userId;
 
@@ -34,16 +35,6 @@ const exampleCalorieData = {
   caloriesCurrent: 0,
   caloriesGoal: 2000,
 };
-
-// gets date in format 'Weekday, Month DD'
-function getFormattedDate() {
-  let tempDate = new Date();
-  const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
-  const month = tempDate.toLocaleString('default', { month: 'long' });
-  const day = tempDate.getDate();
-  const formattedDate = `${weekDay}, ${month} ${day}`;
-  return formattedDate;
-}
 
 const WaterInputPopup = ({ onPress, closePopup }) => {
   const [amount, setAmount] = useState('');
@@ -80,20 +71,26 @@ const DietScreen = ({ navigation }) => {
   const [addWaterPopupVisible, setAddWaterPopupVisible] = useState(false);
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
+  const [dateHook, setDateHook] = useState(getActiveDate());
 
   userId = React.useContext(AccountContext);
 
   // Called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
-      syncDailyLogData(userId, new Date().toISOString().substring(0, 10), setCalorieData, setLogData, setWaterIntakeAmount);
-      // getUserGoals(userId).then((goals) => {
-      //   console.log(goals);
-      //   setUserGoals(goals);
-      // });
-      return;
-    }, [])
+      // This if statement took me like an hour to figure out
+      // if it's not here, the callback will be called twice
+      // this is bad because syncDailyLogData is an async function
+      // and will sometimes cause the previous date to be loaded
+      if (dateHook !== getActiveDate()) {
+        setDateHook(getActiveDate());
+        return;
+      }
+      setDateHook(getActiveDate());
+      syncDailyLogData(userId, dateHook, setCalorieData, setLogData, setWaterIntakeAmount);
+    }, [dateHook])
   );
+
 
   let mealButtons = <></>
 
@@ -118,7 +115,7 @@ const DietScreen = ({ navigation }) => {
   if (calorieData !== null) {
     let first = (calorieData.caloriesGoal - calorieData.caloriesCurrent) > 0 ? (calorieData.caloriesGoal - calorieData.caloriesCurrent) : 0;
     pieSeries = [first,
-    calorieData.caloriesCurrent];
+      calorieData.caloriesCurrent];
   }
 
   const addWater = async (amount) => {
@@ -138,14 +135,28 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation}/>
+        <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation} />
         <PopupComponent
           isVisible={addWaterPopupVisible}
           setIsVisible={setAddWaterPopupVisible}
           Content={WaterInputPopup}
           onPress={addWater}
         />
-        <Text style={[styles.mealText, { color: 'black' }]}>{getFormattedDate()}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
+
+          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
 
         <ScrollView>
           <Text style={styles.tabHeaderText}>Calories</Text>
@@ -248,7 +259,7 @@ const DietScreen = ({ navigation }) => {
   );
 };
 
-const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, navigation}) => {
+const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, navigation }) => {
 
   const addMealNavigation = async (mealPeriod) => {
     setMealPeriodPopupVisible(false)
@@ -276,41 +287,41 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
             </View>
 
             <View style={styles.popupContent}>
-            <TouchableOpacity
+              <TouchableOpacity
                 onPress={() => { addMealNavigation('Breakfast'); }}
                 style={styles.row}>
-                  
+
                 <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
                 <Text style={styles.rowLabel}>Breakfast</Text>
                 <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 onPress={() => { addMealNavigation('Lunch'); }}
                 style={styles.row}>
-                  
+
                 <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
                 <Text style={styles.rowLabel}>Lunch</Text>
                 <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 onPress={() => { addMealNavigation('Dinner'); }}
                 style={styles.row}>
-                  
+
                 <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
                 <Text style={styles.rowLabel}>Dinner</Text>
                 <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 onPress={() => { addMealNavigation('Snack'); }}
                 style={styles.row}>
-                  
+
                 <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
                 <Text style={styles.rowLabel}>Snack</Text>
                 <View style={styles.rowSpacer} />
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -513,8 +524,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingLeft: 12,
     paddingRight: 12,
-},
-rowIcon: {
+  },
+  rowIcon: {
     width: 32,
     height: 32,
     borderRadius: 9999,
@@ -522,16 +533,16 @@ rowIcon: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-},
+  },
   rowLabel: {
-      fontSize: 17,
-      fontWeight: '400',
-      color: '#0c0c0c',
+    fontSize: 17,
+    fontWeight: '400',
+    color: '#0c0c0c',
   },
   rowSpacer: {
-      flexGrow: 1,
-      flexShrink: 1,
-      flexBasis: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
   },
   textInput: {
     borderColor: 'black',
