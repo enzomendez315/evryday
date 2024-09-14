@@ -15,7 +15,8 @@ import {
 import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
-  getActiveDateMonth, getActiveDateYear
+  getActiveDateMonth, getActiveDateYear,
+  setActiveDate,
 } from '../../logic/date-time';
 
 // for adding sleep slider
@@ -302,8 +303,6 @@ function getMonthYearFormat(date) {
 
 // UI component for each sleep entry
 const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => {
-  console.log(new Date(dayReport.day));
-  console.log(dayReport.day.split('-')[1]);
   return (
     <TouchableOpacity onPress={() => {
       setEditPopupData(dayReport);
@@ -334,6 +333,7 @@ const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => {
 // Main Screen
 const SleepScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [dateHook, setDateHook] = useState(getActiveDate());
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
@@ -354,12 +354,14 @@ const SleepScreen = () => {
 
   useEffect(() => {
     syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
+    setDateHook(getActiveDate());
   }, []);
 
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
       syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
+      setDateHook(getActiveDate());
       return;
     }, [])
   );
@@ -392,7 +394,21 @@ const SleepScreen = () => {
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
 
-          <Text style={styles.title}>{getFormattedDate(getActiveDate())}</Text>
+          <View style={styles.dateHeaderContainer}>
+            <Button title="<"
+              onPress={() => {
+                setActiveDate(-1);
+                setDateHook(getActiveDate());
+              }} />
+
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+
+            <Button title=">"
+              onPress={() => {
+                setActiveDate(1);
+                setDateHook(getActiveDate());
+              }} />
+          </View>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
             <View style={{ backgroundColor: COLORS.primaryPurpleHex, borderRadius: 15, padding: 10 }}>
@@ -466,13 +482,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#DADADA',
 
   },
-
-  title: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    color: 'black',
+  dateHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  dateTitle: {
+    fontSize: 24,
     textAlign: 'center',
-
+    color: 'black',
+    paddingHorizontal: 20,
   },
   monthText: {
     fontSize: 20,

@@ -246,7 +246,7 @@ function App() {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
-      await DataStore.clear(); // clear the local Datastore before connecting to the remote database
+      // await DataStore.clear(); // clear the local Datastore before connecting to the remote database
       await DataStore.start();
       await StartListening(user, setDBReady);
 
@@ -269,10 +269,7 @@ function App() {
             sleepTrack={useSleep} workoutTrack={useWorkout} />
         </NavigationContainer>
 
-        : <View style={{
-          flex: 1,
-          alignItems: 'center',
-        }}>
+        : <View style={{ flex: 1, alignItems: 'center', }}>
           <Text>connecting to database ...</Text>
           <Image style={{ height: 50, width: 50 }} source={require('./src/images/sleepingSloth.png')} />
         </View>}
