@@ -34,13 +34,16 @@ import { COLORS } from '../../theme/theme';
 let userID;
 
 // chart that renders sleepData on UI
-const MyLineChart = ({ sleepArray }) => {
-
+const MyLineChart = ({ sleepArray, useHours }) => {
   let largestDay = Math.max(...sleepArray.map(day => parseInt(day.day.split('-')[2])));
   let daysArray = Array.from({ length: largestDay }, (_, index) => (index + 1).toString().padStart(2, '0'));
   let hoursArray = daysArray.map(day => {
     const sleepEntry = sleepArray.find(entry => entry.day.split('-')[2] === day);
     return sleepEntry ? sleepEntry.hours : 0;
+  });
+  let qualityArray = daysArray.map(day => {
+    const sleepEntry = sleepArray.find(entry => entry.day.split('-')[2] === day);
+    return sleepEntry ? sleepEntry.quality : 0;
   });
 
   return (
@@ -50,12 +53,12 @@ const MyLineChart = ({ sleepArray }) => {
           labels: daysArray,
           datasets: [
             {
-              data: hoursArray,
+              data: useHours ? hoursArray : qualityArray,
             },
             // hack so that chart starts at 0
             { data: [0, 0], color: () => 'transparent', strokeWidth: 0, withDots: false, }
           ],
-          legend: ["Hours of Sleep"] // optional
+          legend: useHours ? ["Hours of Sleep"] : ["Quality of Sleep"]
         }}
         width={Dimensions.get('window').width - 16}
         height={220}
@@ -348,6 +351,7 @@ const SleepScreen = () => {
   // sort order of sleep entries
   const [isAscending, setIsAscending] = useState(true);
   const [showChart, setShowChart] = useState(true);
+  const [useHours, setUseHours] = useState(true); // toggle between hours and quality line chart
 
   // gets the context created in the App.tsx file
   userID = React.useContext(AccountContext);
@@ -434,10 +438,16 @@ const SleepScreen = () => {
             <Text style={styles.addSleepButtonText}>{showChart ? 'Hide Chart' : 'Show Chart'}</Text>
           </TouchableOpacity>
 
+          {showChart && <TouchableOpacity
+            style={styles.showChartButton}
+            onPress={() => setUseHours(!useHours)}>
+            <Text style={styles.addSleepButtonText}>{useHours ? 'Hours of Sleep' : 'Quality of Sleep'}</Text>
+          </TouchableOpacity>}
+
           {/* Chart*/}
           {showChart ? !isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
-              <MyLineChart sleepArray={sleepData} />
+              <MyLineChart sleepArray={sleepData} useHours={useHours} />
             </View>
             : <View>
               <Image style={styles.image} source={require('../../images/sleepingSloth.png')} />
