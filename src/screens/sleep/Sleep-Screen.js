@@ -357,6 +357,8 @@ const SleepScreen = () => {
   userID = React.useContext(AccountContext);
 
   useEffect(() => {
+    setMonthValue(getActiveDate());
+    setTempDate(getActiveDate());
     syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
     setDateHook(getActiveDate());
   }, []);
@@ -364,6 +366,8 @@ const SleepScreen = () => {
   // called every time the screen is opened
   useFocusEffect(
     React.useCallback(() => {
+      setMonthValue(getActiveDate());
+      setTempDate(getActiveDate());
       syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData, setIsLoading);
       setDateHook(getActiveDate());
       return;
@@ -428,21 +432,20 @@ const SleepScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {totalHours !== 0 ? <Text style={styles.heading3Text}>
-            Average Hours: {(totalHours / sleepData.length).toFixed(2)}
-          </Text> : null}
+          {sleepData.length == 0 && !isLoading ? null :
+            <TouchableOpacity
+              style={styles.showChartButton}
+              onPress={() => setShowChart(!showChart)}>
+              <Text style={styles.addSleepButtonText}>{showChart ? 'Hide Chart' : 'Show Chart'}</Text>
+            </TouchableOpacity>
+          }
 
-          <TouchableOpacity
-            style={styles.showChartButton}
-            onPress={() => setShowChart(!showChart)}>
-            <Text style={styles.addSleepButtonText}>{showChart ? 'Hide Chart' : 'Show Chart'}</Text>
-          </TouchableOpacity>
-
-          {showChart && <TouchableOpacity
-            style={styles.showChartButton}
-            onPress={() => setUseHours(!useHours)}>
-            <Text style={styles.addSleepButtonText}>{useHours ? 'Hours of Sleep' : 'Quality of Sleep'}</Text>
-          </TouchableOpacity>}
+          {showChart && sleepData.length > 0 &&
+            <TouchableOpacity
+              style={styles.showChartButton}
+              onPress={() => setUseHours(!useHours)}>
+              <Text style={styles.addSleepButtonText}>{useHours ? 'Hours of Sleep' : 'Quality of Sleep'}</Text>
+            </TouchableOpacity>}
 
           {/* Chart*/}
           {showChart ? !isLoading ? sleepData.length > 0 ?
@@ -458,15 +461,21 @@ const SleepScreen = () => {
           }
 
 
-          {/* Sleep data rendered in tabs
-          {sleepData.length > 0 ? <Text style={[styles.heading3Text]}>Sleep Logs</Text> : null} */}
-          {/* Toggle Button */}
-          <TouchableOpacity
-            style={styles.showChartButton}
-            onPress={sortEntriesByDate}>
-            <Text style={styles.addSleepButtonText}>
-              {isAscending ? 'Show Descending' : 'Show Ascending'}</Text>
-          </TouchableOpacity>
+          {/* Sleep data rendered in tabs */}
+
+          {sleepData.length > 0 &&
+            <TouchableOpacity
+              style={styles.showChartButton}
+              onPress={sortEntriesByDate}>
+              <Text style={styles.addSleepButtonText}>
+                {isAscending ? 'Show Descending' : 'Show Ascending'}</Text>
+            </TouchableOpacity>
+          }
+
+          {totalHours !== 0 ? <Text style={styles.heading3Text}>
+            Average Hours: {(totalHours / sleepData.length).toFixed(2)}
+          </Text> : null}
+
           <ScrollView style={styles.sleepScrollContainer}>
             {sleepData.map((day, index) => (
               <View style={styles.sleepTabContainer} key={index}>
@@ -477,7 +486,7 @@ const SleepScreen = () => {
           </ScrollView>
 
         </ScrollView>
-      </SafeAreaView>
+      </SafeAreaView >
     </>
   );
 };
