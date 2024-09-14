@@ -34,29 +34,38 @@ let userID;
 
 // chart that renders sleepData on UI
 const MyLineChart = ({ sleepArray }) => {
+
+  let largestDay = Math.max(...sleepArray.map(day => parseInt(day.day.split('-')[2])));
+  let daysArray = Array.from({ length: largestDay }, (_, index) => (index + 1).toString().padStart(2, '0'));
+  let hoursArray = daysArray.map(day => {
+    const sleepEntry = sleepArray.find(entry => entry.day.split('-')[2] === day);
+    return sleepEntry ? sleepEntry.hours : 0;
+  });
+
   return (
     <>
       <LineChart
         data={{
-          labels: sleepArray.map(day => day.day.split('-')[2]),
+          labels: daysArray,
           datasets: [
             {
-              data: sleepArray.map(day => day.hours),
-              //color: (opacity = 1) => `rgba(234, 255, 244, ${opacity})`, // optional
-              //strokeWidth: 2 // optional
-            }
+              data: hoursArray,
+            },
+            // hack so that chart starts at 0
+            { data: [0, 0], color: () => 'transparent', strokeWidth: 0, withDots: false, }
           ],
-          //legend: ["Hours of Sleep"] // optional
+          legend: ["Hours of Sleep"] // optional
         }}
         width={Dimensions.get('window').width - 16}
         height={220}
         yAxisInterval={1}
         chartConfig={{
+          fromZero: true,
           withHorizontalLabels: true,
           backgroundColor: "#00a8e2",
           backgroundGradientFrom: "#00c6ff",
           backgroundGradientTo: "#0072ff",
-          decimalPlaces: 2, // optional, defaults to 2dp
+          decimalPlaces: 1, // optional, defaults to 2dp
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           style: {
@@ -292,31 +301,35 @@ function getMonthYearFormat(date) {
 }
 
 // UI component for each sleep entry
-const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => (
-  <TouchableOpacity onPress={() => {
-    setEditPopupData(dayReport);
-    setIsEditPopupVisible(true);
-  }}>
-    <View style={styles.sleepTab}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View>
-          <Text style={styles.dateName}>{`${monthNames[new Date(dayReport.day).getMonth()]} ${new Date(dayReport.day).getDate() + 1}`}</Text>
-          <Text style={styles.hoursText}>{`Hours of Sleep: ${dayReport.hours}`}</Text>
-        </View>
-        <View>
-          <View style={[styles.qualityCircle,
-          {
-            backgroundColor: dayReport.quality < 4 ? 'red'
-              : dayReport.quality < 6 ? 'blue' : 'green'
-          }]}>
-            {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
+const SleepTab = ({ dayReport, setIsEditPopupVisible, setEditPopupData }) => {
+  console.log(new Date(dayReport.day));
+  console.log(dayReport.day.split('-')[1]);
+  return (
+    <TouchableOpacity onPress={() => {
+      setEditPopupData(dayReport);
+      setIsEditPopupVisible(true);
+    }}>
+      <View style={styles.sleepTab}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={styles.dateName}>{`${monthNames[dayReport.day.split('-')[1] - 1]} ${dayReport.day.split('-')[2]}`}</Text>
+            <Text style={styles.hoursText}>{`Hours of Sleep: ${dayReport.hours}`}</Text>
           </View>
-          <Text style={styles.qualityLabel}>Quality</Text>
+          <View>
+            <View style={[styles.qualityCircle,
+            {
+              backgroundColor: dayReport.quality < 4 ? 'red'
+                : dayReport.quality < 6 ? 'blue' : 'green'
+            }]}>
+              {<Text style={styles.qualityText}>{dayReport.quality}</Text>}
+            </View>
+            <Text style={styles.qualityLabel}>Quality</Text>
+          </View>
         </View>
       </View>
-    </View>
-  </TouchableOpacity>
-)
+    </TouchableOpacity>
+  );
+}
 
 // Main Screen
 const SleepScreen = () => {
@@ -451,7 +464,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DADADA',
-   
+
   },
 
   title: {
@@ -519,7 +532,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondaryPurpleHex, // This is a placeholder color
     borderRadius: 15,
     padding: 10,
-    
+
 
   },
   dateName: {
