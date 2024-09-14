@@ -12,6 +12,7 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
 let userID;
+let DEBUG = false;
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
@@ -27,13 +28,13 @@ const HealthScoreTab = () => {
     try {
       sleepScore = await getSleepScore(userID, today);
       nutritionScore = await getNutritionScore(userID, today);
-      console.log(`Sleep score is ${sleepScore}`);
-      console.log(`Nutrition score is ${nutritionScore}`);
+      DEBUG && console.log(`Sleep score is ${sleepScore}`);
+      DEBUG && console.log(`Nutrition score is ${nutritionScore}`);
     } catch (error) {
       console.error('Error fetching scores:', error);
     }
   };
-  
+
   fetchScores();
 
   const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
