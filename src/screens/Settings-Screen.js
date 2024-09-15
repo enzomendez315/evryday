@@ -16,8 +16,10 @@ import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
 import { getUserGoals } from '../logic/user-goals';
+import { RefreshLocalStorage } from '../logic/devFunctions';
 
 let userID;
+
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
@@ -206,16 +208,13 @@ const SettingsScreen = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => {
-                                // TODO:: REMOVE used to add sample date to master food and servings
-                                initFoodItems();
-                            }}
+                            onPress={RefreshLocalStorage}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
                                 <FeatherIcon color="#fff" name="star" size={20} />
                             </View>
 
-                            <Text style={styles.rowLabel}>ADD FOOD MASTER ITEMS</Text>
+                            <Text style={styles.rowLabel}>CLEAR LOCAL STORAGE</Text>
 
                             <View style={styles.rowSpacer} />
 
