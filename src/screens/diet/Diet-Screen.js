@@ -120,12 +120,12 @@ const DietScreen = ({ navigation }) => {
 
   const addWater = async (amount) => {
     let numberRegex = /^\d*$/;
-    if(amount === null || !numberRegex.test(amount)){
+    if (amount === null || !numberRegex.test(amount)) {
       console.log('Bad Input')
       return;
     }
     console.log('Good Input: ', amount)
-    
+
     await updateWaterIntake(userId, new Date().toISOString().substring(0, 10), parseInt(amount), setWaterIntakeAmount).then(() => {
       setAddWaterPopupVisible(false);
     })
@@ -142,14 +142,14 @@ const DietScreen = ({ navigation }) => {
           Content={WaterInputPopup}
           onPress={addWater}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <View style={styles.dateHeaderContainer}>
           <Button title="<"
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate())
             }} />
 
-          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
 
           <Button title=">"
             onPress={() => {
@@ -337,11 +337,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#DADADA',
   },
-  title: {
+  dateHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  dateTitle: {
+    fontSize: 24,
     textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
     color: 'black',
+    paddingHorizontal: 20,
   },
   tabHeaderText: {
     fontSize: 20,
@@ -514,7 +520,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     justifyContent: 'center',
   },
-  
+
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -552,7 +558,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   popupContentContainer: {
-    flex:-1,
+    flex: -1,
     width: '100%',
     maxHeight: '100%',
     gap: 5

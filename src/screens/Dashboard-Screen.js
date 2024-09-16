@@ -12,6 +12,7 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
 let userID;
+let DEBUG = false;
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
@@ -242,7 +243,7 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
   const [dateHook, setDateHook] = useState(getActiveDate());
@@ -293,15 +294,14 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        {/* Render your components here */}
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <View style={styles.dateHeaderContainer}>
           <Button title="<"
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate())
             }} />
 
-          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
 
           <Button title=">"
             onPress={() => {
@@ -309,7 +309,6 @@ const Dashboard = (props) => {
               setDateHook(getActiveDate())
             }} />
         </View>
-
 
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
           <Text style={styles.tabHeaderText}>Health Score</Text>
@@ -332,10 +331,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#DADADA',
   },
-  title: {
+  dateHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
+    paddingHorizontal: 20,
   },
   tabHeaderText: {
     fontSize: 20,
@@ -344,10 +350,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   defaultTabStyle: {
-    // Default styling for tabs
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
 
   healthScoreTab: {

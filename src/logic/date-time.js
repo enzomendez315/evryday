@@ -8,10 +8,12 @@ export function getActiveDate() {
     return activeDate;
 }
 
+// gets the active date in the format 'MM'
 export function getActiveDateMonth() {
     return activeDate.split('-')[1];
 }
 
+// gets the active year in the format 'YYYY'
 export function getActiveDateYear() {
     return activeDate.split('-')[0];
 }
