@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
+import { syncDailySleepLog, syncSleepScore, getSleepScore } from '../logic/sleep-api';
 import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -16,28 +16,53 @@ let DEBUG = false;
 
 // Health Score Tab Component:
 const HealthScoreTab = () => {
+  
+  // const [sleepScore, setSleepScore] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchSleepScore = async () => {
+  //       await syncSleepScore(userID, setSleepScore, date);
+  //   };
+  //   fetchSleepScore();
+  // }, [userID, date]);
+
+
   // Get the current date in 'YYYY-MM-DD' format
   const today = new Date().toISOString().split('T')[0];
 
   let sleepScore;
   let nutritionScore;
-  //let exerciseScore; // uncomment when exercise routines have dates
   let exerciseScore = 100;
 
-  const fetchScores = async () => {
-    try {
-      sleepScore = await getSleepScore(userID, today);
-      nutritionScore = await getNutritionScore(userID, today);
-      DEBUG && console.log(`Sleep score is ${sleepScore}`);
-      DEBUG && console.log(`Nutrition score is ${nutritionScore}`);
-    } catch (error) {
-      console.error('Error fetching scores:', error);
-    }
-  };
+  getSleepScore(userID, today)
+    .then((score) => {
+        if (score === null) {
+            console.log('No sleep score found.');
+        } else {
+            sleepScore = score;
+            console.log(`Sleep score for userId ${userID} on ${today} is ${sleepScore}`);
+        }
+    })
+    .catch((error) => {
+        console.log(`Error retrieving sleep score: ${error}`);
+    });
 
-  fetchScores();
+  getNutritionScore(userID, today)
+    .then((score) => {
+        if (score === null) {
+            console.log('No sleep score found.');
+        } else {
+            nutritionScore = score;
+            console.log(`Nutrition score for userId ${userID} on ${today} is ${nutritionScore}`);
+            console.log(`Exercise score for userId ${userID} on ${today} is ${exerciseScore}`);
+        }
+    })
+    .catch((error) => {
+        console.log(`Error retrieving sleep score: ${error}`);
+    });
 
-  const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
+  //const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
+  const healthScore = 85;
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
 
