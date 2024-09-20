@@ -5,6 +5,9 @@ type DailyGoals @model @auth(rules: [{allow: public}]) {
   maxCalories: Int
   minSleep: Float
   dailyWorkout: Boolean
+  proteinGoal: Int
+  carbGoal: Int
+  fatGoal: Int
 }
 
 type User @model @auth(rules: [{allow: public}]) {

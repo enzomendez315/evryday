@@ -12,6 +12,9 @@ const DailyGoalsScreen = () => {
     const [goalsInfo, setGoalsInfo] = useState({
         minCalories: 0,
         maxCalories: 0,
+        proteinGoal: 0,
+        carbGoal: 0,
+        fatGoal: 0,
         minSleep: 0,
         dailyWorkout: false,
     });
@@ -29,18 +32,36 @@ const DailyGoalsScreen = () => {
                 return;
             }
             else {
-                setGoalsInfo({
-                    minCalories: goals.minCalories,
-                    maxCalories: goals.maxCalories,
-                    minSleep: goals.minSleep,
-                    dailyWorkout: goals.dailyWorkout,
-                });
+
+                // temporary fix because I changed the schema for goals
+                if (goals.proteinGoal == null) {
+                    setGoalsInfo({
+                        minCalories: goals.minCalories,
+                        maxCalories: goals.maxCalories,
+                        proteinGoal: 0,
+                        carbGoal: 0,
+                        fatGoal: 0,
+                        minSleep: goals.minSleep,
+                        dailyWorkout: goals.dailyWorkout,
+                    });
+                } else {
+                    setGoalsInfo({
+                        minCalories: goals.minCalories,
+                        maxCalories: goals.maxCalories,
+                        proteinGoal: goals.proteinGoal,
+                        carbGoal: goals.carbGoal,
+                        fatGoal: goals.fatGoal,
+                        minSleep: goals.minSleep,
+                        dailyWorkout: goals.dailyWorkout,
+                    });
+                }
             }
         });
     }, []);
 
     const handleSubmit = async () => {
-        if (goalsInfo.minCalories == 0 || goalsInfo.maxCalories == 0 || goalsInfo.minSleep == 0) {
+        if (goalsInfo.minCalories == 0 || goalsInfo.maxCalories == 0 || goalsInfo.minSleep == 0
+            || goalsInfo.proteinGoal == 0 || goalsInfo.carbGoal == 0 || goalsInfo.fatGoal == 0) {
             setMissingInfo(true);
             return;
         }
@@ -48,11 +69,13 @@ const DailyGoalsScreen = () => {
         getUserGoals(userID).then(async (goals) => {
             if (goals == null) {
                 // make new goals
-                await createUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout);
+                await createUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout,
+                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal);
             }
             else {
                 // update goals
-                await updateUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout);
+                await updateUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout,
+                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal);
             }
         });
         DEBUG && console.log("Returning to settings home...");
@@ -86,6 +109,39 @@ const DailyGoalsScreen = () => {
                         value={goalsInfo.maxCalories.toString()}
                         onChangeText={text => setGoalsInfo({ ...goalsInfo, maxCalories: text })}
                         placeholder="Enter your calorie goal"
+                    />
+                </View>
+
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Protein Goal:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.proteinGoal.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, proteinGoal: text })}
+                        placeholder="Enter your protein goal"
+                    />
+                </View>
+
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Carb Goal:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.carbGoal.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, carbGoal: text })}
+                        placeholder="Enter your carb goal"
+                    />
+                </View>
+
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Fat Goal:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={goalsInfo.fatGoal.toString()}
+                        onChangeText={text => setGoalsInfo({ ...goalsInfo, fatGoal: text })}
+                        placeholder="Enter your fat goal"
                     />
                 </View>
 

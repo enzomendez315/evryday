@@ -22,6 +22,9 @@ type EagerDailyGoals = {
   readonly maxCalories?: number | null;
   readonly minSleep?: number | null;
   readonly dailyWorkout?: boolean | null;
+  readonly proteinGoal?: number | null;
+  readonly carbGoal?: number | null;
+  readonly fatGoal?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -37,6 +40,9 @@ type LazyDailyGoals = {
   readonly maxCalories?: number | null;
   readonly minSleep?: number | null;
   readonly dailyWorkout?: boolean | null;
+  readonly proteinGoal?: number | null;
+  readonly carbGoal?: number | null;
+  readonly fatGoal?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
