@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
@@ -12,57 +12,65 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
 let userID;
-let DEBUG = false;
+const DEBUG = true;
 
 // Health Score Tab Component:
-const HealthScoreTab = () => {
-  
-  // const [sleepScore, setSleepScore] = useState(null);
+const HealthScoreTab = (lastSynced) => {
 
-  // useEffect(() => {
-  //   const fetchSleepScore = async () => {
-  //       await syncSleepScore(userID, setSleepScore, date);
-  //   };
-  //   fetchSleepScore();
-  // }, [userID, date]);
+  const today = getActiveDate();
+  // Using a single useState object so that the component only re-renders once when updated
+  const [scores, setScores] = useState({ 
+    sleep: null, 
+    nutrition: null, 
+    exercise: 100 // TODO: Set initial state to null once logs have dates
+  });
 
-
-  // Get the current date in 'YYYY-MM-DD' format
-  const today = new Date().toISOString().split('T')[0];
-
-  let sleepScore;
-  let nutritionScore;
-  let exerciseScore = 100;
-
-  getSleepScore(userID, today)
-    .then((score) => {
-        if (score === null) {
-            console.log('No sleep score found.');
-        } else {
-            sleepScore = score;
-            console.log(`Sleep score for userId ${userID} on ${today} is ${sleepScore}`);
+  useEffect(() => {
+    let ignore = false;
+    const fetchScores = async () => {
+      try {
+        DEBUG && console.log('Fetching scores...');
+        let sleepScore = await getSleepScore(userID, today);
+        let nutritionScore = await getNutritionScore(userID, today);
+        // let exerciseScore = await getExerciseScore(userID, today);
+        let exerciseScore = 100;
+        if (!ignore) {
+          DEBUG && console.log('Scores fetched!');
+          DEBUG && console.log(`Sleep score is ${sleepScore}`);
+          DEBUG && console.log(`Nutrition score is ${nutritionScore}`);
+          DEBUG && console.log(`Exercise score is ${exerciseScore}`);
+          setScores({
+            sleep: sleepScore,
+            nutrition: nutritionScore,
+            exercise: exerciseScore,
+          });
         }
-    })
-    .catch((error) => {
-        console.log(`Error retrieving sleep score: ${error}`);
-    });
+      } catch (error) {
+        DEBUG && console.error('Error fetching scores:', error);
+      }
+    }
 
-  getNutritionScore(userID, today)
-    .then((score) => {
-        if (score === null) {
-            console.log('No sleep score found.');
-        } else {
-            nutritionScore = score;
-            console.log(`Nutrition score for userId ${userID} on ${today} is ${nutritionScore}`);
-            console.log(`Exercise score for userId ${userID} on ${today} is ${exerciseScore}`);
-        }
-    })
-    .catch((error) => {
-        console.log(`Error retrieving sleep score: ${error}`);
-    });
+    fetchScores();
 
-  //const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
-  const healthScore = 85;
+    // Clean up function
+    return () => { ignore = true; };
+  }, [today, lastSynced]);
+
+  const healthScore = useMemo(() => {
+    divisor = 0;
+    sum = 0;
+    for (const key in scores) {
+      if (scores[key] !== null) {
+        divisor++;
+        sum += scores[key];
+      }
+    }
+    if (divisor === 0) {
+      return 0;
+    }
+     return Math.round(sum / divisor);
+  }, [scores]);
+
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
 
@@ -243,9 +251,10 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
+  const [lastSynced, setLastSynced] = useState(null);
   const [dateHook, setDateHook] = useState(getActiveDate());
 
   // bool for diet tab loading too soon
@@ -271,7 +280,7 @@ const Dashboard = () => {
       });
       syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
-
+      setLastSynced(new Date());
       tempLoading = false;
     });
   }, []);
@@ -286,6 +295,7 @@ const Dashboard = () => {
       setDateHook(getActiveDate());
       syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
+      setLastSynced(new Date());
       return;
     }, [dateHook])
   );
@@ -312,7 +322,7 @@ const Dashboard = () => {
 
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
           <Text style={styles.tabHeaderText}>Health Score</Text>
-          <HealthScoreTab style={styles.tab} />
+          <HealthScoreTab style={styles.tab} lastSynced={lastSynced} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
           <DietTab style={styles.tab} calorieData={calorieData} />
           <Text style={styles.tabHeaderText}>Sleep</Text>
