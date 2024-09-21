@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+import { SafeAreaView, Button, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
-import { getActiveDate, getFormattedDate } from '../../logic/date-time';
+import { getActiveDate, getFormattedDate, setActiveDate } from '../../logic/date-time';
 
 let userID;
 
@@ -88,6 +88,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
   const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [routineData2, setRoutineData2] = useState(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [dateHook, setDateHook] = useState(getActiveDate());
 
   userID = React.useContext(AccountContext);
 
@@ -105,6 +106,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       syncExerciseRoutines(userID, setRoutineData2, setIsDataLoading);
+      setDateHook(getActiveDate());
       return;
     }, [])
   );
@@ -114,7 +116,21 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
-        <Text style={{ color: 'black', textAlign: 'center', fontSize: 25 }}>{getFormattedDate(getActiveDate())}</Text>
+        <View style={styles.dateHeaderContainer}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate());
+            }} />
+
+          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate());
+            }} />
+        </View>
 
         <Text style={styles.title}>Workout</Text>
 
@@ -167,9 +183,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#DADADA',
+    paddingHorizontal: 20,
+  },
+  dateHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
-
+  dateTitle: {
+    fontSize: 24,
+    textAlign: 'center',
+    color: 'black',
+    paddingHorizontal: 20,
+  },
   routineHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

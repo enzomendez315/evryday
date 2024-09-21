@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
+import { syncDailySleepLog, syncSleepScore, getSleepScore } from '../logic/sleep-api';
 import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -12,31 +12,65 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 
 let userID;
+const DEBUG = true;
 
 // Health Score Tab Component:
-const HealthScoreTab = () => {
-  // Get the current date in 'YYYY-MM-DD' format
-  const today = new Date().toISOString().split('T')[0];
+const HealthScoreTab = (lastSynced) => {
 
-  let sleepScore;
-  let nutritionScore;
-  //let exerciseScore; // uncomment when exercise routines have dates
-  let exerciseScore = 100;
+  const today = getActiveDate();
+  // Using a single useState object so that the component only re-renders once when updated
+  const [scores, setScores] = useState({ 
+    sleep: null, 
+    nutrition: null, 
+    exercise: 100 // TODO: Set initial state to null once logs have dates
+  });
 
-  const fetchScores = async () => {
-    try {
-      sleepScore = await getSleepScore(userID, today);
-      nutritionScore = await getNutritionScore(userID, today);
-      console.log(`Sleep score is ${sleepScore}`);
-      console.log(`Nutrition score is ${nutritionScore}`);
-    } catch (error) {
-      console.error('Error fetching scores:', error);
+  useEffect(() => {
+    let ignore = false;
+    const fetchScores = async () => {
+      try {
+        DEBUG && console.log('Fetching scores...');
+        let sleepScore = await getSleepScore(userID, today);
+        let nutritionScore = await getNutritionScore(userID, today);
+        // let exerciseScore = await getExerciseScore(userID, today);
+        let exerciseScore = 100;
+        if (!ignore) {
+          DEBUG && console.log('Scores fetched!');
+          DEBUG && console.log(`Sleep score is ${sleepScore}`);
+          DEBUG && console.log(`Nutrition score is ${nutritionScore}`);
+          DEBUG && console.log(`Exercise score is ${exerciseScore}`);
+          setScores({
+            sleep: sleepScore,
+            nutrition: nutritionScore,
+            exercise: exerciseScore,
+          });
+        }
+      } catch (error) {
+        DEBUG && console.error('Error fetching scores:', error);
+      }
     }
-  };
-  
-  fetchScores();
 
-  const healthScore = Math.round((sleepScore + nutritionScore + exerciseScore) / 3);
+    fetchScores();
+
+    // Clean up function
+    return () => { ignore = true; };
+  }, [today, lastSynced]);
+
+  const healthScore = useMemo(() => {
+    divisor = 0;
+    sum = 0;
+    for (const key in scores) {
+      if (scores[key] !== null) {
+        divisor++;
+        sum += scores[key];
+      }
+    }
+    if (divisor === 0) {
+      return 0;
+    }
+     return Math.round(sum / divisor);
+  }, [scores]);
+
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
   const navigation = useNavigation();
 
@@ -220,6 +254,7 @@ const SleepTab = ({ sleepData }) => {
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
+  const [lastSynced, setLastSynced] = useState(null);
   const [dateHook, setDateHook] = useState(getActiveDate());
 
   // bool for diet tab loading too soon
@@ -245,7 +280,7 @@ const Dashboard = (props) => {
       });
       syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
-
+      setLastSynced(new Date());
       tempLoading = false;
     });
   }, []);
@@ -260,6 +295,7 @@ const Dashboard = (props) => {
       setDateHook(getActiveDate());
       syncDailySleepLog(userID, setSleepData, dateHook);
       syncDietDashboardData(userID, dateHook, setCalorieData);
+      setLastSynced(new Date());
       return;
     }, [dateHook])
   );
@@ -268,15 +304,14 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        {/* Render your components here */}
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <View style={styles.dateHeaderContainer}>
           <Button title="<"
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate())
             }} />
 
-          <Text style={styles.title}>{getFormattedDate(dateHook)}</Text>
+          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
 
           <Button title=">"
             onPress={() => {
@@ -285,10 +320,9 @@ const Dashboard = (props) => {
             }} />
         </View>
 
-
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
           <Text style={styles.tabHeaderText}>Health Score</Text>
-          <HealthScoreTab style={styles.tab} />
+          <HealthScoreTab style={styles.tab} lastSynced={lastSynced} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
           <DietTab style={styles.tab} calorieData={calorieData} />
           <Text style={styles.tabHeaderText}>Sleep</Text>
@@ -307,10 +341,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#DADADA',
   },
-  title: {
+  dateHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
+    paddingHorizontal: 20,
   },
   tabHeaderText: {
     fontSize: 20,
@@ -319,10 +360,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   defaultTabStyle: {
-    // Default styling for tabs
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
 
   healthScoreTab: {

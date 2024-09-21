@@ -43,11 +43,6 @@
     "usernameAttributes": [
       "email"
     ],
-    "hostedUIDomainName": "evryday",
-    "authProvidersUserPool": [
-      "Google"
-    ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
     "userPoolGroupList": [
       "User",
       "Admin"
@@ -77,7 +72,10 @@
       "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"email\",\"openid\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"com.evryday://\"],\"LogoutURLs\":[\"com.evryday://\"]}",
+    "hostedUIDomainName": "evrydayb81e3c2e-b81e3c2e",
+    "authProvidersUserPool": [],
+    "hostedUIProviderMeta": "[]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"evryday://\"],\"LogoutURLs\":[\"evryday://\"]}",
     "authProviders": []
   }
 }

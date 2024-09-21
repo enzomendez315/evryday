@@ -183,6 +183,23 @@ async function getSleepEntriesForMonth(userId, month, year) {
     return p;
 }
 
+// called in dashboard to get the user's sleep score for the day
+export async function syncSleepScore(userID_, setSleepScore, date) {
+    let tempSleepData = [];
+    DEBUG && console.debug("Getting user's day sleep score");
+    let userID = userID_;
+    DEBUG && console.log(`userid: ${userID}`)
+    await getSleepScore(userID, date).then(async (data) => {
+        if (data === null) {
+            DEBUG && console.log(`No sleep score found for userId: ${userID} date: ${date}`);
+            setSleepScore([]);
+            return;
+        }
+        tempSleepData.push(data);
+        setSleepScore(tempSleepData);
+    });
+}
+
 // calculates the restfulness score based on the sleep duration and quality
 // this algorithm is for manual sleep entries
 // assigns weights to both metrics and combines them into a single score of 0-100

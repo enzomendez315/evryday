@@ -60,9 +60,7 @@
         "signupAttributes": [
           "EMAIL"
         ],
-        "socialProviders": [
-          "GOOGLE"
-        ],
+        "socialProviders": [],
         "usernameAttributes": [
           "EMAIL"
         ],
