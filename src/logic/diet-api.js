@@ -1,9 +1,9 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
-import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood } from '../models';
 import { getUserGoals } from './user-goals'
 
-const DEBUG = false;
+const DEBUG = true;
 
 // this is the format logData should be in
 // calcMealMacros returns this format
@@ -341,22 +341,20 @@ export async function getServingOptions(foodItem, setServingOptions, setDropDown
 }
 
 // Helper function for the Search-Food-Screen
-export function searchFoodItems(searchTerm, setFoodItems) {
+export async function searchFoodItems(searchTerm, setFoodItems, userId) {
     DEBUG && console.log(`searchFoodItems searchTerm: ${searchTerm}`);
-    getFoodItems(searchTerm).then(async (foods) => {
-        setFoodItems(foods);
-    });
+    const favFoods = await getFavoriteFoods(userId, searchTerm)
+    const regFoods = await getFoodItems(searchTerm, userId)
+
+    setFoodItems([...favFoods, ...regFoods]);
 }
 
 // queries all food items from the datastore
 // takes in a search term to filter the results
 // if no search term is provided, returns all food items
-async function getFoodItems(searchTerm) {
-    DEBUG && console.log(`getFoodItems searchTerm: ${searchTerm}`);
+async function getFoodItems(searchTerm, userId) {
     if (!searchTerm || searchTerm == "") {
-        DEBUG && console.log(`getFoodItems blank term`);
         const foodItems = await DataStore.query(FoodItem);
-        DEBUG && console.log(`getFoodItems foodItems: ${foodItems.length}`);
         return foodItems;
     }
     let upperSearch = "";
@@ -369,11 +367,48 @@ async function getFoodItems(searchTerm) {
         lowerSearch = searchTerm.toLowerCase();
         upperSearch = searchTerm.toUpperCase();
     }
-    const foodItems = await DataStore.query(FoodItem, (u) => u.or((c) => [
-        c.name.contains(lowerSearch),
-        c.name.contains(upperSearch)
-    ]));
+    const foodItems = await DataStore.query(FoodItem, (outer) => 
+        outer.and((inner) => [
+            inner.or((c) => [
+                c.name.contains(lowerSearch),
+                c.name.contains(upperSearch)
+            ]),
+            inner.or((c) => [
+                c.owner.eq(userId),
+                c.owner.eq('11111111-1111-1111-1111-111111111111')
+            ]),
+        ])
+    );
     return foodItems;
+}
+
+export async function favoriteAFoodItem(userId, foodItemId) {
+    DEBUG && console.log(`favoriteAFoodItem userId: ${userId} foodItemId: ${foodItemId}`);
+    const foodItem = await DataStore.query(FoodItem, foodItemId);
+    if (foodItem === null) {
+        console.log('food item not found')
+        return;
+    }
+    DEBUG && console.log('food:', foodItem);
+    const fav = await DataStore.save(
+        new UserFavoriteFood({
+            userId: userId,
+            foodItem: foodItem
+        })
+    );
+}
+
+export async function getFavoriteFoods(userId, searchTerm) {
+    const favItems = await DataStore.query(FoodItem, (f) => f.favoritedBy.userId.eq(userId));
+
+    let filteredFavorites = [];
+    if (!searchTerm || searchTerm == "") {
+        filteredFavorites = favItems;
+    } else {
+        filteredFavorites = favItems.filter((food) => food.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+    
+    return filteredFavorites;
 }
 
 // adds a food item to a meal
@@ -429,7 +464,8 @@ export async function modifyFoodObject(name, servingSize, servingUnit, calories,
             const newFoodItem = await DataStore.save(
                 new FoodItem({
                     name: name,
-                    owner: userId
+                    // owner: userId
+                    owner: '01010101-0101-0101-0101-010101010101'
                 })
             );
             foodItem = newFoodItem;
@@ -612,7 +648,7 @@ export async function updateWaterIntake(userId, date, amount, setWaterIntakeAmou
 // only called once to make items in database
 export async function initFoodItems() {
     DEBUG && console.log("Started initFoodItems");
-    getFoodItems("").then(async (foods) => {
+    getFoodItems("", '11111111-1111-1111-1111-111111111111').then(async (foods) => {
         DEBUG && console.log(`Food Items: ${foods.length}`);
         if (foods.length == 0) {
             DEBUG && console.log("Adding food items");

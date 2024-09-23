@@ -18,6 +18,9 @@ export const onCreateDailyGoals = /* GraphQL */ `subscription OnCreateDailyGoals
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -40,6 +43,9 @@ export const onUpdateDailyGoals = /* GraphQL */ `subscription OnUpdateDailyGoals
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -62,6 +68,9 @@ export const onDeleteDailyGoals = /* GraphQL */ `subscription OnDeleteDailyGoals
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -422,6 +431,11 @@ export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($fi
       startedAt
       __typename
     }
+    favoritedBy {
+      nextToken
+      startedAt
+      __typename
+    }
     servingOptions {
       nextToken
       startedAt
@@ -454,6 +468,11 @@ export const onUpdateFoodItem = /* GraphQL */ `subscription OnUpdateFoodItem($fi
       startedAt
       __typename
     }
+    favoritedBy {
+      nextToken
+      startedAt
+      __typename
+    }
     servingOptions {
       nextToken
       startedAt
@@ -482,6 +501,11 @@ export const onDeleteFoodItem = /* GraphQL */ `subscription OnDeleteFoodItem($fi
       __typename
     }
     recipes {
+      nextToken
+      startedAt
+      __typename
+    }
+    favoritedBy {
       nextToken
       startedAt
       __typename
@@ -607,6 +631,96 @@ export const onDeleteFoodItemServing = /* GraphQL */ `subscription OnDeleteFoodI
 ` as GeneratedSubscription<
   APITypes.OnDeleteFoodItemServingSubscriptionVariables,
   APITypes.OnDeleteFoodItemServingSubscription
+>;
+export const onCreateUserFavoriteFood = /* GraphQL */ `subscription OnCreateUserFavoriteFood(
+  $filter: ModelSubscriptionUserFavoriteFoodFilterInput
+) {
+  onCreateUserFavoriteFood(filter: $filter) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateUserFavoriteFoodSubscriptionVariables,
+  APITypes.OnCreateUserFavoriteFoodSubscription
+>;
+export const onUpdateUserFavoriteFood = /* GraphQL */ `subscription OnUpdateUserFavoriteFood(
+  $filter: ModelSubscriptionUserFavoriteFoodFilterInput
+) {
+  onUpdateUserFavoriteFood(filter: $filter) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateUserFavoriteFoodSubscriptionVariables,
+  APITypes.OnUpdateUserFavoriteFoodSubscription
+>;
+export const onDeleteUserFavoriteFood = /* GraphQL */ `subscription OnDeleteUserFavoriteFood(
+  $filter: ModelSubscriptionUserFavoriteFoodFilterInput
+) {
+  onDeleteUserFavoriteFood(filter: $filter) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteUserFavoriteFoodSubscriptionVariables,
+  APITypes.OnDeleteUserFavoriteFoodSubscription
 >;
 export const onCreateRecipe = /* GraphQL */ `subscription OnCreateRecipe($filter: ModelSubscriptionRecipeFilterInput) {
   onCreateRecipe(filter: $filter) {

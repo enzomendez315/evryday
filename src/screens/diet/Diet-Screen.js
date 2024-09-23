@@ -135,7 +135,11 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <MealPeriodPopup mealPeriodPopupVisible={mealPeriodPopupVisible} setMealPeriodPopupVisible={setMealPeriodPopupVisible} navigation={navigation} />
+        <MealPeriodPopup 
+          mealPeriodPopupVisible={mealPeriodPopupVisible} 
+          setMealPeriodPopupVisible={setMealPeriodPopupVisible} 
+          navigation={navigation}
+          date={dateHook} />
         <PopupComponent
           isVisible={addWaterPopupVisible}
           setIsVisible={setAddWaterPopupVisible}
@@ -259,11 +263,11 @@ const DietScreen = ({ navigation }) => {
   );
 };
 
-const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, navigation }) => {
+const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, navigation, date }) => {
 
   const addMealNavigation = async (mealPeriod) => {
     setMealPeriodPopupVisible(false)
-    let newMeal = await createMeal(userId, new Date().toISOString().substring(0, 10), mealPeriod);
+    let newMeal = await createMeal(userId, date, mealPeriod);
     let tempVar = await calcMealMacros(newMeal);
     navigation.navigate('Add Meal', { meal: tempVar });
   }

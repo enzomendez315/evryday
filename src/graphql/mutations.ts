@@ -19,6 +19,9 @@ export const createDailyGoals = /* GraphQL */ `mutation CreateDailyGoals(
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -42,6 +45,9 @@ export const updateDailyGoals = /* GraphQL */ `mutation UpdateDailyGoals(
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -65,6 +71,9 @@ export const deleteDailyGoals = /* GraphQL */ `mutation DeleteDailyGoals(
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -452,6 +461,11 @@ export const createFoodItem = /* GraphQL */ `mutation CreateFoodItem(
       startedAt
       __typename
     }
+    favoritedBy {
+      nextToken
+      startedAt
+      __typename
+    }
     servingOptions {
       nextToken
       startedAt
@@ -487,6 +501,11 @@ export const updateFoodItem = /* GraphQL */ `mutation UpdateFoodItem(
       startedAt
       __typename
     }
+    favoritedBy {
+      nextToken
+      startedAt
+      __typename
+    }
     servingOptions {
       nextToken
       startedAt
@@ -518,6 +537,11 @@ export const deleteFoodItem = /* GraphQL */ `mutation DeleteFoodItem(
       __typename
     }
     recipes {
+      nextToken
+      startedAt
+      __typename
+    }
+    favoritedBy {
       nextToken
       startedAt
       __typename
@@ -646,6 +670,99 @@ export const deleteFoodItemServing = /* GraphQL */ `mutation DeleteFoodItemServi
 ` as GeneratedMutation<
   APITypes.DeleteFoodItemServingMutationVariables,
   APITypes.DeleteFoodItemServingMutation
+>;
+export const createUserFavoriteFood = /* GraphQL */ `mutation CreateUserFavoriteFood(
+  $input: CreateUserFavoriteFoodInput!
+  $condition: ModelUserFavoriteFoodConditionInput
+) {
+  createUserFavoriteFood(input: $input, condition: $condition) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateUserFavoriteFoodMutationVariables,
+  APITypes.CreateUserFavoriteFoodMutation
+>;
+export const updateUserFavoriteFood = /* GraphQL */ `mutation UpdateUserFavoriteFood(
+  $input: UpdateUserFavoriteFoodInput!
+  $condition: ModelUserFavoriteFoodConditionInput
+) {
+  updateUserFavoriteFood(input: $input, condition: $condition) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateUserFavoriteFoodMutationVariables,
+  APITypes.UpdateUserFavoriteFoodMutation
+>;
+export const deleteUserFavoriteFood = /* GraphQL */ `mutation DeleteUserFavoriteFood(
+  $input: DeleteUserFavoriteFoodInput!
+  $condition: ModelUserFavoriteFoodConditionInput
+) {
+  deleteUserFavoriteFood(input: $input, condition: $condition) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteUserFavoriteFoodMutationVariables,
+  APITypes.DeleteUserFavoriteFoodMutation
 >;
 export const createRecipe = /* GraphQL */ `mutation CreateRecipe(
   $input: CreateRecipeInput!

@@ -5,6 +5,9 @@ type DailyGoals @model @auth(rules: [{allow: public}]) {
   maxCalories: Int
   minSleep: Float
   dailyWorkout: Boolean
+  proteinGoal: Int
+  carbGoal: Int
+  fatGoal: Int
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -54,6 +57,7 @@ type FoodItem @model @auth(rules: [{allow: public}]) {
   name: String!
   meals: [MealToFood] @hasMany(indexName: "byFood", fields: ["id"])
   recipes: [RecipeToFood] @hasMany(indexName: "byFood", fields: ["id"])
+  favoritedBy: [UserFavoriteFood] @hasMany
   servingOptions: [FoodItemServing] @hasMany
 }
 
@@ -66,6 +70,12 @@ type FoodItemServing @model @auth(rules: [{allow: public}]) {
   protein: Float
   carbs: Float
   fat: Float
+}
+
+type UserFavoriteFood @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID!
+  foodItem: FoodItem @belongsTo
 }
 
 type Recipe @model @auth(rules: [{allow: public}]) {

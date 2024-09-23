@@ -22,6 +22,9 @@ type EagerDailyGoals = {
   readonly maxCalories?: number | null;
   readonly minSleep?: number | null;
   readonly dailyWorkout?: boolean | null;
+  readonly proteinGoal?: number | null;
+  readonly carbGoal?: number | null;
+  readonly fatGoal?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -37,6 +40,9 @@ type LazyDailyGoals = {
   readonly maxCalories?: number | null;
   readonly minSleep?: number | null;
   readonly dailyWorkout?: boolean | null;
+  readonly proteinGoal?: number | null;
+  readonly carbGoal?: number | null;
+  readonly fatGoal?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -199,6 +205,7 @@ type EagerFoodItem = {
   readonly name: string;
   readonly meals?: (MealToFood | null)[] | null;
   readonly recipes?: (RecipeToFood | null)[] | null;
+  readonly favoritedBy?: (UserFavoriteFood | null)[] | null;
   readonly servingOptions?: (FoodItemServing | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -214,6 +221,7 @@ type LazyFoodItem = {
   readonly name: string;
   readonly meals: AsyncCollection<MealToFood>;
   readonly recipes: AsyncCollection<RecipeToFood>;
+  readonly favoritedBy: AsyncCollection<UserFavoriteFood>;
   readonly servingOptions: AsyncCollection<FoodItemServing>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -265,6 +273,38 @@ export declare type FoodItemServing = LazyLoading extends LazyLoadingDisabled ? 
 
 export declare const FoodItemServing: (new (init: ModelInit<FoodItemServing>) => FoodItemServing) & {
   copyOf(source: FoodItemServing, mutator: (draft: MutableModel<FoodItemServing>) => MutableModel<FoodItemServing> | void): FoodItemServing;
+}
+
+type EagerUserFavoriteFood = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserFavoriteFood, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly foodItem?: FoodItem | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemFavoritedById?: string | null;
+}
+
+type LazyUserFavoriteFood = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserFavoriteFood, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly foodItem: AsyncItem<FoodItem | undefined>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemFavoritedById?: string | null;
+}
+
+export declare type UserFavoriteFood = LazyLoading extends LazyLoadingDisabled ? EagerUserFavoriteFood : LazyUserFavoriteFood
+
+export declare const UserFavoriteFood: (new (init: ModelInit<UserFavoriteFood>) => UserFavoriteFood) & {
+  copyOf(source: UserFavoriteFood, mutator: (draft: MutableModel<UserFavoriteFood>) => MutableModel<UserFavoriteFood> | void): UserFavoriteFood;
 }
 
 type EagerRecipe = {
