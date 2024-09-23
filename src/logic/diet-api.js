@@ -344,7 +344,7 @@ export async function getServingOptions(foodItem, setServingOptions, setDropDown
 export async function searchFoodItems(searchTerm, setFoodItems, userId) {
     DEBUG && console.log(`searchFoodItems searchTerm: ${searchTerm}`);
     const favFoods = await getFavoriteFoods(userId, searchTerm)
-    const regFoods = await getFoodItems(searchTerm)
+    const regFoods = await getFoodItems(searchTerm, userId)
 
     setFoodItems([...favFoods, ...regFoods]);
 }
@@ -352,7 +352,7 @@ export async function searchFoodItems(searchTerm, setFoodItems, userId) {
 // queries all food items from the datastore
 // takes in a search term to filter the results
 // if no search term is provided, returns all food items
-async function getFoodItems(searchTerm) {
+async function getFoodItems(searchTerm, userId) {
     if (!searchTerm || searchTerm == "") {
         const foodItems = await DataStore.query(FoodItem);
         return foodItems;
@@ -367,10 +367,18 @@ async function getFoodItems(searchTerm) {
         lowerSearch = searchTerm.toLowerCase();
         upperSearch = searchTerm.toUpperCase();
     }
-    const foodItems = await DataStore.query(FoodItem, (u) => u.or((c) => [
-        c.name.contains(lowerSearch),
-        c.name.contains(upperSearch)
-    ]));
+    const foodItems = await DataStore.query(FoodItem, (outer) => 
+        outer.and((inner) => [
+            inner.or((c) => [
+                c.name.contains(lowerSearch),
+                c.name.contains(upperSearch)
+            ]),
+            inner.or((c) => [
+                c.owner.eq(userId),
+                c.owner.eq('11111111-1111-1111-1111-111111111111')
+            ]),
+        ])
+    );
     return foodItems;
 }
 
@@ -456,7 +464,8 @@ export async function modifyFoodObject(name, servingSize, servingUnit, calories,
             const newFoodItem = await DataStore.save(
                 new FoodItem({
                     name: name,
-                    owner: userId
+                    // owner: userId
+                    owner: '01010101-0101-0101-0101-010101010101'
                 })
             );
             foodItem = newFoodItem;
@@ -639,7 +648,7 @@ export async function updateWaterIntake(userId, date, amount, setWaterIntakeAmou
 // only called once to make items in database
 export async function initFoodItems() {
     DEBUG && console.log("Started initFoodItems");
-    getFoodItems("").then(async (foods) => {
+    getFoodItems("", '11111111-1111-1111-1111-111111111111').then(async (foods) => {
         DEBUG && console.log(`Food Items: ${foods.length}`);
         if (foods.length == 0) {
             DEBUG && console.log("Adding food items");
