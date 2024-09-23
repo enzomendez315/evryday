@@ -1,7 +1,8 @@
 import React, { useCallback, memo } from 'react';
-import { StyleSheet, View, Modal, TouchableWithoutFeedback, FlatList, Text } from 'react-native';
+import { StyleSheet, View, Modal, TouchableWithoutFeedback, FlatList, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+const DEBUG = true;
 
 const EmptyHeader = ()  => (
   <></>
@@ -82,6 +83,45 @@ const PopupComponent = ({
   );
 };
 
+export const NavMenuPopupComponent = ({
+  isVisible,
+  setIsVisible,
+  data
+}) => {
+  
+  const NavPopupItem = memo(
+    ({ item, onPress }) => (
+      <TouchableOpacity 
+      onPress={() => {
+        onPress(item)
+      }} 
+      style={styles.menuRow}>
+        <Text style={styles.rowLabel}>{item.name}</Text>
+      </TouchableOpacity>
+    ),
+    (prevProps, nextProps) => {
+      return prevProps.item.id === nextProps.item.id;
+    }
+  );
+
+  const navMenuOnPress = (item) => {
+    DEBUG && console.log(item.name,'pressed');
+    setIsVisible(false);
+    item.onPress(); 
+  }
+
+  return (
+    <PopupComponent
+      isVisible={isVisible}
+      setIsVisible={setIsVisible}
+      data={data}
+      ItemComponent={NavPopupItem}
+      onPress={navMenuOnPress}
+      stylePrefix='rightSide'
+    />
+  );
+}
+
 export default PopupComponent;
 
 const styles = StyleSheet.create({
@@ -116,5 +156,17 @@ const styles = StyleSheet.create({
         width: '100%',
         maxHeight: '100%',
         gap: 5
+    },
+    menuRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 50,
+      backgroundColor: '#f2f2f2',
+      borderRadius: 8,
+      marginBottom: 6,
+      marginTop: 6,
+      paddingLeft: 50,
+      paddingRight: 50,
     }
 });

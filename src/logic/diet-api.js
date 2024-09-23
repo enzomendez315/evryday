@@ -1,9 +1,9 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
-import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood } from '../models';
 import { getUserGoals } from './user-goals'
 
-const DEBUG = false;
+const DEBUG = true;
 
 // this is the format logData should be in
 // calcMealMacros returns this format
@@ -341,22 +341,20 @@ export async function getServingOptions(foodItem, setServingOptions, setDropDown
 }
 
 // Helper function for the Search-Food-Screen
-export function searchFoodItems(searchTerm, setFoodItems) {
+export async function searchFoodItems(searchTerm, setFoodItems, userId) {
     DEBUG && console.log(`searchFoodItems searchTerm: ${searchTerm}`);
-    getFoodItems(searchTerm).then(async (foods) => {
-        setFoodItems(foods);
-    });
+    const favFoods = await getFavoriteFoods(userId, searchTerm)
+    const regFoods = await getFoodItems(searchTerm)
+
+    setFoodItems([...favFoods, ...regFoods]);
 }
 
 // queries all food items from the datastore
 // takes in a search term to filter the results
 // if no search term is provided, returns all food items
 async function getFoodItems(searchTerm) {
-    DEBUG && console.log(`getFoodItems searchTerm: ${searchTerm}`);
     if (!searchTerm || searchTerm == "") {
-        DEBUG && console.log(`getFoodItems blank term`);
         const foodItems = await DataStore.query(FoodItem);
-        DEBUG && console.log(`getFoodItems foodItems: ${foodItems.length}`);
         return foodItems;
     }
     let upperSearch = "";
@@ -374,6 +372,35 @@ async function getFoodItems(searchTerm) {
         c.name.contains(upperSearch)
     ]));
     return foodItems;
+}
+
+export async function favoriteAFoodItem(userId, foodItemId) {
+    DEBUG && console.log(`favoriteAFoodItem userId: ${userId} foodItemId: ${foodItemId}`);
+    const foodItem = await DataStore.query(FoodItem, foodItemId);
+    if (foodItem === null) {
+        console.log('food item not found')
+        return;
+    }
+    DEBUG && console.log('food:', foodItem);
+    const fav = await DataStore.save(
+        new UserFavoriteFood({
+            userId: userId,
+            foodItem: foodItem
+        })
+    );
+}
+
+export async function getFavoriteFoods(userId, searchTerm) {
+    const favItems = await DataStore.query(FoodItem, (f) => f.favoritedBy.userId.eq(userId));
+
+    let filteredFavorites = [];
+    if (!searchTerm || searchTerm == "") {
+        filteredFavorites = favItems;
+    } else {
+        filteredFavorites = favItems.filter((food) => food.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+    
+    return filteredFavorites;
 }
 
 // adds a food item to a meal

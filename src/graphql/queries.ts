@@ -16,6 +16,9 @@ export const getDailyGoals = /* GraphQL */ `query GetDailyGoals($id: ID!) {
     maxCalories
     minSleep
     dailyWorkout
+    proteinGoal
+    carbGoal
+    fatGoal
     createdAt
     updatedAt
     _version
@@ -41,6 +44,9 @@ export const listDailyGoals = /* GraphQL */ `query ListDailyGoals(
       maxCalories
       minSleep
       dailyWorkout
+      proteinGoal
+      carbGoal
+      fatGoal
       createdAt
       updatedAt
       _version
@@ -76,6 +82,9 @@ export const syncDailyGoals = /* GraphQL */ `query SyncDailyGoals(
       maxCalories
       minSleep
       dailyWorkout
+      proteinGoal
+      carbGoal
+      fatGoal
       createdAt
       updatedAt
       _version
@@ -518,6 +527,11 @@ export const getFoodItem = /* GraphQL */ `query GetFoodItem($id: ID!) {
       startedAt
       __typename
     }
+    favoritedBy {
+      nextToken
+      startedAt
+      __typename
+    }
     servingOptions {
       nextToken
       startedAt
@@ -693,6 +707,92 @@ export const syncFoodItemServings = /* GraphQL */ `query SyncFoodItemServings(
 ` as GeneratedQuery<
   APITypes.SyncFoodItemServingsQueryVariables,
   APITypes.SyncFoodItemServingsQuery
+>;
+export const getUserFavoriteFood = /* GraphQL */ `query GetUserFavoriteFood($id: ID!) {
+  getUserFavoriteFood(id: $id) {
+    id
+    userId
+    foodItem {
+      id
+      owner
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemFavoritedById
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetUserFavoriteFoodQueryVariables,
+  APITypes.GetUserFavoriteFoodQuery
+>;
+export const listUserFavoriteFoods = /* GraphQL */ `query ListUserFavoriteFoods(
+  $filter: ModelUserFavoriteFoodFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserFavoriteFoods(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemFavoritedById
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListUserFavoriteFoodsQueryVariables,
+  APITypes.ListUserFavoriteFoodsQuery
+>;
+export const syncUserFavoriteFoods = /* GraphQL */ `query SyncUserFavoriteFoods(
+  $filter: ModelUserFavoriteFoodFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncUserFavoriteFoods(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemFavoritedById
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncUserFavoriteFoodsQueryVariables,
+  APITypes.SyncUserFavoriteFoodsQuery
 >;
 export const getRecipe = /* GraphQL */ `query GetRecipe($id: ID!) {
   getRecipe(id: $id) {

@@ -9,6 +9,9 @@ export type CreateDailyGoalsInput = {
   maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
+  proteinGoal?: number | null,
+  carbGoal?: number | null,
+  fatGoal?: number | null,
   _version?: number | null,
 };
 
@@ -18,6 +21,9 @@ export type ModelDailyGoalsConditionInput = {
   maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
+  proteinGoal?: ModelIntInput | null,
+  carbGoal?: ModelIntInput | null,
+  fatGoal?: ModelIntInput | null,
   and?: Array< ModelDailyGoalsConditionInput | null > | null,
   or?: Array< ModelDailyGoalsConditionInput | null > | null,
   not?: ModelDailyGoalsConditionInput | null,
@@ -121,6 +127,9 @@ export type DailyGoals = {
   maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
+  proteinGoal?: number | null,
+  carbGoal?: number | null,
+  fatGoal?: number | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -135,6 +144,9 @@ export type UpdateDailyGoalsInput = {
   maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
+  proteinGoal?: number | null,
+  carbGoal?: number | null,
+  fatGoal?: number | null,
   _version?: number | null,
 };
 
@@ -293,6 +305,7 @@ export type FoodItem = {
   name: string,
   meals?: ModelMealToFoodConnection | null,
   recipes?: ModelRecipeToFoodConnection | null,
+  favoritedBy?: ModelUserFavoriteFoodConnection | null,
   servingOptions?: ModelFoodItemServingConnection | null,
   createdAt: string,
   updatedAt: string,
@@ -334,6 +347,26 @@ export type Recipe = {
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
+};
+
+export type ModelUserFavoriteFoodConnection = {
+  __typename: "ModelUserFavoriteFoodConnection",
+  items:  Array<UserFavoriteFood | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type UserFavoriteFood = {
+  __typename: "UserFavoriteFood",
+  id: string,
+  userId: string,
+  foodItem?: FoodItem | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  foodItemFavoritedById?: string | null,
 };
 
 export type ModelFoodItemServingConnection = {
@@ -516,6 +549,36 @@ export type UpdateFoodItemServingInput = {
 };
 
 export type DeleteFoodItemServingInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateUserFavoriteFoodInput = {
+  id?: string | null,
+  userId: string,
+  _version?: number | null,
+  foodItemFavoritedById?: string | null,
+};
+
+export type ModelUserFavoriteFoodConditionInput = {
+  userId?: ModelIDInput | null,
+  and?: Array< ModelUserFavoriteFoodConditionInput | null > | null,
+  or?: Array< ModelUserFavoriteFoodConditionInput | null > | null,
+  not?: ModelUserFavoriteFoodConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  foodItemFavoritedById?: ModelIDInput | null,
+};
+
+export type UpdateUserFavoriteFoodInput = {
+  id: string,
+  userId?: string | null,
+  _version?: number | null,
+  foodItemFavoritedById?: string | null,
+};
+
+export type DeleteUserFavoriteFoodInput = {
   id: string,
   _version?: number | null,
 };
@@ -1194,6 +1257,9 @@ export type ModelDailyGoalsFilterInput = {
   maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
+  proteinGoal?: ModelIntInput | null,
+  carbGoal?: ModelIntInput | null,
+  fatGoal?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelDailyGoalsFilterInput | null > | null,
@@ -1328,6 +1394,18 @@ export type ModelFoodItemServingFilterInput = {
   not?: ModelFoodItemServingFilterInput | null,
   _deleted?: ModelBooleanInput | null,
   foodItemServingOptionsId?: ModelIDInput | null,
+};
+
+export type ModelUserFavoriteFoodFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelUserFavoriteFoodFilterInput | null > | null,
+  or?: Array< ModelUserFavoriteFoodFilterInput | null > | null,
+  not?: ModelUserFavoriteFoodFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  foodItemFavoritedById?: ModelIDInput | null,
 };
 
 export type ModelRecipeFilterInput = {
@@ -1573,6 +1651,9 @@ export type ModelSubscriptionDailyGoalsFilterInput = {
   maxCalories?: ModelSubscriptionIntInput | null,
   minSleep?: ModelSubscriptionFloatInput | null,
   dailyWorkout?: ModelSubscriptionBooleanInput | null,
+  proteinGoal?: ModelSubscriptionIntInput | null,
+  carbGoal?: ModelSubscriptionIntInput | null,
+  fatGoal?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionDailyGoalsFilterInput | null > | null,
@@ -1699,6 +1780,7 @@ export type ModelSubscriptionFoodItemFilterInput = {
   and?: Array< ModelSubscriptionFoodItemFilterInput | null > | null,
   or?: Array< ModelSubscriptionFoodItemFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
+  foodItemFavoritedById?: ModelSubscriptionIDInput | null,
   foodItemServingOptionsId?: ModelSubscriptionIDInput | null,
 };
 
@@ -1714,6 +1796,16 @@ export type ModelSubscriptionFoodItemServingFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionFoodItemServingFilterInput | null > | null,
   or?: Array< ModelSubscriptionFoodItemServingFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionUserFavoriteFoodFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionUserFavoriteFoodFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserFavoriteFoodFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -1897,6 +1989,9 @@ export type CreateDailyGoalsMutation = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1919,6 +2014,9 @@ export type UpdateDailyGoalsMutation = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1941,6 +2039,9 @@ export type DeleteDailyGoalsMutation = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2315,6 +2416,11 @@ export type CreateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -2349,6 +2455,11 @@ export type UpdateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -2380,6 +2491,11 @@ export type DeleteFoodItemMutation = {
     } | null,
     recipes?:  {
       __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2498,6 +2614,96 @@ export type DeleteFoodItemServingMutation = {
     _deleted?: boolean | null,
     _lastChangedAt: number,
     foodItemServingOptionsId?: string | null,
+  } | null,
+};
+
+export type CreateUserFavoriteFoodMutationVariables = {
+  input: CreateUserFavoriteFoodInput,
+  condition?: ModelUserFavoriteFoodConditionInput | null,
+};
+
+export type CreateUserFavoriteFoodMutation = {
+  createUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
+  } | null,
+};
+
+export type UpdateUserFavoriteFoodMutationVariables = {
+  input: UpdateUserFavoriteFoodInput,
+  condition?: ModelUserFavoriteFoodConditionInput | null,
+};
+
+export type UpdateUserFavoriteFoodMutation = {
+  updateUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
+  } | null,
+};
+
+export type DeleteUserFavoriteFoodMutationVariables = {
+  input: DeleteUserFavoriteFoodInput,
+  condition?: ModelUserFavoriteFoodConditionInput | null,
+};
+
+export type DeleteUserFavoriteFoodMutation = {
+  deleteUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
   } | null,
 };
 
@@ -3960,6 +4166,9 @@ export type GetDailyGoalsQuery = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3985,6 +4194,9 @@ export type ListDailyGoalsQuery = {
       maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
+      proteinGoal?: number | null,
+      carbGoal?: number | null,
+      fatGoal?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4014,6 +4226,9 @@ export type SyncDailyGoalsQuery = {
       maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
+      proteinGoal?: number | null,
+      carbGoal?: number | null,
+      fatGoal?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4434,6 +4649,11 @@ export type GetFoodItemQuery = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -4587,6 +4807,86 @@ export type SyncFoodItemServingsQuery = {
       _deleted?: boolean | null,
       _lastChangedAt: number,
       foodItemServingOptionsId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetUserFavoriteFoodQueryVariables = {
+  id: string,
+};
+
+export type GetUserFavoriteFoodQuery = {
+  getUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
+  } | null,
+};
+
+export type ListUserFavoriteFoodsQueryVariables = {
+  filter?: ModelUserFavoriteFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListUserFavoriteFoodsQuery = {
+  listUserFavoriteFoods?:  {
+    __typename: "ModelUserFavoriteFoodConnection",
+    items:  Array< {
+      __typename: "UserFavoriteFood",
+      id: string,
+      userId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      foodItemFavoritedById?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUserFavoriteFoodsQueryVariables = {
+  filter?: ModelUserFavoriteFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUserFavoriteFoodsQuery = {
+  syncUserFavoriteFoods?:  {
+    __typename: "ModelUserFavoriteFoodConnection",
+    items:  Array< {
+      __typename: "UserFavoriteFood",
+      id: string,
+      userId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      foodItemFavoritedById?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -6142,6 +6442,9 @@ export type OnCreateDailyGoalsSubscription = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6163,6 +6466,9 @@ export type OnUpdateDailyGoalsSubscription = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6184,6 +6490,9 @@ export type OnDeleteDailyGoalsSubscription = {
     maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
+    proteinGoal?: number | null,
+    carbGoal?: number | null,
+    fatGoal?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6545,6 +6854,11 @@ export type OnCreateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -6578,6 +6892,11 @@ export type OnUpdateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     servingOptions?:  {
       __typename: "ModelFoodItemServingConnection",
       nextToken?: string | null,
@@ -6608,6 +6927,11 @@ export type OnDeleteFoodItemSubscription = {
     } | null,
     recipes?:  {
       __typename: "ModelRecipeToFoodConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    favoritedBy?:  {
+      __typename: "ModelUserFavoriteFoodConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -6723,6 +7047,93 @@ export type OnDeleteFoodItemServingSubscription = {
     _deleted?: boolean | null,
     _lastChangedAt: number,
     foodItemServingOptionsId?: string | null,
+  } | null,
+};
+
+export type OnCreateUserFavoriteFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFavoriteFoodFilterInput | null,
+};
+
+export type OnCreateUserFavoriteFoodSubscription = {
+  onCreateUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
+  } | null,
+};
+
+export type OnUpdateUserFavoriteFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFavoriteFoodFilterInput | null,
+};
+
+export type OnUpdateUserFavoriteFoodSubscription = {
+  onUpdateUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
+  } | null,
+};
+
+export type OnDeleteUserFavoriteFoodSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFavoriteFoodFilterInput | null,
+};
+
+export type OnDeleteUserFavoriteFoodSubscription = {
+  onDeleteUserFavoriteFood?:  {
+    __typename: "UserFavoriteFood",
+    id: string,
+    userId: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemFavoritedById?: string | null,
   } | null,
 };
 

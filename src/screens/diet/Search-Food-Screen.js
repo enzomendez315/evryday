@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, Text, TextInput, ScrollView, Button } from 'react-native';
 import { searchFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
+import { AccountContext } from '../../../App';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let DEBUG = false;
 
 const SearchFoodScreen = (props) => {
   const { navigation, route } = props;
+  const userId = React.useContext(AccountContext);
   const meal = route.params.meal;
   const mealId = route.params.meal.id;
   DEBUG && console.log(`Search Food mealId: ${mealId}`);
@@ -24,7 +26,7 @@ const SearchFoodScreen = (props) => {
         </TouchableOpacity>
       ),
     })
-    searchFoodItems(searchTerm, setFoodItems);
+    searchFoodItems(searchTerm, setFoodItems, userId);
   }, []);
   return (
     <>
@@ -36,7 +38,7 @@ const SearchFoodScreen = (props) => {
             placeholder="Enter Food Here"
             onChangeText={(input) => { 
               setSearchTerm(input);
-              searchFoodItems(input, setFoodItems); }} 
+              searchFoodItems(input, setFoodItems, userId); }} 
             />
         </View>
         <Text style={styles.resultsText}>Search Results:</Text>
