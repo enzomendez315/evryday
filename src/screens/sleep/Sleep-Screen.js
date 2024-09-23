@@ -160,7 +160,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 onPress={async () => {
                   await makeSleepEntry(userID, new Date(tempStartDate), hours, progress.value);
                   setIsAddPopupVisible(false);
-                  syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
+                  syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
                 }
                 }>
                 <Text style={styles.addSleepButtonText}>Submit</Text>
@@ -211,7 +211,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
               <TouchableOpacity onPress={() => {
                 deleteSleepEntry(userID, editPopupData.day);
                 setIsEditPopupVisible(false);
-                syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
+                syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
               }}>
                 <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
@@ -247,7 +247,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
                 onPress={async () => {
                   await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
-                  syncUsersMonthLog(userID, monthValue.getMonth() + 1, monthValue.getFullYear(), setSleepData);
+                  syncUsersMonthLog(userID, monthValue.getActiveDateMonth(), monthValue.getActiveDateYear(), setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Save Changes</Text>
               </TouchableOpacity>
@@ -342,8 +342,8 @@ const SleepScreen = () => {
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
   const [isPickMonthPopupVisible, setIsPickMonthPopupVisible] = useState(false);
   // for the month picker
-  const [tempDate, setTempDate] = useState(new Date()); // hook used in modal
-  const [monthValue, setMonthValue] = useState(new Date()); // what UI sees, updated when modal is closed
+  const [tempDate, setTempDate] = useState(getActiveDate()); // hook used in modal
+  const [monthValue, setMonthValue] = useState(getActiveDate()); // what UI sees, updated when modal is closed
   // when a sleep tab is pressed, the data is saved here
   const [editPopupData, setEditPopupData] = useState({ day: '', hours: 0, quality: 0 });
   // a list of all the sleep entries to show the user in the UI
