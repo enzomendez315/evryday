@@ -19,6 +19,8 @@ import {
   getActiveDateMonth, getActiveDateYear,
   setActiveDate, convertDatetoString
 } from '../../logic/date-time';
+// for selecting dates at the top of the screen
+import { PickDatePopup } from '../../components/datePicker';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
@@ -294,68 +296,69 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
   )
 }
 
-const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
-  calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
+// // used for selecting dates at the top of the screen
+// const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
+//   calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
   
-  const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
-  const todayDate = getActiveDate();
+//   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
+//   const todayDate = getActiveDate();
 
-  return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={isPickDatePopupVisible}
-      onRequestClose={() => {
-        setIsPickDatePopupVisible(false);
-      }}>
-      <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
-        <View style={styles.contentContainer}>
-          <TouchableWithoutFeedback>
-            <View style={styles.content}>
-              <Calendar
-                current={selectedDate}
-                onDayPress={(day) => {
-                  const selectedDate = day.dateString;
-                  setSelectedDate(selectedDate);
-                  const selectedDateObj = new Date(day.timestamp);
-                  setCalendarDate(selectedDateObj);
-                  const dateString = convertDatetoString(selectedDateObj);
-                  setDateHook(dateString);
-                  setIsPickDatePopupVisible(false);
-                }}
-                markedDates={{
-                  [selectedDate]: {
-                    selected: true,
-                    selectedColor: 'blue',
-                  },
-                  [todayDate]: {
-                    selected: true,
-                    selectedColor: 'orange',
-                  }
-                }}
-                theme={{
-                  arrowColor: 'black',
-                }}
-              />
-              <TouchableOpacity
-                style={styles.confirmButton}
-                onPress={() => {
-                  // TODO: Find out why getActiveDate() doesn't return todays date
-                  setSelectedDate(todayDate);
-                  const selectedDateObj = new Date(todayDate.timestamp);
-                  setCalendarDate(selectedDateObj);
-                  setDateHook(todayDate);
-                  setIsPickDatePopupVisible(false);
-                }}>
-                <Text>Today</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
-  )
-}
+//   return (
+//     <Modal
+//       transparent
+//       animationType="fade"
+//       visible={isPickDatePopupVisible}
+//       onRequestClose={() => {
+//         setIsPickDatePopupVisible(false);
+//       }}>
+//       <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
+//         <View style={styles.contentContainer}>
+//           <TouchableWithoutFeedback>
+//             <View style={styles.content}>
+//               <Calendar
+//                 current={selectedDate}
+//                 onDayPress={(day) => {
+//                   const selectedDate = day.dateString;
+//                   setSelectedDate(selectedDate);
+//                   const selectedDateObj = new Date(day.timestamp);
+//                   setCalendarDate(selectedDateObj);
+//                   const dateString = convertDatetoString(selectedDateObj);
+//                   setDateHook(dateString);
+//                   setIsPickDatePopupVisible(false);
+//                 }}
+//                 markedDates={{
+//                   [selectedDate]: {
+//                     selected: true,
+//                     selectedColor: 'blue',
+//                   },
+//                   [todayDate]: {
+//                     selected: true,
+//                     selectedColor: 'orange',
+//                   }
+//                 }}
+//                 theme={{
+//                   arrowColor: 'black',
+//                 }}
+//               />
+//               <TouchableOpacity
+//                 style={styles.confirmButton}
+//                 onPress={() => {
+//                   // TODO: Find out why getActiveDate() doesn't return todays date
+//                   setSelectedDate(todayDate);
+//                   const selectedDateObj = new Date(todayDate.timestamp);
+//                   setCalendarDate(selectedDateObj);
+//                   setDateHook(todayDate);
+//                   setIsPickDatePopupVisible(false);
+//                 }}>
+//                 <Text>Today</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </TouchableWithoutFeedback>
+//         </View>
+//       </TouchableWithoutFeedback>
+//     </Modal>
+//   )
+// }
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
