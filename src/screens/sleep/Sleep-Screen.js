@@ -17,7 +17,7 @@ import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
   getActiveDateMonth, getActiveDateYear,
-  setActiveDate,
+  setActiveDate, convertDatetoString
 } from '../../logic/date-time';
 
 // for adding sleep slider
@@ -295,10 +295,9 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
 }
 
 const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
-  calendarDate, setCalendarDate, setIsLoading }) => {
+  calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
   
   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
-
   const todayDate = getActiveDate();
 
   return (
@@ -313,7 +312,6 @@ const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
         <View style={styles.contentContainer}>
           <TouchableWithoutFeedback>
             <View style={styles.content}>
-              {/* Calendar View to Select a Date */}
               <Calendar
                 current={selectedDate}
                 onDayPress={(day) => {
@@ -321,6 +319,9 @@ const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
                   setSelectedDate(selectedDate);
                   const selectedDateObj = new Date(day.timestamp);
                   setCalendarDate(selectedDateObj);
+                  const dateString = convertDatetoString(selectedDateObj);
+                  setDateHook(dateString);
+                  setIsPickDatePopupVisible(false);
                 }}
                 markedDates={{
                   [selectedDate]: {
@@ -339,7 +340,12 @@ const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
               <TouchableOpacity
                 style={styles.confirmButton}
                 onPress={() => {
-                  // TODO: Fill this out so that it gets today's date.
+                  // TODO: Find out why getActiveDate() doesn't return todays date
+                  setSelectedDate(todayDate);
+                  const selectedDateObj = new Date(todayDate.timestamp);
+                  setCalendarDate(selectedDateObj);
+                  setDateHook(todayDate);
+                  setIsPickDatePopupVisible(false);
                 }}>
                 <Text>Today</Text>
               </TouchableOpacity>
@@ -460,7 +466,7 @@ const SleepScreen = () => {
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
           <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-            setIsLoading={setIsLoading} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+            setDateHook={setDateHook} setIsLoading={setIsLoading} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
