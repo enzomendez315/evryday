@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button,
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback, 
   ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
+import { Calendar } from 'react-native-calendars';
 import {
   makeSleepEntry, deleteSleepEntry,
   editSleepEntry, syncUsersMonthLog,
@@ -293,6 +294,63 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
   )
 }
 
+const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
+  calendarDate, setCalendarDate, setIsLoading }) => {
+  
+  const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
+
+  const todayDate = getActiveDate();
+
+  return (
+    <Modal
+      transparent
+      animationType="fade"
+      visible={isPickDatePopupVisible}
+      onRequestClose={() => {
+        setIsPickDatePopupVisible(false);
+      }}>
+      <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
+        <View style={styles.contentContainer}>
+          <TouchableWithoutFeedback>
+            <View style={styles.content}>
+              {/* Calendar View to Select a Date */}
+              <Calendar
+                current={selectedDate}
+                onDayPress={(day) => {
+                  const selectedDate = day.dateString;
+                  setSelectedDate(selectedDate);
+                  const selectedDateObj = new Date(day.timestamp);
+                  setCalendarDate(selectedDateObj);
+                }}
+                markedDates={{
+                  [selectedDate]: {
+                    selected: true,
+                    selectedColor: 'blue',
+                  },
+                  [todayDate]: {
+                    selected: true,
+                    selectedColor: 'orange',
+                  }
+                }}
+                theme={{
+                  arrowColor: 'black',
+                }}
+              />
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  // TODO: Fill this out so that it gets today's date.
+                }}>
+                <Text>Today</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  )
+}
+
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
 
@@ -340,7 +398,10 @@ const SleepScreen = () => {
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
   const [isPickMonthPopupVisible, setIsPickMonthPopupVisible] = useState(false);
+  // for the date picker
+  const [calendarDate, setCalendarDate] = useState(getActiveDate());
   // for the month picker
   const [tempDate, setTempDate] = useState(getActiveDate()); // hook used in modal
   const [monthValue, setMonthValue] = useState(getActiveDate()); // what UI sees, updated when modal is closed
@@ -398,6 +459,9 @@ const SleepScreen = () => {
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+            setIsLoading={setIsLoading} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
@@ -409,9 +473,9 @@ const SleepScreen = () => {
                 setDateHook(getActiveDate());
               }} />
 
-          <View style={styles.dateTitleContainer}>
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </View>
+          </TouchableOpacity>
 
             <Button title=">"
               onPress={() => {
