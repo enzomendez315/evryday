@@ -409,7 +409,9 @@ const SleepScreen = () => {
                 setDateHook(getActiveDate());
               }} />
 
+          <View style={styles.dateTitleContainer}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </View>
 
             <Button title=">"
               onPress={() => {
@@ -499,13 +501,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DADADA',
-
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  dateTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,

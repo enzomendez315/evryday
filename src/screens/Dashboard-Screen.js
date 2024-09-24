@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog, syncSleepScore, getSleepScore } from '../logic/sleep-api';
+import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
 import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -311,7 +311,9 @@ const Dashboard = (props) => {
               setDateHook(getActiveDate())
             }} />
 
-          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          <View style={styles.dateTitleContainer}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </View>
 
           <Button title=">"
             onPress={() => {
@@ -346,6 +348,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  dateTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,

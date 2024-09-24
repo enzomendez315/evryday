@@ -37,7 +37,7 @@ export function setActiveDate(offset = 0) {
 // just used for UI purposes
 export function getFormattedDate(activeDate_) {
     let tempDate = convertToDate(activeDate_);
-    const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+    const weekDay = tempDate.toLocaleString('default', { weekday: 'short' });
     const month = tempDate.toLocaleString('default', { month: 'long' });
     const day = tempDate.getDate();
     const formattedDate = `${weekDay}, ${month} ${day}`;

@@ -123,7 +123,9 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
               setDateHook(getActiveDate());
             }} />
 
-          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          <View style={styles.dateTitleContainer}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </View>
 
           <Button title=">"
             onPress={() => {
@@ -190,6 +192,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  dateTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,
