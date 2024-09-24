@@ -10,6 +10,8 @@ import { COLORS } from '../../theme/theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PopupComponent from '../../components/PopupMenu';
 import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
+// for selecting dates at the top of the screen
+import { PickDatePopup } from '../../components/datePicker';
 
 let userId;
 
@@ -72,6 +74,9 @@ const DietScreen = ({ navigation }) => {
   // calorie data is the data from the day's meals
   const [calorieData, setCalorieData] = useState(null);
   const [dateHook, setDateHook] = useState(getActiveDate());
+  // for selecting dates at the top of the screen
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(getActiveDate());
 
   userId = React.useContext(AccountContext);
 
@@ -135,36 +140,37 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <MealPeriodPopup 
-          mealPeriodPopupVisible={mealPeriodPopupVisible} 
-          setMealPeriodPopupVisible={setMealPeriodPopupVisible} 
-          navigation={navigation}
-          date={dateHook} />
-        <PopupComponent
-          isVisible={addWaterPopupVisible}
-          setIsVisible={setAddWaterPopupVisible}
-          Content={WaterInputPopup}
-          onPress={addWater}
-        />
-        <View style={styles.dateHeaderContainer}>
-          <Button title="<"
-            onPress={() => {
-              setActiveDate(-1);
-              setDateHook(getActiveDate())
-            }} />
-
-          <View style={styles.dateTitleContainer}>
-            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </View>
-
-          <Button title=">"
-            onPress={() => {
-              setActiveDate(1);
-              setDateHook(getActiveDate())
-            }} />
-        </View>
-
         <ScrollView>
+          <MealPeriodPopup 
+            mealPeriodPopupVisible={mealPeriodPopupVisible} 
+            setMealPeriodPopupVisible={setMealPeriodPopupVisible} 
+            navigation={navigation}
+            date={dateHook} />
+          <PopupComponent
+            isVisible={addWaterPopupVisible}
+            setIsVisible={setAddWaterPopupVisible}
+            Content={WaterInputPopup}
+            onPress={addWater}
+          />
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+          <View style={styles.dateHeaderContainer}>
+            <Button title="<"
+              onPress={() => {
+                setActiveDate(-1);
+                setDateHook(getActiveDate())
+              }} />
+
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </TouchableOpacity>
+
+            <Button title=">"
+              onPress={() => {
+                setActiveDate(1);
+                setDateHook(getActiveDate())
+              }} />
+          </View>
           <Text style={styles.tabHeaderText}>Calories</Text>
           <View style={styles.calorieContainer}>
 

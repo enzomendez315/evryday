@@ -407,9 +407,9 @@ const SleepScreen = () => {
   // for adding and editing sleep data
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
-  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
   const [isPickMonthPopupVisible, setIsPickMonthPopupVisible] = useState(false);
   // for the date picker
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
   const [calendarDate, setCalendarDate] = useState(getActiveDate());
   // for the month picker
   const [tempDate, setTempDate] = useState(getActiveDate()); // hook used in modal
@@ -469,7 +469,7 @@ const SleepScreen = () => {
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
           <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-            setDateHook={setDateHook} setIsLoading={setIsLoading} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}

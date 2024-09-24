@@ -5,6 +5,8 @@ import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
 import { getActiveDate, getFormattedDate, setActiveDate } from '../../logic/date-time';
+// for selecting dates at the top of the screen
+import { PickDatePopup } from '../../components/datePicker';
 
 let userID;
 
@@ -88,6 +90,8 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
   const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [routineData2, setRoutineData2] = useState(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(getActiveDate());
   const [dateHook, setDateHook] = useState(getActiveDate());
 
   userID = React.useContext(AccountContext);
@@ -116,6 +120,9 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+
         <View style={styles.dateHeaderContainer}>
           <Button title="<"
             onPress={() => {
@@ -123,9 +130,9 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
               setDateHook(getActiveDate());
             }} />
 
-          <View style={styles.dateTitleContainer}>
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </View>
+          </TouchableOpacity>
 
           <Button title=">"
             onPress={() => {

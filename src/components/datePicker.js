@@ -13,7 +13,7 @@ import { COLORS } from '../theme/theme';
 
 // used for selecting dates at the top of the screen
 export const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
-    calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
+    calendarDate, setCalendarDate, setDateHook }) => {
     
     const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
     const todayDate = getActiveDate();
