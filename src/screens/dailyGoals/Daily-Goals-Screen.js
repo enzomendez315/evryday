@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { getUserGoals, updateUserGoals, createUserGoals } from '../logic/user-goals';
-import { AccountContext } from '../../App';
+import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user-goals';
+import { AccountContext } from '../../../App';
 
 let userID;
 let DEBUG = false;
@@ -90,6 +90,8 @@ const DailyGoalsScreen = () => {
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
+                <Button title="go to nutrition goals"
+                    onPress={() => { navigation.navigate("Nutrition Goals") }} />
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Minimum Calories:</Text>
                     <TextInput

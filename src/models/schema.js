@@ -570,6 +570,22 @@ export const schema = {
                         ]
                     }
                 },
+                "favoritedBy": {
+                    "name": "favoritedBy",
+                    "isArray": true,
+                    "type": {
+                        "model": "UserFavoriteFood"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "foodItemFavoritedById"
+                        ]
+                    }
+                },
                 "servingOptions": {
                     "name": "servingOptions",
                     "isArray": true,
@@ -721,6 +737,87 @@ export const schema = {
             },
             "syncable": true,
             "pluralName": "FoodItemServings",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "UserFavoriteFood": {
+            "name": "UserFavoriteFood",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "userId": {
+                    "name": "userId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "foodItem": {
+                    "name": "foodItem",
+                    "isArray": false,
+                    "type": {
+                        "model": "FoodItem"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "foodItemFavoritedById"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "foodItemFavoritedById": {
+                    "name": "foodItemFavoritedById",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "UserFavoriteFoods",
             "attributes": [
                 {
                     "type": "model",
@@ -2232,5 +2329,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "77dc84ff5e79b1edc1c751bc6e072fef"
+    "version": "f4ee3f401524c6cb3d94c33eeed195d2"
 };

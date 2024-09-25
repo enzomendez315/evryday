@@ -24,7 +24,8 @@ import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
-import DailyGoalsScreen from './src/screens/Daily-Goals-Screen';
+import DailyGoalsScreen from './src/screens/dailyGoals/Daily-Goals-Screen';
+import NutritionGoalsScreen from './src/screens/dailyGoals/Nutrition-Goals-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore } from 'aws-amplify/datastore';
@@ -148,6 +149,7 @@ function SettingsStack() {
         }} />
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
+      <Stack.Screen name="Nutrition Goals" component={NutritionGoalsScreen} />
     </Stack.Navigator>
   );
 }
