@@ -10,15 +10,12 @@ let userID;
 let DEBUG = false;
 
 const NutritionGoalsScreen = () => {
-    const [goalsInfo, setGoalsInfo] = useState({
-        calorieGoal: 0,
-        proteinPercent: 0,
-        carbPercent: 0,
-        fatPercent: 0,
-    });
+    const [calorieGoal, setCalorieGoal] = useState(0);
+    const [proteinPercent, setProteinPercent] = useState(0);
+    const [carbPercent, setCarbPercent] = useState(0);
+    const [fatPercent, setFatPercent] = useState(0);
     const [missingInfo, setMissingInfo] = useState(false);
     // for sliders
-    const [value, setValue] = useState(0);
     const navigation = useNavigation();
 
     userID = React.useContext(AccountContext);
@@ -31,33 +28,30 @@ const NutritionGoalsScreen = () => {
 
     // function to handle changes in the sliders
     // so that the sum of the sliders is always 100
-    // generated in part by our lord and savior, ChatGPT
-    // not used yet
+    // updatedValue is the new value of the slider macroType
+    // macroType is either "protein", "carb", or "fat"
     const handleMacroChange = (updatedValue, macroType) => {
-        const { calorieGoal, proteinPercent, carbPercent, fatPercent } = goalsInfo;
-
-        // Calculate remaining percentage for the other two sliders
-        const remainingPercent = 100 - updatedValue;
-        let newProtein = proteinPercent;
-        let newCarb = carbPercent;
-        let newFat = fatPercent;
-
-        // Determine which sliders to adjust
-        if (macroType === 'protein') {
-            const sumOtherMacros = carbPercent + fatPercent;
-            newCarb = parseInt((carbPercent / sumOtherMacros) * remainingPercent);
-            newFat = parseInt((fatPercent / sumOtherMacros) * remainingPercent);
-            setGoalsInfo({ ...goalsInfo, proteinPercent: updatedValue, carbPercent: newCarb, fatPercent: newFat });
-        } else if (macroType === 'carb') {
-            const sumOtherMacros = proteinPercent + fatPercent;
-            newProtein = parseInt((proteinPercent / sumOtherMacros) * remainingPercent);
-            newFat = parseInt((fatPercent / sumOtherMacros) * remainingPercent);
-            setGoalsInfo({ ...goalsInfo, proteinPercent: newProtein, carbPercent: updatedValue, fatPercent: newFat });
-        } else if (macroType === 'fat') {
-            const sumOtherMacros = proteinPercent + carbPercent;
-            newProtein = parseInt((proteinPercent / sumOtherMacros) * remainingPercent);
-            newCarb = parseInt((carbPercent / sumOtherMacros) * remainingPercent);
-            setGoalsInfo({ ...goalsInfo, proteinPercent: newProtein, carbPercent: newCarb, fatPercent: updatedValue });
+        // calculate the sum of the other two sliders
+        const otherSlidersSum = 100 - updatedValue;
+        // set the new value of the slider
+        switch (macroType) {
+            case "protein":
+                setProteinPercent(updatedValue);
+                setCarbPercent(Math.floor(otherSlidersSum / 2));
+                setFatPercent(Math.ceil(otherSlidersSum / 2));
+                break;
+            case "carb":
+                setCarbPercent(updatedValue);
+                setProteinPercent(Math.floor(otherSlidersSum / 2));
+                setFatPercent(Math.ceil(otherSlidersSum / 2));
+                break;
+            case "fat":
+                setFatPercent(updatedValue);
+                setProteinPercent(Math.floor(otherSlidersSum / 2));
+                setCarbPercent(Math.ceil(otherSlidersSum / 2));
+                break;
+            default:
+                console.log("Invalid macro type");
         }
     };
 
@@ -77,38 +71,38 @@ const NutritionGoalsScreen = () => {
                     <TextInput
                         style={styles.input}
                         keyboardType="numeric"
-                        value={goalsInfo.calorieGoal.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, calorieGoal: text })}
+                        value={calorieGoal.toString()}
+                        onChangeText={text => setCalorieInfo()}
                         placeholder="Enter your calorie goal"
                     />
                 </View>
 
                 <View style={styles.macroContainer}>
-                    <Text>Protein Percent: {goalsInfo.proteinPercent}</Text>
+                    <Text>Protein Percent: {proteinPercent}</Text>
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
                         step={1}
-                        value={goalsInfo.proteinPercent}
-                        onValueChange={value => setGoalsInfo({ ...goalsInfo, proteinPercent: value })}
+                        value={proteinPercent}
+                        onValueChange={value => handleMacroChange(value, "protein")}
                     />
 
-                    <Text>Carb Percent: {goalsInfo.carbPercent}</Text>
+                    <Text>Carb Percent: {carbPercent}</Text>
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
                         step={1}
-                        value={goalsInfo.carbPercent}
-                        onValueChange={value => setGoalsInfo({ ...goalsInfo, carbPercent: value })}
+                        value={carbPercent}
+                        onValueChange={value => handleMacroChange(value, "carb")}
                     />
 
-                    <Text>Fat Percent: {goalsInfo.fatPercent}</Text>
+                    <Text>Fat Percent: {fatPercent}</Text>
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
                         step={1}
-                        value={goalsInfo.fatPercent}
-                        onValueChange={value => setGoalsInfo({ ...goalsInfo, fatPercent: value })}
+                        value={fatPercent}
+                        onValueChange={value => handleMacroChange(value, "fat")}
                     />
                 </View>
 
