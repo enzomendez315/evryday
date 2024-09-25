@@ -15,7 +15,6 @@ const NutritionGoalsScreen = () => {
     const [carbPercent, setCarbPercent] = useState(0);
     const [fatPercent, setFatPercent] = useState(0);
     const [missingInfo, setMissingInfo] = useState(false);
-    // for sliders
     const navigation = useNavigation();
 
     userID = React.useContext(AccountContext);
@@ -23,33 +22,50 @@ const NutritionGoalsScreen = () => {
     // gets the user's info from the DB entry and fills in the hooks
     useEffect(() => {
         DEBUG && console.log("Getting user goals info...");
-
     }, []);
 
     // function to handle changes in the sliders
-    // so that the sum of the sliders is always 100
+    // so that the sum of the sliders is always 100 or less
     // updatedValue is the new value of the slider macroType
     // macroType is either "protein", "carb", or "fat"
     const handleMacroChange = (updatedValue, macroType) => {
         // calculate the sum of the other two sliders
         const otherSlidersSum = 100 - updatedValue;
-        // set the new value of the slider
+        // if the sum of the sliders is less than 100, set the new value
         switch (macroType) {
             case "protein":
-                setProteinPercent(updatedValue);
-                setCarbPercent(Math.floor(otherSlidersSum / 2));
-                setFatPercent(Math.ceil(otherSlidersSum / 2));
-                break;
+                if (parseInt(updatedValue) + parseInt(carbPercent) + parseInt(fatPercent) <= 100) {
+                    setProteinPercent(updatedValue);
+                    break;
+                }
+                else {
+                    setProteinPercent(updatedValue);
+                    setCarbPercent(Math.floor(otherSlidersSum / 2));
+                    setFatPercent(Math.ceil(otherSlidersSum / 2));
+                    break;
+                }
             case "carb":
-                setCarbPercent(updatedValue);
-                setProteinPercent(Math.floor(otherSlidersSum / 2));
-                setFatPercent(Math.ceil(otherSlidersSum / 2));
-                break;
+                if (parseInt(proteinPercent) + parseInt(updatedValue) + parseInt(fatPercent) <= 100) {
+                    setCarbPercent(updatedValue);
+                    break;
+                }
+                else {
+                    setCarbPercent(updatedValue);
+                    setProteinPercent(Math.floor(otherSlidersSum / 2));
+                    setFatPercent(Math.ceil(otherSlidersSum / 2));
+                    break;
+                }
             case "fat":
-                setFatPercent(updatedValue);
-                setProteinPercent(Math.floor(otherSlidersSum / 2));
-                setCarbPercent(Math.ceil(otherSlidersSum / 2));
-                break;
+                if (parseInt(proteinPercent) + parseInt(carbPercent) + parseInt(updatedValue) <= 100) {
+                    setFatPercent(updatedValue);
+                    break;
+                }
+                else {
+                    setFatPercent(updatedValue);
+                    setProteinPercent(Math.floor(otherSlidersSum / 2));
+                    setCarbPercent(Math.ceil(otherSlidersSum / 2));
+                    break;
+                }
             default:
                 console.log("Invalid macro type");
         }
@@ -72,7 +88,7 @@ const NutritionGoalsScreen = () => {
                         style={styles.input}
                         keyboardType="numeric"
                         value={calorieGoal.toString()}
-                        onChangeText={text => setCalorieInfo()}
+                        onChangeText={text => setCalorieGoal(text)}
                         placeholder="Enter your calorie goal"
                     />
                 </View>
