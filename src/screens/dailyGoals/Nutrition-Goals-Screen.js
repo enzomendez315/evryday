@@ -11,6 +11,7 @@ let DEBUG = false;
 
 const NutritionGoalsScreen = () => {
     const [calorieGoal, setCalorieGoal] = useState(0);
+    const [nutritionBuffer, setNutritionBuffer] = useState(10);
     const [proteinPercent, setProteinPercent] = useState(0);
     const [carbPercent, setCarbPercent] = useState(0);
     const [fatPercent, setFatPercent] = useState(0);
@@ -106,7 +107,16 @@ const NutritionGoalsScreen = () => {
         }
     };
 
+    const fillRecommended = () => {
+        setCalorieGoal(2000);
+        setProteinPercent(30);
+        setCarbPercent(40);
+        setFatPercent(30);
+        setNutritionBuffer(10);
+    };
+
     const handleSubmit = async () => {
+        navigation.navigate('Daily Goals');
     };
 
     return (
@@ -117,6 +127,9 @@ const NutritionGoalsScreen = () => {
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
+                <Button title="Use Recommended Goals" onPress={fillRecommended} />
+
+
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Calorie Goal:</Text>
                     <TextInput
@@ -126,6 +139,10 @@ const NutritionGoalsScreen = () => {
                         onChangeText={text => setCalorieGoal(text)}
                         placeholder="Enter your calorie goal"
                     />
+                    <View>
+                        <Text>Minimum Calories: {calorieGoal - calorieGoal * (nutritionBuffer / 100)}</Text>
+                        <Text>Maximum Calories: {parseInt(calorieGoal) + parseInt(calorieGoal) * (nutritionBuffer / 100)}</Text>
+                    </View>
                 </View>
 
                 <View style={styles.macroContainer}>
@@ -140,6 +157,17 @@ const NutritionGoalsScreen = () => {
                             }}
                             placeholder="Enter your protein percentage goal"
                         />
+                        <View>
+                            <Text>Protein Goal: {parseInt(calorieGoal * (proteinPercent / 100) / 4)}g</Text>
+                            <Text>Minimum Protein:
+                                {parseInt(calorieGoal * (proteinPercent / 100) / 4) -
+                                    parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            </Text>
+                            <Text>Maximum Protein:
+                                {parseInt(calorieGoal * (proteinPercent / 100) / 4) +
+                                    parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            </Text>
+                        </View>
                     </View>
 
                     <Slider
@@ -162,6 +190,17 @@ const NutritionGoalsScreen = () => {
                             }}
                             placeholder="Enter your carb percentage goal"
                         />
+                        <View>
+                            <Text>Carb Goal: {parseInt(calorieGoal * (carbPercent / 100) / 4)}g</Text>
+                            <Text>Minimum Carbs:
+                                {parseInt(calorieGoal * (carbPercent / 100) / 4) -
+                                    parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            </Text>
+                            <Text>Maximum Carbs:
+                                {parseInt(calorieGoal * (carbPercent / 100) / 4) +
+                                    parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            </Text>
+                        </View>
                     </View>
                     <Slider
                         maximumValue={100}
@@ -182,6 +221,17 @@ const NutritionGoalsScreen = () => {
                             }}
                             placeholder="Enter your fat percentage goal"
                         />
+                        <View>
+                            <Text>Fat Goal: {parseInt(calorieGoal * (fatPercent / 100) / 9)}g</Text>
+                            <Text>Minimum Fat:
+                                {parseInt(calorieGoal * (fatPercent / 100) / 9) -
+                                    parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}g
+                            </Text>
+                            <Text>Maximum Fat:
+                                {parseInt(calorieGoal * (fatPercent / 100) / 9) +
+                                    parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}g
+                            </Text>
+                        </View>
                     </View>
                     <Slider
                         maximumValue={100}
@@ -189,6 +239,17 @@ const NutritionGoalsScreen = () => {
                         step={1}
                         value={fatPercent}
                         onValueChange={value => handleMacroChange(value, "fat")}
+                    />
+                </View>
+
+                <View style={styles.macroContainer}>
+                    <Text>Nutrition Buffer: {nutritionBuffer}%</Text>
+                    <Slider
+                        maximumValue={25}
+                        minimumValue={5}
+                        step={1}
+                        value={nutritionBuffer}
+                        onValueChange={value => setNutritionBuffer(value)}
                     />
                 </View>
 

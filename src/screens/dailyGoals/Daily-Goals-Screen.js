@@ -92,6 +92,8 @@ const DailyGoalsScreen = () => {
 
                 <Button title="go to nutrition goals"
                     onPress={() => { navigation.navigate("Nutrition Goals") }} />
+
+                <Text>Nutrition Goals</Text>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Minimum Calories:</Text>
                     <TextInput
@@ -102,7 +104,6 @@ const DailyGoalsScreen = () => {
                         placeholder="Enter your calorie goal"
                     />
                 </View>
-
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Maximum Calories:</Text>
                     <TextInput
@@ -147,6 +148,7 @@ const DailyGoalsScreen = () => {
                     />
                 </View>
 
+                <Text>Sleep Goal</Text>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Minimum Sleep Duration:</Text>
                     <TextInput
@@ -158,6 +160,7 @@ const DailyGoalsScreen = () => {
                     />
                 </View>
 
+                <Text>Workout Goal</Text>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Daily Workout:</Text>
                     <Picker
