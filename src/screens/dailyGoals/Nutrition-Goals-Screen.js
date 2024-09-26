@@ -23,6 +23,23 @@ const NutritionGoalsScreen = () => {
     // gets the user's info from the DB entry and fills in the hooks
     useEffect(() => {
         DEBUG && console.log("Getting user goals info...");
+        getUserGoals(userID).then((goals) => {
+            if (goals == null) {
+                console.log("Goals info isn't made yet");
+                return;
+            }
+            else {
+                setCalorieGoal(goals.calorieGoal);
+                setNutritionBuffer(goals.nutritionBuffer);
+                // get the percentage of the macros from the calorie goal
+                let proteinPercent = (goals.proteinGoal / (goals.calorieGoal / 4)) * 100;
+                setProteinPercent(Math.round(proteinPercent));
+                let carbPercent = (goals.carbGoal / (goals.calorieGoal / 4)) * 100;
+                setCarbPercent(Math.round(carbPercent));
+                let fatPercent = (goals.fatGoal / (goals.calorieGoal / 9)) * 100;
+                setFatPercent(Math.round(fatPercent));
+            }
+        });
     }, []);
 
     // function to handle changes in the sliders
@@ -116,7 +133,30 @@ const NutritionGoalsScreen = () => {
     };
 
     const handleSubmit = async () => {
-        navigation.navigate('Daily Goals');
+        if (calorieGoal == 0) {
+            setMissingInfo(true);
+            return;
+        }
+        DEBUG && console.log("Submitting goal info...");
+        getUserGoals(userID).then(async (goals) => {
+            if (goals == null) {
+                // make new goals
+                await createUserGoals(userID, calorieGoal, 0, false,
+                    calorieGoal * (proteinPercent / 100) / 4,
+                    calorieGoal * (carbPercent / 100) / 4,
+                    calorieGoal * (fatPercent / 100) / 9,
+                    nutritionBuffer);
+            }
+            else {
+                // update goals
+                await updateUserGoals(userID, calorieGoal, 8, true,
+                    calorieGoal * (proteinPercent / 100) / 4,
+                    calorieGoal * (carbPercent / 100) / 4,
+                    calorieGoal * (fatPercent / 100) / 9,
+                    nutritionBuffer);
+            }
+            navigation.navigate('Daily Goals');
+        });
     };
 
     return (

@@ -10,11 +10,11 @@ let DEBUG = false;
 
 const DailyGoalsScreen = () => {
     const [goalsInfo, setGoalsInfo] = useState({
-        minCalories: 0,
-        maxCalories: 0,
+        calorieGoal: 0,
         proteinGoal: 0,
         carbGoal: 0,
         fatGoal: 0,
+        nutritionBuffer: 0,
         minSleep: 0,
         dailyWorkout: false,
     });
@@ -32,36 +32,23 @@ const DailyGoalsScreen = () => {
                 return;
             }
             else {
-
-                // temporary fix because I changed the schema for goals
-                if (goals.proteinGoal == null) {
-                    setGoalsInfo({
-                        minCalories: goals.minCalories,
-                        maxCalories: goals.maxCalories,
-                        proteinGoal: 0,
-                        carbGoal: 0,
-                        fatGoal: 0,
-                        minSleep: goals.minSleep,
-                        dailyWorkout: goals.dailyWorkout,
-                    });
-                } else {
-                    setGoalsInfo({
-                        minCalories: goals.minCalories,
-                        maxCalories: goals.maxCalories,
-                        proteinGoal: goals.proteinGoal,
-                        carbGoal: goals.carbGoal,
-                        fatGoal: goals.fatGoal,
-                        minSleep: goals.minSleep,
-                        dailyWorkout: goals.dailyWorkout,
-                    });
-                }
+                setGoalsInfo({
+                    calorieGoal: goals.calorieGoal,
+                    proteinGoal: goals.proteinGoal,
+                    carbGoal: goals.carbGoal,
+                    fatGoal: goals.fatGoal,
+                    minSleep: goals.minSleep,
+                    nutritionBuffer: goals.nutritionBuffer,
+                    dailyWorkout: goals.dailyWorkout,
+                });
             }
         });
     }, []);
 
     const handleSubmit = async () => {
-        if (goalsInfo.minCalories == 0 || goalsInfo.maxCalories == 0 || goalsInfo.minSleep == 0
-            || goalsInfo.proteinGoal == 0 || goalsInfo.carbGoal == 0 || goalsInfo.fatGoal == 0) {
+        if (goalsInfo.calorieGoal == 0 || goalsInfo.minSleep == 0
+            || goalsInfo.proteinGoal == 0 || goalsInfo.carbGoal == 0 ||
+            goalsInfo.fatGoal == 0 || goalsInfo.nutritionBuffer == 0) {
             setMissingInfo(true);
             return;
         }
@@ -69,13 +56,13 @@ const DailyGoalsScreen = () => {
         getUserGoals(userID).then(async (goals) => {
             if (goals == null) {
                 // make new goals
-                await createUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout,
-                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal);
+                await createUserGoals(userID, goalsInfo.calorieGoal, goalsInfo.minSleep, goalsInfo.dailyWorkout,
+                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal, goalsInfo.nutritionBuffer);
             }
             else {
                 // update goals
-                await updateUserGoals(userID, goalsInfo.minCalories, goalsInfo.maxCalories, goalsInfo.minSleep, goalsInfo.dailyWorkout,
-                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal);
+                await updateUserGoals(userID, goalsInfo.calorieGoal, goalsInfo.minSleep, goalsInfo.dailyWorkout,
+                    goalsInfo.proteinGoal, goalsInfo.carbGoal, goalsInfo.fatGoal, goalsInfo.nutritionBuffer);
             }
         });
         DEBUG && console.log("Returning to settings home...");
@@ -95,57 +82,23 @@ const DailyGoalsScreen = () => {
 
                 <Text>Nutrition Goals</Text>
                 <View style={styles.inputRow}>
-                    <Text style={styles.label}>Minimum Calories:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={goalsInfo.minCalories.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, minCalories: text })}
-                        placeholder="Enter your calorie goal"
-                    />
-                </View>
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Maximum Calories:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={goalsInfo.maxCalories.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, maxCalories: text })}
-                        placeholder="Enter your calorie goal"
-                    />
+                    <Text style={styles.label}>Calorie Goal: {goalsInfo.calorieGoal.toString()}</Text>
                 </View>
 
                 <View style={styles.inputRow}>
-                    <Text style={styles.label}>Protein Goal:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={goalsInfo.proteinGoal.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, proteinGoal: text })}
-                        placeholder="Enter your protein goal"
-                    />
+                    <Text style={styles.label}>Protein Goal: {goalsInfo.proteinGoal.toString()}g</Text>
                 </View>
 
                 <View style={styles.inputRow}>
-                    <Text style={styles.label}>Carb Goal:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={goalsInfo.carbGoal.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, carbGoal: text })}
-                        placeholder="Enter your carb goal"
-                    />
+                    <Text style={styles.label}>Carb Goal: {goalsInfo.carbGoal.toString()}g</Text>
                 </View>
 
                 <View style={styles.inputRow}>
-                    <Text style={styles.label}>Fat Goal:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={goalsInfo.fatGoal.toString()}
-                        onChangeText={text => setGoalsInfo({ ...goalsInfo, fatGoal: text })}
-                        placeholder="Enter your fat goal"
-                    />
+                    <Text style={styles.label}>Fat Goal: {goalsInfo.fatGoal.toString()}g</Text>
+                </View>
+
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Nutrition Buffer: {goalsInfo.nutritionBuffer.toString()}</Text>
                 </View>
 
                 <Text>Sleep Goal</Text>
@@ -204,7 +157,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     label: {
-        flex: .4,
+        flex: .5,
         padding: 10,
     },
     input: {
