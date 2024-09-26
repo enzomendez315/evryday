@@ -3,6 +3,7 @@ import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, StatusBar, 
 import { searchFoodItems } from '../../logic/diet-api'
 import { COLORS } from '../../theme/theme';
 import { AccountContext } from '../../../App';
+import { NavMenuPopupComponent } from '../../components/PopupMenu';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let DEBUG = false;
@@ -15,13 +16,33 @@ const SearchFoodScreen = (props) => {
   DEBUG && console.log(`Search Food mealId: ${mealId}`);
   const [foodItems, setFoodItems] = useState();
   const [searchTerm, setSearchTerm] = useState("");
+  const [navMenuVisible, setNavMenuVisible] = useState(false);
+
+  const addNavTab = {
+    id: 0,
+    name: 'Create New Food Item',
+    onPress: async () => {
+      navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })
+    }
+  }
+
+  const scanNavTab = {
+    id: 1,
+    name: 'Scan Barcode',
+    onPress: async () => {
+      navigation.navigate('Scan Barcode', { meal:meal })
+    }
+  }
+
+  const navPopupTabs = [addNavTab, scanNavTab];
+
   const MAX_NAME_LENGTH = 45;
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })}>
+        <TouchableOpacity onPress={() => setNavMenuVisible(!navMenuVisible)}>
           <View>
-            <Ionicons name="add-outline" size={36} color={COLORS.darkBlue} />
+            <Ionicons name="menu-outline" size={36} color={COLORS.darkBlue} />
           </View>
         </TouchableOpacity>
       ),
@@ -32,6 +53,11 @@ const SearchFoodScreen = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView>
+        <NavMenuPopupComponent
+          isVisible={navMenuVisible}
+          setIsVisible={setNavMenuVisible}
+          data={navPopupTabs}
+        />
         <View style={styles.header}>
           <TextInput
             style={styles.searchInputText}
