@@ -28,21 +28,36 @@ const NutritionGoalsScreen = () => {
     // so that the sum of the sliders is always 100 or less
     // updatedValue is the new value of the slider macroType
     // macroType is either "protein", "carb", or "fat"
+    // if you're debugging this, I'm sorry for the spaghetti code
     const handleMacroChange = (updatedValue, macroType) => {
         // calculate the sum of the other two sliders
-        const otherSlidersSum = 100 - updatedValue;
+        const otherSlidersSum = 100 - parseInt(updatedValue);
         // if the sum of the sliders is less than 100, set the new value
         switch (macroType) {
             case "protein":
+                // if the sum is less than 100, only change the protein slider
                 if (parseInt(updatedValue) + parseInt(carbPercent) + parseInt(fatPercent) <= 100) {
                     setProteinPercent(updatedValue);
                     break;
                 }
+                // if the sum is greater than 100, set the protein slider to the new value
+                // and lower the other slider with the higher value
+                // if the other sliders are equal, lower them both at the same rate
                 else {
                     setProteinPercent(updatedValue);
-                    setCarbPercent(Math.floor(otherSlidersSum / 2));
-                    setFatPercent(Math.ceil(otherSlidersSum / 2));
-                    break;
+                    if (parseInt(carbPercent) > parseInt(fatPercent)) {
+                        setCarbPercent(parseInt(otherSlidersSum) - parseInt(fatPercent));
+                        break;
+                    }
+                    else if (parseInt(fatPercent) > parseInt(carbPercent)) {
+                        setFatPercent(otherSlidersSum - parseInt(carbPercent));
+                        break;
+                    }
+                    else {
+                        setCarbPercent(Math.floor(otherSlidersSum / 2));
+                        setFatPercent(Math.ceil(otherSlidersSum / 2));
+                        break;
+                    }
                 }
             case "carb":
                 if (parseInt(proteinPercent) + parseInt(updatedValue) + parseInt(fatPercent) <= 100) {
@@ -51,9 +66,19 @@ const NutritionGoalsScreen = () => {
                 }
                 else {
                     setCarbPercent(updatedValue);
-                    setProteinPercent(Math.floor(otherSlidersSum / 2));
-                    setFatPercent(Math.ceil(otherSlidersSum / 2));
-                    break;
+                    if (parseInt(proteinPercent) > parseInt(fatPercent)) {
+                        setProteinPercent(otherSlidersSum - parseInt(fatPercent));
+                        break;
+                    }
+                    else if (parseInt(fatPercent) > parseInt(proteinPercent)) {
+                        setFatPercent(otherSlidersSum - parseInt(proteinPercent));
+                        break;
+                    }
+                    else {
+                        setProteinPercent(Math.floor(otherSlidersSum / 2));
+                        setFatPercent(Math.ceil(otherSlidersSum / 2));
+                        break;
+                    }
                 }
             case "fat":
                 if (parseInt(proteinPercent) + parseInt(carbPercent) + parseInt(updatedValue) <= 100) {
@@ -62,9 +87,19 @@ const NutritionGoalsScreen = () => {
                 }
                 else {
                     setFatPercent(updatedValue);
-                    setProteinPercent(Math.floor(otherSlidersSum / 2));
-                    setCarbPercent(Math.ceil(otherSlidersSum / 2));
-                    break;
+                    if (parseInt(proteinPercent) > parseInt(carbPercent)) {
+                        setProteinPercent(otherSlidersSum - parseInt(carbPercent));
+                        break;
+                    }
+                    else if (parseInt(carbPercent) > parseInt(proteinPercent)) {
+                        setCarbPercent(otherSlidersSum - parseInt(proteinPercent));
+                        break;
+                    }
+                    else {
+                        setProteinPercent(Math.floor(otherSlidersSum / 2));
+                        setCarbPercent(Math.ceil(otherSlidersSum / 2));
+                        break;
+                    }
                 }
             default:
                 console.log("Invalid macro type");
@@ -94,7 +129,19 @@ const NutritionGoalsScreen = () => {
                 </View>
 
                 <View style={styles.macroContainer}>
-                    <Text>Protein Percent: {proteinPercent}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text>Protein Percent:</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={proteinPercent.toString()}
+                            onChangeText={text => {
+                                handleMacroChange(text, "protein");
+                            }}
+                            placeholder="Enter your protein percentage goal"
+                        />
+                    </View>
+
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
@@ -103,7 +150,19 @@ const NutritionGoalsScreen = () => {
                         onValueChange={value => handleMacroChange(value, "protein")}
                     />
 
-                    <Text>Carb Percent: {carbPercent}</Text>
+
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text>Carb Percent:</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={carbPercent.toString()}
+                            onChangeText={text => {
+                                handleMacroChange(text, "carb");
+                            }}
+                            placeholder="Enter your carb percentage goal"
+                        />
+                    </View>
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
@@ -112,7 +171,18 @@ const NutritionGoalsScreen = () => {
                         onValueChange={value => handleMacroChange(value, "carb")}
                     />
 
-                    <Text>Fat Percent: {fatPercent}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text>Fat Percent:</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={fatPercent.toString()}
+                            onChangeText={text => {
+                                handleMacroChange(text, "fat");
+                            }}
+                            placeholder="Enter your fat percentage goal"
+                        />
+                    </View>
                     <Slider
                         maximumValue={100}
                         minimumValue={0}
