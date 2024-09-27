@@ -1,13 +1,13 @@
 type DailyGoals @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID
-  minCalories: Int
-  maxCalories: Int
   minSleep: Float
   dailyWorkout: Boolean
   proteinGoal: Int
   carbGoal: Int
   fatGoal: Int
+  calorieGoal: Int
+  nutritionBuffer: Int
 }
 
 type User @model @auth(rules: [{allow: public}]) {
