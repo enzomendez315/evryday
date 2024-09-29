@@ -36,8 +36,8 @@ export function setActiveDate(offset = 0) {
 // takes in active date 'YYYY-MM-DD'
 // just used for UI purposes
 export function getFormattedDate(activeDate_) {
-    let tempDate = convertToDate(activeDate_);
-    const weekDay = tempDate.toLocaleString('default', { weekday: 'long' });
+    let tempDate = convertStringToDate(activeDate_);
+    const weekDay = tempDate.toLocaleString('default', { weekday: 'short' });
     const month = tempDate.toLocaleString('default', { month: 'long' });
     const day = tempDate.getDate();
     const formattedDate = `${weekDay}, ${month} ${day}`;
@@ -46,9 +46,20 @@ export function getFormattedDate(activeDate_) {
 
 // converts the formatted date string to a normal date object
 // used to convert the date string from getLocalDate to a date object
-export function convertToDate(formattedDate) {
+export function convertStringToDate(formattedDate) {
     const [year, month, day] = formattedDate.split('-');
     return new Date(year, month - 1, day);
+}
+
+// converts a date object to a date string in the form 'YYYY-MM-DD'
+export function convertDatetoString(date) {
+    // Create a new date object with the UTC time zone offset applied
+    const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, '0');
+    const day = String(localDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 // returns the current date in the format 'YYYY-MM-DD'

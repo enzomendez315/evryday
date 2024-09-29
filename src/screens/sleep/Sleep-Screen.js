@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button,
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback, 
   ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
+import { Calendar } from 'react-native-calendars';
 import {
   makeSleepEntry, deleteSleepEntry,
   editSleepEntry, syncUsersMonthLog,
@@ -16,8 +17,10 @@ import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
   getActiveDateMonth, getActiveDateYear,
-  setActiveDate,
+  setActiveDate, convertDatetoString
 } from '../../logic/date-time';
+// for selecting dates at the top of the screen
+import { PickDatePopup } from '../../components/datePicker';
 
 // for adding sleep slider
 import { useSharedValue } from 'react-native-reanimated';
@@ -293,6 +296,70 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
   )
 }
 
+// // used for selecting dates at the top of the screen
+// const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
+//   calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
+  
+//   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
+//   const todayDate = getActiveDate();
+
+//   return (
+//     <Modal
+//       transparent
+//       animationType="fade"
+//       visible={isPickDatePopupVisible}
+//       onRequestClose={() => {
+//         setIsPickDatePopupVisible(false);
+//       }}>
+//       <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
+//         <View style={styles.contentContainer}>
+//           <TouchableWithoutFeedback>
+//             <View style={styles.content}>
+//               <Calendar
+//                 current={selectedDate}
+//                 onDayPress={(day) => {
+//                   const selectedDate = day.dateString;
+//                   setSelectedDate(selectedDate);
+//                   const selectedDateObj = new Date(day.timestamp);
+//                   setCalendarDate(selectedDateObj);
+//                   const dateString = convertDatetoString(selectedDateObj);
+//                   setDateHook(dateString);
+//                   setIsPickDatePopupVisible(false);
+//                 }}
+//                 markedDates={{
+//                   [selectedDate]: {
+//                     selected: true,
+//                     selectedColor: 'blue',
+//                   },
+//                   [todayDate]: {
+//                     selected: true,
+//                     selectedColor: 'orange',
+//                   }
+//                 }}
+//                 theme={{
+//                   arrowColor: 'black',
+//                 }}
+//               />
+//               <TouchableOpacity
+//                 style={styles.confirmButton}
+//                 onPress={() => {
+//                   // TODO: Find out why getActiveDate() doesn't return todays date
+//                   setSelectedDate(todayDate);
+//                   const selectedDateObj = new Date(todayDate.timestamp);
+//                   setCalendarDate(selectedDateObj);
+//                   setDateHook(todayDate);
+//                   setIsPickDatePopupVisible(false);
+//                 }}>
+//                 <Text>Today</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </TouchableWithoutFeedback>
+//         </View>
+//       </TouchableWithoutFeedback>
+//     </Modal>
+//   )
+// }
+
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
 
@@ -341,6 +408,9 @@ const SleepScreen = () => {
   const [isAddPopupVisible, setIsAddPopupVisible] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
   const [isPickMonthPopupVisible, setIsPickMonthPopupVisible] = useState(false);
+  // for the date picker
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(getActiveDate());
   // for the month picker
   const [tempDate, setTempDate] = useState(getActiveDate()); // hook used in modal
   const [monthValue, setMonthValue] = useState(getActiveDate()); // what UI sees, updated when modal is closed
@@ -398,6 +468,9 @@ const SleepScreen = () => {
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
             tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
             setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
@@ -409,7 +482,9 @@ const SleepScreen = () => {
                 setDateHook(getActiveDate());
               }} />
 
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </TouchableOpacity>
 
             <Button title=">"
               onPress={() => {
@@ -499,13 +574,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#DADADA',
-
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  dateTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,

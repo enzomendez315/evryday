@@ -17,20 +17,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "minCalories": {
-                    "name": "minCalories",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "maxCalories": {
-                    "name": "maxCalories",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "minSleep": {
                     "name": "minSleep",
                     "isArray": false,
@@ -61,6 +47,20 @@ export const schema = {
                 },
                 "fatGoal": {
                     "name": "fatGoal",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "calorieGoal": {
+                    "name": "calorieGoal",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "nutritionBuffer": {
+                    "name": "nutritionBuffer",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
@@ -2249,5 +2249,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "f4ee3f401524c6cb3d94c33eeed195d2"
+    "version": "0b20c476cd075498b181694fa251444e"
 };

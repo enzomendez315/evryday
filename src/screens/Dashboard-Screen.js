@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog, syncSleepScore, getSleepScore } from '../logic/sleep-api';
+import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
 import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
 import { getExerciseScore } from '../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -10,6 +10,8 @@ import { getUserDBEntry } from '../logic/account';
 import { COLORS } from '../theme/theme';
 import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-time';
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
+// for selecting dates at the top of the screen
+import { PickDatePopup } from '../components/datePicker';
 
 let userID;
 const DEBUG = true;
@@ -255,6 +257,8 @@ const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
   const [lastSynced, setLastSynced] = useState(null);
+  const [isPickDatePopupVisible, setIsPickDatePopupVisible] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(getActiveDate());
   const [dateHook, setDateHook] = useState(getActiveDate());
 
   // bool for diet tab loading too soon
@@ -304,23 +308,26 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <View style={styles.dateHeaderContainer}>
-          <Button title="<"
-            onPress={() => {
-              setActiveDate(-1);
-              setDateHook(getActiveDate())
-            }} />
-
-          <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-
-          <Button title=">"
-            onPress={() => {
-              setActiveDate(1);
-              setDateHook(getActiveDate())
-            }} />
-        </View>
-
         <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+              setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+          <View style={styles.dateHeaderContainer}>
+              <Button title="<"
+                onPress={() => {
+                  setActiveDate(-1);
+                  setDateHook(getActiveDate())
+                }} />
+
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+          </TouchableOpacity>
+
+              <Button title=">"
+                onPress={() => {
+                  setActiveDate(1);
+                  setDateHook(getActiveDate())
+                }} />
+            </View>
           <Text style={styles.tabHeaderText}>Health Score</Text>
           <HealthScoreTab style={styles.tab} lastSynced={lastSynced} />
           <Text style={styles.tabHeaderText}>Nutrition</Text>
@@ -346,6 +353,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  dateTitleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,
