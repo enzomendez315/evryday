@@ -514,6 +514,87 @@ export const schema = {
                 }
             ]
         },
+        "FoodBarcode": {
+            "name": "FoodBarcode",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "barcode": {
+                    "name": "barcode",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "foodItem": {
+                    "name": "foodItem",
+                    "isArray": false,
+                    "type": {
+                        "model": "FoodItem"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "foodItemBarcodesId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "foodItemBarcodesId": {
+                    "name": "foodItemBarcodesId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "FoodBarcodes",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "FoodItem": {
             "name": "FoodItem",
             "fields": {
@@ -601,6 +682,29 @@ export const schema = {
                             "foodItemServingOptionsId"
                         ]
                     }
+                },
+                "barcodes": {
+                    "name": "barcodes",
+                    "isArray": true,
+                    "type": {
+                        "model": "FoodBarcode"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "foodItemBarcodesId"
+                        ]
+                    }
+                },
+                "brand": {
+                    "name": "brand",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -2249,5 +2353,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "0b20c476cd075498b181694fa251444e"
+    "version": "31cc5613e87e05472a2a344d2db193c1"
 };

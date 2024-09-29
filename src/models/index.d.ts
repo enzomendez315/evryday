@@ -195,6 +195,38 @@ export declare const MealToFood: (new (init: ModelInit<MealToFood>) => MealToFoo
   copyOf(source: MealToFood, mutator: (draft: MutableModel<MealToFood>) => MutableModel<MealToFood> | void): MealToFood;
 }
 
+type EagerFoodBarcode = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodBarcode, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly barcode: string;
+  readonly foodItem?: FoodItem | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemBarcodesId?: string | null;
+}
+
+type LazyFoodBarcode = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodBarcode, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly barcode: string;
+  readonly foodItem: AsyncItem<FoodItem | undefined>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemBarcodesId?: string | null;
+}
+
+export declare type FoodBarcode = LazyLoading extends LazyLoadingDisabled ? EagerFoodBarcode : LazyFoodBarcode
+
+export declare const FoodBarcode: (new (init: ModelInit<FoodBarcode>) => FoodBarcode) & {
+  copyOf(source: FoodBarcode, mutator: (draft: MutableModel<FoodBarcode>) => MutableModel<FoodBarcode> | void): FoodBarcode;
+}
+
 type EagerFoodItem = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<FoodItem, 'id'>;
@@ -207,6 +239,8 @@ type EagerFoodItem = {
   readonly recipes?: (RecipeToFood | null)[] | null;
   readonly favoritedBy?: (UserFavoriteFood | null)[] | null;
   readonly servingOptions?: (FoodItemServing | null)[] | null;
+  readonly barcodes?: (FoodBarcode | null)[] | null;
+  readonly brand?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -223,6 +257,8 @@ type LazyFoodItem = {
   readonly recipes: AsyncCollection<RecipeToFood>;
   readonly favoritedBy: AsyncCollection<UserFavoriteFood>;
   readonly servingOptions: AsyncCollection<FoodItemServing>;
+  readonly barcodes: AsyncCollection<FoodBarcode>;
+  readonly brand?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

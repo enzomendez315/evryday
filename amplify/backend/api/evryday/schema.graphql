@@ -51,6 +51,12 @@ type MealToFood @model @auth(rules: [{allow: public}]) {
   foodItem: FoodItem @belongsTo(fields: ["foodId"])
 }
 
+type FoodBarcode @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  barcode: String!
+  foodItem: FoodItem @belongsTo
+}
+
 type FoodItem @model @auth(rules: [{allow: public}]) {
   id: ID!
   owner: ID!
@@ -59,6 +65,8 @@ type FoodItem @model @auth(rules: [{allow: public}]) {
   recipes: [RecipeToFood] @hasMany(indexName: "byFood", fields: ["id"])
   favoritedBy: [UserFavoriteFood] @hasMany
   servingOptions: [FoodItemServing] @hasMany
+  barcodes: [FoodBarcode] @hasMany
+  brand: String
 }
 
 type FoodItemServing @model @auth(rules: [{allow: public}]) {

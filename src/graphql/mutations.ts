@@ -15,13 +15,13 @@ export const createDailyGoals = /* GraphQL */ `mutation CreateDailyGoals(
   createDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -41,13 +41,13 @@ export const updateDailyGoals = /* GraphQL */ `mutation UpdateDailyGoals(
   updateDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -67,13 +67,13 @@ export const deleteDailyGoals = /* GraphQL */ `mutation DeleteDailyGoals(
   deleteDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -336,6 +336,7 @@ export const createMealToFood = /* GraphQL */ `mutation CreateMealToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -380,6 +381,7 @@ export const updateMealToFood = /* GraphQL */ `mutation UpdateMealToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -424,6 +426,7 @@ export const deleteMealToFood = /* GraphQL */ `mutation DeleteMealToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -442,6 +445,102 @@ export const deleteMealToFood = /* GraphQL */ `mutation DeleteMealToFood(
 ` as GeneratedMutation<
   APITypes.DeleteMealToFoodMutationVariables,
   APITypes.DeleteMealToFoodMutation
+>;
+export const createFoodBarcode = /* GraphQL */ `mutation CreateFoodBarcode(
+  $input: CreateFoodBarcodeInput!
+  $condition: ModelFoodBarcodeConditionInput
+) {
+  createFoodBarcode(input: $input, condition: $condition) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateFoodBarcodeMutationVariables,
+  APITypes.CreateFoodBarcodeMutation
+>;
+export const updateFoodBarcode = /* GraphQL */ `mutation UpdateFoodBarcode(
+  $input: UpdateFoodBarcodeInput!
+  $condition: ModelFoodBarcodeConditionInput
+) {
+  updateFoodBarcode(input: $input, condition: $condition) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateFoodBarcodeMutationVariables,
+  APITypes.UpdateFoodBarcodeMutation
+>;
+export const deleteFoodBarcode = /* GraphQL */ `mutation DeleteFoodBarcode(
+  $input: DeleteFoodBarcodeInput!
+  $condition: ModelFoodBarcodeConditionInput
+) {
+  deleteFoodBarcode(input: $input, condition: $condition) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteFoodBarcodeMutationVariables,
+  APITypes.DeleteFoodBarcodeMutation
 >;
 export const createFoodItem = /* GraphQL */ `mutation CreateFoodItem(
   $input: CreateFoodItemInput!
@@ -471,6 +570,12 @@ export const createFoodItem = /* GraphQL */ `mutation CreateFoodItem(
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -511,6 +616,12 @@ export const updateFoodItem = /* GraphQL */ `mutation UpdateFoodItem(
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -551,6 +662,12 @@ export const deleteFoodItem = /* GraphQL */ `mutation DeleteFoodItem(
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -573,6 +690,7 @@ export const createFoodItemServing = /* GraphQL */ `mutation CreateFoodItemServi
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -609,6 +727,7 @@ export const updateFoodItemServing = /* GraphQL */ `mutation UpdateFoodItemServi
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -645,6 +764,7 @@ export const deleteFoodItemServing = /* GraphQL */ `mutation DeleteFoodItemServi
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -682,6 +802,7 @@ export const createUserFavoriteFood = /* GraphQL */ `mutation CreateUserFavorite
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -713,6 +834,7 @@ export const updateUserFavoriteFood = /* GraphQL */ `mutation UpdateUserFavorite
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -744,6 +866,7 @@ export const deleteUserFavoriteFood = /* GraphQL */ `mutation DeleteUserFavorite
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -860,6 +983,7 @@ export const createRecipeToFood = /* GraphQL */ `mutation CreateRecipeToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -903,6 +1027,7 @@ export const updateRecipeToFood = /* GraphQL */ `mutation UpdateRecipeToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -946,6 +1071,7 @@ export const deleteRecipeToFood = /* GraphQL */ `mutation DeleteRecipeToFood(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version

@@ -12,13 +12,13 @@ export const getDailyGoals = /* GraphQL */ `query GetDailyGoals($id: ID!) {
   getDailyGoals(id: $id) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -40,13 +40,13 @@ export const listDailyGoals = /* GraphQL */ `query ListDailyGoals(
     items {
       id
       userId
-      minCalories
-      maxCalories
       minSleep
       dailyWorkout
       proteinGoal
       carbGoal
       fatGoal
+      calorieGoal
+      nutritionBuffer
       createdAt
       updatedAt
       _version
@@ -78,13 +78,13 @@ export const syncDailyGoals = /* GraphQL */ `query SyncDailyGoals(
     items {
       id
       userId
-      minCalories
-      maxCalories
       minSleep
       dailyWorkout
       proteinGoal
       carbGoal
       fatGoal
+      calorieGoal
+      nutritionBuffer
       createdAt
       updatedAt
       _version
@@ -355,6 +355,7 @@ export const getMealToFood = /* GraphQL */ `query GetMealToFood($id: ID!) {
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -512,6 +513,93 @@ export const mealToFoodsByFoodIdAndMealId = /* GraphQL */ `query MealToFoodsByFo
   APITypes.MealToFoodsByFoodIdAndMealIdQueryVariables,
   APITypes.MealToFoodsByFoodIdAndMealIdQuery
 >;
+export const getFoodBarcode = /* GraphQL */ `query GetFoodBarcode($id: ID!) {
+  getFoodBarcode(id: $id) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFoodBarcodeQueryVariables,
+  APITypes.GetFoodBarcodeQuery
+>;
+export const listFoodBarcodes = /* GraphQL */ `query ListFoodBarcodes(
+  $filter: ModelFoodBarcodeFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFoodBarcodes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      barcode
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemBarcodesId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListFoodBarcodesQueryVariables,
+  APITypes.ListFoodBarcodesQuery
+>;
+export const syncFoodBarcodes = /* GraphQL */ `query SyncFoodBarcodes(
+  $filter: ModelFoodBarcodeFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFoodBarcodes(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      barcode
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      foodItemBarcodesId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFoodBarcodesQueryVariables,
+  APITypes.SyncFoodBarcodesQuery
+>;
 export const getFoodItem = /* GraphQL */ `query GetFoodItem($id: ID!) {
   getFoodItem(id: $id) {
     id
@@ -537,6 +625,12 @@ export const getFoodItem = /* GraphQL */ `query GetFoodItem($id: ID!) {
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -559,6 +653,7 @@ export const listFoodItems = /* GraphQL */ `query ListFoodItems(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -591,6 +686,7 @@ export const syncFoodItems = /* GraphQL */ `query SyncFoodItems(
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -614,6 +710,7 @@ export const getFoodItemServing = /* GraphQL */ `query GetFoodItemServing($id: I
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -716,6 +813,7 @@ export const getUserFavoriteFood = /* GraphQL */ `query GetUserFavoriteFood($id:
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -889,6 +987,7 @@ export const getRecipeToFood = /* GraphQL */ `query GetRecipeToFood($id: ID!) {
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version

@@ -5,25 +5,25 @@
 export type CreateDailyGoalsInput = {
   id?: string | null,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
   carbGoal?: number | null,
   fatGoal?: number | null,
+  calorieGoal?: number | null,
+  nutritionBuffer?: number | null,
   _version?: number | null,
 };
 
 export type ModelDailyGoalsConditionInput = {
   userId?: ModelIDInput | null,
-  minCalories?: ModelIntInput | null,
-  maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
   proteinGoal?: ModelIntInput | null,
   carbGoal?: ModelIntInput | null,
   fatGoal?: ModelIntInput | null,
+  calorieGoal?: ModelIntInput | null,
+  nutritionBuffer?: ModelIntInput | null,
   and?: Array< ModelDailyGoalsConditionInput | null > | null,
   or?: Array< ModelDailyGoalsConditionInput | null > | null,
   not?: ModelDailyGoalsConditionInput | null,
@@ -72,18 +72,6 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type ModelFloatInput = {
   ne?: number | null,
   eq?: number | null,
@@ -99,6 +87,18 @@ export type ModelFloatInput = {
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
 };
@@ -123,13 +123,13 @@ export type DailyGoals = {
   __typename: "DailyGoals",
   id: string,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
   carbGoal?: number | null,
   fatGoal?: number | null,
+  calorieGoal?: number | null,
+  nutritionBuffer?: number | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -140,13 +140,13 @@ export type DailyGoals = {
 export type UpdateDailyGoalsInput = {
   id: string,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
   carbGoal?: number | null,
   fatGoal?: number | null,
+  calorieGoal?: number | null,
+  nutritionBuffer?: number | null,
   _version?: number | null,
 };
 
@@ -307,6 +307,8 @@ export type FoodItem = {
   recipes?: ModelRecipeToFoodConnection | null,
   favoritedBy?: ModelUserFavoriteFoodConnection | null,
   servingOptions?: ModelFoodItemServingConnection | null,
+  barcodes?: ModelFoodBarcodeConnection | null,
+  brand?: string | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -394,6 +396,26 @@ export type FoodItemServing = {
   foodItemServingOptionsId?: string | null,
 };
 
+export type ModelFoodBarcodeConnection = {
+  __typename: "ModelFoodBarcodeConnection",
+  items:  Array<FoodBarcode | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type FoodBarcode = {
+  __typename: "FoodBarcode",
+  id: string,
+  barcode: string,
+  foodItem?: FoodItem | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  foodItemBarcodesId?: string | null,
+};
+
 export type UpdateNutritionLogInput = {
   id: string,
   userId?: string | null,
@@ -478,16 +500,48 @@ export type DeleteMealToFoodInput = {
   _version?: number | null,
 };
 
+export type CreateFoodBarcodeInput = {
+  id?: string | null,
+  barcode: string,
+  _version?: number | null,
+  foodItemBarcodesId?: string | null,
+};
+
+export type ModelFoodBarcodeConditionInput = {
+  barcode?: ModelStringInput | null,
+  and?: Array< ModelFoodBarcodeConditionInput | null > | null,
+  or?: Array< ModelFoodBarcodeConditionInput | null > | null,
+  not?: ModelFoodBarcodeConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  foodItemBarcodesId?: ModelIDInput | null,
+};
+
+export type UpdateFoodBarcodeInput = {
+  id: string,
+  barcode?: string | null,
+  _version?: number | null,
+  foodItemBarcodesId?: string | null,
+};
+
+export type DeleteFoodBarcodeInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateFoodItemInput = {
   id?: string | null,
   owner: string,
   name: string,
+  brand?: string | null,
   _version?: number | null,
 };
 
 export type ModelFoodItemConditionInput = {
   owner?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  brand?: ModelStringInput | null,
   and?: Array< ModelFoodItemConditionInput | null > | null,
   or?: Array< ModelFoodItemConditionInput | null > | null,
   not?: ModelFoodItemConditionInput | null,
@@ -500,6 +554,7 @@ export type UpdateFoodItemInput = {
   id: string,
   owner?: string | null,
   name?: string | null,
+  brand?: string | null,
   _version?: number | null,
 };
 
@@ -1253,13 +1308,13 @@ export type DeleteExerciseRoutineExerciseTypeInput = {
 export type ModelDailyGoalsFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  minCalories?: ModelIntInput | null,
-  maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
   proteinGoal?: ModelIntInput | null,
   carbGoal?: ModelIntInput | null,
   fatGoal?: ModelIntInput | null,
+  calorieGoal?: ModelIntInput | null,
+  nutritionBuffer?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelDailyGoalsFilterInput | null > | null,
@@ -1360,10 +1415,23 @@ export enum ModelSortDirection {
 }
 
 
+export type ModelFoodBarcodeFilterInput = {
+  id?: ModelIDInput | null,
+  barcode?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelFoodBarcodeFilterInput | null > | null,
+  or?: Array< ModelFoodBarcodeFilterInput | null > | null,
+  not?: ModelFoodBarcodeFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  foodItemBarcodesId?: ModelIDInput | null,
+};
+
 export type ModelFoodItemFilterInput = {
   id?: ModelIDInput | null,
   owner?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  brand?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelFoodItemFilterInput | null > | null,
@@ -1647,13 +1715,13 @@ export type ModelExerciseRoutineExerciseTypeFilterInput = {
 export type ModelSubscriptionDailyGoalsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
-  minCalories?: ModelSubscriptionIntInput | null,
-  maxCalories?: ModelSubscriptionIntInput | null,
   minSleep?: ModelSubscriptionFloatInput | null,
   dailyWorkout?: ModelSubscriptionBooleanInput | null,
   proteinGoal?: ModelSubscriptionIntInput | null,
   carbGoal?: ModelSubscriptionIntInput | null,
   fatGoal?: ModelSubscriptionIntInput | null,
+  calorieGoal?: ModelSubscriptionIntInput | null,
+  nutritionBuffer?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionDailyGoalsFilterInput | null > | null,
@@ -1676,18 +1744,6 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
-};
-
 export type ModelSubscriptionFloatInput = {
   ne?: number | null,
   eq?: number | null,
@@ -1703,6 +1759,18 @@ export type ModelSubscriptionFloatInput = {
 export type ModelSubscriptionBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionStringInput = {
@@ -1771,10 +1839,21 @@ export type ModelSubscriptionMealToFoodFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
+export type ModelSubscriptionFoodBarcodeFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  barcode?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionFoodBarcodeFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFoodBarcodeFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelSubscriptionFoodItemFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   owner?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
+  brand?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionFoodItemFilterInput | null > | null,
@@ -1782,6 +1861,7 @@ export type ModelSubscriptionFoodItemFilterInput = {
   _deleted?: ModelBooleanInput | null,
   foodItemFavoritedById?: ModelSubscriptionIDInput | null,
   foodItemServingOptionsId?: ModelSubscriptionIDInput | null,
+  foodItemBarcodesId?: ModelSubscriptionIDInput | null,
 };
 
 export type ModelSubscriptionFoodItemServingFilterInput = {
@@ -1985,13 +2065,13 @@ export type CreateDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2010,13 +2090,13 @@ export type UpdateDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2035,13 +2115,13 @@ export type DeleteDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2295,6 +2375,7 @@ export type CreateMealToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2338,6 +2419,7 @@ export type UpdateMealToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2381,6 +2463,7 @@ export type DeleteMealToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2392,6 +2475,99 @@ export type DeleteMealToFoodMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateFoodBarcodeMutationVariables = {
+  input: CreateFoodBarcodeInput,
+  condition?: ModelFoodBarcodeConditionInput | null,
+};
+
+export type CreateFoodBarcodeMutation = {
+  createFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
+  } | null,
+};
+
+export type UpdateFoodBarcodeMutationVariables = {
+  input: UpdateFoodBarcodeInput,
+  condition?: ModelFoodBarcodeConditionInput | null,
+};
+
+export type UpdateFoodBarcodeMutation = {
+  updateFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
+  } | null,
+};
+
+export type DeleteFoodBarcodeMutationVariables = {
+  input: DeleteFoodBarcodeInput,
+  condition?: ModelFoodBarcodeConditionInput | null,
+};
+
+export type DeleteFoodBarcodeMutation = {
+  deleteFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
   } | null,
 };
 
@@ -2426,6 +2602,12 @@ export type CreateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2465,6 +2647,12 @@ export type UpdateFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2504,6 +2692,12 @@ export type DeleteFoodItemMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2526,6 +2720,7 @@ export type CreateFoodItemServingMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2561,6 +2756,7 @@ export type UpdateFoodItemServingMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2596,6 +2792,7 @@ export type DeleteFoodItemServingMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2632,6 +2829,7 @@ export type CreateUserFavoriteFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2662,6 +2860,7 @@ export type UpdateUserFavoriteFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2692,6 +2891,7 @@ export type DeleteUserFavoriteFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2804,6 +3004,7 @@ export type CreateRecipeToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2846,6 +3047,7 @@ export type UpdateRecipeToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2888,6 +3090,7 @@ export type DeleteRecipeToFoodMutation = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4162,13 +4365,13 @@ export type GetDailyGoalsQuery = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4190,13 +4393,13 @@ export type ListDailyGoalsQuery = {
       __typename: "DailyGoals",
       id: string,
       userId?: string | null,
-      minCalories?: number | null,
-      maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
       proteinGoal?: number | null,
       carbGoal?: number | null,
       fatGoal?: number | null,
+      calorieGoal?: number | null,
+      nutritionBuffer?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4222,13 +4425,13 @@ export type SyncDailyGoalsQuery = {
       __typename: "DailyGoals",
       id: string,
       userId?: string | null,
-      minCalories?: number | null,
-      maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
       proteinGoal?: number | null,
       carbGoal?: number | null,
       fatGoal?: number | null,
+      calorieGoal?: number | null,
+      nutritionBuffer?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4500,6 +4703,7 @@ export type GetMealToFoodQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4629,6 +4833,87 @@ export type MealToFoodsByFoodIdAndMealIdQuery = {
   } | null,
 };
 
+export type GetFoodBarcodeQueryVariables = {
+  id: string,
+};
+
+export type GetFoodBarcodeQuery = {
+  getFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
+  } | null,
+};
+
+export type ListFoodBarcodesQueryVariables = {
+  filter?: ModelFoodBarcodeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListFoodBarcodesQuery = {
+  listFoodBarcodes?:  {
+    __typename: "ModelFoodBarcodeConnection",
+    items:  Array< {
+      __typename: "FoodBarcode",
+      id: string,
+      barcode: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      foodItemBarcodesId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncFoodBarcodesQueryVariables = {
+  filter?: ModelFoodBarcodeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncFoodBarcodesQuery = {
+  syncFoodBarcodes?:  {
+    __typename: "ModelFoodBarcodeConnection",
+    items:  Array< {
+      __typename: "FoodBarcode",
+      id: string,
+      barcode: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      foodItemBarcodesId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetFoodItemQueryVariables = {
   id: string,
 };
@@ -4659,6 +4944,12 @@ export type GetFoodItemQuery = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4681,6 +4972,7 @@ export type ListFoodItemsQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4707,6 +4999,7 @@ export type SyncFoodItemsQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4731,6 +5024,7 @@ export type GetFoodItemServingQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4827,6 +5121,7 @@ export type GetUserFavoriteFoodQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -4991,6 +5286,7 @@ export type GetRecipeToFoodQuery = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -6438,13 +6734,13 @@ export type OnCreateDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6462,13 +6758,13 @@ export type OnUpdateDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6486,13 +6782,13 @@ export type OnDeleteDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
     carbGoal?: number | null,
     fatGoal?: number | null,
+    calorieGoal?: number | null,
+    nutritionBuffer?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6736,6 +7032,7 @@ export type OnCreateMealToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -6778,6 +7075,7 @@ export type OnUpdateMealToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -6820,6 +7118,7 @@ export type OnDeleteMealToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -6831,6 +7130,96 @@ export type OnDeleteMealToFoodSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateFoodBarcodeSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodBarcodeFilterInput | null,
+};
+
+export type OnCreateFoodBarcodeSubscription = {
+  onCreateFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
+  } | null,
+};
+
+export type OnUpdateFoodBarcodeSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodBarcodeFilterInput | null,
+};
+
+export type OnUpdateFoodBarcodeSubscription = {
+  onUpdateFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
+  } | null,
+};
+
+export type OnDeleteFoodBarcodeSubscriptionVariables = {
+  filter?: ModelSubscriptionFoodBarcodeFilterInput | null,
+};
+
+export type OnDeleteFoodBarcodeSubscription = {
+  onDeleteFoodBarcode?:  {
+    __typename: "FoodBarcode",
+    id: string,
+    barcode: string,
+    foodItem?:  {
+      __typename: "FoodItem",
+      id: string,
+      owner: string,
+      name: string,
+      brand?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    foodItemBarcodesId?: string | null,
   } | null,
 };
 
@@ -6864,6 +7253,12 @@ export type OnCreateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6902,6 +7297,12 @@ export type OnUpdateFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6940,6 +7341,12 @@ export type OnDeleteFoodItemSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    barcodes?:  {
+      __typename: "ModelFoodBarcodeConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    brand?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -6961,6 +7368,7 @@ export type OnCreateFoodItemServingSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -6995,6 +7403,7 @@ export type OnUpdateFoodItemServingSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7029,6 +7438,7 @@ export type OnDeleteFoodItemServingSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7064,6 +7474,7 @@ export type OnCreateUserFavoriteFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7093,6 +7504,7 @@ export type OnUpdateUserFavoriteFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7122,6 +7534,7 @@ export type OnDeleteUserFavoriteFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7230,6 +7643,7 @@ export type OnCreateRecipeToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7271,6 +7685,7 @@ export type OnUpdateRecipeToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -7312,6 +7727,7 @@ export type OnDeleteRecipeToFoodSubscription = {
       id: string,
       owner: string,
       name: string,
+      brand?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,

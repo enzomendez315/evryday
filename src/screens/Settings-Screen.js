@@ -10,7 +10,7 @@ import {
     Image,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { initFoodItems } from '../logic/diet-api';
+import { getFoodItemFromBarcode } from '../logic/diet-api';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
@@ -215,6 +215,23 @@ const SettingsScreen = () => {
                             </View>
 
                             <Text style={styles.rowLabel}>CLEAR LOCAL STORAGE</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {}}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                                <FeatherIcon color="#fff" name="star" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Testing Button</Text>
 
                             <View style={styles.rowSpacer} />
 

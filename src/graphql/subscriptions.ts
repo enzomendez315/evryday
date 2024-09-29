@@ -14,13 +14,13 @@ export const onCreateDailyGoals = /* GraphQL */ `subscription OnCreateDailyGoals
   onCreateDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -39,13 +39,13 @@ export const onUpdateDailyGoals = /* GraphQL */ `subscription OnUpdateDailyGoals
   onUpdateDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -64,13 +64,13 @@ export const onDeleteDailyGoals = /* GraphQL */ `subscription OnDeleteDailyGoals
   onDeleteDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -311,6 +311,7 @@ export const onCreateMealToFood = /* GraphQL */ `subscription OnCreateMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -354,6 +355,7 @@ export const onUpdateMealToFood = /* GraphQL */ `subscription OnUpdateMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -397,6 +399,7 @@ export const onDeleteMealToFood = /* GraphQL */ `subscription OnDeleteMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -415,6 +418,99 @@ export const onDeleteMealToFood = /* GraphQL */ `subscription OnDeleteMealToFood
 ` as GeneratedSubscription<
   APITypes.OnDeleteMealToFoodSubscriptionVariables,
   APITypes.OnDeleteMealToFoodSubscription
+>;
+export const onCreateFoodBarcode = /* GraphQL */ `subscription OnCreateFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onCreateFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateFoodBarcodeSubscriptionVariables,
+  APITypes.OnCreateFoodBarcodeSubscription
+>;
+export const onUpdateFoodBarcode = /* GraphQL */ `subscription OnUpdateFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onUpdateFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateFoodBarcodeSubscriptionVariables,
+  APITypes.OnUpdateFoodBarcodeSubscription
+>;
+export const onDeleteFoodBarcode = /* GraphQL */ `subscription OnDeleteFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onDeleteFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteFoodBarcodeSubscriptionVariables,
+  APITypes.OnDeleteFoodBarcodeSubscription
 >;
 export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($filter: ModelSubscriptionFoodItemFilterInput) {
   onCreateFoodItem(filter: $filter) {
@@ -441,6 +537,12 @@ export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -478,6 +580,12 @@ export const onUpdateFoodItem = /* GraphQL */ `subscription OnUpdateFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -515,6 +623,12 @@ export const onDeleteFoodItem = /* GraphQL */ `subscription OnDeleteFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -536,6 +650,7 @@ export const onCreateFoodItemServing = /* GraphQL */ `subscription OnCreateFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -571,6 +686,7 @@ export const onUpdateFoodItemServing = /* GraphQL */ `subscription OnUpdateFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -606,6 +722,7 @@ export const onDeleteFoodItemServing = /* GraphQL */ `subscription OnDeleteFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -642,6 +759,7 @@ export const onCreateUserFavoriteFood = /* GraphQL */ `subscription OnCreateUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -672,6 +790,7 @@ export const onUpdateUserFavoriteFood = /* GraphQL */ `subscription OnUpdateUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -702,6 +821,7 @@ export const onDeleteUserFavoriteFood = /* GraphQL */ `subscription OnDeleteUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -808,6 +928,7 @@ export const onCreateRecipeToFood = /* GraphQL */ `subscription OnCreateRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -850,6 +971,7 @@ export const onUpdateRecipeToFood = /* GraphQL */ `subscription OnUpdateRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -892,6 +1014,7 @@ export const onDeleteRecipeToFood = /* GraphQL */ `subscription OnDeleteRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
