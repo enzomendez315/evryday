@@ -77,33 +77,30 @@ const DailyGoalsScreen = () => {
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
-                <Button title="go to nutrition goals"
-                    onPress={() => { navigation.navigate("Nutrition Goals") }} />
-
                 <Text style={styles.sectionHeader}>Nutrition Goals</Text>
                 <TouchableOpacity onPress={() => { navigation.navigate("Nutrition Goals") }}>
                     <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center' }}>
                         <View style={styles.nutritionContainer}>
                             <Text>Calorie Goal</Text>
                             <Text>{goalsInfo.calorieGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.calorieGoal} -
-                                {goalsInfo.calorieGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.calorieGoal} </Text>
+                                {goalsInfo.calorieGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.calorieGoal}cal </Text>
                         </View>
                         <View style={styles.nutritionContainer}>
                             <Text>Carb Goal</Text>
                             <Text>{goalsInfo.carbGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.carbGoal} -
-                                {goalsInfo.carbGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.carbGoal} </Text>
+                                {goalsInfo.carbGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.carbGoal}g </Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center' }}>
                         <View style={styles.nutritionContainer}>
                             <Text>Protein Goal</Text>
                             <Text>{goalsInfo.proteinGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.proteinGoal} -
-                                {goalsInfo.proteinGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.proteinGoal} </Text>
+                                {goalsInfo.proteinGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.proteinGoal}g </Text>
                         </View>
                         <View style={styles.nutritionContainer}>
                             <Text>Fat Goal</Text>
                             <Text>{Math.round(goalsInfo.fatGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.fatGoal)} -
-                                {Math.round(goalsInfo.fatGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.fatGoal)} </Text>
+                                {Math.round(goalsInfo.fatGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.fatGoal)}g </Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -133,7 +130,9 @@ const DailyGoalsScreen = () => {
                     </Picker>
                 </View>
 
-                <Button title="Submit" onPress={handleSubmit} />
+                <View style={{ padding: 10 }}>
+                    <Button title='Submit' onPress={handleSubmit} />
+                </View>
             </View>
         </ScrollView>
     );
@@ -146,13 +145,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        marginBottom: 20,
         textAlign: 'center',
-        padding: 10,
+        padding: 5,
         color: 'black',
     },
     body: {
-        margin: 10,
+        padding: 10,
         justifyContent: 'space-between',
         flexDirection: 'column',
         flex: .9,
@@ -184,7 +182,7 @@ const styles = StyleSheet.create({
     sectionHeader: {
         fontSize: 25,
         color: 'black',
-        padding: 20,
+        padding: 10,
     },
     nutritionContainer: {
         alignItems: 'center',

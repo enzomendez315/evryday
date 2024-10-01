@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user-goals';
 import { AccountContext } from '../../../App';
@@ -167,8 +167,9 @@ const NutritionGoalsScreen = () => {
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
-                <Button title="Use Recommended Goals" onPress={fillRecommended} />
-
+                <View style={{ padding: 10 }}>
+                    <Button title="Use Recommended Goals" onPress={fillRecommended} />
+                </View>
 
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Calorie Goal:</Text>
@@ -199,13 +200,10 @@ const NutritionGoalsScreen = () => {
                         />
                         <View>
                             <Text>Protein Goal: {parseInt(calorieGoal * (proteinPercent / 100) / 4)}g</Text>
-                            <Text>Minimum Protein:
-                                {parseInt(calorieGoal * (proteinPercent / 100) / 4) -
-                                    parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}g
-                            </Text>
-                            <Text>Maximum Protein:
-                                {parseInt(calorieGoal * (proteinPercent / 100) / 4) +
-                                    parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            <Text>{parseInt(calorieGoal * (proteinPercent / 100) / 4) -
+                                parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}
+                                - {parseInt(calorieGoal * (proteinPercent / 100) / 4) +
+                                    parseInt(parseInt(calorieGoal * (proteinPercent / 100) / 4) * (nutritionBuffer / 100))}
                             </Text>
                         </View>
                     </View>
@@ -218,7 +216,8 @@ const NutritionGoalsScreen = () => {
                         onValueChange={value => handleMacroChange(value, "protein")}
                     />
 
-
+                </View>
+                <View style={styles.macroContainer}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text>Carb Percent:</Text>
                         <TextInput
@@ -232,13 +231,10 @@ const NutritionGoalsScreen = () => {
                         />
                         <View>
                             <Text>Carb Goal: {parseInt(calorieGoal * (carbPercent / 100) / 4)}g</Text>
-                            <Text>Minimum Carbs:
-                                {parseInt(calorieGoal * (carbPercent / 100) / 4) -
-                                    parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}g
-                            </Text>
-                            <Text>Maximum Carbs:
-                                {parseInt(calorieGoal * (carbPercent / 100) / 4) +
-                                    parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}g
+                            <Text>{parseInt(calorieGoal * (carbPercent / 100) / 4) -
+                                parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}
+                                - {parseInt(calorieGoal * (carbPercent / 100) / 4) +
+                                    parseInt(parseInt(calorieGoal * (carbPercent / 100) / 4) * (nutritionBuffer / 100))}
                             </Text>
                         </View>
                     </View>
@@ -249,6 +245,9 @@ const NutritionGoalsScreen = () => {
                         value={carbPercent}
                         onValueChange={value => handleMacroChange(value, "carb")}
                     />
+
+                </View>
+                <View style={styles.macroContainer}>
 
                     <View style={{ flexDirection: 'row' }}>
                         <Text>Fat Percent:</Text>
@@ -263,13 +262,10 @@ const NutritionGoalsScreen = () => {
                         />
                         <View>
                             <Text>Fat Goal: {parseInt(calorieGoal * (fatPercent / 100) / 9)}g</Text>
-                            <Text>Minimum Fat:
-                                {parseInt(calorieGoal * (fatPercent / 100) / 9) -
-                                    parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}g
-                            </Text>
-                            <Text>Maximum Fat:
-                                {parseInt(calorieGoal * (fatPercent / 100) / 9) +
-                                    parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}g
+                            <Text>{parseInt(calorieGoal * (fatPercent / 100) / 9) -
+                                parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}
+                                - {parseInt(calorieGoal * (fatPercent / 100) / 9) +
+                                    parseInt(parseInt(calorieGoal * (fatPercent / 100) / 9) * (nutritionBuffer / 100))}
                             </Text>
                         </View>
                     </View>
@@ -293,7 +289,9 @@ const NutritionGoalsScreen = () => {
                     />
                 </View>
 
-                <Button title="Submit" onPress={handleSubmit} />
+                <View style={{ padding: 10 }}>
+                    <Button title="Submit" onPress={handleSubmit} />
+                </View>
             </View>
         </View>
     );
@@ -338,8 +336,14 @@ const styles = StyleSheet.create({
     macroContainer: {
         padding: 10,
         backgroundColor: 'white',
-        padding: 10,
         borderRadius: 10,
+        margin: 5,
+    },
+    recommendedButton: {
+        padding: 10,
+        backgroundColor: 'lightblue',
+        borderRadius: 10,
+        margin: 5,
     },
 });
 
