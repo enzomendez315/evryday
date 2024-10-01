@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user-goals';
@@ -71,7 +71,7 @@ const DailyGoalsScreen = () => {
 
     return (
 
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Set Your Daily Goals</Text>
 
             <View style={styles.body}>
@@ -80,28 +80,36 @@ const DailyGoalsScreen = () => {
                 <Button title="go to nutrition goals"
                     onPress={() => { navigation.navigate("Nutrition Goals") }} />
 
-                <Text>Nutrition Goals</Text>
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Calorie Goal: {goalsInfo.calorieGoal.toString()}</Text>
-                </View>
+                <Text style={styles.sectionHeader}>Nutrition Goals</Text>
+                <TouchableOpacity onPress={() => { navigation.navigate("Nutrition Goals") }}>
+                    <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center' }}>
+                        <View style={styles.nutritionContainer}>
+                            <Text>Calorie Goal</Text>
+                            <Text>{goalsInfo.calorieGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.calorieGoal} -
+                                {goalsInfo.calorieGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.calorieGoal} </Text>
+                        </View>
+                        <View style={styles.nutritionContainer}>
+                            <Text>Carb Goal</Text>
+                            <Text>{goalsInfo.carbGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.carbGoal} -
+                                {goalsInfo.carbGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.carbGoal} </Text>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center' }}>
+                        <View style={styles.nutritionContainer}>
+                            <Text>Protein Goal</Text>
+                            <Text>{goalsInfo.proteinGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.proteinGoal} -
+                                {goalsInfo.proteinGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.proteinGoal} </Text>
+                        </View>
+                        <View style={styles.nutritionContainer}>
+                            <Text>Fat Goal</Text>
+                            <Text>{Math.round(goalsInfo.fatGoal - goalsInfo.nutritionBuffer / 100 * goalsInfo.fatGoal)} -
+                                {Math.round(goalsInfo.fatGoal + goalsInfo.nutritionBuffer / 100 * goalsInfo.fatGoal)} </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
 
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Protein Goal: {goalsInfo.proteinGoal.toString()}g</Text>
-                </View>
 
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Carb Goal: {goalsInfo.carbGoal.toString()}g</Text>
-                </View>
-
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Fat Goal: {goalsInfo.fatGoal.toString()}g</Text>
-                </View>
-
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Nutrition Buffer: {goalsInfo.nutritionBuffer.toString()}</Text>
-                </View>
-
-                <Text>Sleep Goal</Text>
+                <Text style={styles.sectionHeader}>Sleep Goal</Text>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Minimum Sleep Duration:</Text>
                     <TextInput
@@ -113,7 +121,7 @@ const DailyGoalsScreen = () => {
                     />
                 </View>
 
-                <Text>Workout Goal</Text>
+                <Text style={styles.sectionHeader}>Workout Goal</Text>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>Daily Workout:</Text>
                     <Picker
@@ -127,7 +135,7 @@ const DailyGoalsScreen = () => {
 
                 <Button title="Submit" onPress={handleSubmit} />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -172,6 +180,19 @@ const styles = StyleSheet.create({
         height: 40,
         padding: 10,
         textAlign: 'center',
+    },
+    sectionHeader: {
+        fontSize: 25,
+        color: 'black',
+        padding: 20,
+    },
+    nutritionContainer: {
+        alignItems: 'center',
+        flex: .8,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 10,
+        margin: 5,
     },
 });
 
