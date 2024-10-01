@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from './src/theme/theme';
+import LottieView from "lottie-react-native";
 
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import SettingsScreen from './src/screens/Settings-Screen';
@@ -23,7 +24,8 @@ import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
-import DailyGoalsScreen from './src/screens/Daily-Goals-Screen';
+import DailyGoalsScreen from './src/screens/dailyGoals/Daily-Goals-Screen';
+import NutritionGoalsScreen from './src/screens/dailyGoals/Nutrition-Goals-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore } from 'aws-amplify/datastore';
@@ -147,6 +149,7 @@ function SettingsStack() {
         }} />
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
+      <Stack.Screen name="Nutrition Goals" component={NutritionGoalsScreen} />
     </Stack.Navigator>
   );
 }
@@ -270,8 +273,13 @@ function App() {
         </NavigationContainer>
 
         : <View style={{ flex: 1, alignItems: 'center', }}>
-          <Text>connecting to database ...</Text>
-          <Image style={{ height: 50, width: 50 }} source={require('./src/images/sleepingSloth.png')} />
+          <Text style={{ marginTop: 30 }}>connecting to database ...</Text>
+          <LottieView
+            source={require('./src/animations/sloth_meditating.json')}
+            style={{ width: "75%", height: "75%" }}
+            autoPlay
+            loop
+          />
         </View>}
     </AccountContext.Provider>
   );

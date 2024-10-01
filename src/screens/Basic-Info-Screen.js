@@ -121,7 +121,7 @@ const BasicInfoScreen = () => {
                         keyboardType="numeric"
                         value={userInfo.height.toString()}
                         onChangeText={text => setUserInfo({ ...userInfo, height: text })}
-                        placeholder="Enter your weight"
+                        placeholder="Enter your height"
                     />
                 </View>
 

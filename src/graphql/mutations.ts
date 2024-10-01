@@ -15,8 +15,6 @@ export const createDailyGoals = /* GraphQL */ `mutation CreateDailyGoals(
   createDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
@@ -41,8 +39,6 @@ export const updateDailyGoals = /* GraphQL */ `mutation UpdateDailyGoals(
   updateDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
@@ -67,8 +63,6 @@ export const deleteDailyGoals = /* GraphQL */ `mutation DeleteDailyGoals(
   deleteDailyGoals(input: $input, condition: $condition) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal

@@ -14,8 +14,6 @@ export const onCreateDailyGoals = /* GraphQL */ `subscription OnCreateDailyGoals
   onCreateDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
@@ -39,8 +37,6 @@ export const onUpdateDailyGoals = /* GraphQL */ `subscription OnUpdateDailyGoals
   onUpdateDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
@@ -64,8 +60,6 @@ export const onDeleteDailyGoals = /* GraphQL */ `subscription OnDeleteDailyGoals
   onDeleteDailyGoals(filter: $filter) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal

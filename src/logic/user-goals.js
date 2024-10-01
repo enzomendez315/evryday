@@ -1,5 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { DailyGoals } from '../models';
+import { parse } from 'react-native-svg';
 
 let DEBUG = false;
 
@@ -26,14 +27,18 @@ export async function getUserGoals(userID_) {
     return p;
 }
 
-export async function createUserGoals(userID_, minCalories_, maxCalories_, minSleep_, dailyWorkout_) {
+export async function createUserGoals(userID_, calorieGoal_, minSleep_, dailyWorkout_,
+    proteinGoal_ = 0, carbGoal_ = 0, fatGoal_ = 0, nutritionBuffer_ = 0) {
     p = new Promise((resolve, reject) => {
         try {
             const newGoals = {
                 userId: userID_,
-                minCalories: parseInt(minCalories_),
-                maxCalories: parseInt(maxCalories_),
+                calorieGoal: parseInt(calorieGoal_),
+                proteinGoal: parseInt(proteinGoal_),
+                carbGoal: parseInt(carbGoal_),
+                fatGoal: parseInt(fatGoal_),
                 minSleep: parseFloat(minSleep_),
+                nutritionBuffer: parseInt(nutritionBuffer_),
                 dailyWorkout: dailyWorkout_,
             };
             DataStore.save(new DailyGoals(newGoals)).then((createdGoals) => {
@@ -48,7 +53,8 @@ export async function createUserGoals(userID_, minCalories_, maxCalories_, minSl
     return p;
 }
 
-export async function updateUserGoals(userID_, minCalories_, maxCalories_, minSleep_, dailyWorkout_) {
+export async function updateUserGoals(userID_, calorieGoal_, minSleep_, dailyWorkout_,
+    proteinGoal_ = 0, carbGoal_ = 0, fatGoal_ = 0, nutritionBuffer_ = 0) {
     p = new Promise((resolve, reject) => {
         try {
             DataStore.query(DailyGoals, (u) =>
@@ -60,9 +66,12 @@ export async function updateUserGoals(userID_, minCalories_, maxCalories_, minSl
                 } else {
                     let goals = foundGoals[0];
                     const updatedGoals = DailyGoals.copyOf(goals, updated => {
-                        updated.minCalories = parseInt(minCalories_);
-                        updated.maxCalories = parseInt(maxCalories_);
+                        updated.calorieGoal = parseInt(calorieGoal_);
+                        updated.proteinGoal = parseInt(proteinGoal_);
+                        updated.carbGoal = parseInt(carbGoal_);
+                        updated.fatGoal = parseInt(fatGoal_);
                         updated.minSleep = parseFloat(minSleep_);
+                        updated.nutritionBuffer = parseInt(nutritionBuffer_);
                         updated.dailyWorkout = dailyWorkout_;
                     });
                     DataStore.save(updatedGoals).then(() => {

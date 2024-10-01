@@ -5,8 +5,6 @@
 export type CreateDailyGoalsInput = {
   id?: string | null,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
@@ -17,8 +15,6 @@ export type CreateDailyGoalsInput = {
 
 export type ModelDailyGoalsConditionInput = {
   userId?: ModelIDInput | null,
-  minCalories?: ModelIntInput | null,
-  maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
   proteinGoal?: ModelIntInput | null,
@@ -72,18 +68,6 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type ModelFloatInput = {
   ne?: number | null,
   eq?: number | null,
@@ -99,6 +83,18 @@ export type ModelFloatInput = {
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
 };
@@ -123,8 +119,6 @@ export type DailyGoals = {
   __typename: "DailyGoals",
   id: string,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
@@ -140,8 +134,6 @@ export type DailyGoals = {
 export type UpdateDailyGoalsInput = {
   id: string,
   userId?: string | null,
-  minCalories?: number | null,
-  maxCalories?: number | null,
   minSleep?: number | null,
   dailyWorkout?: boolean | null,
   proteinGoal?: number | null,
@@ -1253,8 +1245,6 @@ export type DeleteExerciseRoutineExerciseTypeInput = {
 export type ModelDailyGoalsFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  minCalories?: ModelIntInput | null,
-  maxCalories?: ModelIntInput | null,
   minSleep?: ModelFloatInput | null,
   dailyWorkout?: ModelBooleanInput | null,
   proteinGoal?: ModelIntInput | null,
@@ -1647,8 +1637,6 @@ export type ModelExerciseRoutineExerciseTypeFilterInput = {
 export type ModelSubscriptionDailyGoalsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
-  minCalories?: ModelSubscriptionIntInput | null,
-  maxCalories?: ModelSubscriptionIntInput | null,
   minSleep?: ModelSubscriptionFloatInput | null,
   dailyWorkout?: ModelSubscriptionBooleanInput | null,
   proteinGoal?: ModelSubscriptionIntInput | null,
@@ -1676,18 +1664,6 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
-};
-
 export type ModelSubscriptionFloatInput = {
   ne?: number | null,
   eq?: number | null,
@@ -1703,6 +1679,18 @@ export type ModelSubscriptionFloatInput = {
 export type ModelSubscriptionBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionStringInput = {
@@ -1985,8 +1973,6 @@ export type CreateDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -2010,8 +1996,6 @@ export type UpdateDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -2035,8 +2019,6 @@ export type DeleteDailyGoalsMutation = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -4162,8 +4144,6 @@ export type GetDailyGoalsQuery = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -4190,8 +4170,6 @@ export type ListDailyGoalsQuery = {
       __typename: "DailyGoals",
       id: string,
       userId?: string | null,
-      minCalories?: number | null,
-      maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
       proteinGoal?: number | null,
@@ -4222,8 +4200,6 @@ export type SyncDailyGoalsQuery = {
       __typename: "DailyGoals",
       id: string,
       userId?: string | null,
-      minCalories?: number | null,
-      maxCalories?: number | null,
       minSleep?: number | null,
       dailyWorkout?: boolean | null,
       proteinGoal?: number | null,
@@ -6438,8 +6414,6 @@ export type OnCreateDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -6462,8 +6436,6 @@ export type OnUpdateDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,
@@ -6486,8 +6458,6 @@ export type OnDeleteDailyGoalsSubscription = {
     __typename: "DailyGoals",
     id: string,
     userId?: string | null,
-    minCalories?: number | null,
-    maxCalories?: number | null,
     minSleep?: number | null,
     dailyWorkout?: boolean | null,
     proteinGoal?: number | null,

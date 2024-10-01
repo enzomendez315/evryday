@@ -12,8 +12,6 @@ export const getDailyGoals = /* GraphQL */ `query GetDailyGoals($id: ID!) {
   getDailyGoals(id: $id) {
     id
     userId
-    minCalories
-    maxCalories
     minSleep
     dailyWorkout
     proteinGoal
@@ -40,8 +38,6 @@ export const listDailyGoals = /* GraphQL */ `query ListDailyGoals(
     items {
       id
       userId
-      minCalories
-      maxCalories
       minSleep
       dailyWorkout
       proteinGoal
@@ -78,8 +74,6 @@ export const syncDailyGoals = /* GraphQL */ `query SyncDailyGoals(
     items {
       id
       userId
-      minCalories
-      maxCalories
       minSleep
       dailyWorkout
       proteinGoal
