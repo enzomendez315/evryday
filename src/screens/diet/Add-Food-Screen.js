@@ -1,5 +1,5 @@
 import React, { useEffect, useState, memo } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity, Modal, TouchableWithoutFeedback  } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, Image, View, TextInput, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { COLORS } from '../../theme/theme';
 import { addOrUpdateFoodToMeal, getServingOptions, removeFoodFromMeal, deleteFoodItem, favoriteAFoodItem } from '../../logic/diet-api'
@@ -34,7 +34,7 @@ const AddFoodScreen = (props) => {
     let protein = serving?.protein ?? 0;
     let carbs = serving?.carbs ?? 0;
     let fat = serving?.fat ?? 0;
-    
+
     let multiplier = (parseFloat(servingAmount) ?? 100) / servingSize;
     calories = Math.round(calories * multiplier);
     protein = Math.round(protein * multiplier);
@@ -49,7 +49,7 @@ const AddFoodScreen = (props) => {
     id: 0,
     name: 'Create New Serving Option',
     onPress: async () => {
-      navigation.navigate('Add Serving Option', { meal:meal, nextPage:'Add Food', foodItem:foodItem })
+      navigation.navigate('Add Serving Option', { meal: meal, nextPage: 'Add Food', foodItem: foodItem })
     }
   }
 
@@ -68,7 +68,7 @@ const AddFoodScreen = (props) => {
         fat: servingOptions[dropDownValue]?.fat,
         protein: servingOptions[dropDownValue]?.protein
       }
-      navigation.navigate('Edit Food Item', { meal:meal, nextPage:'Add Food', foodItem:newFoodItem })
+      navigation.navigate('Edit Food Item', { meal: meal, nextPage: 'Add Food', foodItem: newFoodItem })
     }
   }
 
@@ -99,22 +99,22 @@ const AddFoodScreen = (props) => {
 
   //Updates the serving options when the screen is first opened or if the meal or item changes
   useEffect(() => {
-    if(mealToFoodId !== undefined) {
+    if (mealToFoodId !== undefined) {
       navigation.setOptions({
         headerRight: () => (
           <TouchableOpacity
-           onPress={async () => {
-            await removeFoodFromMeal(mealToFoodId).then((newMeal) => {
-              navigation.navigate('Add Meal', { meal: newMeal });
-            });
-           }}>
+            onPress={async () => {
+              await removeFoodFromMeal(mealToFoodId).then((newMeal) => {
+                navigation.navigate('Add Meal', { meal: newMeal });
+              });
+            }}>
             <View>
               <Ionicons name="trash" size={24} color={COLORS.darkBlue} />
             </View>
           </TouchableOpacity>
         ),
       })
-    // } else if (foodItem?.owner === userId) {
+      // } else if (foodItem?.owner === userId) {
     } else if (true) {
       navigation.setOptions({
         headerRight: () => (
@@ -138,7 +138,7 @@ const AddFoodScreen = (props) => {
 
   //Updates the macros when the serving amount is changed
   useEffect(() => {
-    if (servingOptions[dropDownValue] === undefined) {return;}
+    if (servingOptions[dropDownValue] === undefined) { return; }
     calcMacros(servingOptions[dropDownValue], servingAmount);
   }, [dropDownValue, servingOptions, servingAmount])
 
@@ -166,9 +166,9 @@ const AddFoodScreen = (props) => {
 
         <View style={styles.servingInputContainer}>
           <Text style={styles.text}>Serving: </Text>
-          <TextInput 
-            style={styles.textInput} 
-            placeholder={String(servingOptions[dropDownValue]?.servingSize ?? 100)} 
+          <TextInput
+            style={styles.textInput}
+            placeholder={String(servingOptions[dropDownValue]?.servingSize ?? 100)}
             keyboardType='numeric'
             onChangeText={(input) => setServingAmount(input)}
             value={servingAmount}
@@ -187,7 +187,7 @@ const AddFoodScreen = (props) => {
         </View>
 
         <TouchableOpacity
-        disabled={disableInput}
+          disabled={disableInput}
           onPress={async () => {
             setDisableInput(true);
             await addOrUpdateFoodToMeal(meal, foodItem, servingOptions[dropDownValue]?.id, parseFloat(servingAmount), mealToFoodId).then((newMeal) => {
@@ -209,7 +209,7 @@ export default AddFoodScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.backgroundBlue,
     alignItems: 'center',
     justifyContent: 'center',
   },

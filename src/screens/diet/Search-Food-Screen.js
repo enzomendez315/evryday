@@ -19,7 +19,7 @@ const SearchFoodScreen = (props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Create Food Item', { meal:meal, nextPage:'Add Food' })}>
+        <TouchableOpacity onPress={() => navigation.navigate('Create Food Item', { meal: meal, nextPage: 'Add Food' })}>
           <View>
             <Ionicons name="add-outline" size={36} color={COLORS.darkBlue} />
           </View>
@@ -36,10 +36,11 @@ const SearchFoodScreen = (props) => {
           <TextInput
             style={styles.searchInputText}
             placeholder="Enter Food Here"
-            onChangeText={(input) => { 
+            onChangeText={(input) => {
               setSearchTerm(input);
-              searchFoodItems(input, setFoodItems, userId); }} 
-            />
+              searchFoodItems(input, setFoodItems, userId);
+            }}
+          />
         </View>
         <Text style={styles.resultsText}>Search Results:</Text>
         <View style={styles.tableHeadContainer}>
@@ -54,11 +55,11 @@ const SearchFoodScreen = (props) => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <>
-                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { foodItem:item, meal })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { foodItem: item, meal })}>
                     <View style={styles.tableTextContainer}>
                       <Text style={styles.tableText}>{item.name.length < MAX_NAME_LENGTH
                         ? `${item.name}`
-                        : `${item.name.substring(0,MAX_NAME_LENGTH)}`}</Text>
+                        : `${item.name.substring(0, MAX_NAME_LENGTH)}`}</Text>
                     </View>
                   </TouchableOpacity>
                   <View style={styles.separator} />
@@ -77,7 +78,7 @@ export default SearchFoodScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.backgroundBlue,
     alignItems: 'center',
     justifyContent: 'center',
   },

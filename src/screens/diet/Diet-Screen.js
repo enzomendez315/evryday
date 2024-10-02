@@ -141,9 +141,9 @@ const DietScreen = ({ navigation }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
         <ScrollView>
-          <MealPeriodPopup 
-            mealPeriodPopupVisible={mealPeriodPopupVisible} 
-            setMealPeriodPopupVisible={setMealPeriodPopupVisible} 
+          <MealPeriodPopup
+            mealPeriodPopupVisible={mealPeriodPopupVisible}
+            setMealPeriodPopupVisible={setMealPeriodPopupVisible}
             navigation={navigation}
             date={dateHook} />
           <PopupComponent
@@ -152,7 +152,7 @@ const DietScreen = ({ navigation }) => {
             Content={WaterInputPopup}
             onPress={addWater}
           />
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
             setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
           <View style={styles.dateHeaderContainer}>
             <Button title="<"
@@ -161,9 +161,9 @@ const DietScreen = ({ navigation }) => {
                 setDateHook(getActiveDate())
               }} />
 
-          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
-            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+              <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            </TouchableOpacity>
 
             <Button title=">"
               onPress={() => {
@@ -184,8 +184,8 @@ const DietScreen = ({ navigation }) => {
                   style={styles.pieChart}
                   widthAndHeight={150}
                   series={pieSeries}
-                  sliceColor={['#86A184', '#7CFC00']}
-                  coverFill={'#FFF'}
+                  sliceColor={[COLORS.lightGray, COLORS.lightGreen]}
+                  coverFill={COLORS.whiteHex}
                   doughnut={true}
                 />
               </>
@@ -252,7 +252,7 @@ const DietScreen = ({ navigation }) => {
 
             {logData ?
               <>
-                <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+                <ScrollView contentContainerStyle={styles.waterIntakeContainer} horizontal={true}>
                   <Text style={styles.macroText}>{waterIntakeAmount} Oz</Text>
                 </ScrollView>
               </> : <Text>Loading...</Text>
@@ -303,7 +303,7 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
                 onPress={() => { addMealNavigation('Breakfast'); }}
                 style={styles.row}>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
+                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
                 <Text style={styles.rowLabel}>Breakfast</Text>
                 <View style={styles.rowSpacer} />
               </TouchableOpacity>
@@ -312,7 +312,7 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
                 onPress={() => { addMealNavigation('Lunch'); }}
                 style={styles.row}>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
+                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
                 <Text style={styles.rowLabel}>Lunch</Text>
                 <View style={styles.rowSpacer} />
               </TouchableOpacity>
@@ -321,7 +321,7 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
                 onPress={() => { addMealNavigation('Dinner'); }}
                 style={styles.row}>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
+                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
                 <Text style={styles.rowLabel}>Dinner</Text>
                 <View style={styles.rowSpacer} />
               </TouchableOpacity>
@@ -330,7 +330,7 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
                 onPress={() => { addMealNavigation('Snack'); }}
                 style={styles.row}>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
+                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
                 <Text style={styles.rowLabel}>Snack</Text>
                 <View style={styles.rowSpacer} />
               </TouchableOpacity>
@@ -347,7 +347,7 @@ export default DietScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
@@ -376,6 +376,14 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 8,
     backgroundColor: 'white',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   calorieHeader: {
     margin: 10,
@@ -402,6 +410,14 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 15,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   macroText: {
     textAlign: 'left',
@@ -417,6 +433,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     margin: 10,
     borderRadius: 15,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   mealNameText: {
     fontSize: 25,
@@ -464,6 +488,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 20,
+  },
+  waterIntakeContainer: {
+    padding: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   popupOverlay: {
     flex: 1,

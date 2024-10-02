@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user-goals';
 import { AccountContext } from '../../../App';
+import { COLORS } from '../../theme/theme';
 
 let userID;
 let DEBUG = false;
@@ -141,7 +142,7 @@ const DailyGoalsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'lightgray',
+        backgroundColor: COLORS.backgroundBlue,
     },
     title: {
         fontSize: 24,
@@ -161,6 +162,14 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
     label: {
         flex: .5,
@@ -191,6 +200,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         margin: 5,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
 });
 

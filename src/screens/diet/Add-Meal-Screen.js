@@ -117,7 +117,7 @@ const AddMealScreen = (props) => {
           </View>
         </TouchableOpacity>
       ),
-    })  
+    })
   }, []);
 
   useEffect(() => {
@@ -186,7 +186,7 @@ const AddMealScreen = (props) => {
 
   const NavPopupItem = memo(
     ({ item, onPress }) => (
-      <TouchableOpacity onPress={() => {onPress(item)}} style={styles.menuRow}>
+      <TouchableOpacity onPress={() => { onPress(item) }} style={styles.menuRow}>
         <Text style={styles.rowLabel}>{item.name}</Text>
       </TouchableOpacity>
     ),
@@ -203,9 +203,9 @@ const AddMealScreen = (props) => {
   };
 
   const navMenuOnPress = (item) => {
-    console.log(item.name,'pressed');
+    console.log(item.name, 'pressed');
     setNavMenuVisible(false);
-    item.onPress(); 
+    item.onPress();
   }
 
   let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
@@ -223,7 +223,7 @@ const AddMealScreen = (props) => {
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <SafeAreaView style = {styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView>
 
           <PopupComponent
@@ -242,14 +242,14 @@ const AddMealScreen = (props) => {
             onPress={saveRecipe}
           />
 
-        <PopupComponent
-          isVisible={navMenuVisible}
-          setIsVisible={setNavMenuVisible}
-          data={NavPopupData}
-          ItemComponent={NavPopupItem}
-          onPress={navMenuOnPress}
-          stylePrefix='rightSide'
-        />
+          <PopupComponent
+            isVisible={navMenuVisible}
+            setIsVisible={setNavMenuVisible}
+            data={NavPopupData}
+            ItemComponent={NavPopupItem}
+            onPress={navMenuOnPress}
+            stylePrefix='rightSide'
+          />
 
           <View style={styles.pieMacroContainer}>
             <View style={styles.pieTextContainer}>
@@ -295,12 +295,12 @@ const AddMealScreen = (props) => {
               <Text style={styles.ButtonText}>Add New Food</Text>
             </TouchableOpacity>
           </View>
-          
+
         </ScrollView>
       </SafeAreaView>
     </>
   );
-  
+
   // <Text>HUGE TIP: don't eat the mysterious cookies the little
   // girls in front of the grocery store are selling. They're not
   // cookies. They're rocks. I learned that the hard way.
@@ -313,7 +313,7 @@ export default AddMealScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.backgroundBlue,
     alignItems: 'center',
     justifyContent: 'center',
 
@@ -477,5 +477,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center'
   }
-  
+
 });

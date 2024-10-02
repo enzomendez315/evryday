@@ -120,8 +120,8 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <View style={styles.container}>
 
-        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+          setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
         <View style={styles.dateHeaderContainer}>
           <Button title="<"
@@ -191,7 +191,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.backgroundBlue,
     paddingHorizontal: 20,
   },
   dateHeaderContainer: {
@@ -222,11 +222,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-
   addRoutineButton: {
     backgroundColor: COLORS.primaryBlueHex,
     borderRadius: 15,
     padding: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   addRoutineButtonText: {
@@ -244,6 +251,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 16,
     marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   routineName: {
@@ -269,7 +284,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   exerciseHistoryButton: {
@@ -278,7 +300,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     marginBottom: 15,
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   exerciseListButtonText: {

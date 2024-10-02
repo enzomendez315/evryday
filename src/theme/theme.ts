@@ -13,6 +13,8 @@ interface Color {
   lightPurple: string;
   darkGreen: string;
   primaryGreen: string;
+  backgroundBlue: string;
+  primaryOrange: string;
 }
 
 export const COLORS: Color = {
@@ -30,4 +32,6 @@ export const COLORS: Color = {
   lightGreen: '#43DC6B',
   lightPurple: '#E0C3FC',
   primaryGreen: '#1B998B',
+  backgroundBlue: '#F0F8FF',
+  primaryOrange: '#FFA500',
 };

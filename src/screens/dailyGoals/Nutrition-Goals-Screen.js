@@ -5,6 +5,7 @@ import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user
 import { AccountContext } from '../../../App';
 
 import { Slider } from '@miblanchard/react-native-slider';
+import { COLORS } from '../../theme/theme';
 
 let userID;
 let DEBUG = false;
@@ -300,7 +301,7 @@ const NutritionGoalsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'lightgray',
+        backgroundColor: COLORS.backgroundBlue,
     },
     title: {
         fontSize: 24,
@@ -321,6 +322,15 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
+
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
     label: {
         flex: .4,
@@ -338,6 +348,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         margin: 5,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
     recommendedButton: {
         padding: 10,

@@ -58,7 +58,7 @@ function BottomNavBarTabs({ dietTrack = true, sleepTrack = true, workoutTrack = 
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
-        tabBarActiveTintColor: '#1ee94d',
+        tabBarActiveTintColor: COLORS.lightGreen,
         headerShown: false,
       }}>
       <Tab.Screen

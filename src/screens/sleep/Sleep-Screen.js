@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback, 
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback,
   ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -299,7 +299,7 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
 // // used for selecting dates at the top of the screen
 // const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
 //   calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
-  
+
 //   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
 //   const todayDate = getActiveDate();
 
@@ -468,7 +468,7 @@ const SleepScreen = () => {
           <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
             setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
             setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
           <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
@@ -482,9 +482,9 @@ const SleepScreen = () => {
                 setDateHook(getActiveDate());
               }} />
 
-          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
-            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+              <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            </TouchableOpacity>
 
             <Button title=">"
               onPress={() => {
@@ -494,7 +494,7 @@ const SleepScreen = () => {
           </View>
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
-            <View style={{ backgroundColor: COLORS.primaryPurpleHex, borderRadius: 15, padding: 10 }}>
+            <View style={styles.monthButton}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
                 <Text>Select Month</Text>
@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
@@ -581,16 +581,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  monthButton: {
+    backgroundColor: COLORS.primaryPurpleHex,
+    borderRadius: 15,
+    padding: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
+  },
   dateTitleContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
     color: 'black',
     paddingHorizontal: 20,
+
   },
   monthText: {
     fontSize: 20,
@@ -615,6 +630,14 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: 'center',
     height: 50,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   addSleepButtonText: {
     color: 'white',
@@ -629,7 +652,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 5,
     alignItems: 'center',
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   chartContainer: {
     justifyContent: 'center',
@@ -650,8 +680,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondaryPurpleHex, // This is a placeholder color
     borderRadius: 15,
     padding: 10,
-
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   dateName: {
     fontSize: 20,
@@ -721,7 +757,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     fontSize: 18,
-    color: '#0000ff', // Replace with your theme color
+    color: COLORS.primaryBlueHex, // Replace with your theme color
   },
   popupContent: {
     marginVertical: 20,
@@ -755,7 +791,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   content: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.whiteHex,
     marginHorizontal: 20,
     marginVertical: 70,
   },
