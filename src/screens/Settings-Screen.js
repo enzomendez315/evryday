@@ -175,8 +175,8 @@ const SettingsScreen = () => {
                                 navigation.navigate('Basic Info');
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: COLORS.darkBlue }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryBlueHex }]}>
+                                <FeatherIcon color="#fff" name="info" size={20} />
                             </View>
 
                             <Text style={styles.rowLabel}>Edit User Information</Text>
@@ -194,8 +194,8 @@ const SettingsScreen = () => {
                                 navigation.navigate('Daily Goals');
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: COLORS.darkBlue }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.lightGreen }]}>
+                                <FeatherIcon color="#fff" name="check-square" size={20} />
                             </View>
 
                             <Text style={styles.rowLabel}>Edit Daily Goals</Text>
@@ -211,11 +211,11 @@ const SettingsScreen = () => {
                         <TouchableOpacity
                             onPress={RefreshLocalStorage}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: COLORS.lightGreen }]}>
-                                <FeatherIcon color="#fff" name="star" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryRed }]}>
+                                <FeatherIcon color="#fff" name="trash-2" size={20} />
                             </View>
 
-                            <Text style={styles.rowLabel}>CLEAR LOCAL STORAGE</Text>
+                            <Text style={styles.rowLabel}>Clear Local Storage</Text>
 
                             <View style={styles.rowSpacer} />
 
@@ -230,8 +230,8 @@ const SettingsScreen = () => {
                                 await userSignOut();
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: COLORS.darkBlue }]}>
-                                <FeatherIcon color="#fff" name="user" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryGrayHex }]}>
+                                <FeatherIcon color="#fff" name="log-out" size={20} />
                             </View>
                             <Text style={styles.rowLabel}>Sign Out</Text>
                             <View style={styles.rowSpacer} />

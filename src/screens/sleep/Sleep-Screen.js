@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { Calendar } from 'react-native-calendars';
 import {
   makeSleepEntry, deleteSleepEntry,
@@ -265,7 +266,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
 // opened when the month and year text is pressed
 const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible,
-  tempDate, setTempDate, setMonthValue, setIsLoading }) => {
+  tempDate, setTempDate, setMonthValue, setIsLoading, setShowChart }) => {
   return (
     <Modal
       transparent
@@ -286,6 +287,7 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
               setIsPickMonthPopupVisible(false);
               setMonthValue(new Date(tempDate));
               setIsLoading(true);
+              setShowChart(true);
               syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
             }}>
             <Text>Confirm</Text>
@@ -461,39 +463,41 @@ const SleepScreen = () => {
     <>
       <StatusBar barStyle='default' />
       <SafeAreaView style={styles.container}>
+        <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
+          setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
+
+        <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
+          setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
+
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+          setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+
+        <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
+          tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
+          setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} setShowChart={setShowChart} />
+
+        <View style={styles.dateHeaderContainer}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate());
+            }} />
+
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            <FeatherIcon name="calendar" size={24} color="black" />
+          </TouchableOpacity>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate());
+            }} />
+        </View>
+
         <ScrollView>
-          <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
-            setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
-
-          <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
-            setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
-
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
-            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
-
-          <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
-            tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
-            setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
-
-          <View style={styles.dateHeaderContainer}>
-            <Button title="<"
-              onPress={() => {
-                setActiveDate(-1);
-                setDateHook(getActiveDate());
-              }} />
-
-            <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
-              <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-            </TouchableOpacity>
-
-            <Button title=">"
-              onPress={() => {
-                setActiveDate(1);
-                setDateHook(getActiveDate());
-              }} />
-          </View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
+          <Text style={styles.title}>Sleep</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingBottom: 10 }}>
             <View style={styles.monthButton}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
@@ -522,7 +526,7 @@ const SleepScreen = () => {
               <Text style={styles.addSleepButtonText}>{useHours ? 'Hours of Sleep' : 'Quality of Sleep'}</Text>
             </TouchableOpacity>}
 
-          {/* Chart*/}
+          {/* Chart, this nested if loop sucks*/}
           {showChart ? !isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} useHours={useHours} />
@@ -532,7 +536,7 @@ const SleepScreen = () => {
               <Text style={{ textAlign: 'center' }}>No sleep data found</Text>
             </View>
             : <Text>Loading...</Text> // if showChart is true but still loading
-            : null // if showChart is false
+            : null // if showChart is false, not very often
           }
 
 
@@ -571,7 +575,6 @@ export default SleepScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.backgroundBlue,
   },
@@ -580,6 +583,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.backgroundBlue2,
   },
   monthButton: {
     backgroundColor: COLORS.primaryPurpleHex,
@@ -596,9 +600,9 @@ const styles = StyleSheet.create({
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   dateTitle: {
     fontSize: 24,
@@ -613,6 +617,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontWeight: 'bold',
 
+  },
+
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left'
   },
 
   heading3Text: {

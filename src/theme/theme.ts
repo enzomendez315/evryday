@@ -14,7 +14,9 @@ interface Color {
   darkGreen: string;
   primaryGreen: string;
   backgroundBlue: string;
+  backgroundBlue2: string;
   primaryOrange: string;
+  primaryRed: string;
 }
 
 export const COLORS: Color = {
@@ -33,5 +35,8 @@ export const COLORS: Color = {
   lightPurple: '#E0C3FC',
   primaryGreen: '#1B998B',
   backgroundBlue: '#F0F8FF',
+  // backgroundBlue2: '#DCEFFF', // used by date picker header
+  backgroundBlue2: '#F0F8FF',
   primaryOrange: '#FFA500',
+  primaryRed: '#FF0000',
 };

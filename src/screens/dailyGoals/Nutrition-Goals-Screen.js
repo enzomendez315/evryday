@@ -163,8 +163,6 @@ const NutritionGoalsScreen = () => {
     return (
 
         <View style={styles.container}>
-            <Text style={styles.title}>Set Your Nutrition Goals</Text>
-
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
@@ -302,13 +300,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.backgroundBlue,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-        textAlign: 'center',
-        padding: 10,
-        color: 'black',
     },
     body: {
         margin: 10,

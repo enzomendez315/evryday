@@ -12,6 +12,7 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 // for selecting dates at the top of the screen
 import { PickDatePopup } from '../components/datePicker';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 let userID;
 const DEBUG = true;
@@ -308,7 +309,7 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={{ backgroundColor: COLORS.backgroundBlue }}>
+        <View contentContainerStyle={{ backgroundColor: COLORS.backgroundBlue }}>
           <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
             setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
           <View style={styles.dateHeaderContainer}>
@@ -320,6 +321,7 @@ const Dashboard = (props) => {
 
             <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
               <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+              <FeatherIcon name="calendar" size={24} color="black" />
             </TouchableOpacity>
 
             <Button title=">"
@@ -328,16 +330,20 @@ const Dashboard = (props) => {
                 setDateHook(getActiveDate())
               }} />
           </View>
-          <Text style={styles.tabHeaderText}>Health Score</Text>
-          <HealthScoreTab lastSynced={lastSynced} />
-          <Text style={styles.tabHeaderText}>Nutrition</Text>
-          <DietTab calorieData={calorieData} />
-          <Text style={styles.tabHeaderText}>Sleep</Text>
-          <SleepTab sleepData={sleepData} />
-          <Text style={styles.tabHeaderText}>Exercise</Text>
-          <WorkoutTab />
-          {/* Add more components as needed */}
-        </ScrollView>
+
+          <ScrollView style={{ marginBottom: 80 }}>
+            <Text style={styles.title}>Dashboard</Text>
+            <Text style={styles.tabHeaderText}>Health Score</Text>
+            <HealthScoreTab lastSynced={lastSynced} />
+            <Text style={styles.tabHeaderText}>Nutrition</Text>
+            <DietTab calorieData={calorieData} />
+            <Text style={styles.tabHeaderText}>Sleep</Text>
+            <SleepTab sleepData={sleepData} />
+            <Text style={styles.tabHeaderText}>Exercise</Text>
+            <WorkoutTab />
+            {/* Add more components as needed */}
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -353,9 +359,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.backgroundBlue2,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -365,6 +373,15 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingHorizontal: 20,
   },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left',
+    paddingLeft: 10,
+  },
+
   tabHeaderText: {
     fontSize: 20,
     color: 'black',

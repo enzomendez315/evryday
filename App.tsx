@@ -58,7 +58,7 @@ function BottomNavBarTabs({ dietTrack = true, sleepTrack = true, workoutTrack = 
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
-        tabBarActiveTintColor: COLORS.lightGreen,
+        tabBarActiveTintColor: COLORS.primaryBlueHex,
         headerShown: false,
       }}>
       <Tab.Screen
@@ -129,9 +129,7 @@ function DashboardStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Dashboard Home" component={DashboardScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
     </Stack.Navigator>
   );
@@ -143,9 +141,7 @@ function SettingsStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Settings Home" component={SettingsScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
@@ -160,9 +156,7 @@ function DietStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Diet Home" component={DietScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen}
         options={({ navigation, route }) => ({
@@ -199,9 +193,7 @@ function SleepStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Sleep Home" component={SleepScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
     </Stack.Navigator>
   );
@@ -213,9 +205,7 @@ function WorkoutStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Workout Home" component={WorkoutHomeScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
@@ -260,8 +250,6 @@ function App() {
     });
   }, []);
 
-
-
   return (
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
@@ -272,8 +260,8 @@ function App() {
             sleepTrack={useSleep} workoutTrack={useWorkout} />
         </NavigationContainer>
 
-        : <View style={{ flex: 1, alignItems: 'center', }}>
-          <Text style={{ marginTop: 30 }}>connecting to database ...</Text>
+        : <View style={{ flex: 1, alignItems: 'center', backgroundColor: COLORS.backgroundBlue }}>
+          <Text style={{ marginTop: 30 }}>Getting things ready ...</Text>
           <LottieView
             source={require('./src/animations/sloth_meditating.json')}
             style={{ width: "75%", height: "75%" }}

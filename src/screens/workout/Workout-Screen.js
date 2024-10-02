@@ -3,6 +3,7 @@ import { SafeAreaView, Button, StatusBar, Text, View, TouchableOpacity, ScrollVi
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { AccountContext } from '../../../App';
 import { getActiveDate, getFormattedDate, setActiveDate } from '../../logic/date-time';
 // for selecting dates at the top of the screen
@@ -118,8 +119,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <View style={styles.container}>
-
+      <SafeAreaView style={styles.container}>
         <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
           setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
@@ -132,6 +132,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            <FeatherIcon name="calendar" size={24} color="black" />
           </TouchableOpacity>
 
           <Button title=">"
@@ -141,41 +142,46 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
             }} />
         </View>
 
-        <Text style={styles.title}>Workout</Text>
+        <View style={styles.bodyContainer}>
 
-        <TouchableOpacity
-          style={styles.exerciseHistoryButton}
-          onPress={() => navigation.navigate('Workout History')}>
-          <Text style={styles.exerciseListButtonText}>History</Text>
-        </TouchableOpacity>
+          <Text style={styles.title}>Workout</Text>
 
-
-        <TouchableOpacity
-          style={styles.exerciseListButton}
-          onPress={() => navigation.navigate('Workout List')}>
-          <Text style={styles.exerciseListButtonText}>Exercise List</Text>
-        </TouchableOpacity>
-
-        <View style={styles.routineHeader}>
-
-          <Text style={styles.routineTitle}>Routines</Text>
-
-          <TouchableOpacity style={styles.addRoutineButton}
-            onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', exerciseData: [] })}>
-            <Text style={styles.addRoutineButtonText}>+ Routine</Text>
+          <TouchableOpacity
+            style={styles.exerciseHistoryButton}
+            onPress={() => navigation.navigate('Workout History')}>
+            <Text style={styles.exerciseListButtonText}>History</Text>
           </TouchableOpacity>
 
+
+          <TouchableOpacity
+            style={styles.exerciseListButton}
+            onPress={() => navigation.navigate('Workout List')}>
+            <Text style={styles.exerciseListButtonText}>Exercise List</Text>
+          </TouchableOpacity>
+
+          <View style={styles.routineHeader}>
+
+            <Text style={styles.routineTitle}>Routines</Text>
+
+            <TouchableOpacity style={styles.addRoutineButton}
+              onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', exerciseData: [] })}>
+              <Text style={styles.addRoutineButtonText}>+ Routine</Text>
+            </TouchableOpacity>
+
+          </View>
+
+          <ScrollView style={styles.routinesContainer}>
+            {isDataLoading && <Text>Loading...</Text>}
+            {routineData2 && routineData2.map((routine, index) => (
+              <RoutineTab
+                key={index}
+                routine={routine}
+                onPress={() => openPopup(routine)} />
+            ))}
+          </ScrollView>
+
         </View>
-        <ScrollView style={styles.routinesContainer}>
-          {isDataLoading && <Text>Loading...</Text>}
-          {routineData2 && routineData2.map((routine, index) => (
-            <RoutineTab
-              key={index}
-              routine={routine}
-              onPress={() => openPopup(routine)} />
-          ))}
-        </ScrollView>
-      </View>
+      </SafeAreaView>
       {selectedRoutine && (
         <ExerciseListPopup
           visible={isPopupVisible}
@@ -192,16 +198,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.backgroundBlue,
-    paddingHorizontal: 20,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.backgroundBlue2,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -210,6 +217,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     paddingHorizontal: 20,
+  },
+  bodyContainer: {
+    padding: 10,
+    flex: 1,
   },
   routineHeader: {
     flexDirection: 'row',

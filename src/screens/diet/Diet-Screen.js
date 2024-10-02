@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PopupComponent from '../../components/PopupMenu';
 import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
@@ -140,37 +141,39 @@ const DietScreen = ({ navigation }) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
+        <MealPeriodPopup
+          mealPeriodPopupVisible={mealPeriodPopupVisible}
+          setMealPeriodPopupVisible={setMealPeriodPopupVisible}
+          navigation={navigation}
+          date={dateHook} />
+        <PopupComponent
+          isVisible={addWaterPopupVisible}
+          setIsVisible={setAddWaterPopupVisible}
+          Content={WaterInputPopup}
+          onPress={addWater}
+        />
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+          setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+        <View style={styles.dateHeaderContainer}>
+          <Button title="<"
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
+
+          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            <FeatherIcon name="calendar" size={24} color="black" />
+          </TouchableOpacity>
+
+          <Button title=">"
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
         <ScrollView>
-          <MealPeriodPopup
-            mealPeriodPopupVisible={mealPeriodPopupVisible}
-            setMealPeriodPopupVisible={setMealPeriodPopupVisible}
-            navigation={navigation}
-            date={dateHook} />
-          <PopupComponent
-            isVisible={addWaterPopupVisible}
-            setIsVisible={setAddWaterPopupVisible}
-            Content={WaterInputPopup}
-            onPress={addWater}
-          />
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
-            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
-          <View style={styles.dateHeaderContainer}>
-            <Button title="<"
-              onPress={() => {
-                setActiveDate(-1);
-                setDateHook(getActiveDate())
-              }} />
-
-            <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
-              <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-            </TouchableOpacity>
-
-            <Button title=">"
-              onPress={() => {
-                setActiveDate(1);
-                setDateHook(getActiveDate())
-              }} />
-          </View>
+          <Text style={styles.title}>Diet</Text>
           <Text style={styles.tabHeaderText}>Calories</Text>
           <View style={styles.calorieContainer}>
 
@@ -266,7 +269,7 @@ const DietScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </SafeAreaView >
     </>
   );
 };
@@ -354,9 +357,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.backgroundBlue2,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -365,6 +370,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left',
+    paddingLeft: 10,
   },
   tabHeaderText: {
     fontSize: 20,

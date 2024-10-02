@@ -73,8 +73,6 @@ const DailyGoalsScreen = () => {
     return (
 
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Set Your Daily Goals</Text>
-
             <View style={styles.body}>
                 {missingInfo && <Text style={styles.label}>Please fill in your information:</Text>}
 
@@ -143,12 +141,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.backgroundBlue,
-    },
-    title: {
-        fontSize: 24,
-        textAlign: 'center',
-        padding: 5,
-        color: 'black',
     },
     body: {
         padding: 10,
