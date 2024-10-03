@@ -346,7 +346,25 @@ export async function searchFoodItems(searchTerm, setFoodItems, userId) {
     const favFoods = await getFavoriteFoods(userId, searchTerm)
     const regFoods = await getFoodItems(searchTerm, userId)
 
-    setFoodItems([...favFoods, ...regFoods]);
+
+    // remove foods with the same name 
+    // it looks like some foods are duplicated in the database
+    // e.g. 'Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D' ref_id: 1
+    // and 'Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D' ref_id: 1
+    let uniqueFoods = [];
+    for (let food of regFoods) {
+        let found = false;
+        for (let uniqueFood of uniqueFoods) {
+            if (food.name === uniqueFood.name) {
+                found = true;
+            }
+        }
+        if (!found) {
+            uniqueFoods.push(food);
+        }
+    }
+    setFoodItems([...favFoods, ...uniqueFoods]);
+    //setFoodItems([...favFoods, ...regFoods]); // this line will show all foods
 }
 
 // queries all food items from the datastore
@@ -367,7 +385,7 @@ async function getFoodItems(searchTerm, userId) {
         lowerSearch = searchTerm.toLowerCase();
         upperSearch = searchTerm.toUpperCase();
     }
-    const foodItems = await DataStore.query(FoodItem, (outer) => 
+    const foodItems = await DataStore.query(FoodItem, (outer) =>
         outer.and((inner) => [
             inner.or((c) => [
                 c.name.contains(lowerSearch),
@@ -407,7 +425,7 @@ export async function getFavoriteFoods(userId, searchTerm) {
     } else {
         filteredFavorites = favItems.filter((food) => food.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
-    
+
     return filteredFavorites;
 }
 

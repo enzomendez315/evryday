@@ -84,7 +84,7 @@ const SettingsScreen = () => {
                     <View style={styles.nameAndPic}>
                         <Text style={styles.profileName}>{form.userName}</Text>
                         <View>
-                            {form.userGender == "male" ? <Image style={styles.image}
+                            {form.userGender == "Male" ? <Image style={styles.image}
                                 source={require('../images/boy_profile_icon.png')} />
                                 : <Image style={styles.image}
                                     source={require('../images/girl_profile_icon.png')} />}

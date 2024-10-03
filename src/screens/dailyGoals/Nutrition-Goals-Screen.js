@@ -273,6 +273,9 @@ const NutritionGoalsScreen = () => {
                         step={1}
                         value={proteinPercent}
                         onValueChange={value => handleMacroChange(value, "protein")}
+                        thumbTintColor='red'
+                        minimumTrackTintColor='red'
+                        maximumTrackTintColor={COLORS.lightGray}
                     />
 
                 </View>
@@ -303,6 +306,9 @@ const NutritionGoalsScreen = () => {
                         step={1}
                         value={carbPercent}
                         onValueChange={value => handleMacroChange(value, "carb")}
+                        thumbTintColor={COLORS.lightGreen}
+                        minimumTrackTintColor={COLORS.lightGreen}
+                        maximumTrackTintColor={COLORS.lightGray}
                     />
 
                 </View>
@@ -334,6 +340,9 @@ const NutritionGoalsScreen = () => {
                         step={1}
                         value={fatPercent}
                         onValueChange={value => handleMacroChange(value, "fat")}
+                        thumbTintColor='#d7de16'
+                        minimumTrackTintColor='#d7de16'
+                        maximumTrackTintColor={COLORS.lightGray}
                     />
                 </View>
 
@@ -345,6 +354,9 @@ const NutritionGoalsScreen = () => {
                         step={1}
                         value={nutritionBuffer}
                         onValueChange={value => setNutritionBuffer(value)}
+                        thumbTintColor={COLORS.primaryBlueHex}
+                        minimumTrackTintColor={COLORS.primaryBlueHex}
+                        maximumTrackTintColor={COLORS.lightGray}
                     />
                 </View>
 
