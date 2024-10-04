@@ -458,7 +458,7 @@ const SleepScreen = () => {
   };
 
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
-
+ 
   return (
     <>
       <StatusBar barStyle='default' />
