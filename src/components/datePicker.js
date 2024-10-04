@@ -5,10 +5,10 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import {
-  getFormattedDate, getActiveDate,
-  getActiveDateMonth, getActiveDateYear,
-  setActiveDate, convertDatetoString
+  getFormattedDate, getActiveDate, getActiveDateMonth, getActiveDateYear,
+  setActiveDate, convertDatetoString, getDaysBetween
 } from '../logic/date-time';
+
 import { COLORS } from '../theme/theme';
 
 // used for selecting dates at the top of the screen
@@ -37,8 +37,16 @@ export const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisibl
                   setSelectedDate(selectedDate);
                   const selectedDateObj = new Date(day.timestamp);
                   setCalendarDate(selectedDateObj);
-                  const dateString = convertDatetoString(selectedDateObj);
-                  setDateHook(dateString);
+
+                  // Get the number of days between the current and new dates
+                  const newDate = convertDatetoString(selectedDateObj);
+                  const daysBetween = getDaysBetween(getActiveDate(), newDate);
+
+                  // Adjust the active date based on offset
+                  setActiveDate(daysBetween);
+                  setDateHook(getActiveDate());
+
+                  // Close popup
                   setIsPickDatePopupVisible(false);
                 }}
                 markedDates={{
