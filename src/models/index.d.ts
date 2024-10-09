@@ -195,6 +195,38 @@ export declare const MealToFood: (new (init: ModelInit<MealToFood>) => MealToFoo
   copyOf(source: MealToFood, mutator: (draft: MutableModel<MealToFood>) => MutableModel<MealToFood> | void): MealToFood;
 }
 
+type EagerFoodBarcode = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodBarcode, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly barcode: string;
+  readonly foodItem?: FoodItem | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemBarcodesId?: string | null;
+}
+
+type LazyFoodBarcode = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FoodBarcode, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly barcode: string;
+  readonly foodItem: AsyncItem<FoodItem | undefined>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly foodItemBarcodesId?: string | null;
+}
+
+export declare type FoodBarcode = LazyLoading extends LazyLoadingDisabled ? EagerFoodBarcode : LazyFoodBarcode
+
+export declare const FoodBarcode: (new (init: ModelInit<FoodBarcode>) => FoodBarcode) & {
+  copyOf(source: FoodBarcode, mutator: (draft: MutableModel<FoodBarcode>) => MutableModel<FoodBarcode> | void): FoodBarcode;
+}
+
 type EagerFoodItem = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<FoodItem, 'id'>;
@@ -207,6 +239,8 @@ type EagerFoodItem = {
   readonly recipes?: (RecipeToFood | null)[] | null;
   readonly favoritedBy?: (UserFavoriteFood | null)[] | null;
   readonly servingOptions?: (FoodItemServing | null)[] | null;
+  readonly barcodes?: (FoodBarcode | null)[] | null;
+  readonly brand?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -223,6 +257,8 @@ type LazyFoodItem = {
   readonly recipes: AsyncCollection<RecipeToFood>;
   readonly favoritedBy: AsyncCollection<UserFavoriteFood>;
   readonly servingOptions: AsyncCollection<FoodItemServing>;
+  readonly barcodes: AsyncCollection<FoodBarcode>;
+  readonly brand?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -383,10 +419,9 @@ type EagerExerciseLog = {
   readonly id: string;
   readonly userId: string;
   readonly date: string;
+  readonly exerciseRoutine?: (ExerciseRoutine | null)[] | null;
   readonly durationMinutes?: number | null;
   readonly caloriesBurned?: number | null;
-  readonly ExerciseRoutines?: (ExerciseLogExerciseRoutine | null)[] | null;
-  readonly ExerciseSets?: (ExerciseLogExerciseSet | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -399,10 +434,9 @@ type LazyExerciseLog = {
   readonly id: string;
   readonly userId: string;
   readonly date: string;
+  readonly exerciseRoutine: AsyncCollection<ExerciseRoutine>;
   readonly durationMinutes?: number | null;
   readonly caloriesBurned?: number | null;
-  readonly ExerciseRoutines: AsyncCollection<ExerciseLogExerciseRoutine>;
-  readonly ExerciseSets: AsyncCollection<ExerciseLogExerciseSet>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -413,44 +447,6 @@ export declare const ExerciseLog: (new (init: ModelInit<ExerciseLog>) => Exercis
   copyOf(source: ExerciseLog, mutator: (draft: MutableModel<ExerciseLog>) => MutableModel<ExerciseLog> | void): ExerciseLog;
 }
 
-type EagerExerciseSet = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSet, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly reps?: string | null;
-  readonly time?: string | null;
-  readonly weight?: string | null;
-  readonly ExerciseType?: (ExerciseSetExerciseType | null)[] | null;
-  readonly ExerciseRoutines?: (ExerciseSetExerciseRoutine | null)[] | null;
-  readonly exerciselogs?: (ExerciseLogExerciseSet | null)[] | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseSet = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSet, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly reps?: string | null;
-  readonly time?: string | null;
-  readonly weight?: string | null;
-  readonly ExerciseType: AsyncCollection<ExerciseSetExerciseType>;
-  readonly ExerciseRoutines: AsyncCollection<ExerciseSetExerciseRoutine>;
-  readonly exerciselogs: AsyncCollection<ExerciseLogExerciseSet>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseSet = LazyLoading extends LazyLoadingDisabled ? EagerExerciseSet : LazyExerciseSet
-
-export declare const ExerciseSet: (new (init: ModelInit<ExerciseSet>) => ExerciseSet) & {
-  copyOf(source: ExerciseSet, mutator: (draft: MutableModel<ExerciseSet>) => MutableModel<ExerciseSet> | void): ExerciseSet;
-}
-
 type EagerExerciseRoutine = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<ExerciseRoutine, 'id'>;
@@ -459,11 +455,10 @@ type EagerExerciseRoutine = {
   readonly id: string;
   readonly userId: string;
   readonly name?: string | null;
-  readonly exerciselogs?: (ExerciseLogExerciseRoutine | null)[] | null;
-  readonly ExerciseTypes?: (ExerciseRoutineExerciseType | null)[] | null;
-  readonly exercisesets?: (ExerciseSetExerciseRoutine | null)[] | null;
+  readonly exerciseType?: (ExerciseType | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly exerciseLogExerciseRoutineId?: string | null;
 }
 
 type LazyExerciseRoutine = {
@@ -474,11 +469,10 @@ type LazyExerciseRoutine = {
   readonly id: string;
   readonly userId: string;
   readonly name?: string | null;
-  readonly exerciselogs: AsyncCollection<ExerciseLogExerciseRoutine>;
-  readonly ExerciseTypes: AsyncCollection<ExerciseRoutineExerciseType>;
-  readonly exercisesets: AsyncCollection<ExerciseSetExerciseRoutine>;
+  readonly exerciseType: AsyncCollection<ExerciseType>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly exerciseLogExerciseRoutineId?: string | null;
 }
 
 export declare type ExerciseRoutine = LazyLoading extends LazyLoadingDisabled ? EagerExerciseRoutine : LazyExerciseRoutine
@@ -495,10 +489,10 @@ type EagerExerciseType = {
   readonly id: string;
   readonly name: string;
   readonly target?: string | null;
-  readonly exercisesets?: (ExerciseSetExerciseType | null)[] | null;
-  readonly exerciseroutines?: (ExerciseRoutineExerciseType | null)[] | null;
+  readonly exerciseSet?: (ExerciseSet | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly exerciseRoutineExerciseTypeId?: string | null;
 }
 
 type LazyExerciseType = {
@@ -509,16 +503,50 @@ type LazyExerciseType = {
   readonly id: string;
   readonly name: string;
   readonly target?: string | null;
-  readonly exercisesets: AsyncCollection<ExerciseSetExerciseType>;
-  readonly exerciseroutines: AsyncCollection<ExerciseRoutineExerciseType>;
+  readonly exerciseSet: AsyncCollection<ExerciseSet>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly exerciseRoutineExerciseTypeId?: string | null;
 }
 
 export declare type ExerciseType = LazyLoading extends LazyLoadingDisabled ? EagerExerciseType : LazyExerciseType
 
 export declare const ExerciseType: (new (init: ModelInit<ExerciseType>) => ExerciseType) & {
   copyOf(source: ExerciseType, mutator: (draft: MutableModel<ExerciseType>) => MutableModel<ExerciseType> | void): ExerciseType;
+}
+
+type EagerExerciseSet = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ExerciseSet, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly reps?: string | null;
+  readonly time?: string | null;
+  readonly weight?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly exerciseTypeExerciseSetId?: string | null;
+}
+
+type LazyExerciseSet = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ExerciseSet, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly reps?: string | null;
+  readonly time?: string | null;
+  readonly weight?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly exerciseTypeExerciseSetId?: string | null;
+}
+
+export declare type ExerciseSet = LazyLoading extends LazyLoadingDisabled ? EagerExerciseSet : LazyExerciseSet
+
+export declare const ExerciseSet: (new (init: ModelInit<ExerciseSet>) => ExerciseSet) & {
+  copyOf(source: ExerciseSet, mutator: (draft: MutableModel<ExerciseSet>) => MutableModel<ExerciseSet> | void): ExerciseSet;
 }
 
 type EagerSleepLog = {
@@ -625,174 +653,4 @@ export declare type GoalLog = LazyLoading extends LazyLoadingDisabled ? EagerGoa
 
 export declare const GoalLog: (new (init: ModelInit<GoalLog>) => GoalLog) & {
   copyOf(source: GoalLog, mutator: (draft: MutableModel<GoalLog>) => MutableModel<GoalLog> | void): GoalLog;
-}
-
-type EagerExerciseLogExerciseRoutine = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseLogExerciseRoutine, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseLogId?: string | null;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseLog: ExerciseLog;
-  readonly exerciseRoutine: ExerciseRoutine;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseLogExerciseRoutine = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseLogExerciseRoutine, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseLogId?: string | null;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseLog: AsyncItem<ExerciseLog>;
-  readonly exerciseRoutine: AsyncItem<ExerciseRoutine>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseLogExerciseRoutine = LazyLoading extends LazyLoadingDisabled ? EagerExerciseLogExerciseRoutine : LazyExerciseLogExerciseRoutine
-
-export declare const ExerciseLogExerciseRoutine: (new (init: ModelInit<ExerciseLogExerciseRoutine>) => ExerciseLogExerciseRoutine) & {
-  copyOf(source: ExerciseLogExerciseRoutine, mutator: (draft: MutableModel<ExerciseLogExerciseRoutine>) => MutableModel<ExerciseLogExerciseRoutine> | void): ExerciseLogExerciseRoutine;
-}
-
-type EagerExerciseLogExerciseSet = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseLogExerciseSet, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseLogId?: string | null;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseLog: ExerciseLog;
-  readonly exerciseSet: ExerciseSet;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseLogExerciseSet = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseLogExerciseSet, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseLogId?: string | null;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseLog: AsyncItem<ExerciseLog>;
-  readonly exerciseSet: AsyncItem<ExerciseSet>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseLogExerciseSet = LazyLoading extends LazyLoadingDisabled ? EagerExerciseLogExerciseSet : LazyExerciseLogExerciseSet
-
-export declare const ExerciseLogExerciseSet: (new (init: ModelInit<ExerciseLogExerciseSet>) => ExerciseLogExerciseSet) & {
-  copyOf(source: ExerciseLogExerciseSet, mutator: (draft: MutableModel<ExerciseLogExerciseSet>) => MutableModel<ExerciseLogExerciseSet> | void): ExerciseLogExerciseSet;
-}
-
-type EagerExerciseSetExerciseType = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSetExerciseType, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseTypeId?: string | null;
-  readonly exerciseSet: ExerciseSet;
-  readonly exerciseType: ExerciseType;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseSetExerciseType = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSetExerciseType, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseTypeId?: string | null;
-  readonly exerciseSet: AsyncItem<ExerciseSet>;
-  readonly exerciseType: AsyncItem<ExerciseType>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseSetExerciseType = LazyLoading extends LazyLoadingDisabled ? EagerExerciseSetExerciseType : LazyExerciseSetExerciseType
-
-export declare const ExerciseSetExerciseType: (new (init: ModelInit<ExerciseSetExerciseType>) => ExerciseSetExerciseType) & {
-  copyOf(source: ExerciseSetExerciseType, mutator: (draft: MutableModel<ExerciseSetExerciseType>) => MutableModel<ExerciseSetExerciseType> | void): ExerciseSetExerciseType;
-}
-
-type EagerExerciseSetExerciseRoutine = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSetExerciseRoutine, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseSet: ExerciseSet;
-  readonly exerciseRoutine: ExerciseRoutine;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseSetExerciseRoutine = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseSetExerciseRoutine, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseSetId?: string | null;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseSet: AsyncItem<ExerciseSet>;
-  readonly exerciseRoutine: AsyncItem<ExerciseRoutine>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseSetExerciseRoutine = LazyLoading extends LazyLoadingDisabled ? EagerExerciseSetExerciseRoutine : LazyExerciseSetExerciseRoutine
-
-export declare const ExerciseSetExerciseRoutine: (new (init: ModelInit<ExerciseSetExerciseRoutine>) => ExerciseSetExerciseRoutine) & {
-  copyOf(source: ExerciseSetExerciseRoutine, mutator: (draft: MutableModel<ExerciseSetExerciseRoutine>) => MutableModel<ExerciseSetExerciseRoutine> | void): ExerciseSetExerciseRoutine;
-}
-
-type EagerExerciseRoutineExerciseType = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseRoutineExerciseType, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseTypeId?: string | null;
-  readonly exerciseRoutine: ExerciseRoutine;
-  readonly exerciseType: ExerciseType;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyExerciseRoutineExerciseType = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ExerciseRoutineExerciseType, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly exerciseRoutineId?: string | null;
-  readonly exerciseTypeId?: string | null;
-  readonly exerciseRoutine: AsyncItem<ExerciseRoutine>;
-  readonly exerciseType: AsyncItem<ExerciseType>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ExerciseRoutineExerciseType = LazyLoading extends LazyLoadingDisabled ? EagerExerciseRoutineExerciseType : LazyExerciseRoutineExerciseType
-
-export declare const ExerciseRoutineExerciseType: (new (init: ModelInit<ExerciseRoutineExerciseType>) => ExerciseRoutineExerciseType) & {
-  copyOf(source: ExerciseRoutineExerciseType, mutator: (draft: MutableModel<ExerciseRoutineExerciseType>) => MutableModel<ExerciseRoutineExerciseType> | void): ExerciseRoutineExerciseType;
 }

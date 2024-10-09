@@ -70,6 +70,10 @@ yarn-error.log
 /coverage
 backend/everyday/__pycache__/__init__.cpython-312.pyc
 
+src/logic/diet-api-tsconversion.ts
+amplify/README.md
+/src/sampleData
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -91,6 +95,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-src/logic/diet-api-tsconversion.ts
-amplify/README.md
-/src/sampleData

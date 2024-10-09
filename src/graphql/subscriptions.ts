@@ -19,6 +19,8 @@ export const onCreateDailyGoals = /* GraphQL */ `subscription OnCreateDailyGoals
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -42,6 +44,8 @@ export const onUpdateDailyGoals = /* GraphQL */ `subscription OnUpdateDailyGoals
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -65,6 +69,8 @@ export const onDeleteDailyGoals = /* GraphQL */ `subscription OnDeleteDailyGoals
     proteinGoal
     carbGoal
     fatGoal
+    calorieGoal
+    nutritionBuffer
     createdAt
     updatedAt
     _version
@@ -305,6 +311,7 @@ export const onCreateMealToFood = /* GraphQL */ `subscription OnCreateMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -348,6 +355,7 @@ export const onUpdateMealToFood = /* GraphQL */ `subscription OnUpdateMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -391,6 +399,7 @@ export const onDeleteMealToFood = /* GraphQL */ `subscription OnDeleteMealToFood
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -409,6 +418,99 @@ export const onDeleteMealToFood = /* GraphQL */ `subscription OnDeleteMealToFood
 ` as GeneratedSubscription<
   APITypes.OnDeleteMealToFoodSubscriptionVariables,
   APITypes.OnDeleteMealToFoodSubscription
+>;
+export const onCreateFoodBarcode = /* GraphQL */ `subscription OnCreateFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onCreateFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateFoodBarcodeSubscriptionVariables,
+  APITypes.OnCreateFoodBarcodeSubscription
+>;
+export const onUpdateFoodBarcode = /* GraphQL */ `subscription OnUpdateFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onUpdateFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateFoodBarcodeSubscriptionVariables,
+  APITypes.OnUpdateFoodBarcodeSubscription
+>;
+export const onDeleteFoodBarcode = /* GraphQL */ `subscription OnDeleteFoodBarcode(
+  $filter: ModelSubscriptionFoodBarcodeFilterInput
+) {
+  onDeleteFoodBarcode(filter: $filter) {
+    id
+    barcode
+    foodItem {
+      id
+      owner
+      name
+      brand
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    foodItemBarcodesId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteFoodBarcodeSubscriptionVariables,
+  APITypes.OnDeleteFoodBarcodeSubscription
 >;
 export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($filter: ModelSubscriptionFoodItemFilterInput) {
   onCreateFoodItem(filter: $filter) {
@@ -435,6 +537,12 @@ export const onCreateFoodItem = /* GraphQL */ `subscription OnCreateFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -472,6 +580,12 @@ export const onUpdateFoodItem = /* GraphQL */ `subscription OnUpdateFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -509,6 +623,12 @@ export const onDeleteFoodItem = /* GraphQL */ `subscription OnDeleteFoodItem($fi
       startedAt
       __typename
     }
+    barcodes {
+      nextToken
+      startedAt
+      __typename
+    }
+    brand
     createdAt
     updatedAt
     _version
@@ -530,6 +650,7 @@ export const onCreateFoodItemServing = /* GraphQL */ `subscription OnCreateFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -565,6 +686,7 @@ export const onUpdateFoodItemServing = /* GraphQL */ `subscription OnUpdateFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -600,6 +722,7 @@ export const onDeleteFoodItemServing = /* GraphQL */ `subscription OnDeleteFoodI
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -636,6 +759,7 @@ export const onCreateUserFavoriteFood = /* GraphQL */ `subscription OnCreateUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -666,6 +790,7 @@ export const onUpdateUserFavoriteFood = /* GraphQL */ `subscription OnUpdateUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -696,6 +821,7 @@ export const onDeleteUserFavoriteFood = /* GraphQL */ `subscription OnDeleteUser
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -802,6 +928,7 @@ export const onCreateRecipeToFood = /* GraphQL */ `subscription OnCreateRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -844,6 +971,7 @@ export const onUpdateRecipeToFood = /* GraphQL */ `subscription OnUpdateRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -886,6 +1014,7 @@ export const onDeleteRecipeToFood = /* GraphQL */ `subscription OnDeleteRecipeTo
       id
       owner
       name
+      brand
       createdAt
       updatedAt
       _version
@@ -913,28 +1042,12 @@ export const onCreateExerciseLog = /* GraphQL */ `subscription OnCreateExerciseL
     userId
     date
     exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      nextToken
+      startedAt
       __typename
     }
     durationMinutes
     caloriesBurned
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseSets {
-      nextToken
-      startedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
@@ -955,28 +1068,12 @@ export const onUpdateExerciseLog = /* GraphQL */ `subscription OnUpdateExerciseL
     userId
     date
     exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      nextToken
+      startedAt
       __typename
     }
     durationMinutes
     caloriesBurned
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseSets {
-      nextToken
-      startedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
@@ -997,28 +1094,12 @@ export const onDeleteExerciseLog = /* GraphQL */ `subscription OnDeleteExerciseL
     userId
     date
     exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      nextToken
+      startedAt
       __typename
     }
     durationMinutes
     caloriesBurned
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseSets {
-      nextToken
-      startedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
@@ -1031,25 +1112,14 @@ export const onDeleteExerciseLog = /* GraphQL */ `subscription OnDeleteExerciseL
   APITypes.OnDeleteExerciseLogSubscriptionVariables,
   APITypes.OnDeleteExerciseLogSubscription
 >;
-export const onCreateExerciseSet = /* GraphQL */ `subscription OnCreateExerciseSet(
-  $filter: ModelSubscriptionExerciseSetFilterInput
+export const onCreateExerciseRoutine = /* GraphQL */ `subscription OnCreateExerciseRoutine(
+  $filter: ModelSubscriptionExerciseRoutineFilterInput
 ) {
-  onCreateExerciseSet(filter: $filter) {
+  onCreateExerciseRoutine(filter: $filter) {
     id
-    reps
-    time
-    weight
-    ExerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciselogs {
+    userId
+    name
+    exerciseType {
       nextToken
       startedAt
       __typename
@@ -1059,6 +1129,153 @@ export const onCreateExerciseSet = /* GraphQL */ `subscription OnCreateExerciseS
     _version
     _deleted
     _lastChangedAt
+    exerciseLogExerciseRoutineId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateExerciseRoutineSubscriptionVariables,
+  APITypes.OnCreateExerciseRoutineSubscription
+>;
+export const onUpdateExerciseRoutine = /* GraphQL */ `subscription OnUpdateExerciseRoutine(
+  $filter: ModelSubscriptionExerciseRoutineFilterInput
+) {
+  onUpdateExerciseRoutine(filter: $filter) {
+    id
+    userId
+    name
+    exerciseType {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseLogExerciseRoutineId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateExerciseRoutineSubscriptionVariables,
+  APITypes.OnUpdateExerciseRoutineSubscription
+>;
+export const onDeleteExerciseRoutine = /* GraphQL */ `subscription OnDeleteExerciseRoutine(
+  $filter: ModelSubscriptionExerciseRoutineFilterInput
+) {
+  onDeleteExerciseRoutine(filter: $filter) {
+    id
+    userId
+    name
+    exerciseType {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseLogExerciseRoutineId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteExerciseRoutineSubscriptionVariables,
+  APITypes.OnDeleteExerciseRoutineSubscription
+>;
+export const onCreateExerciseType = /* GraphQL */ `subscription OnCreateExerciseType(
+  $filter: ModelSubscriptionExerciseTypeFilterInput
+) {
+  onCreateExerciseType(filter: $filter) {
+    id
+    name
+    target
+    exerciseSet {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseRoutineExerciseTypeId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateExerciseTypeSubscriptionVariables,
+  APITypes.OnCreateExerciseTypeSubscription
+>;
+export const onUpdateExerciseType = /* GraphQL */ `subscription OnUpdateExerciseType(
+  $filter: ModelSubscriptionExerciseTypeFilterInput
+) {
+  onUpdateExerciseType(filter: $filter) {
+    id
+    name
+    target
+    exerciseSet {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseRoutineExerciseTypeId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateExerciseTypeSubscriptionVariables,
+  APITypes.OnUpdateExerciseTypeSubscription
+>;
+export const onDeleteExerciseType = /* GraphQL */ `subscription OnDeleteExerciseType(
+  $filter: ModelSubscriptionExerciseTypeFilterInput
+) {
+  onDeleteExerciseType(filter: $filter) {
+    id
+    name
+    target
+    exerciseSet {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseRoutineExerciseTypeId
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteExerciseTypeSubscriptionVariables,
+  APITypes.OnDeleteExerciseTypeSubscription
+>;
+export const onCreateExerciseSet = /* GraphQL */ `subscription OnCreateExerciseSet(
+  $filter: ModelSubscriptionExerciseSetFilterInput
+) {
+  onCreateExerciseSet(filter: $filter) {
+    id
+    reps
+    time
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    exerciseTypeExerciseSetId
     __typename
   }
 }
@@ -1074,26 +1291,12 @@ export const onUpdateExerciseSet = /* GraphQL */ `subscription OnUpdateExerciseS
     reps
     time
     weight
-    ExerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciselogs {
-      nextToken
-      startedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    exerciseTypeExerciseSetId
     __typename
   }
 }
@@ -1109,221 +1312,18 @@ export const onDeleteExerciseSet = /* GraphQL */ `subscription OnDeleteExerciseS
     reps
     time
     weight
-    ExerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseRoutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciselogs {
-      nextToken
-      startedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    exerciseTypeExerciseSetId
     __typename
   }
 }
 ` as GeneratedSubscription<
   APITypes.OnDeleteExerciseSetSubscriptionVariables,
   APITypes.OnDeleteExerciseSetSubscription
->;
-export const onCreateExerciseRoutine = /* GraphQL */ `subscription OnCreateExerciseRoutine(
-  $filter: ModelSubscriptionExerciseRoutineFilterInput
-) {
-  onCreateExerciseRoutine(filter: $filter) {
-    id
-    userId
-    name
-    exerciselogs {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseTypes {
-      nextToken
-      startedAt
-      __typename
-    }
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseRoutineSubscriptionVariables,
-  APITypes.OnCreateExerciseRoutineSubscription
->;
-export const onUpdateExerciseRoutine = /* GraphQL */ `subscription OnUpdateExerciseRoutine(
-  $filter: ModelSubscriptionExerciseRoutineFilterInput
-) {
-  onUpdateExerciseRoutine(filter: $filter) {
-    id
-    userId
-    name
-    exerciselogs {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseTypes {
-      nextToken
-      startedAt
-      __typename
-    }
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseRoutineSubscriptionVariables,
-  APITypes.OnUpdateExerciseRoutineSubscription
->;
-export const onDeleteExerciseRoutine = /* GraphQL */ `subscription OnDeleteExerciseRoutine(
-  $filter: ModelSubscriptionExerciseRoutineFilterInput
-) {
-  onDeleteExerciseRoutine(filter: $filter) {
-    id
-    userId
-    name
-    exerciselogs {
-      nextToken
-      startedAt
-      __typename
-    }
-    ExerciseTypes {
-      nextToken
-      startedAt
-      __typename
-    }
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseRoutineSubscriptionVariables,
-  APITypes.OnDeleteExerciseRoutineSubscription
->;
-export const onCreateExerciseType = /* GraphQL */ `subscription OnCreateExerciseType(
-  $filter: ModelSubscriptionExerciseTypeFilterInput
-) {
-  onCreateExerciseType(filter: $filter) {
-    id
-    name
-    target
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciseroutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseTypeSubscriptionVariables,
-  APITypes.OnCreateExerciseTypeSubscription
->;
-export const onUpdateExerciseType = /* GraphQL */ `subscription OnUpdateExerciseType(
-  $filter: ModelSubscriptionExerciseTypeFilterInput
-) {
-  onUpdateExerciseType(filter: $filter) {
-    id
-    name
-    target
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciseroutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseTypeSubscriptionVariables,
-  APITypes.OnUpdateExerciseTypeSubscription
->;
-export const onDeleteExerciseType = /* GraphQL */ `subscription OnDeleteExerciseType(
-  $filter: ModelSubscriptionExerciseTypeFilterInput
-) {
-  onDeleteExerciseType(filter: $filter) {
-    id
-    name
-    target
-    exercisesets {
-      nextToken
-      startedAt
-      __typename
-    }
-    exerciseroutines {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseTypeSubscriptionVariables,
-  APITypes.OnDeleteExerciseTypeSubscription
 >;
 export const onCreateSleepLog = /* GraphQL */ `subscription OnCreateSleepLog($filter: ModelSubscriptionSleepLogFilterInput) {
   onCreateSleepLog(filter: $filter) {
@@ -1507,640 +1507,4 @@ export const onDeleteGoalLog = /* GraphQL */ `subscription OnDeleteGoalLog($filt
 ` as GeneratedSubscription<
   APITypes.OnDeleteGoalLogSubscriptionVariables,
   APITypes.OnDeleteGoalLogSubscription
->;
-export const onCreateExerciseLogExerciseRoutine = /* GraphQL */ `subscription OnCreateExerciseLogExerciseRoutine(
-  $filter: ModelSubscriptionExerciseLogExerciseRoutineFilterInput
-) {
-  onCreateExerciseLogExerciseRoutine(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseRoutineId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseLogExerciseRoutineSubscriptionVariables,
-  APITypes.OnCreateExerciseLogExerciseRoutineSubscription
->;
-export const onUpdateExerciseLogExerciseRoutine = /* GraphQL */ `subscription OnUpdateExerciseLogExerciseRoutine(
-  $filter: ModelSubscriptionExerciseLogExerciseRoutineFilterInput
-) {
-  onUpdateExerciseLogExerciseRoutine(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseRoutineId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseLogExerciseRoutineSubscriptionVariables,
-  APITypes.OnUpdateExerciseLogExerciseRoutineSubscription
->;
-export const onDeleteExerciseLogExerciseRoutine = /* GraphQL */ `subscription OnDeleteExerciseLogExerciseRoutine(
-  $filter: ModelSubscriptionExerciseLogExerciseRoutineFilterInput
-) {
-  onDeleteExerciseLogExerciseRoutine(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseRoutineId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseLogExerciseRoutineSubscriptionVariables,
-  APITypes.OnDeleteExerciseLogExerciseRoutineSubscription
->;
-export const onCreateExerciseLogExerciseSet = /* GraphQL */ `subscription OnCreateExerciseLogExerciseSet(
-  $filter: ModelSubscriptionExerciseLogExerciseSetFilterInput
-) {
-  onCreateExerciseLogExerciseSet(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseSetId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseLogExerciseSetSubscriptionVariables,
-  APITypes.OnCreateExerciseLogExerciseSetSubscription
->;
-export const onUpdateExerciseLogExerciseSet = /* GraphQL */ `subscription OnUpdateExerciseLogExerciseSet(
-  $filter: ModelSubscriptionExerciseLogExerciseSetFilterInput
-) {
-  onUpdateExerciseLogExerciseSet(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseSetId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseLogExerciseSetSubscriptionVariables,
-  APITypes.OnUpdateExerciseLogExerciseSetSubscription
->;
-export const onDeleteExerciseLogExerciseSet = /* GraphQL */ `subscription OnDeleteExerciseLogExerciseSet(
-  $filter: ModelSubscriptionExerciseLogExerciseSetFilterInput
-) {
-  onDeleteExerciseLogExerciseSet(filter: $filter) {
-    id
-    exerciseLogId
-    exerciseSetId
-    exerciseLog {
-      id
-      userId
-      date
-      durationMinutes
-      caloriesBurned
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseLogExerciseSetSubscriptionVariables,
-  APITypes.OnDeleteExerciseLogExerciseSetSubscription
->;
-export const onCreateExerciseSetExerciseType = /* GraphQL */ `subscription OnCreateExerciseSetExerciseType(
-  $filter: ModelSubscriptionExerciseSetExerciseTypeFilterInput
-) {
-  onCreateExerciseSetExerciseType(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseTypeId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseSetExerciseTypeSubscriptionVariables,
-  APITypes.OnCreateExerciseSetExerciseTypeSubscription
->;
-export const onUpdateExerciseSetExerciseType = /* GraphQL */ `subscription OnUpdateExerciseSetExerciseType(
-  $filter: ModelSubscriptionExerciseSetExerciseTypeFilterInput
-) {
-  onUpdateExerciseSetExerciseType(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseTypeId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseSetExerciseTypeSubscriptionVariables,
-  APITypes.OnUpdateExerciseSetExerciseTypeSubscription
->;
-export const onDeleteExerciseSetExerciseType = /* GraphQL */ `subscription OnDeleteExerciseSetExerciseType(
-  $filter: ModelSubscriptionExerciseSetExerciseTypeFilterInput
-) {
-  onDeleteExerciseSetExerciseType(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseTypeId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseSetExerciseTypeSubscriptionVariables,
-  APITypes.OnDeleteExerciseSetExerciseTypeSubscription
->;
-export const onCreateExerciseSetExerciseRoutine = /* GraphQL */ `subscription OnCreateExerciseSetExerciseRoutine(
-  $filter: ModelSubscriptionExerciseSetExerciseRoutineFilterInput
-) {
-  onCreateExerciseSetExerciseRoutine(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseRoutineId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseSetExerciseRoutineSubscriptionVariables,
-  APITypes.OnCreateExerciseSetExerciseRoutineSubscription
->;
-export const onUpdateExerciseSetExerciseRoutine = /* GraphQL */ `subscription OnUpdateExerciseSetExerciseRoutine(
-  $filter: ModelSubscriptionExerciseSetExerciseRoutineFilterInput
-) {
-  onUpdateExerciseSetExerciseRoutine(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseRoutineId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseSetExerciseRoutineSubscriptionVariables,
-  APITypes.OnUpdateExerciseSetExerciseRoutineSubscription
->;
-export const onDeleteExerciseSetExerciseRoutine = /* GraphQL */ `subscription OnDeleteExerciseSetExerciseRoutine(
-  $filter: ModelSubscriptionExerciseSetExerciseRoutineFilterInput
-) {
-  onDeleteExerciseSetExerciseRoutine(filter: $filter) {
-    id
-    exerciseSetId
-    exerciseRoutineId
-    exerciseSet {
-      id
-      reps
-      time
-      weight
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseSetExerciseRoutineSubscriptionVariables,
-  APITypes.OnDeleteExerciseSetExerciseRoutineSubscription
->;
-export const onCreateExerciseRoutineExerciseType = /* GraphQL */ `subscription OnCreateExerciseRoutineExerciseType(
-  $filter: ModelSubscriptionExerciseRoutineExerciseTypeFilterInput
-) {
-  onCreateExerciseRoutineExerciseType(filter: $filter) {
-    id
-    exerciseRoutineId
-    exerciseTypeId
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateExerciseRoutineExerciseTypeSubscriptionVariables,
-  APITypes.OnCreateExerciseRoutineExerciseTypeSubscription
->;
-export const onUpdateExerciseRoutineExerciseType = /* GraphQL */ `subscription OnUpdateExerciseRoutineExerciseType(
-  $filter: ModelSubscriptionExerciseRoutineExerciseTypeFilterInput
-) {
-  onUpdateExerciseRoutineExerciseType(filter: $filter) {
-    id
-    exerciseRoutineId
-    exerciseTypeId
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateExerciseRoutineExerciseTypeSubscriptionVariables,
-  APITypes.OnUpdateExerciseRoutineExerciseTypeSubscription
->;
-export const onDeleteExerciseRoutineExerciseType = /* GraphQL */ `subscription OnDeleteExerciseRoutineExerciseType(
-  $filter: ModelSubscriptionExerciseRoutineExerciseTypeFilterInput
-) {
-  onDeleteExerciseRoutineExerciseType(filter: $filter) {
-    id
-    exerciseRoutineId
-    exerciseTypeId
-    exerciseRoutine {
-      id
-      userId
-      name
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    exerciseType {
-      id
-      name
-      target
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteExerciseRoutineExerciseTypeSubscriptionVariables,
-  APITypes.OnDeleteExerciseRoutineExerciseTypeSubscription
 >;
