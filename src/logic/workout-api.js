@@ -1,5 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { ExerciseLog, ExerciseRoutine, ExerciseType, ExerciseSet, ExerciseRoutineExerciseType, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, DailyGoals } from '../models';
+import { getActiveDate } from '../logic/date-time';
 
 // user creates an exercise routine
 // a routine is made up of a list of exerciseSets
@@ -68,7 +69,23 @@ const DEBUG = false;
 // 2. connects that exercise type with its list of sets to the routine
 // 3. saves the routine in the database with a list of exercise types and their sets
 // 4. returns the routine
-export async function createExerciseRoutine(userId, routineName, exerciseData_) {
+export async function createExerciseRoutine(userId, date, routineName, exerciseData_) {
+    DEBUG && console.log(`createExerciseRoutine userId: ${userId} Date: ${date}`);
+    // gets the exercise log for the user and date
+    let userLog = await DataStore.query(ExerciseLog, (u) => u.and(c => [
+        u.userId.eq(userId),
+        u.date.eq(date)
+    ]));
+
+    // if no log is found, create a new one
+    DEBUG && console.log(`createExerciseRoutine userLog length: ${userLog.length}`);
+    if (userLog.length === 0) {
+        DEBUG && console.log("No log found in createExerciseRoutine, creating one now");
+        // replace empty query with the new created log
+        userLog = await createNewLog(userId, date);
+        DEBUG && console.log(`created new log: ${userLog[0].id}`);
+    }
+
     // check that the routine has a unique name
     const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
     for (let routine of routines) {
@@ -77,12 +94,13 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
             return;
         }
     }
-    // creates a new routine object
+
+    // create and save a new routine object
     let routine = new ExerciseRoutine({
         userId: userId,
         name: routineName,
     });
-    // saves the routine object
+    
     await DataStore.save(routine);
 
     let exerciseTypes = [];
@@ -148,6 +166,26 @@ export async function createExerciseRoutine(userId, routineName, exerciseData_) 
         console.log(err);
     }
     console.log("we are done with 0 bugs congratulashions!");
+}
+
+// called when user adds the first exercise routine of the day
+// called in createExerciseRoutine if no exercise log is found
+async function createNewLog(userId, date) {
+    DEBUG && console.log(`createNewLog userId: ${userId} Date: ${date}`);
+
+    // Create a new ExerciseLog entry
+    const log = new ExerciseLog({
+        userId: userId, // Current user's ID
+        date: getActiveDate(),
+        durationMinutes: 0,
+        caloriesBurned: 0, 
+        exerciseRoutineID: routineId || null,
+    });
+
+    // Save the ExerciseLog in the DataStore
+    await DataStore.save(log);
+
+    return [log]; // this is in array because queries return arrays
 }
 
 // deletes the routine then adds it again

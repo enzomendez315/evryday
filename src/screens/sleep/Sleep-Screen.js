@@ -18,7 +18,7 @@ import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
   getActiveDateMonth, getActiveDateYear,
-  setActiveDate, convertDatetoString
+  setActiveDate, convertDatetoString, convertStringToDate
 } from '../../logic/date-time';
 // for selecting dates at the top of the screen
 import { PickDatePopup } from '../../components/datePicker';
@@ -99,9 +99,9 @@ const MyLineChart = ({ sleepArray, useHours }) => {
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
 const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, monthValue }) => {
-  // these are not hooks because useSate re-renders the page
+  // these are not hooks because useState re-renders the page
   let hours = 0;
-  let tempStartDate = new Date();
+  let tempStartDate = convertStringToDate(getActiveDate());
   // flags for when user makes an oopsie
 
   // for slider
@@ -124,7 +124,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
               </TouchableOpacity>
 
-              <Text style={styles.popupTitle}>New Sleep Data</Text>
+              <Text style={styles.popupTitle}>New Sleep Session</Text>
 
               <TouchableOpacity onPress={() => { /* Handle edit */ }}>
                 <Text style={styles.editButton}>Edit</Text>
@@ -132,13 +132,13 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
             </View>
 
             <View style={styles.popupContent}>
-              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
+              {/* <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
                 <Text>Wakeup Date</Text>
                 <DatePicker mode='date' date={new Date()}
                   onDateChange={(newDate) => {
                     tempStartDate = newDate;
                   }} />
-              </View>
+              </View> */}
 
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.addSleepInputText}>Hours Slept: </Text>
@@ -162,7 +162,7 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
               <TouchableOpacity
                 style={[styles.addSleepButton, { marginTop: 20 }]}
                 onPress={async () => {
-                  await makeSleepEntry(userID, new Date(tempStartDate), hours, progress.value);
+                  await makeSleepEntry(userID, tempStartDate, hours, progress.value);
                   setIsAddPopupVisible(false);
                   syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
                 }
@@ -223,7 +223,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
 
             <View style={styles.popupContent}>
               <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                {isEditPopupVisible ? <Text>Wakeup Date {wakeDate.toISOString().substring(0, 10)}</Text> : null}
+                {isEditPopupVisible ? <Text>Wakeup Date: {getFormattedDate(wakeDate.toISOString().substring(0, 10))}</Text> : null}
               </View>
 
               <View style={{ flexDirection: 'row' }}>
@@ -251,7 +251,7 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
                 onPress={async () => {
                   await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
                   setIsEditPopupVisible(false);
-                  syncUsersMonthLog(userID, monthValue.getActiveDateMonth(), monthValue.getActiveDateYear(), setSleepData);
+                  syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
                 }}>
                 <Text style={styles.addSleepButtonText}>Save Changes</Text>
               </TouchableOpacity>
@@ -297,70 +297,6 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
     </Modal>
   )
 }
-
-// // used for selecting dates at the top of the screen
-// const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
-//   calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
-
-//   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
-//   const todayDate = getActiveDate();
-
-//   return (
-//     <Modal
-//       transparent
-//       animationType="fade"
-//       visible={isPickDatePopupVisible}
-//       onRequestClose={() => {
-//         setIsPickDatePopupVisible(false);
-//       }}>
-//       <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
-//         <View style={styles.contentContainer}>
-//           <TouchableWithoutFeedback>
-//             <View style={styles.content}>
-//               <Calendar
-//                 current={selectedDate}
-//                 onDayPress={(day) => {
-//                   const selectedDate = day.dateString;
-//                   setSelectedDate(selectedDate);
-//                   const selectedDateObj = new Date(day.timestamp);
-//                   setCalendarDate(selectedDateObj);
-//                   const dateString = convertDatetoString(selectedDateObj);
-//                   setDateHook(dateString);
-//                   setIsPickDatePopupVisible(false);
-//                 }}
-//                 markedDates={{
-//                   [selectedDate]: {
-//                     selected: true,
-//                     selectedColor: 'blue',
-//                   },
-//                   [todayDate]: {
-//                     selected: true,
-//                     selectedColor: 'orange',
-//                   }
-//                 }}
-//                 theme={{
-//                   arrowColor: 'black',
-//                 }}
-//               />
-//               <TouchableOpacity
-//                 style={styles.confirmButton}
-//                 onPress={() => {
-//                   // TODO: Find out why getActiveDate() doesn't return todays date
-//                   setSelectedDate(todayDate);
-//                   const selectedDateObj = new Date(todayDate.timestamp);
-//                   setCalendarDate(selectedDateObj);
-//                   setDateHook(todayDate);
-//                   setIsPickDatePopupVisible(false);
-//                 }}>
-//                 <Text>Today</Text>
-//               </TouchableOpacity>
-//             </View>
-//           </TouchableWithoutFeedback>
-//         </View>
-//       </TouchableWithoutFeedback>
-//     </Modal>
-//   )
-// }
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
@@ -507,7 +443,7 @@ const SleepScreen = () => {
             <TouchableOpacity
               style={styles.addSleepButton}
               onPress={() => setIsAddPopupVisible(true)}>
-              <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
+              <Text style={styles.addSleepButtonText}>Add Sleep</Text>
             </TouchableOpacity>
           </View>
 

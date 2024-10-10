@@ -3,7 +3,7 @@ import { currentUserDetails } from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood } from '../models';
 import { getUserGoals } from './user-goals'
 
-const DEBUG = true;
+const DEBUG = false;
 
 // this is the format logData should be in
 // calcMealMacros returns this format
