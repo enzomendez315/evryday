@@ -197,7 +197,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.backgroundBlue,
+    backgroundColor: '#A6CC9A', //COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   addRoutineButton: {
-    backgroundColor: COLORS.primaryBlueHex,
+    backgroundColor: '#5D905A', //COLORS.primaryBlueHex,
     borderRadius: 15,
     padding: 10,
     shadowColor: '#000000',

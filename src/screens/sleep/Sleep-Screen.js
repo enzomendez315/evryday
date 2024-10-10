@@ -263,25 +263,27 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
       onRequestClose={() => {
         setIsPickMonthPopupVisible(false);
       }}>
-      <View style={styles.contentContainer}>
-        <View style={styles.content}>
-          <MonthPicker
-            selectedDate={tempDate || new Date()}
-            onMonthChange={setTempDate}
-          />
-          <TouchableOpacity
-            style={styles.confirmButton}
-            onPress={() => {
-              setIsPickMonthPopupVisible(false);
-              setMonthValue(new Date(tempDate));
-              setIsLoading(true);
-              setShowChart(true);
-              syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
-            }}>
-            <Text>Confirm</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+        <TouchableWithoutFeedback onPress={() => setIsPickMonthPopupVisible(false)}>
+          <View style={styles.contentContainer}>
+            <View style={styles.content}>
+              <MonthPicker
+                selectedDate={tempDate || new Date()}
+                onMonthChange={setTempDate}
+              />
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  setIsPickMonthPopupVisible(false);
+                  setMonthValue(new Date(tempDate));
+                  setIsLoading(true);
+                  setShowChart(true);
+                  syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
+                }}>
+                <Text>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
     </Modal>
   )
 }
@@ -385,7 +387,7 @@ const SleepScreen = () => {
  
   return (
     <>
-      <StatusBar barStyle='default' />
+      <StatusBar barStyle="default" backgroundColor={COLORS.sleepButtonBlue}/>
       <SafeAreaView style={styles.container}>
         <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
           setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
@@ -402,6 +404,7 @@ const SleepScreen = () => {
 
         <View style={styles.dateHeaderContainer}>
           <Button title="<"
+            color={COLORS.sleepButtonBlue}
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate());
@@ -409,10 +412,11 @@ const SleepScreen = () => {
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-            <FeatherIcon name="calendar" size={24} color="black" />
+            <FeatherIcon name="calendar" size={24} color="white" />
           </TouchableOpacity>
 
           <Button title=">"
+            color={COLORS.sleepButtonBlue}
             onPress={() => {
               setActiveDate(1);
               setDateHook(getActiveDate());
@@ -425,7 +429,7 @@ const SleepScreen = () => {
             <View style={styles.monthButton}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
-                <Text>Select Month</Text>
+                <Text style={{ color: 'white' }}>Select Month</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -500,17 +504,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLORS.backgroundBlue,
+    backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: COLORS.backgroundBlue2,
+    backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue2,
   },
   monthButton: {
-    backgroundColor: COLORS.primaryPurpleHex,
+    backgroundColor: COLORS.sleepButtonBlue,
     borderRadius: 15,
     padding: 10,
     shadowColor: '#000000',
@@ -531,7 +535,7 @@ const styles = StyleSheet.create({
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black',
+    color: 'white', //'black',
     paddingHorizontal: 20,
 
   },
@@ -546,21 +550,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     textAlign: 'left'
   },
 
   heading3Text: {
     fontSize: 20,
-    color: COLORS.darkGray,
+    color: 'white', //COLORS.darkGray,
     textAlign: 'left',
     fontWeight: 'bold',
 
   },
 
   addSleepButton: {
-    backgroundColor: COLORS.primaryPurpleHex,
+    backgroundColor: COLORS.sleepButtonBlue,
     borderRadius: 15,
     padding: 10,
     margin: 10,
@@ -582,7 +586,7 @@ const styles = StyleSheet.create({
   },
 
   showChartButton: {
-    backgroundColor: COLORS.primaryPurpleHex,
+    backgroundColor: COLORS.sleepButtonBlue,
     borderRadius: 15,
     padding: 10,
     justifyContent: 'center',
@@ -613,7 +617,7 @@ const styles = StyleSheet.create({
     //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: COLORS.secondaryPurpleHex, // This is a placeholder color
+    backgroundColor: COLORS.sleepButtonBlue, // For sleep entries
     borderRadius: 15,
     padding: 10,
     shadowColor: '#000000',
@@ -636,7 +640,7 @@ const styles = StyleSheet.create({
 
   hoursText: {
     fontSize: 16,
-    color: COLORS.lightPurple,
+    color: COLORS.whiteHex,
     fontWeight: 'bold',
     marginLeft: 20,
   },
@@ -657,7 +661,7 @@ const styles = StyleSheet.create({
 
   qualityLabel: {
     fontSize: 16,
-    color: COLORS.lightPurple,
+    color: COLORS.whiteHex,
 
   },
   popupOverlay: {

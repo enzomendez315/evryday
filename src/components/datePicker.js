@@ -66,7 +66,6 @@ export const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisibl
               <TouchableOpacity
                 style={styles.confirmButton}
                 onPress={() => {
-                  // TODO: Find out why getActiveDate() doesn't return todays date
                   setSelectedDate(todayDate);
                   const selectedDateObj = new Date(todayDate.timestamp);
                   setCalendarDate(selectedDateObj);

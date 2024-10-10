@@ -33,7 +33,7 @@ const PopupContentFlatList = ({ data, closePopup, ItemComponent, onPress }) => {
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent=<Text>Loading</Text>
+          ListEmptyComponent={<Text>Loading</Text>}
         />
       </View>
     </>
@@ -134,10 +134,11 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   rightSidePopup: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 10,
     padding: 10,
     width: '90%',
+    borderColor: 'black',
   },
   centerPopupOverlay: {
     flex: 1,
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centerPopup: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 20,
     padding: 20,
     maxHeight: '70%',
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     flex: -1,
     width: '100%',
     maxHeight: '100%',
-    gap: 5
+    gap: 5,
   },
   menuRow: {
     flexDirection: 'row',

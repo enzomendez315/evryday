@@ -44,24 +44,26 @@ const WaterInputPopup = ({ onPress, closePopup }) => {
   const [amount, setAmount] = useState('');
   return (
     <View style={styles.popupContentContainer}>
-      <Text style={styles.popupTitle}>Water Intake</Text>
-      <View>
-        <TextInput
-          keyboardType='numeric'
-          placeholder="Enter Amount of Water in Oz"
-          style={styles.textInput}
-          onChangeText={(newAmount) => setAmount(newAmount)}
-          value={amount}
-        />
-      </ View>
-      <Button
-        title="Add Water"
-        onPress={async () => {
-          closePopup();
-          onPress(amount);
-        }}
+    <Text style={styles.popupTitle}>Water Intake</Text>
+    <View style={{ backgroundColor: COLORS.peach }}>
+      <TextInput
+        keyboardType='numeric'
+        placeholder="Enter Amount of Water in Oz"
+        placeholderTextColor={'white'}
+        style={styles.textInput}
+        onChangeText={(newAmount) => setAmount(newAmount)}
+        value={amount}
       />
-    </View>
+    </ View>
+    <Button
+      title="Add Water"
+      color={COLORS.primaryOrange}
+      onPress={async () => {
+        closePopup();
+        onPress(amount);
+      }}
+    />
+  </View>
   )
 };
 
@@ -140,7 +142,7 @@ const DietScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <StatusBar barStyle="default" backgroundColor={COLORS.dustyOrange} />
       <SafeAreaView style={styles.container}>
         <MealPeriodPopup
           mealPeriodPopupVisible={mealPeriodPopupVisible}
@@ -157,6 +159,7 @@ const DietScreen = ({ navigation }) => {
           setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
         <View style={styles.dateHeaderContainer}>
           <Button title="<"
+            color={COLORS.dustyOrange}
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate())
@@ -164,10 +167,11 @@ const DietScreen = ({ navigation }) => {
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-            <FeatherIcon name="calendar" size={24} color="black" />
+            <FeatherIcon name="calendar" size={24} color="white" />
           </TouchableOpacity>
 
           <Button title=">"
+            color={COLORS.dustyOrange}
             onPress={() => {
               setActiveDate(1);
               setDateHook(getActiveDate())
@@ -206,21 +210,21 @@ const DietScreen = ({ navigation }) => {
                     Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
                   <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
                     width={125}
-                    color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'white' : 'white'} />
                 </View>
                 <View style={styles.macroRectangleContainer}>
                   <Text style={styles.macroText}>
                     Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
                   <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
                     width={125}
-                    color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'white' : 'white'} />
                 </View>
                 <View style={styles.macroRectangleContainer}>
                   <Text style={styles.macroText}>
                     Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
                   <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
                     width={125}
-                    color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'white' : 'white'} />
                 </View>
               </>
             }
@@ -233,7 +237,7 @@ const DietScreen = ({ navigation }) => {
             {/* if log data is null it's loading, if not it checks if there are meals*/}
             {logData ?
               <>
-                {logData.length === 0 ? <Text>No Meals For You</Text> :
+                {logData.length === 0 ? <Text style={{ color: 'white' }}>No Meals For You</Text> :
                   <>
                     <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
                       {mealButtons}
@@ -259,7 +263,7 @@ const DietScreen = ({ navigation }) => {
                 <ScrollView contentContainerStyle={styles.waterIntakeContainer} horizontal={true}>
                   <Text style={styles.macroText}>{waterIntakeAmount} Oz</Text>
                 </ScrollView>
-              </> : <Text>Loading...</Text>
+              </> : <Text style={{ color: 'white' }}>Loading...</Text>
             }
 
             <TouchableOpacity style={styles.addMealButton}
@@ -349,14 +353,14 @@ export default DietScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.backgroundBlue,
+    backgroundColor: COLORS.peach,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: COLORS.backgroundBlue2,
+    backgroundColor: COLORS.peach,
   },
   dateTitleContainer: {
     flex: 1,
@@ -367,27 +371,27 @@ const styles = StyleSheet.create({
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black',
+    color: 'white',
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     textAlign: 'left',
     paddingLeft: 10,
   },
   tabHeaderText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     marginTop: 10,
     marginLeft: 10,
   },
   calorieContainer: {
     margin: 10,
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -401,13 +405,13 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: 'center',
     fontSize: 25,
-    color: 'black',
+    color: 'white',
   },
   calorieText: {
     margin: 5,
     textAlign: 'center',
     fontSize: 30,
-    color: 'black',
+    color: 'white',
   },
   pieChart: {
     marginTop: 10,
@@ -420,7 +424,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     margin: 10,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 15,
     shadowColor: '#000000',
     shadowOffset: {
@@ -436,13 +440,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
     marginBottom: 10,
-    color: 'black',
+    color: 'white',
   },
   mealsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     margin: 10,
     borderRadius: 15,
     shadowColor: '#000000',
@@ -459,7 +463,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'row',
-    color: 'black',
+    color: 'white',
   },
   mealText: {
     fontSize: 25,
@@ -468,9 +472,10 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginLeft: 'auto',
     flexDirection: 'row',
+    color: 'white',
   },
   addMealButton: {
-    backgroundColor: COLORS.primaryGreen,
+    backgroundColor: COLORS.primaryOrange, //COLORS.primaryGreen,
     borderRadius: 15,
     padding: 10,
     margin: 10,
@@ -527,7 +532,7 @@ const styles = StyleSheet.create({
   //   marginBottom: 20,
   // },
   popup: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.peach,
     borderRadius: 20,
     padding: 20,
     width: '90%',
@@ -541,7 +546,7 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black'
+    color: 'white'
   },
   editButton: {
     fontSize: 18,
@@ -595,6 +600,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingLeft: 12,
     paddingRight: 12,
+    backgroundColor: COLORS.dustyOrange,
   },
   rowIcon: {
     width: 32,
@@ -608,7 +614,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 17,
     fontWeight: '400',
-    color: '#0c0c0c',
+    color: 'white',
   },
   rowSpacer: {
     flexGrow: 1,
@@ -616,15 +622,17 @@ const styles = StyleSheet.create({
     flexBasis: 0,
   },
   textInput: {
-    borderColor: 'black',
+    borderColor: COLORS.dustyOrange,
     borderRadius: 1,
     borderWidth: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   popupContentContainer: {
     flex: -1,
     width: '100%',
     maxHeight: '100%',
-    gap: 5
+    gap: 5,
+    backgroundColor: COLORS.dustyOrange,
   }
 });

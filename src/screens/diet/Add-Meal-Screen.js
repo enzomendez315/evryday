@@ -60,6 +60,7 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
       </ View>
       <Button
         title="Create"
+        color={COLORS.primaryOrange}
         onPress={async () => {
           closePopup();
           onPress(name);
@@ -69,24 +70,24 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
   )
 };
 
-// A header for both menu popups
-const PopupHeader = ({ title, closePopup }) => {
-  return (
-    <View style={styles.popupHeader}>
-      <TouchableOpacity onPress={() => closePopup()}>
-        <Text
-          style={[
-            styles.closeButton,
-            { alignSelf: 'flex-start', fontSize: 24 },
-          ]}>
-          x
-        </Text>
-      </TouchableOpacity>
-      <Text style={styles.popupTitle}>{title}</Text>
-      <Text></Text>
-    </View>
-  );
-};
+// // A header for both menu popups
+// const PopupHeader = ({ title, closePopup }) => {
+//   return (
+//     <View style={styles.popupHeader}>
+//       <TouchableOpacity onPress={() => closePopup()}>
+//         <Text
+//           style={[
+//             styles.closeButton,
+//             { alignSelf: 'flex-start', fontSize: 24, color: 'white', },
+//           ]}>
+//           x
+//         </Text>
+//       </TouchableOpacity>
+//       <Text style={styles.popupTitle}>{title}</Text>
+//       <Text></Text>
+//     </View>
+//   );
+// };
 
 
 
@@ -222,9 +223,9 @@ const AddMealScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <StatusBar barStyle="default" backgroundColor={COLORS.peach} />
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView style={{ color: COLORS.dustyOrange }}>
 
           <PopupComponent
             isVisible={recipePopupVisible}
@@ -232,7 +233,7 @@ const AddMealScreen = (props) => {
             data={recipeList}
             ItemComponent={RecipePopupItem}
             onPress={addToMeal}
-            Header={PopupHeader}
+            //Header={PopupHeader}
           />
 
           <PopupComponent
@@ -313,11 +314,11 @@ export default AddMealScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.backgroundBlue,
+    backgroundColor: COLORS.peach,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
+
   title: {
     fontSize: 30,
     color: 'black',
@@ -334,11 +335,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 10,
     margin: 5,
-    color: 'black',
+    color: 'white',
 
   },
   Button: {
-    backgroundColor: COLORS.primaryGreen,
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 15,
     padding: 10,
     margin: 10,
@@ -372,7 +373,7 @@ const styles = StyleSheet.create({
   },
   pieText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
   },
   macroText: {
     fontSize: 15,
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 50,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: COLORS.primaryOrange,
     borderRadius: 8,
     marginBottom: 6,
     marginTop: 6,
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 17,
     fontWeight: '400',
-    color: '#0c0c0c',
+    color: 'white',
   },
   popupHeader: {
     flexDirection: 'row',
@@ -444,38 +445,45 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black'
+    color: 'white'
   },
   popupContentContainer: {
     flex: -1,
     width: '100%',
     maxHeight: '100%',
-    gap: 5
+    gap: 5,
+    backgroundColor: COLORS.dustyOrange,
   },
   recipeTab: {
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
+    backgroundColor: COLORS.peach,
+    borderColor: COLORS.dustyOrange, // 'black',
   },
   recipeName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: 'black',
+    color: 'white',
   },
   recipeIngredients: {
     fontSize: 16,
+    color: 'white',
   },
   recipeNutrition: {
     fontSize: 16,
     marginTop: 8,
+    color: 'white',
   },
   textInput: {
-    borderColor: 'black',
+    borderColor: COLORS.dustyOrange,
+    backgroundColor: COLORS.peach,
     borderRadius: 1,
     borderWidth: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white',
   }
 
 });
