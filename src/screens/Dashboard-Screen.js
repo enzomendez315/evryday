@@ -12,6 +12,7 @@ import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-ti
 import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
 // for selecting dates at the top of the screen
 import { PickDatePopup } from '../components/datePicker';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 let userID;
 const DEBUG = true;
@@ -21,9 +22,9 @@ const HealthScoreTab = (lastSynced) => {
 
   const today = getActiveDate();
   // Using a single useState object so that the component only re-renders once when updated
-  const [scores, setScores] = useState({ 
-    sleep: null, 
-    nutrition: null, 
+  const [scores, setScores] = useState({
+    sleep: null,
+    nutrition: null,
     exercise: 100 // TODO: Set initial state to null once logs have dates
   });
 
@@ -70,7 +71,7 @@ const HealthScoreTab = (lastSynced) => {
     if (divisor === 0) {
       return 0;
     }
-     return Math.round(sum / divisor);
+    return Math.round(sum / divisor);
   }, [scores]);
 
   const recommendation = "Aptly Ape: Oops! We've gone bananas on calories yesterday!";
@@ -235,13 +236,13 @@ const SleepTab = ({ sleepData }) => {
       style={styles.sleepTab}
       onPress={() => navigation.navigate('Sleep')}>
       {sleepData != null && sleepData.length > 0 ? (
-        <View>
+        <View style={{ flexDirection: 'row' }}>
           <View style={styles.circle}>
             <Text style={styles.scoreText}>{sleepData[0].hours}h</Text>
           </View>
           <View style={styles.recommendationContainer}>
             <Text style={styles.recommendationText}>
-              You got {sleepData[0].hours} of sleep with a quality of {sleepData[0].quality}
+              You got a quality of {sleepData[0].quality}
             </Text>
           </View>
         </View>
@@ -308,36 +309,41 @@ const Dashboard = (props) => {
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={{ backgroundColor: '#DADADA' }}>
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-              setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+        <View contentContainerStyle={{ backgroundColor: COLORS.backgroundBlue }}>
+          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
           <View style={styles.dateHeaderContainer}>
-              <Button title="<"
-                onPress={() => {
-                  setActiveDate(-1);
-                  setDateHook(getActiveDate())
-                }} />
+            <Button title="<"
+              onPress={() => {
+                setActiveDate(-1);
+                setDateHook(getActiveDate())
+              }} />
 
-          <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
-            <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
+              <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+              <FeatherIcon name="calendar" size={24} color="black" />
+            </TouchableOpacity>
 
-              <Button title=">"
-                onPress={() => {
-                  setActiveDate(1);
-                  setDateHook(getActiveDate())
-                }} />
-            </View>
-          <Text style={styles.tabHeaderText}>Health Score</Text>
-          <HealthScoreTab style={styles.tab} lastSynced={lastSynced} />
-          <Text style={styles.tabHeaderText}>Nutrition</Text>
-          <DietTab style={styles.tab} calorieData={calorieData} />
-          <Text style={styles.tabHeaderText}>Sleep</Text>
-          <SleepTab style={styles.tab} sleepData={sleepData} />
-          <Text style={styles.tabHeaderText}>Exercise</Text>
-          <WorkoutTab style={styles.tab} />
-          {/* Add more components as needed */}
-        </ScrollView>
+            <Button title=">"
+              onPress={() => {
+                setActiveDate(1);
+                setDateHook(getActiveDate())
+              }} />
+          </View>
+
+          <ScrollView style={{ marginBottom: 80 }}>
+            <Text style={styles.title}>Dashboard</Text>
+            <Text style={styles.tabHeaderText}>Health Score</Text>
+            <HealthScoreTab lastSynced={lastSynced} />
+            <Text style={styles.tabHeaderText}>Nutrition</Text>
+            <DietTab calorieData={calorieData} />
+            <Text style={styles.tabHeaderText}>Sleep</Text>
+            <SleepTab sleepData={sleepData} />
+            <Text style={styles.tabHeaderText}>Exercise</Text>
+            <WorkoutTab />
+            {/* Add more components as needed */}
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -346,16 +352,18 @@ const Dashboard = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.backgroundBlue2,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -365,6 +373,15 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingHorizontal: 20,
   },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left',
+    paddingLeft: 10,
+  },
+
   tabHeaderText: {
     fontSize: 20,
     color: 'black',
@@ -384,17 +401,31 @@ const styles = StyleSheet.create({
     borderRadius: 8, // smooth edges
     marginBottom: 10,
     marginHorizontal: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   sleepTab: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    //borderColor: '#919191',
-    //borderBottomWidth: 1,
     borderRadius: 8,
     marginBottom: 10,
     marginHorizontal: 10,
     backgroundColor: '#fff',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   dietTab: {
@@ -406,9 +437,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 10,
     backgroundColor: '#fff',
-    //borderColor: '#919191',
-    //borderTopWidth: 1,
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 
   circle: {
@@ -434,17 +470,6 @@ const styles = StyleSheet.create({
     // Add styling for the recommendation text
     fontSize: 16, // example size
   },
-
-  marcoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#E1E2E1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-  },
-
   chart: {
     width: 80, // Same as circle for consistency
     height: 80, // Same as circle for consistency
@@ -466,15 +491,19 @@ const styles = StyleSheet.create({
   },
 
   workoutTab: {
-    // Style to match other tabs in your dashboard
     padding: 20,
-    //borderColor: '#919191',
-    //borderTopWidth: 1,
-    //borderBottomWidth: 1,
     backgroundColor: '#fff',
     borderRadius: 8,
     marginBottom: 10,
     marginHorizontal: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   workoutHistoryTitle: {
     // Title styles as provided in the Figma-generated code

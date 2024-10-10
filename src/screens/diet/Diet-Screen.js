@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Button } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, 
+  View, Modal, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { syncDailyLogData, createMeal, calcMealMacros, updateWaterIntake } from '../../logic/diet-api'
 import { getUserGoals } from '../../logic/user-goals'
@@ -7,6 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { AccountContext } from '../../../App';
 import { COLORS } from '../../theme/theme';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PopupComponent from '../../components/PopupMenu';
 import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
@@ -42,24 +44,26 @@ const WaterInputPopup = ({ onPress, closePopup }) => {
   const [amount, setAmount] = useState('');
   return (
     <View style={styles.popupContentContainer}>
-      <Text style={styles.popupTitle}>Water Intake</Text>
-      <View>
-        <TextInput
-          keyboardType='numeric'
-          placeholder="Enter Amount of Water in Oz"
-          style={styles.textInput}
-          onChangeText={(newAmount) => setAmount(newAmount)}
-          value={amount}
-        />
-      </ View>
-      <Button
-        title="Add Water"
-        onPress={async () => {
-          closePopup();
-          onPress(amount);
-        }}
+    <Text style={styles.popupTitle}>Water Intake</Text>
+    <View style={{ backgroundColor: COLORS.peach }}>
+      <TextInput
+        keyboardType='numeric'
+        placeholder="Enter Amount of Water in Oz"
+        placeholderTextColor={'white'}
+        style={styles.textInput}
+        onChangeText={(newAmount) => setAmount(newAmount)}
+        value={amount}
       />
-    </View>
+    </ View>
+    <Button
+      title="Add Water"
+      color={COLORS.primaryOrange}
+      onPress={async () => {
+        closePopup();
+        onPress(amount);
+      }}
+    />
+  </View>
   )
 };
 
@@ -138,39 +142,43 @@ const DietScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <StatusBar barStyle="default" backgroundColor={COLORS.dustyOrange} />
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <MealPeriodPopup 
-            mealPeriodPopupVisible={mealPeriodPopupVisible} 
-            setMealPeriodPopupVisible={setMealPeriodPopupVisible} 
-            navigation={navigation}
-            date={dateHook} />
-          <PopupComponent
-            isVisible={addWaterPopupVisible}
-            setIsVisible={setAddWaterPopupVisible}
-            Content={WaterInputPopup}
-            onPress={addWater}
-          />
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
-          <View style={styles.dateHeaderContainer}>
-            <Button title="<"
-              onPress={() => {
-                setActiveDate(-1);
-                setDateHook(getActiveDate())
-              }} />
+        <MealPeriodPopup
+          mealPeriodPopupVisible={mealPeriodPopupVisible}
+          setMealPeriodPopupVisible={setMealPeriodPopupVisible}
+          navigation={navigation}
+          date={dateHook} />
+        <PopupComponent
+          isVisible={addWaterPopupVisible}
+          setIsVisible={setAddWaterPopupVisible}
+          Content={WaterInputPopup}
+          onPress={addWater}
+        />
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+          setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+        <View style={styles.dateHeaderContainer}>
+          <Button title="<"
+            color={COLORS.dustyOrange}
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate())
+            }} />
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            <FeatherIcon name="calendar" size={24} color="white" />
           </TouchableOpacity>
 
-            <Button title=">"
-              onPress={() => {
-                setActiveDate(1);
-                setDateHook(getActiveDate())
-              }} />
-          </View>
+          <Button title=">"
+            color={COLORS.dustyOrange}
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate())
+            }} />
+        </View>
+        <ScrollView>
+          <Text style={styles.title}>Diet</Text>
           <Text style={styles.tabHeaderText}>Calories</Text>
           <View style={styles.calorieContainer}>
 
@@ -184,8 +192,8 @@ const DietScreen = ({ navigation }) => {
                   style={styles.pieChart}
                   widthAndHeight={150}
                   series={pieSeries}
-                  sliceColor={['#86A184', '#7CFC00']}
-                  coverFill={'#FFF'}
+                  sliceColor={[COLORS.lightGray, COLORS.lightGreen]}
+                  coverFill={COLORS.whiteHex}
                   doughnut={true}
                 />
               </>
@@ -202,21 +210,21 @@ const DietScreen = ({ navigation }) => {
                     Protein: {calorieData.proteinCurrent}g/{calorieData.proteinGoal}g</Text>
                   <Bar progress={calorieData.proteinCurrent / calorieData.proteinGoal}
                     width={125}
-                    color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.proteinCurrent / calorieData.proteinGoal > 1 ? 'white' : 'white'} />
                 </View>
                 <View style={styles.macroRectangleContainer}>
                   <Text style={styles.macroText}>
                     Carbs: {calorieData.carbsCurrent}g/{calorieData.carbsGoal}g</Text>
                   <Bar progress={calorieData.carbsCurrent / calorieData.carbsGoal}
                     width={125}
-                    color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.carbsCurrent / calorieData.carbGoal > 1 ? 'white' : 'white'} />
                 </View>
                 <View style={styles.macroRectangleContainer}>
                   <Text style={styles.macroText}>
                     Fat: {calorieData.fatCurrent}g/{calorieData.fatGoal}g</Text>
                   <Bar progress={calorieData.fatCurrent / calorieData.fatGoal}
                     width={125}
-                    color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'red' : 'blue'} />
+                    color={calorieData.fatCurrent / calorieData.fatGoal > 1 ? 'white' : 'white'} />
                 </View>
               </>
             }
@@ -229,7 +237,7 @@ const DietScreen = ({ navigation }) => {
             {/* if log data is null it's loading, if not it checks if there are meals*/}
             {logData ?
               <>
-                {logData.length === 0 ? <Text>No Meals For You</Text> :
+                {logData.length === 0 ? <Text style={{ color: 'white' }}>No Meals For You</Text> :
                   <>
                     <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
                       {mealButtons}
@@ -252,10 +260,10 @@ const DietScreen = ({ navigation }) => {
 
             {logData ?
               <>
-                <ScrollView contentContainerStyle={{ padding: 10 }} horizontal={true}>
+                <ScrollView contentContainerStyle={styles.waterIntakeContainer} horizontal={true}>
                   <Text style={styles.macroText}>{waterIntakeAmount} Oz</Text>
                 </ScrollView>
-              </> : <Text>Loading...</Text>
+              </> : <Text style={{ color: 'white' }}>Loading...</Text>
             }
 
             <TouchableOpacity style={styles.addMealButton}
@@ -266,7 +274,7 @@ const DietScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </SafeAreaView >
     </>
   );
 };
@@ -287,57 +295,55 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
       transparent={true}
       onRequestClose={() => setMealPeriodPopupVisible(!mealPeriodPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setMealPeriodPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setMealPeriodPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>Add a Meal</Text>
+              </View>
 
-              <Text style={styles.popupTitle}>Add a Meal</Text>
-            </View>
+              <View style={styles.popupContent}>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Breakfast'); }}
+                  style={styles.row}>
 
-            <View style={styles.popupContent}>
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Breakfast'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Breakfast</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
-                <Text style={styles.rowLabel}>Breakfast</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Lunch'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Lunch'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Lunch</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
-                <Text style={styles.rowLabel}>Lunch</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Dinner'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Dinner'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Dinner</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
-                <Text style={styles.rowLabel}>Dinner</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Snack'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Snack'); }}
-                style={styles.row}>
-
-                <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]} />
-                <Text style={styles.rowLabel}>Snack</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Snack</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -347,47 +353,65 @@ export default DietScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.peach,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.peach,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black',
+    color: 'white',
     paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'left',
+    paddingLeft: 10,
   },
   tabHeaderText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     marginTop: 10,
     marginLeft: 10,
   },
   calorieContainer: {
     margin: 10,
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   calorieHeader: {
     margin: 10,
     textAlign: 'center',
     fontSize: 25,
-    color: 'black',
+    color: 'white',
   },
   calorieText: {
     margin: 5,
     textAlign: 'center',
     fontSize: 30,
-    color: 'black',
+    color: 'white',
   },
   pieChart: {
     marginTop: 10,
@@ -400,30 +424,46 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     margin: 10,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 15,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   macroText: {
     textAlign: 'left',
     fontSize: 20,
     marginTop: 10,
     marginBottom: 10,
-    color: 'black',
+    color: 'white',
   },
   mealsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.dustyOrange,
     margin: 10,
     borderRadius: 15,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   mealNameText: {
     fontSize: 25,
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'row',
-    color: 'black',
+    color: 'white',
   },
   mealText: {
     fontSize: 25,
@@ -432,9 +472,10 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginLeft: 'auto',
     flexDirection: 'row',
+    color: 'white',
   },
   addMealButton: {
-    backgroundColor: COLORS.primaryGreen,
+    backgroundColor: COLORS.primaryOrange, //COLORS.primaryGreen,
     borderRadius: 15,
     padding: 10,
     margin: 10,
@@ -465,6 +506,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 20,
   },
+  waterIntakeContainer: {
+    padding: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
+  },
   popupOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -480,7 +532,7 @@ const styles = StyleSheet.create({
   //   marginBottom: 20,
   // },
   popup: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.peach,
     borderRadius: 20,
     padding: 20,
     width: '90%',
@@ -494,7 +546,7 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black'
+    color: 'white'
   },
   editButton: {
     fontSize: 18,
@@ -548,6 +600,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingLeft: 12,
     paddingRight: 12,
+    backgroundColor: COLORS.dustyOrange,
   },
   rowIcon: {
     width: 32,
@@ -561,7 +614,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 17,
     fontWeight: '400',
-    color: '#0c0c0c',
+    color: 'white',
   },
   rowSpacer: {
     flexGrow: 1,
@@ -569,15 +622,17 @@ const styles = StyleSheet.create({
     flexBasis: 0,
   },
   textInput: {
-    borderColor: 'black',
+    borderColor: COLORS.dustyOrange,
     borderRadius: 1,
     borderWidth: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   popupContentContainer: {
     flex: -1,
     width: '100%',
     maxHeight: '100%',
-    gap: 5
+    gap: 5,
+    backgroundColor: COLORS.dustyOrange,
   }
 });

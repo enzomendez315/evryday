@@ -75,10 +75,10 @@ const EditRoutineScreen = ({ route, navigation }) => {
 
     const handleConfirmDelete = () => {
         // Perform delete operation here
-        let newexerciseData = [...exerciseData];
+        let newExerciseData = [...exerciseData];
         // Remove the exercise from the exerciseData array
-        newexerciseData = newexerciseData.filter(item => item.name !== exerciseToDelete);
-        setExerciseData(newexerciseData);
+        newExerciseData = newExerciseData.filter(item => item.name !== exerciseToDelete);
+        setExerciseData(newExerciseData);
         console.log(`Deleting exercise: ${exerciseToDelete}`);
         setShowDeleteModal(false);
     };
@@ -197,7 +197,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <TouchableOpacity style={styles.addSetButton}
                                     onPress={() => AddSet(item.name)}>
-                                    <Text style={{ color: 'white' }}>+ Set</Text>
+                                    <Text style={{ color: 'white' }}>Add Set</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.addSetButton}
                                     onPress={() => {
@@ -212,7 +212,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
                     <TouchableOpacity style={styles.addSetButton}
                         onPress={() =>
                             navigation.navigate("Workout List", { routineName: routineName, exerciseData: exerciseData, routineId: routineId })}>
-                        <Text style={{ color: 'white' }}>+ Exercise</Text>
+                        <Text style={{ color: 'white' }}>Add Exercise</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.addSetButton}
                         onPress={async () => {

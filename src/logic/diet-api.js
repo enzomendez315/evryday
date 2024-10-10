@@ -3,7 +3,7 @@ import { currentUserDetails } from '../logic/account'
 import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood, FoodBarcode } from '../models';
 import { getUserGoals } from './user-goals'
 
-const DEBUG = true;
+const DEBUG = false;
 
 // this is the format logData should be in
 // calcMealMacros returns this format
@@ -201,14 +201,14 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
         fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
         fatGoal: 75,
         caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
-        caloriesGoal: goals.maxCalories ?? 2000,
+        caloriesGoal: goals.caloriesGoal ?? 2000,
     });
 
     // set the meal data
     // TODO: specify what macros are being displayed for readability
     setLogData(macros);
 
-    if(userLog.waterIntake !== null || userLog.waterIntake !== undefined){
+    if (userLog.waterIntake !== null || userLog.waterIntake !== undefined) {
         setWaterIntakeAmount(userLog.waterIntake);
     } else {
         setWaterIntakeAmount(0);
@@ -359,7 +359,7 @@ async function getFoodItems(searchTerm, userId) {
     }
     let upperSearch = "";
     let lowerSearch = "";
-    if(searchTerm.length > 1){
+    if (searchTerm.length > 1) {
         lowerSearch = searchTerm.charAt(0).toLowerCase() + searchTerm.slice(1);
         upperSearch = searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1);
     }
@@ -845,15 +845,8 @@ export async function getNutritionScore(userId, date) {
         let minCalories = 1200; // minimum calories for basic bodily functions
         let maxCalories = 2800; // random maximum if user did not input a daily max
 
-        if (dailyGoals.length > 0 && (dailyGoals[0].minCalories != null || dailyGoals[0].maxCalories != null)) {
-            if (dailyGoals[0].minCalories != null) {
-                minCalories = dailyGoals[0].minCalories;
-            }
+        if (dailyGoals.length > 0) {
 
-            if (dailyGoals[0].maxCalories != null) {
-                maxCalories = dailyGoals[0].maxCalories;
-            }
-            
             const userLog = await getUsersNutritionLog(userId, date);
 
             // get the meals from the log

@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getUserDBEntry, updateUserDetails, createUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
 import { getUser } from '../graphql/queries';
+import { COLORS } from '../theme/theme';
 
 let userID;
 let DEBUG = false;
@@ -121,7 +122,7 @@ const BasicInfoScreen = () => {
                         keyboardType="numeric"
                         value={userInfo.height.toString()}
                         onChangeText={text => setUserInfo({ ...userInfo, height: text })}
-                        placeholder="Enter your weight"
+                        placeholder="Enter your height"
                     />
                 </View>
 
@@ -147,7 +148,7 @@ const BasicInfoScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'lightgray',
+        backgroundColor: COLORS.backgroundBlue,
     },
     title: {
         fontSize: 24,
@@ -168,6 +169,14 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
     label: {
         flex: .4,

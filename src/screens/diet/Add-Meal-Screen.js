@@ -60,6 +60,7 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
       </ View>
       <Button
         title="Create"
+        color={COLORS.primaryOrange}
         onPress={async () => {
           closePopup();
           onPress(name);
@@ -69,24 +70,24 @@ const RecipeNameInput = ({ onPress, closePopup }) => {
   )
 };
 
-// A header for both menu popups
-const PopupHeader = ({ title, closePopup }) => {
-  return (
-    <View style={styles.popupHeader}>
-      <TouchableOpacity onPress={() => closePopup()}>
-        <Text
-          style={[
-            styles.closeButton,
-            { alignSelf: 'flex-start', fontSize: 24 },
-          ]}>
-          x
-        </Text>
-      </TouchableOpacity>
-      <Text style={styles.popupTitle}>{title}</Text>
-      <Text></Text>
-    </View>
-  );
-};
+// // A header for both menu popups
+// const PopupHeader = ({ title, closePopup }) => {
+//   return (
+//     <View style={styles.popupHeader}>
+//       <TouchableOpacity onPress={() => closePopup()}>
+//         <Text
+//           style={[
+//             styles.closeButton,
+//             { alignSelf: 'flex-start', fontSize: 24, color: 'white', },
+//           ]}>
+//           x
+//         </Text>
+//       </TouchableOpacity>
+//       <Text style={styles.popupTitle}>{title}</Text>
+//       <Text></Text>
+//     </View>
+//   );
+// };
 
 
 
@@ -117,7 +118,7 @@ const AddMealScreen = (props) => {
           </View>
         </TouchableOpacity>
       ),
-    })  
+    })
   }, []);
 
   useEffect(() => {
@@ -186,7 +187,7 @@ const AddMealScreen = (props) => {
 
   const NavPopupItem = memo(
     ({ item, onPress }) => (
-      <TouchableOpacity onPress={() => {onPress(item)}} style={styles.menuRow}>
+      <TouchableOpacity onPress={() => { onPress(item) }} style={styles.menuRow}>
         <Text style={styles.rowLabel}>{item.name}</Text>
       </TouchableOpacity>
     ),
@@ -203,9 +204,9 @@ const AddMealScreen = (props) => {
   };
 
   const navMenuOnPress = (item) => {
-    console.log(item.name,'pressed');
+    console.log(item.name, 'pressed');
     setNavMenuVisible(false);
-    item.onPress(); 
+    item.onPress();
   }
 
   let letterRegex = /^[a-zA-Z][a-zA-Z\s,]*$/;
@@ -222,9 +223,9 @@ const AddMealScreen = (props) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
-      <SafeAreaView style = {styles.container}>
-        <ScrollView>
+      <StatusBar barStyle="default" backgroundColor={COLORS.peach} />
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={{ color: COLORS.dustyOrange }}>
 
           <PopupComponent
             isVisible={recipePopupVisible}
@@ -232,7 +233,7 @@ const AddMealScreen = (props) => {
             data={recipeList}
             ItemComponent={RecipePopupItem}
             onPress={addToMeal}
-            Header={PopupHeader}
+            //Header={PopupHeader}
           />
 
           <PopupComponent
@@ -242,14 +243,14 @@ const AddMealScreen = (props) => {
             onPress={saveRecipe}
           />
 
-        <PopupComponent
-          isVisible={navMenuVisible}
-          setIsVisible={setNavMenuVisible}
-          data={NavPopupData}
-          ItemComponent={NavPopupItem}
-          onPress={navMenuOnPress}
-          stylePrefix='rightSide'
-        />
+          <PopupComponent
+            isVisible={navMenuVisible}
+            setIsVisible={setNavMenuVisible}
+            data={NavPopupData}
+            ItemComponent={NavPopupItem}
+            onPress={navMenuOnPress}
+            stylePrefix='rightSide'
+          />
 
           <View style={styles.pieMacroContainer}>
             <View style={styles.pieTextContainer}>
@@ -295,12 +296,12 @@ const AddMealScreen = (props) => {
               <Text style={styles.ButtonText}>Add New Food</Text>
             </TouchableOpacity>
           </View>
-          
+
         </ScrollView>
       </SafeAreaView>
     </>
   );
-  
+
   // <Text>HUGE TIP: don't eat the mysterious cookies the little
   // girls in front of the grocery store are selling. They're not
   // cookies. They're rocks. I learned that the hard way.
@@ -313,11 +314,11 @@ export default AddMealScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.peach,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
+
   title: {
     fontSize: 30,
     color: 'black',
@@ -334,11 +335,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 10,
     margin: 5,
-    color: 'black',
+    color: 'white',
 
   },
   Button: {
-    backgroundColor: COLORS.primaryGreen,
+    backgroundColor: COLORS.dustyOrange,
     borderRadius: 15,
     padding: 10,
     margin: 10,
@@ -372,7 +373,7 @@ const styles = StyleSheet.create({
   },
   pieText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
   },
   macroText: {
     fontSize: 15,
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 50,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: COLORS.primaryOrange,
     borderRadius: 8,
     marginBottom: 6,
     marginTop: 6,
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 17,
     fontWeight: '400',
-    color: '#0c0c0c',
+    color: 'white',
   },
   popupHeader: {
     flexDirection: 'row',
@@ -444,38 +445,45 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black'
+    color: 'white'
   },
   popupContentContainer: {
     flex: -1,
     width: '100%',
     maxHeight: '100%',
-    gap: 5
+    gap: 5,
+    backgroundColor: COLORS.dustyOrange,
   },
   recipeTab: {
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
+    backgroundColor: COLORS.peach,
+    borderColor: COLORS.dustyOrange, // 'black',
   },
   recipeName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: 'black',
+    color: 'white',
   },
   recipeIngredients: {
     fontSize: 16,
+    color: 'white',
   },
   recipeNutrition: {
     fontSize: 16,
     marginTop: 8,
+    color: 'white',
   },
   textInput: {
-    borderColor: 'black',
+    borderColor: COLORS.dustyOrange,
+    backgroundColor: COLORS.peach,
     borderRadius: 1,
     borderWidth: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white',
   }
-  
+
 });

@@ -44,7 +44,7 @@ export function getFormattedDate(activeDate_) {
     return formattedDate;
 }
 
-// converts the formatted date string to a normal date object
+// converts the formatted date string 'YYYY-MM-DD' to a normal date object
 // used to convert the date string from getLocalDate to a date object
 export function convertStringToDate(formattedDate) {
     const [year, month, day] = formattedDate.split('-');
@@ -60,6 +60,17 @@ export function convertDatetoString(date) {
     const month = String(localDate.getMonth() + 1).padStart(2, '0');
     const day = String(localDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+}
+
+// gets the number of days between two dates in the format 'YYYY-MM-DD'
+export function getDaysBetween(currentDate, newDate) {
+    const currentDateObj = convertStringToDate(currentDate);
+    const newDateObj = convertStringToDate(newDate);
+
+    const diffInMilliseconds = newDateObj - currentDateObj;
+    const millisecondsPerDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+
+    return Math.round(diffInMilliseconds / millisecondsPerDay);
 }
 
 // returns the current date in the format 'YYYY-MM-DD'

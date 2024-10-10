@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback, 
+  Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback,
   ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import DatePicker from 'react-native-date-picker'
 import MonthPicker from 'react-native-month-picker';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { Calendar } from 'react-native-calendars';
 import {
   makeSleepEntry, deleteSleepEntry,
@@ -17,7 +18,7 @@ import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
   getActiveDateMonth, getActiveDateYear,
-  setActiveDate, convertDatetoString
+  setActiveDate, convertDatetoString, convertStringToDate
 } from '../../logic/date-time';
 // for selecting dates at the top of the screen
 import { PickDatePopup } from '../../components/datePicker';
@@ -98,9 +99,9 @@ const MyLineChart = ({ sleepArray, useHours }) => {
 // TODO: filter the input from the user to make sure it is valid
 // (e.g. dates are recent and hours is a number)
 const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, monthValue }) => {
-  // these are not hooks because useSate re-renders the page
+  // these are not hooks because useState re-renders the page
   let hours = 0;
-  let tempStartDate = new Date();
+  let tempStartDate = convertStringToDate(getActiveDate());
   // flags for when user makes an oopsie
 
   // for slider
@@ -115,64 +116,54 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
       transparent={true}
       onRequestClose={() => setIsAddPopupVisible(!isAddPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setIsAddPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setIsAddPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>New Sleep Session</Text>
 
-              <Text style={styles.popupTitle}>New Sleep Data</Text>
+                <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                  <Text style={styles.editButton}>Edit</Text>
+                </TouchableOpacity>
+              </View>
 
-              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                <Text style={styles.editButton}>Edit</Text>
-              </TouchableOpacity>
+              <View style={styles.popupContent}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                  <TextInput style={styles.textInput} placeholder="Enter hours slept"
+                    keyboardType='numeric'
+                    onChangeText={(newText) => hours = parseInt(newText)} />
+                </View>
+
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.addSleepInputText}>Quality: </Text>
+                  <Slider
+                    style={styles.sliderStuff}
+                    progress={progress}
+                    minimumValue={min}
+                    maximumValue={max}
+                    step={9}
+                    onSlidingComplete={(value) => { progress.value = value }}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.addSleepButton, { marginTop: 20 }]}
+                  onPress={async () => {
+                    await makeSleepEntry(userID, tempStartDate, hours, progress.value);
+                    setIsAddPopupVisible(false);
+                    syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
+                  }
+                  }>
+                  <Text style={styles.addSleepButtonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+
             </View>
-
-            <View style={styles.popupContent}>
-              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={new Date()}
-                  onDateChange={(newDate) => {
-                    tempStartDate = newDate;
-                  }} />
-              </View>
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} placeholder="Enter hours slept"
-                  keyboardType='numeric'
-                  onChangeText={(newText) => hours = parseInt(newText)} />
-              </View>
-
-              <View style={styles.sliderContainer}>
-                <Text style={styles.addSleepInputText}>Quality: </Text>
-                <Slider
-                  style={styles.sliderStuff}
-                  progress={progress}
-                  minimumValue={min}
-                  maximumValue={max}
-                  step={9}
-                  onSlidingComplete={(value) => { progress.value = value }}
-                />
-              </View>
-
-              <TouchableOpacity
-                style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={async () => {
-                  await makeSleepEntry(userID, new Date(tempStartDate), hours, progress.value);
-                  setIsAddPopupVisible(false);
-                  syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
-                }
-                }>
-                <Text style={styles.addSleepButtonText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -201,71 +192,69 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
       transparent={true}
       onRequestClose={() => setIsEditPopupVisible(!isEditPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setIsEditPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setIsEditPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>Edit Sleep Data</Text>
 
-              <Text style={styles.popupTitle}>Edit Sleep Data</Text>
-
-              <TouchableOpacity onPress={() => {
-                deleteSleepEntry(userID, editPopupData.day);
-                setIsEditPopupVisible(false);
-                syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
-              }}>
-                <Text style={{ color: 'red' }}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.popupContent}>
-              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                {isEditPopupVisible ? <Text>Wakeup Date {wakeDate.toISOString().substring(0, 10)}</Text> : null}
-              </View>
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} placeholder={hours.toString()}
-                  keyboardType='numeric'
-                  onChangeText={(newText) => hours = parseInt(newText)} />
-              </View>
-
-              <View style={styles.sliderContainer}>
-                <Text style={styles.addSleepInputText}>Quality: </Text>
-                <Slider
-                  style={styles.sliderStuff}
-                  progress={progress2}
-                  minimumValue={min}
-                  maximumValue={max}
-                  step={9}
-                  onSlidingComplete={(value) => { progress2.value = value }}
-                />
-              </View>
-              <Text>Original Quality: {editPopupData.quality}</Text>
-
-              <TouchableOpacity
-                style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={async () => {
-                  await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                <TouchableOpacity onPress={() => {
+                  deleteSleepEntry(userID, editPopupData.day);
                   setIsEditPopupVisible(false);
-                  syncUsersMonthLog(userID, monthValue.getActiveDateMonth(), monthValue.getActiveDateYear(), setSleepData);
+                  syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
                 }}>
-                <Text style={styles.addSleepButtonText}>Save Changes</Text>
-              </TouchableOpacity>
-            </View>
+                  <Text style={{ color: 'red' }}>Delete</Text>
+                </TouchableOpacity>
+              </View>
 
+              <View style={styles.popupContent}>
+                <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
+                  {isEditPopupVisible ? <Text>Wakeup Date: {getFormattedDate(wakeDate.toISOString().substring(0, 10))}</Text> : null}
+                </View>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                  <TextInput style={styles.textInput} placeholder={hours.toString()}
+                    keyboardType='numeric'
+                    onChangeText={(newText) => hours = parseInt(newText)} />
+                </View>
+
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.addSleepInputText}>Quality: </Text>
+                  <Slider
+                    style={styles.sliderStuff}
+                    progress={progress2}
+                    minimumValue={min}
+                    maximumValue={max}
+                    step={9}
+                    onSlidingComplete={(value) => { progress2.value = value }}
+                  />
+                </View>
+                <Text>Original Quality: {editPopupData.quality}</Text>
+
+                <TouchableOpacity
+                  style={[styles.addSleepButton, { marginTop: 20 }]}
+                  onPress={async () => {
+                    await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                    setIsEditPopupVisible(false);
+                    syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
+                  }}>
+                  <Text style={styles.addSleepButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
 
 // opened when the month and year text is pressed
 const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthPopupVisible,
-  tempDate, setTempDate, setMonthValue, setIsLoading }) => {
+  tempDate, setTempDate, setMonthValue, setIsLoading, setShowChart }) => {
   return (
     <Modal
       transparent
@@ -274,91 +263,30 @@ const PickMonthPopup = ({ setSleepData, isPickMonthPopupVisible, setIsPickMonthP
       onRequestClose={() => {
         setIsPickMonthPopupVisible(false);
       }}>
-      <View style={styles.contentContainer}>
-        <View style={styles.content}>
-          <MonthPicker
-            selectedDate={tempDate || new Date()}
-            onMonthChange={setTempDate}
-          />
-          <TouchableOpacity
-            style={styles.confirmButton}
-            onPress={() => {
-              setIsPickMonthPopupVisible(false);
-              setMonthValue(new Date(tempDate));
-              setIsLoading(true);
-              syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
-            }}>
-            <Text>Confirm</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+        <TouchableWithoutFeedback onPress={() => setIsPickMonthPopupVisible(false)}>
+          <View style={styles.contentContainer}>
+            <View style={styles.content}>
+              <MonthPicker
+                selectedDate={tempDate || new Date()}
+                onMonthChange={setTempDate}
+              />
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  setIsPickMonthPopupVisible(false);
+                  setMonthValue(new Date(tempDate));
+                  setIsLoading(true);
+                  setShowChart(true);
+                  syncUsersMonthLog(userID, new Date(tempDate).getMonth() + 1, new Date(tempDate).getFullYear(), setSleepData, setIsLoading);
+                }}>
+                <Text>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
     </Modal>
   )
 }
-
-// // used for selecting dates at the top of the screen
-// const PickDatePopup = ({ isPickDatePopupVisible, setIsPickDatePopupVisible,
-//   calendarDate, setCalendarDate, setDateHook, setIsLoading }) => {
-  
-//   const [selectedDate, setSelectedDate] = useState(calendarDate || new Date());
-//   const todayDate = getActiveDate();
-
-//   return (
-//     <Modal
-//       transparent
-//       animationType="fade"
-//       visible={isPickDatePopupVisible}
-//       onRequestClose={() => {
-//         setIsPickDatePopupVisible(false);
-//       }}>
-//       <TouchableWithoutFeedback onPress={() => setIsPickDatePopupVisible(false)}>
-//         <View style={styles.contentContainer}>
-//           <TouchableWithoutFeedback>
-//             <View style={styles.content}>
-//               <Calendar
-//                 current={selectedDate}
-//                 onDayPress={(day) => {
-//                   const selectedDate = day.dateString;
-//                   setSelectedDate(selectedDate);
-//                   const selectedDateObj = new Date(day.timestamp);
-//                   setCalendarDate(selectedDateObj);
-//                   const dateString = convertDatetoString(selectedDateObj);
-//                   setDateHook(dateString);
-//                   setIsPickDatePopupVisible(false);
-//                 }}
-//                 markedDates={{
-//                   [selectedDate]: {
-//                     selected: true,
-//                     selectedColor: 'blue',
-//                   },
-//                   [todayDate]: {
-//                     selected: true,
-//                     selectedColor: 'orange',
-//                   }
-//                 }}
-//                 theme={{
-//                   arrowColor: 'black',
-//                 }}
-//               />
-//               <TouchableOpacity
-//                 style={styles.confirmButton}
-//                 onPress={() => {
-//                   // TODO: Find out why getActiveDate() doesn't return todays date
-//                   setSelectedDate(todayDate);
-//                   const selectedDateObj = new Date(todayDate.timestamp);
-//                   setCalendarDate(selectedDateObj);
-//                   setDateHook(todayDate);
-//                   setIsPickDatePopupVisible(false);
-//                 }}>
-//                 <Text>Today</Text>
-//               </TouchableOpacity>
-//             </View>
-//           </TouchableWithoutFeedback>
-//         </View>
-//       </TouchableWithoutFeedback>
-//     </Modal>
-//   )
-// }
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
@@ -456,54 +384,58 @@ const SleepScreen = () => {
   };
 
   let totalHours = sleepData.reduce((total, day) => total + day.hours, 0);
-
+ 
   return (
     <>
-      <StatusBar barStyle='default' />
+      <StatusBar barStyle="default" backgroundColor={COLORS.sleepButtonBlue}/>
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
-            setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
+        <AddSleepPopup setSleepData={setSleepData} monthValue={monthValue}
+          setIsAddPopupVisible={setIsAddPopupVisible} isAddPopupVisible={isAddPopupVisible} />
 
-          <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
-            setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
+        <EditSleepPopup setSleepData={setSleepData} editPopupData={editPopupData} monthValue={monthValue}
+          setIsEditPopupVisible={setIsEditPopupVisible} isEditPopupVisible={isEditPopupVisible} />
 
-          <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate} 
-            setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
+        <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
+          setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
-          <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
-            tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
-            setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} />
+        <PickMonthPopup isPickMonthPopupVisible={isPickMonthPopupVisible} setSleepData={setSleepData}
+          tempDate={tempDate} setTempDate={setTempDate} setMonthValue={setMonthValue} setIsLoading={setIsLoading}
+          setIsPickMonthPopupVisible={setIsPickMonthPopupVisible} setShowChart={setShowChart} />
 
-          <View style={styles.dateHeaderContainer}>
-            <Button title="<"
-              onPress={() => {
-                setActiveDate(-1);
-                setDateHook(getActiveDate());
-              }} />
+        <View style={styles.dateHeaderContainer}>
+          <Button title="<"
+            color={COLORS.sleepButtonBlue}
+            onPress={() => {
+              setActiveDate(-1);
+              setDateHook(getActiveDate());
+            }} />
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
+            <FeatherIcon name="calendar" size={24} color="white" />
           </TouchableOpacity>
 
-            <Button title=">"
-              onPress={() => {
-                setActiveDate(1);
-                setDateHook(getActiveDate());
-              }} />
-          </View>
+          <Button title=">"
+            color={COLORS.sleepButtonBlue}
+            onPress={() => {
+              setActiveDate(1);
+              setDateHook(getActiveDate());
+            }} />
+        </View>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
-            <View style={{ backgroundColor: COLORS.primaryPurpleHex, borderRadius: 15, padding: 10 }}>
+        <ScrollView>
+          <Text style={styles.title}>Sleep</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingBottom: 10 }}>
+            <View style={styles.monthButton}>
               <TouchableOpacity onPress={() => setIsPickMonthPopupVisible(true)}>
                 <Text style={styles.monthText}>{getMonthYearFormat(monthValue)}</Text>
-                <Text>Select Month</Text>
+                <Text style={{ color: 'white' }}>Select Month</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={styles.addSleepButton}
               onPress={() => setIsAddPopupVisible(true)}>
-              <Text style={styles.addSleepButtonText}>+ Add Sleep</Text>
+              <Text style={styles.addSleepButtonText}>Add Sleep</Text>
             </TouchableOpacity>
           </View>
 
@@ -522,7 +454,7 @@ const SleepScreen = () => {
               <Text style={styles.addSleepButtonText}>{useHours ? 'Hours of Sleep' : 'Quality of Sleep'}</Text>
             </TouchableOpacity>}
 
-          {/* Chart*/}
+          {/* Chart, this nested if loop sucks*/}
           {showChart ? !isLoading ? sleepData.length > 0 ?
             <View style={styles.chartContainer}>
               <MyLineChart sleepArray={sleepData} useHours={useHours} />
@@ -532,7 +464,7 @@ const SleepScreen = () => {
               <Text style={{ textAlign: 'center' }}>No sleep data found</Text>
             </View>
             : <Text>Loading...</Text> // if showChart is true but still loading
-            : null // if showChart is false
+            : null // if showChart is false, not very often
           }
 
 
@@ -571,26 +503,41 @@ export default SleepScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DADADA',
+    backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue2,
+  },
+  monthButton: {
+    backgroundColor: COLORS.sleepButtonBlue,
+    borderRadius: 15,
+    padding: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   dateTitleContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black',
+    color: 'white', //'black',
     paddingHorizontal: 20,
+
   },
   monthText: {
     fontSize: 20,
@@ -600,21 +547,37 @@ const styles = StyleSheet.create({
 
   },
 
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'left'
+  },
+
   heading3Text: {
     fontSize: 20,
-    color: COLORS.darkGray,
+    color: 'white', //COLORS.darkGray,
     textAlign: 'left',
     fontWeight: 'bold',
 
   },
 
   addSleepButton: {
-    backgroundColor: COLORS.primaryPurpleHex,
+    backgroundColor: COLORS.sleepButtonBlue,
     borderRadius: 15,
     padding: 10,
     margin: 10,
     justifyContent: 'center',
     height: 50,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   addSleepButtonText: {
     color: 'white',
@@ -623,13 +586,20 @@ const styles = StyleSheet.create({
   },
 
   showChartButton: {
-    backgroundColor: COLORS.primaryPurpleHex,
+    backgroundColor: COLORS.sleepButtonBlue,
     borderRadius: 15,
     padding: 10,
     justifyContent: 'center',
     marginVertical: 5,
     alignItems: 'center',
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   chartContainer: {
     justifyContent: 'center',
@@ -647,11 +617,17 @@ const styles = StyleSheet.create({
     //borderWidth: 2,
   },
   sleepTab: {
-    backgroundColor: COLORS.secondaryPurpleHex, // This is a placeholder color
+    backgroundColor: COLORS.sleepButtonBlue, // For sleep entries
     borderRadius: 15,
     padding: 10,
-
-
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
   dateName: {
     fontSize: 20,
@@ -664,7 +640,7 @@ const styles = StyleSheet.create({
 
   hoursText: {
     fontSize: 16,
-    color: COLORS.lightPurple,
+    color: COLORS.whiteHex,
     fontWeight: 'bold',
     marginLeft: 20,
   },
@@ -685,7 +661,7 @@ const styles = StyleSheet.create({
 
   qualityLabel: {
     fontSize: 16,
-    color: COLORS.lightPurple,
+    color: COLORS.whiteHex,
 
   },
   popupOverlay: {
@@ -721,7 +697,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     fontSize: 18,
-    color: '#0000ff', // Replace with your theme color
+    color: COLORS.primaryBlueHex, // Replace with your theme color
   },
   popupContent: {
     marginVertical: 20,
@@ -755,7 +731,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   content: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.whiteHex,
     marginHorizontal: 20,
     marginVertical: 70,
   },

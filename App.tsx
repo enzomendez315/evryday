@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from './src/theme/theme';
+import LottieView from "lottie-react-native";
 
 import DashboardScreen from './src/screens/Dashboard-Screen';
 import SettingsScreen from './src/screens/Settings-Screen';
@@ -26,7 +27,8 @@ import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
-import DailyGoalsScreen from './src/screens/Daily-Goals-Screen';
+import DailyGoalsScreen from './src/screens/dailyGoals/Daily-Goals-Screen';
+import NutritionGoalsScreen from './src/screens/dailyGoals/Nutrition-Goals-Screen';
 
 import { Amplify } from 'aws-amplify';
 import { DataStore } from 'aws-amplify/datastore';
@@ -59,7 +61,7 @@ function BottomNavBarTabs({ dietTrack = true, sleepTrack = true, workoutTrack = 
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
-        tabBarActiveTintColor: '#1ee94d',
+        tabBarActiveTintColor: COLORS.primaryBlueHex,
         headerShown: false,
       }}>
       <Tab.Screen
@@ -130,9 +132,7 @@ function DashboardStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Dashboard Home" component={DashboardScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
     </Stack.Navigator>
   );
@@ -144,12 +144,11 @@ function SettingsStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Settings Home" component={SettingsScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
+      <Stack.Screen name="Nutrition Goals" component={NutritionGoalsScreen} />
     </Stack.Navigator>
   );
 }
@@ -160,9 +159,7 @@ function DietStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Diet Home" component={DietScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Add Meal" component={AddMealScreen}
         options={({ navigation, route }) => ({
@@ -201,9 +198,7 @@ function SleepStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Sleep Home" component={SleepScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
     </Stack.Navigator>
   );
@@ -215,9 +210,7 @@ function WorkoutStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Workout Home" component={WorkoutHomeScreen}
         options={{
-          headerStyle: {
-            backgroundColor: COLORS.lightGreen,
-          },
+          headerShown: false,
         }} />
       <Stack.Screen name="Active Workout" component={ActiveWorkoutScreen} />
       <Stack.Screen name="Workout History" component={WorkingHistoryOverview} />
@@ -262,8 +255,6 @@ function App() {
     });
   }, []);
 
-
-
   return (
     // This tag isn't being used, but it might be helpful in the future?
     <AccountContext.Provider value={userId}>
@@ -274,9 +265,14 @@ function App() {
             sleepTrack={useSleep} workoutTrack={useWorkout} />
         </NavigationContainer>
 
-        : <View style={{ flex: 1, alignItems: 'center', }}>
-          <Text>connecting to database ...</Text>
-          <Image style={{ height: 50, width: 50 }} source={require('./src/images/sleepingSloth.png')} />
+        : <View style={{ flex: 1, alignItems: 'center', backgroundColor: COLORS.backgroundBlue }}>
+          <Text style={{ marginTop: 30 }}>Getting things ready ...</Text>
+          <LottieView
+            source={require('./src/animations/sloth_meditating.json')}
+            style={{ width: "75%", height: "75%" }}
+            autoPlay
+            loop
+          />
         </View>}
     </AccountContext.Provider>
   );

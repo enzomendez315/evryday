@@ -17,6 +17,7 @@ import { getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
 import { getUserGoals } from '../logic/user-goals';
 import { RefreshLocalStorage } from '../logic/devFunctions';
+import { COLORS } from '../theme/theme';
 
 let userID;
 
@@ -76,7 +77,7 @@ const SettingsScreen = () => {
     );
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "lightgray" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f8ff" }}>
             <View style={styles.container}>
                 <View style={styles.profileHeader}>
 
@@ -174,8 +175,8 @@ const SettingsScreen = () => {
                                 navigation.navigate('Basic Info');
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryBlueHex }]}>
+                                <FeatherIcon color="#fff" name="info" size={20} />
                             </View>
 
                             <Text style={styles.rowLabel}>Edit User Information</Text>
@@ -193,8 +194,8 @@ const SettingsScreen = () => {
                                 navigation.navigate('Daily Goals');
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.lightGreen }]}>
+                                <FeatherIcon color="#fff" name="check-square" size={20} />
                             </View>
 
                             <Text style={styles.rowLabel}>Edit Daily Goals</Text>
@@ -210,11 +211,11 @@ const SettingsScreen = () => {
                         <TouchableOpacity
                             onPress={RefreshLocalStorage}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                                <FeatherIcon color="#fff" name="star" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryRed }]}>
+                                <FeatherIcon color="#fff" name="trash-2" size={20} />
                             </View>
 
-                            <Text style={styles.rowLabel}>CLEAR LOCAL STORAGE</Text>
+                            <Text style={styles.rowLabel}>Clear Local Storage</Text>
 
                             <View style={styles.rowSpacer} />
 
@@ -246,8 +247,8 @@ const SettingsScreen = () => {
                                 await userSignOut();
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="user" size={20} />
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryGrayHex }]}>
+                                <FeatherIcon color="#fff" name="log-out" size={20} />
                             </View>
                             <Text style={styles.rowLabel}>Sign Out</Text>
                             <View style={styles.rowSpacer} />
@@ -328,6 +329,14 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         paddingLeft: 12,
         paddingRight: 12,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
     },
     rowIcon: {
         width: 32,
