@@ -6,7 +6,7 @@ import PermissionsPage from '../../components/PermissionsPage';
 import { useIsFocused } from '@react-navigation/core'
 import { getFoodItemFromBarcode } from '../../logic/diet-api'
 
-DEBUG = false;
+DEBUG = true;
 
 const BarcodeScanningScreen = (props) => {
     const { navigation, route } = props;
@@ -29,13 +29,15 @@ const BarcodeScanningScreen = (props) => {
             }
             DEBUG && console.log('Barcode scanned:', code)
             if (ignore) return;
-            const foodItem = getFoodItemFromBarcode(code)
+            const foodItem = await getFoodItemFromBarcode(code)
             if (foodItem === null){
                 DEBUG && console.log('No food item found')
                 setIsActive(true)
                 return
             }
             if (ignore) return;
+            DEBUG && console.log('Food item:', foodItem)
+            DEBUG && console.log('Meal:', meal)
             navigation.replace('Add Food', { foodItem:foodItem, meal:meal });
         }
 
