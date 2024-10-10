@@ -116,64 +116,54 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
       transparent={true}
       onRequestClose={() => setIsAddPopupVisible(!isAddPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setIsAddPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setIsAddPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>New Sleep Session</Text>
 
-              <Text style={styles.popupTitle}>New Sleep Session</Text>
-
-              <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                <Text style={styles.editButton}>Edit</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.popupContent}>
-              {/* <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                <Text>Wakeup Date</Text>
-                <DatePicker mode='date' date={new Date()}
-                  onDateChange={(newDate) => {
-                    tempStartDate = newDate;
-                  }} />
-              </View> */}
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} placeholder="Enter hours slept"
-                  keyboardType='numeric'
-                  onChangeText={(newText) => hours = parseInt(newText)} />
+                <TouchableOpacity onPress={() => { /* Handle edit */ }}>
+                  <Text style={styles.editButton}>Edit</Text>
+                </TouchableOpacity>
               </View>
 
-              <View style={styles.sliderContainer}>
-                <Text style={styles.addSleepInputText}>Quality: </Text>
-                <Slider
-                  style={styles.sliderStuff}
-                  progress={progress}
-                  minimumValue={min}
-                  maximumValue={max}
-                  step={9}
-                  onSlidingComplete={(value) => { progress.value = value }}
-                />
+              <View style={styles.popupContent}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                  <TextInput style={styles.textInput} placeholder="Enter hours slept"
+                    keyboardType='numeric'
+                    onChangeText={(newText) => hours = parseInt(newText)} />
+                </View>
+
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.addSleepInputText}>Quality: </Text>
+                  <Slider
+                    style={styles.sliderStuff}
+                    progress={progress}
+                    minimumValue={min}
+                    maximumValue={max}
+                    step={9}
+                    onSlidingComplete={(value) => { progress.value = value }}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.addSleepButton, { marginTop: 20 }]}
+                  onPress={async () => {
+                    await makeSleepEntry(userID, tempStartDate, hours, progress.value);
+                    setIsAddPopupVisible(false);
+                    syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
+                  }
+                  }>
+                  <Text style={styles.addSleepButtonText}>Submit</Text>
+                </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={async () => {
-                  await makeSleepEntry(userID, tempStartDate, hours, progress.value);
-                  setIsAddPopupVisible(false);
-                  syncUsersMonthLog(userID, tempStartDate.getMonth() + 1, getActiveDateYear(), setSleepData);
-                }
-                }>
-                <Text style={styles.addSleepButtonText}>Submit</Text>
-              </TouchableOpacity>
             </View>
-
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -202,64 +192,62 @@ const EditSleepPopup = ({ isEditPopupVisible, setIsEditPopupVisible, setSleepDat
       transparent={true}
       onRequestClose={() => setIsEditPopupVisible(!isEditPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setIsEditPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setIsEditPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>Edit Sleep Data</Text>
 
-              <Text style={styles.popupTitle}>Edit Sleep Data</Text>
-
-              <TouchableOpacity onPress={() => {
-                deleteSleepEntry(userID, editPopupData.day);
-                setIsEditPopupVisible(false);
-                syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
-              }}>
-                <Text style={{ color: 'red' }}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.popupContent}>
-              <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
-                {isEditPopupVisible ? <Text>Wakeup Date: {getFormattedDate(wakeDate.toISOString().substring(0, 10))}</Text> : null}
-              </View>
-
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.addSleepInputText}>Hours Slept: </Text>
-                <TextInput style={styles.textInput} placeholder={hours.toString()}
-                  keyboardType='numeric'
-                  onChangeText={(newText) => hours = parseInt(newText)} />
-              </View>
-
-              <View style={styles.sliderContainer}>
-                <Text style={styles.addSleepInputText}>Quality: </Text>
-                <Slider
-                  style={styles.sliderStuff}
-                  progress={progress2}
-                  minimumValue={min}
-                  maximumValue={max}
-                  step={9}
-                  onSlidingComplete={(value) => { progress2.value = value }}
-                />
-              </View>
-              <Text>Original Quality: {editPopupData.quality}</Text>
-
-              <TouchableOpacity
-                style={[styles.addSleepButton, { marginTop: 20 }]}
-                onPress={async () => {
-                  await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                <TouchableOpacity onPress={() => {
+                  deleteSleepEntry(userID, editPopupData.day);
                   setIsEditPopupVisible(false);
                   syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
                 }}>
-                <Text style={styles.addSleepButtonText}>Save Changes</Text>
-              </TouchableOpacity>
-            </View>
+                  <Text style={{ color: 'red' }}>Delete</Text>
+                </TouchableOpacity>
+              </View>
 
+              <View style={styles.popupContent}>
+                <View style={{ borderWidth: 1, borderColor: 'black', margin: 10 }}>
+                  {isEditPopupVisible ? <Text>Wakeup Date: {getFormattedDate(wakeDate.toISOString().substring(0, 10))}</Text> : null}
+                </View>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.addSleepInputText}>Hours Slept: </Text>
+                  <TextInput style={styles.textInput} placeholder={hours.toString()}
+                    keyboardType='numeric'
+                    onChangeText={(newText) => hours = parseInt(newText)} />
+                </View>
+
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.addSleepInputText}>Quality: </Text>
+                  <Slider
+                    style={styles.sliderStuff}
+                    progress={progress2}
+                    minimumValue={min}
+                    maximumValue={max}
+                    step={9}
+                    onSlidingComplete={(value) => { progress2.value = value }}
+                  />
+                </View>
+                <Text>Original Quality: {editPopupData.quality}</Text>
+
+                <TouchableOpacity
+                  style={[styles.addSleepButton, { marginTop: 20 }]}
+                  onPress={async () => {
+                    await editSleepEntry(userID, wakeDate.toISOString().substring(0, 10), hours, progress2.value);
+                    setIsEditPopupVisible(false);
+                    syncUsersMonthLog(userID, getActiveDateMonth(), getActiveDateYear(), setSleepData);
+                  }}>
+                  <Text style={styles.addSleepButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }

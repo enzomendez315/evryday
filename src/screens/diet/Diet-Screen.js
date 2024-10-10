@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Button } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, Text, TouchableOpacity, 
+  View, Modal, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { syncDailyLogData, createMeal, calcMealMacros, updateWaterIntake } from '../../logic/diet-api'
 import { getUserGoals } from '../../logic/user-goals'
@@ -290,57 +291,55 @@ const MealPeriodPopup = ({ mealPeriodPopupVisible, setMealPeriodPopupVisible, na
       transparent={true}
       onRequestClose={() => setMealPeriodPopupVisible(!mealPeriodPopupVisible)}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <View style={styles.popupHeader}>
-              <TouchableOpacity onPress={() => setMealPeriodPopupVisible(false)}>
-                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>x</Text>
-              </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setMealPeriodPopupVisible(false)}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.popupOverlay}>
+            <View style={styles.popup}>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>Add a Meal</Text>
+              </View>
 
-              <Text style={styles.popupTitle}>Add a Meal</Text>
-            </View>
+              <View style={styles.popupContent}>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Breakfast'); }}
+                  style={styles.row}>
 
-            <View style={styles.popupContent}>
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Breakfast'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Breakfast</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
-                <Text style={styles.rowLabel}>Breakfast</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Lunch'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Lunch'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Lunch</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
-                <Text style={styles.rowLabel}>Lunch</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Dinner'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Dinner'); }}
-                style={styles.row}>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Dinner</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
 
-                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
-                <Text style={styles.rowLabel}>Dinner</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { addMealNavigation('Snack'); }}
+                  style={styles.row}>
 
-              <TouchableOpacity
-                onPress={() => { addMealNavigation('Snack'); }}
-                style={styles.row}>
-
-                <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
-                <Text style={styles.rowLabel}>Snack</Text>
-                <View style={styles.rowSpacer} />
-              </TouchableOpacity>
+                  <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryOrange }]} />
+                  <Text style={styles.rowLabel}>Snack</Text>
+                  <View style={styles.rowSpacer} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
