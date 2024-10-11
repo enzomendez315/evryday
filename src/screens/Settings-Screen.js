@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     Switch,
     Image,
+    Button,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { getFoodItemFromBarcode } from '../logic/diet-api';
@@ -18,12 +19,19 @@ import { AccountContext } from '../../App';
 import { getUserGoals } from '../logic/user-goals';
 import { RefreshLocalStorage } from '../logic/devFunctions';
 import { COLORS } from '../theme/theme';
+import PopupComponent from '../components/PopupMenu';
+import { generateClient } from 'aws-amplify/api';
+import * as mutations from './graphql/mutations';
+import { deleteUser } from 'aws-amplify/auth';
 
 let userID;
 
 
+
 const SettingsScreen = () => {
     const navigation = useNavigation();
+    const [deleteAccountPopupVisible, setDeleteAccountPopupVisible] = useState(false);
+    const [disableDelete, setDisableDelete] = useState(true);
     const [form, setForm] = useState({
         userName: "",
         userAge: 0,
@@ -50,6 +58,55 @@ const SettingsScreen = () => {
             setForm({ ...form, userName: user.name, userAge: user.age, userHeight: user.height, userWeight: user.weight, userGender: user.gender });
         });
     }, []);
+
+    const client = generateClient();
+    const DeleteUserAccount = async () => {
+        console.log('DELETE USER DATA FOR USER ID:', userID);
+        setDisableDelete(false);
+        // Needs Testing in sandbox environment as it may delete the wrong user data
+        // const dataDeleted = await client.graphql({
+        //     query: mutations.deleteUserData
+        // });
+        // if (dataDeleted) {
+        //     console.log('deleteUserData successful');
+        //     try {
+        //         await deleteUser();
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // } else {
+        //     console.log('deleteUserData failed');
+        // }
+        setDisableDelete(true);
+    }
+
+    const DeleteUserAccountPopup = ({ onPress, closePopup }) => {
+        return (
+            <View style={styles.popupContentContainer}>
+            <Text style={styles.popupTitle}>Delete User Data</Text>
+            <View>
+                <Text style={styles.textInput}>
+                    This will delete all of your data from our server and delete your account. Are you sure you want to continue?
+                </Text>
+            </ View>
+            <Button
+                title="Yes, delete my data"
+                color={COLORS.primaryRed}
+                disabled={disableDelete}
+                onPress={async () => {
+                    closePopup();
+                    onPress();
+                }}
+            />
+            <Button
+                title="No"
+                onPress={async () => {
+                    closePopup();
+                }}
+            />
+            </View>
+        )
+    };
 
     // called every time the screen is opened
     useFocusEffect(
@@ -78,6 +135,14 @@ const SettingsScreen = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f0f8ff" }}>
+
+          <PopupComponent
+            isVisible={deleteAccountPopupVisible}
+            setIsVisible={setDeleteAccountPopupVisible}
+            Content={DeleteUserAccountPopup}
+            onPress={DeleteUserAccount}
+          />
+
             <View style={styles.container}>
                 <View style={styles.profileHeader}>
 
@@ -226,6 +291,23 @@ const SettingsScreen = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            onPress={() => {setDeleteAccountPopupVisible(true)}}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryRed }]}>
+                                <FeatherIcon color="#fff" name="trash-2" size={20} />
+                            </View>
+
+                            <Text style={styles.rowLabel}>Delete User Data</Text>
+
+                            <View style={styles.rowSpacer} />
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
                             onPress={() => {}}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
@@ -357,4 +439,22 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         flexBasis: 0,
     },
+    /** Delete User Popup */
+    popupTitle: {
+      fontSize: 22,
+      fontWeight: 'bold',
+      color: 'black',
+      textAlign: 'center',
+    },
+    popupContentContainer: {
+      flex: -1,
+      width: '100%',
+      maxHeight: '100%',
+      gap: 5,
+      backgroundColor: 'white',
+    },
+    textInput: {
+      textAlign: 'center',
+      color: 'black',
+    }
 });

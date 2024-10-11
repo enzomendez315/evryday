@@ -27,7 +27,11 @@
           "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
           "s3Key": "amplify-builds/AdminQueries01025b9f-75726558426e2b316458-build.zip"
         },
-        "evryday7b027c17": {}
+        "evryday7b027c17": {},
+        "deleteUserData": {
+          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
+          "s3Key": "amplify-builds/deleteUserData-6c446d38525245657261-build.zip"
+        }
       }
     }
   },
