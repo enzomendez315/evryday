@@ -195,13 +195,13 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     // set the calorie data by summing up the values in each array
     setCalorieData({
         proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
-        proteinGoal: 150,
+        proteinGoal: goals.proteinGoal ?? 150,
         carbsCurrent: macros.reduce((acc, meal) => acc + meal.carbs, 0),
-        carbsGoal: 250,
+        carbsGoal: goals.carbGoal ?? 250,
         fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
-        fatGoal: 75,
+        fatGoal: goals.fatGoal ?? 75,
         caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
-        caloriesGoal: goals.caloriesGoal ?? 2000,
+        caloriesGoal: goals.calorieGoal ?? 2000,
     });
 
     // set the meal data

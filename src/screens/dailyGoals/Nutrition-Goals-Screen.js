@@ -164,6 +164,12 @@ const NutritionGoalsScreen = () => {
             setMissingInfo(true);
             return;
         }
+        // check if percentages add to 100
+        else if (parseInt(proteinPercent) + parseInt(carbPercent) + parseInt(fatPercent) != 100) {
+            console.log("AAAAAAAAAAAAAAAAAAAA Percentages don't add to 100");
+            setMissingInfo(true);
+            return;
+        }
         DEBUG && console.log("Submitting goal info...");
         getUserGoals(userID).then(async (goals) => {
             if (goals == null) {
@@ -230,19 +236,36 @@ const NutritionGoalsScreen = () => {
                         </View>
                     </View>}
 
-                <View style={styles.inputRow}>
-                    <Text style={styles.label}>Calorie Goal:</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        value={calorieGoal.toString()}
-                        onChangeText={text => setCalorieGoal(text)}
-                        placeholder="Enter your calorie goal"
-                    />
-                    <View>
-                        <Text>Minimum Calories: {calorieGoal - calorieGoal * (nutritionBuffer / 100)}</Text>
-                        <Text>Maximum Calories: {parseInt(calorieGoal) + parseInt(calorieGoal) * (nutritionBuffer / 100)}</Text>
+                <View style={styles.macroContainer}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text>Calorie Goal:</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            value={calorieGoal.toString()}
+                            onChangeText={text => { setCalorieGoal(text) }}
+                            placeholder="Enter your calorie goal"
+                        />
+                        <View>
+                            <Text>Calorie Goal: {calorieGoal}cal</Text>
+                            <Text>{parseInt(calorieGoal) -
+                                parseInt(parseInt(calorieGoal) * (nutritionBuffer / 100))}
+                                - {parseInt(calorieGoal) +
+                                    parseInt(parseInt(calorieGoal) * (nutritionBuffer / 100))}
+                            </Text>
+                        </View>
                     </View>
+
+                    <Slider
+                        maximumValue={5000}
+                        minimumValue={0}
+                        step={1}
+                        value={calorieGoal}
+                        onValueChange={value => setCalorieGoal(value)}
+                        thumbTintColor='purple'
+                        minimumTrackTintColor='purple'
+                        maximumTrackTintColor={COLORS.lightGray}
+                    />
                 </View>
 
                 <View style={styles.macroContainer}>
@@ -359,6 +382,9 @@ const NutritionGoalsScreen = () => {
                         maximumTrackTintColor={COLORS.lightGray}
                     />
                 </View>
+
+                {missingInfo && <Text style={{ color: 'red' }}>Please fill in all your information and make sure the percentages
+                    add up to 100</Text>}
 
                 <View style={{ padding: 10 }}>
                     <Button title="Submit" onPress={handleSubmit} />

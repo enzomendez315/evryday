@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { getUserGoals, updateUserGoals, createUserGoals } from '../../logic/user-goals';
@@ -45,6 +46,31 @@ const DailyGoalsScreen = () => {
             }
         });
     }, []);
+
+    // Called every time the screen is opened
+    useFocusEffect(
+        React.useCallback(() => {
+            DEBUG && console.log("Getting user goals info...");
+            getUserGoals(userID).then((goals) => {
+                if (goals == null) {
+                    console.log("Goals info isn't made yet");
+                    return;
+                }
+                else {
+                    setGoalsInfo({
+                        calorieGoal: goals.calorieGoal,
+                        proteinGoal: goals.proteinGoal,
+                        carbGoal: goals.carbGoal,
+                        fatGoal: goals.fatGoal,
+                        minSleep: goals.minSleep,
+                        nutritionBuffer: goals.nutritionBuffer,
+                        dailyWorkout: goals.dailyWorkout,
+                    });
+                }
+            });
+        }, [])
+    );
+
 
     const handleSubmit = async () => {
         if (goalsInfo.calorieGoal == 0 || goalsInfo.minSleep == 0

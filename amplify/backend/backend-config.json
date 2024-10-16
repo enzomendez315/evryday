@@ -102,6 +102,20 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "deleteUserData": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "evryday"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -126,6 +140,22 @@
         {
           "category": "function",
           "resourceName": "AdminQueries01025b9f"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteUserData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteUserData"
         }
       ]
     }
