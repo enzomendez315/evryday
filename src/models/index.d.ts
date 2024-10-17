@@ -654,3 +654,35 @@ export declare type GoalLog = LazyLoading extends LazyLoadingDisabled ? EagerGoa
 export declare const GoalLog: (new (init: ModelInit<GoalLog>) => GoalLog) & {
   copyOf(source: GoalLog, mutator: (draft: MutableModel<GoalLog>) => MutableModel<GoalLog> | void): GoalLog;
 }
+
+type EagerWeightLog = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<WeightLog, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly date: string;
+  readonly weight: number;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyWeightLog = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<WeightLog, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly date: string;
+  readonly weight: number;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type WeightLog = LazyLoading extends LazyLoadingDisabled ? EagerWeightLog : LazyWeightLog
+
+export declare const WeightLog: (new (init: ModelInit<WeightLog>) => WeightLog) & {
+  copyOf(source: WeightLog, mutator: (draft: MutableModel<WeightLog>) => MutableModel<WeightLog> | void): WeightLog;
+}

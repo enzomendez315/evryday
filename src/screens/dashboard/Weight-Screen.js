@@ -1,80 +1,62 @@
 import React, { useEffect } from 'react';
 import { AccountContext } from '../../../App';
 import { getUserDBEntry } from '../../logic/account';
-import { View, Text, StyleSheet } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { createWeightLog, updateWeightLog, getAllWeightLogs } from '../../logic/user-goals';
+import { getActiveDate } from '../../logic/date-time';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 let userID;
 
-// chart that renders sleepData on UI
-const MyLineChart = ({ weightData }) => {
-    let largestDay = Math.max(...weightData.map(day => parseInt(day.day.split('-')[2])));
-    let daysArray = Array.from({ length: largestDay }, (_, index) => (index + 1).toString().padStart(2, '0'));
-    return (
-        <>
-            <LineChart
-                data={{
-                    labels: weightData,
-                    datasets: [
-                        {
-                            data: hoursArray,
-                        },
-                        // hack so that chart starts at 0
-                        { data: [0, 0], color: () => 'transparent', strokeWidth: 0, withDots: false, }
-                    ],
-                    legend: ["Weight"]
-                }}
-                width={Dimensions.get('window').width - 16}
-                height={220}
-                yAxisInterval={1}
-                chartConfig={{
-                    fromZero: true,
-                    withHorizontalLabels: true,
-                    backgroundColor: "#00a8e2",
-                    backgroundGradientFrom: "#00c6ff",
-                    backgroundGradientTo: "#0072ff",
-                    decimalPlaces: 1, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
-                        borderRadius: 16
-                    },
-                    propsForDots: {
-                        r: "6",
-                        strokeWidth: "2",
-                        stroke: "#00c6ff"
-                    }
-                }}
-                style={{
-                    marginVertical: 8,
-                    borderRadius: 16,
-                }}
-            />
-        </>
-    );
-};
-
 const WeightScreen = () => {
-    const [userWeight, setUserWeight] = React.useState(0);
+    const [userBasicWeight, setUserBasicWeight] = React.useState(0);
+    const [allWeightLogs, setAllWeightLogs] = React.useState(null);
 
     userID = React.useContext(AccountContext);
 
     // fetch user settings
     useEffect(() => {
+        // gets the basic info weight
+        // TODO: match this with the user's current weight
         getUserDBEntry(userID).then((user) => {
             if (user == null) {
                 console.log("User info isn't made yet");
                 navigation.navigate('Basic Info');
                 return;
             }
-            setUserWeight(user.weight);
+            setUserBasicWeight(user.weight);
+        });
+
+        // gets all weight logs from DB and sets the hook
+        getAllWeightLogs(userID).then((logs) => {
+            let tempWeightData = [];
+            // filter the weight and date from each entry then set the hook
+            logs.forEach(element => {
+                tempWeightData.push({ date: element.date, weight: element.weight });
+            });
+            console.log(`All weight logs: ${tempWeightData[0]}`);
+            setAllWeightLogs(tempWeightData);
         });
     }, []);
+
 
     return (
         <View style={styles.container}>
             <Text>Weight Screen</Text>
-            <Text>This is your current weight: {userWeight}</Text>
+            <Text>This is your current weight: {userBasicWeight}</Text>
+            <Button title="cool button"
+                onPress={() => {
+                    createWeightLog(userID, 170, getActiveDate()).then(
+                        (res) => {
+                            console.log(`Created weight log: ${res}`);
+                        }
+                    )
+                }} />
+            <Text>This is the big list:</Text>
+            {allWeightLogs && allWeightLogs.map((log, index) => (
+                <Text key={index}>
+                    Date: {log.date}, Weight: {log.weight}
+                </Text>
+            ))}
         </View>
     );
 };
