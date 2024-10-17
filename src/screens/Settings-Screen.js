@@ -10,10 +10,8 @@ import {
     Image,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { initFoodItems } from '../logic/diet-api';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { userSignOut } from '../logic/account';
-import { getUserDBEntry } from '../logic/account';
+import { userSignOut, getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
 import { getUserGoals } from '../logic/user-goals';
 import { RefreshLocalStorage } from '../logic/devFunctions';
