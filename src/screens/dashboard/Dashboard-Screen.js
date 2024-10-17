@@ -254,10 +254,6 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
-
-
-
-
 // Weight Tab Component:
 const WeightTab = ({ weightData }) => {
   const navigation = useNavigation();
@@ -270,11 +266,6 @@ const WeightTab = ({ weightData }) => {
     </TouchableOpacity>
   );
 };
-
-
-
-
-
 
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);

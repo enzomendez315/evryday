@@ -1,7 +1,7 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { DailyGoals, WeightLog } from '../models';
 
-let DEBUG = false;
+let DEBUG = true;
 
 export async function getUserGoals(userID_) {
     p = new Promise((resolve, reject) => {
@@ -111,8 +111,10 @@ export async function createWeightLog(userID_, weight_, date_) {
 export async function updateWeightLog(userID_, weight_, date_) {
     p = new Promise((resolve, reject) => {
         try {
-            DataStore.query(WeightLog, (u) =>
-                u.userId("eq", userID_).date("eq", date_)
+            DataStore.query(WeightLog, (u) => u.and(c => [
+                u.userId.eq(userID_),
+                u.date.eq(date_)
+            ])
             ).then((foundLogs) => {
                 if (foundLogs == null || foundLogs.length == 0) {
                     console.error("No weight logs found to update");
@@ -123,7 +125,7 @@ export async function updateWeightLog(userID_, weight_, date_) {
                         updated.weight = parseFloat(weight_);
                     });
                     DataStore.save(updatedLog).then(() => {
-                        console.log(`Updated weight log: ${updatedLog}`);
+                        DEBUG && console.log(`Updated weight log: ${updatedLog}`);
                         resolve(true);
                     });
                 }
@@ -148,6 +150,31 @@ export async function getAllWeightLogs(userID_) {
                 } else {
                     console.log(`Found weight logs:`, foundLogs);
                     resolve(foundLogs);
+                }
+            });
+        } catch (err) {
+            console.log(`Failed to find weight logs`);
+            reject(err);
+        }
+    });
+    return p;
+}
+
+export async function getDayWeightLog(userID_, date_) {
+    DEBUG && console.log("getting weight log for day: ", date_);
+    p = new Promise((resolve, reject) => {
+        try {
+            DataStore.query(WeightLog, (u) => u.and(c => [
+                u.userId.eq(userID_),
+                u.date.eq(date_)
+            ])
+            ).then((foundLogs) => {
+                if (foundLogs == null || foundLogs.length == 0) {
+                    DEBUG && console.log("No weight logs found");
+                    resolve(null);
+                } else {
+                    DEBUG && console.log(`Found weight logs:`, foundLogs);
+                    resolve(foundLogs[0]);
                 }
             });
         } catch (err) {
