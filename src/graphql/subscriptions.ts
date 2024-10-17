@@ -1508,3 +1508,57 @@ export const onDeleteGoalLog = /* GraphQL */ `subscription OnDeleteGoalLog($filt
   APITypes.OnDeleteGoalLogSubscriptionVariables,
   APITypes.OnDeleteGoalLogSubscription
 >;
+export const onCreateWeightLog = /* GraphQL */ `subscription OnCreateWeightLog($filter: ModelSubscriptionWeightLogFilterInput) {
+  onCreateWeightLog(filter: $filter) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateWeightLogSubscriptionVariables,
+  APITypes.OnCreateWeightLogSubscription
+>;
+export const onUpdateWeightLog = /* GraphQL */ `subscription OnUpdateWeightLog($filter: ModelSubscriptionWeightLogFilterInput) {
+  onUpdateWeightLog(filter: $filter) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateWeightLogSubscriptionVariables,
+  APITypes.OnUpdateWeightLogSubscription
+>;
+export const onDeleteWeightLog = /* GraphQL */ `subscription OnDeleteWeightLog($filter: ModelSubscriptionWeightLogFilterInput) {
+  onDeleteWeightLog(filter: $filter) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteWeightLogSubscriptionVariables,
+  APITypes.OnDeleteWeightLogSubscription
+>;

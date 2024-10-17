@@ -1075,6 +1075,52 @@ export type DeleteGoalLogInput = {
   _version?: number | null,
 };
 
+export type CreateWeightLogInput = {
+  id?: string | null,
+  userId: string,
+  date: string,
+  weight: number,
+  _version?: number | null,
+};
+
+export type ModelWeightLogConditionInput = {
+  userId?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  weight?: ModelFloatInput | null,
+  and?: Array< ModelWeightLogConditionInput | null > | null,
+  or?: Array< ModelWeightLogConditionInput | null > | null,
+  not?: ModelWeightLogConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type WeightLog = {
+  __typename: "WeightLog",
+  id: string,
+  userId: string,
+  date: string,
+  weight: number,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateWeightLogInput = {
+  id: string,
+  userId?: string | null,
+  date?: string | null,
+  weight?: number | null,
+  _version?: number | null,
+};
+
+export type DeleteWeightLogInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type ModelDailyGoalsFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
@@ -1404,6 +1450,26 @@ export type ModelGoalLogConnection = {
   startedAt?: number | null,
 };
 
+export type ModelWeightLogFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  date?: ModelStringInput | null,
+  weight?: ModelFloatInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelWeightLogFilterInput | null > | null,
+  or?: Array< ModelWeightLogFilterInput | null > | null,
+  not?: ModelWeightLogFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelWeightLogConnection = {
+  __typename: "ModelWeightLogConnection",
+  items:  Array<WeightLog | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
 export type ModelSubscriptionDailyGoalsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
@@ -1693,6 +1759,25 @@ export type ModelSubscriptionGoalLogFilterInput = {
   and?: Array< ModelSubscriptionGoalLogFilterInput | null > | null,
   or?: Array< ModelSubscriptionGoalLogFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionWeightLogFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  date?: ModelSubscriptionStringInput | null,
+  weight?: ModelSubscriptionFloatInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionWeightLogFilterInput | null > | null,
+  or?: Array< ModelSubscriptionWeightLogFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type DeleteUserDataMutationVariables = {
+};
+
+export type DeleteUserDataMutation = {
+  deleteUserData: boolean,
 };
 
 export type CreateDailyGoalsMutationVariables = {
@@ -3223,6 +3308,66 @@ export type DeleteGoalLogMutation = {
     hoursSlept: number,
     dailyCalories: number,
     dailyExercise: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateWeightLogMutationVariables = {
+  input: CreateWeightLogInput,
+  condition?: ModelWeightLogConditionInput | null,
+};
+
+export type CreateWeightLogMutation = {
+  createWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateWeightLogMutationVariables = {
+  input: UpdateWeightLogInput,
+  condition?: ModelWeightLogConditionInput | null,
+};
+
+export type UpdateWeightLogMutation = {
+  updateWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteWeightLogMutationVariables = {
+  input: DeleteWeightLogInput,
+  condition?: ModelWeightLogConditionInput | null,
+};
+
+export type DeleteWeightLogMutation = {
+  deleteWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4831,6 +4976,78 @@ export type SyncGoalLogsQuery = {
   } | null,
 };
 
+export type GetWeightLogQueryVariables = {
+  id: string,
+};
+
+export type GetWeightLogQuery = {
+  getWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListWeightLogsQueryVariables = {
+  filter?: ModelWeightLogFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListWeightLogsQuery = {
+  listWeightLogs?:  {
+    __typename: "ModelWeightLogConnection",
+    items:  Array< {
+      __typename: "WeightLog",
+      id: string,
+      userId: string,
+      date: string,
+      weight: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncWeightLogsQueryVariables = {
+  filter?: ModelWeightLogFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncWeightLogsQuery = {
+  syncWeightLogs?:  {
+    __typename: "ModelWeightLogConnection",
+    items:  Array< {
+      __typename: "WeightLog",
+      id: string,
+      userId: string,
+      date: string,
+      weight: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type OnCreateDailyGoalsSubscriptionVariables = {
   filter?: ModelSubscriptionDailyGoalsFilterInput | null,
 };
@@ -6305,6 +6522,63 @@ export type OnDeleteGoalLogSubscription = {
     hoursSlept: number,
     dailyCalories: number,
     dailyExercise: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateWeightLogSubscriptionVariables = {
+  filter?: ModelSubscriptionWeightLogFilterInput | null,
+};
+
+export type OnCreateWeightLogSubscription = {
+  onCreateWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateWeightLogSubscriptionVariables = {
+  filter?: ModelSubscriptionWeightLogFilterInput | null,
+};
+
+export type OnUpdateWeightLogSubscription = {
+  onUpdateWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteWeightLogSubscriptionVariables = {
+  filter?: ModelSubscriptionWeightLogFilterInput | null,
+};
+
+export type OnDeleteWeightLogSubscription = {
+  onDeleteWeightLog?:  {
+    __typename: "WeightLog",
+    id: string,
+    userId: string,
+    date: string,
+    weight: number,
     createdAt: string,
     updatedAt: string,
     _version: number,

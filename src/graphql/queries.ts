@@ -1727,3 +1727,81 @@ export const syncGoalLogs = /* GraphQL */ `query SyncGoalLogs(
   APITypes.SyncGoalLogsQueryVariables,
   APITypes.SyncGoalLogsQuery
 >;
+export const getWeightLog = /* GraphQL */ `query GetWeightLog($id: ID!) {
+  getWeightLog(id: $id) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetWeightLogQueryVariables,
+  APITypes.GetWeightLogQuery
+>;
+export const listWeightLogs = /* GraphQL */ `query ListWeightLogs(
+  $filter: ModelWeightLogFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listWeightLogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userId
+      date
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListWeightLogsQueryVariables,
+  APITypes.ListWeightLogsQuery
+>;
+export const syncWeightLogs = /* GraphQL */ `query SyncWeightLogs(
+  $filter: ModelWeightLogFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncWeightLogs(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userId
+      date
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncWeightLogsQueryVariables,
+  APITypes.SyncWeightLogsQuery
+>;

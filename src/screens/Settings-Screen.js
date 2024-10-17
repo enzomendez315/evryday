@@ -10,10 +10,8 @@ import {
     Image,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { initFoodItems } from '../logic/diet-api';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { userSignOut } from '../logic/account';
-import { getUserDBEntry } from '../logic/account';
+import { userSignOut, getUserDBEntry } from '../logic/account';
 import { AccountContext } from '../../App';
 import { getUserGoals } from '../logic/user-goals';
 import { RefreshLocalStorage } from '../logic/devFunctions';
@@ -84,7 +82,7 @@ const SettingsScreen = () => {
                     <View style={styles.nameAndPic}>
                         <Text style={styles.profileName}>{form.userName}</Text>
                         <View>
-                            {form.userGender == "male" ? <Image style={styles.image}
+                            {form.userGender == "Male" ? <Image style={styles.image}
                                 source={require('../images/boy_profile_icon.png')} />
                                 : <Image style={styles.image}
                                     source={require('../images/girl_profile_icon.png')} />}

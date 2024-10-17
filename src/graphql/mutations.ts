@@ -8,6 +8,13 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const deleteUserData = /* GraphQL */ `mutation DeleteUserData {
+  deleteUserData
+}
+` as GeneratedMutation<
+  APITypes.DeleteUserDataMutationVariables,
+  APITypes.DeleteUserDataMutation
+>;
 export const createDailyGoals = /* GraphQL */ `mutation CreateDailyGoals(
   $input: CreateDailyGoalsInput!
   $condition: ModelDailyGoalsConditionInput
@@ -1597,4 +1604,67 @@ export const deleteGoalLog = /* GraphQL */ `mutation DeleteGoalLog(
 ` as GeneratedMutation<
   APITypes.DeleteGoalLogMutationVariables,
   APITypes.DeleteGoalLogMutation
+>;
+export const createWeightLog = /* GraphQL */ `mutation CreateWeightLog(
+  $input: CreateWeightLogInput!
+  $condition: ModelWeightLogConditionInput
+) {
+  createWeightLog(input: $input, condition: $condition) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateWeightLogMutationVariables,
+  APITypes.CreateWeightLogMutation
+>;
+export const updateWeightLog = /* GraphQL */ `mutation UpdateWeightLog(
+  $input: UpdateWeightLogInput!
+  $condition: ModelWeightLogConditionInput
+) {
+  updateWeightLog(input: $input, condition: $condition) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateWeightLogMutationVariables,
+  APITypes.UpdateWeightLogMutation
+>;
+export const deleteWeightLog = /* GraphQL */ `mutation DeleteWeightLog(
+  $input: DeleteWeightLogInput!
+  $condition: ModelWeightLogConditionInput
+) {
+  deleteWeightLog(input: $input, condition: $condition) {
+    id
+    userId
+    date
+    weight
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteWeightLogMutationVariables,
+  APITypes.DeleteWeightLogMutation
 >;
