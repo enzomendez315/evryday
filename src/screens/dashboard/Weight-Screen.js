@@ -6,6 +6,7 @@ import { getActiveDate } from '../../logic/date-time';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { COLORS } from '../../theme/theme';
 import { LineChart } from 'react-native-chart-kit';
+import { Slider } from '@miblanchard/react-native-slider';
 
 let userID;
 
@@ -16,7 +17,7 @@ const MyLineChart = ({ weightArray_ }) => {
     let minimumWeight = Math.min(...weightArray_.map(entry => entry.weight));
     let weightArray = daysArray.map(date => {
         const weightEntry = weightArray_.find(entry => entry.date.split('-')[2] === date);
-        return weightEntry ? weightEntry.weight : minimumWeight;
+        return weightEntry ? weightEntry.weight : 0;
     });
     return (
         <>
@@ -28,7 +29,7 @@ const MyLineChart = ({ weightArray_ }) => {
                             data: weightArray,
                         },
                         // hack so that chart starts at 0
-                        { data: [minimumWeight - 2, minimumWeight - 2], color: () => 'transparent', strokeWidth: 0, withDots: false, }
+                        { data: [0, 0], color: () => 'transparent', strokeWidth: 0, withDots: false, }
                     ],
                     legend: ["Weight"]
                 }}
@@ -65,6 +66,7 @@ const MyLineChart = ({ weightArray_ }) => {
 const WeightScreen = () => {
     const [userBasicWeight, setUserBasicWeight] = React.useState(0);
     const [allWeightLogs, setAllWeightLogs] = React.useState(null);
+    const [addWeightNumber, setAddWeightNumber] = React.useState(170);
 
     userID = React.useContext(AccountContext);
 
@@ -105,7 +107,7 @@ const WeightScreen = () => {
                     </View>
                     <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
                         <Text style={{ color: 'black', fontSize: 24 }}>Goal Weight</Text>
-                        <Text style={{ color: 'black', fontSize: 16 }}>Idk mane ...</Text>
+                        <Text style={{ color: 'black', fontSize: 16 }}>To Be Determined ...</Text>
                     </View>
                 </View>
             </View>
@@ -117,13 +119,24 @@ const WeightScreen = () => {
                 </View>
             </View>
 
+            <Slider
+                maximumValue={250}
+                minimumValue={50}
+                step={1}
+                value={addWeightNumber}
+                onValueChange={value => setAddWeightNumber(value)}
+                thumbTintColor={COLORS.primaryBlueHex}
+                minimumTrackTintColor={COLORS.primaryBlueHex}
+                maximumTrackTintColor={COLORS.lightGray}
+            />
+
             {/* Overly Intricate and Complex Add weight button */}
             <TouchableOpacity style={styles.addWeightButton}
                 onPress={() => {
                     getDayWeightLog(userID, getActiveDate()).then((res1) => {
                         if (res1 == null) {
                             console.log("what");
-                            createWeightLog(userID, 170, getActiveDate()).then(
+                            createWeightLog(userID, addWeightNumber, getActiveDate()).then(
                                 (res) => {
                                     console.log(`Created weight log: ${res}`);
                                     // gets all weight logs from DB and sets the hook
@@ -140,7 +153,7 @@ const WeightScreen = () => {
                             )
                         } else {
                             console.log("what part 2");
-                            updateWeightLog(userID, 170, getActiveDate()).then(
+                            updateWeightLog(userID, addWeightNumber, getActiveDate()).then(
                                 (res) => {
                                     console.log(`Updated weight log: ${res}`);
                                     // gets all weight logs from DB and sets the hook
@@ -159,6 +172,7 @@ const WeightScreen = () => {
                     });
                 }} >
                 <Text style={styles.addWeightButtonText}> + Add Weight</Text>
+                <Text>This button adds {addWeightNumber} lbs to the active date</Text>
             </TouchableOpacity>
         </View>
     );
