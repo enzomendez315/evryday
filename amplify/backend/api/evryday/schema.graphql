@@ -1,3 +1,7 @@
+type Mutation {
+  deleteUserData: Boolean! @function(name: "deleteUserData-${env}")
+}
+
 type DailyGoals @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID
@@ -158,3 +162,9 @@ type GoalLog @model @auth(rules: [{allow: public}]) {
   dailyExercise: Int!
 }
  
+type WeightLog @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID!
+  date: String!
+  weight: Float!
+}
