@@ -79,5 +79,12 @@
         "evryday": {}
       }
     }
+  },
+  "beta": {
+    "categories": {
+      "auth": {
+        "evryday7b027c17": {}
+      }
+    }
   }
 }

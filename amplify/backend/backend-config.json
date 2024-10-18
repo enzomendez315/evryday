@@ -117,47 +117,5 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
-  },
-  "parameters": {
-    "AMPLIFY_auth_evryday7b027c17_googleClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "evryday7b027c17"
-        }
-      ]
-    },
-    "AMPLIFY_function_AdminQueries01025b9f_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "AdminQueries01025b9f"
-        }
-      ]
-    },
-    "AMPLIFY_function_AdminQueries01025b9f_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "AdminQueries01025b9f"
-        }
-      ]
-    },
-    "AMPLIFY_function_deleteUserData_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "deleteUserData"
-        }
-      ]
-    },
-    "AMPLIFY_function_deleteUserData_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "deleteUserData"
-        }
-      ]
-    }
   }
 }
