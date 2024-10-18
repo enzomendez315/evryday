@@ -236,6 +236,19 @@ const SettingsScreen = () => {
                             <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                         </TouchableOpacity>
 
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('Onboarding'); // Navigate to the Onboarding screen
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, { backgroundColor: COLORS.primaryGrayHex }]}>
+                                <FeatherIcon color="#fff" name="help-circle" size={20} />
+                            </View>
+                            <Text style={styles.rowLabel}>Go to Onboarding</Text>
+                            <View style={styles.rowSpacer} />
+                            <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                        </TouchableOpacity>
+
 
                     </View>
                 </ScrollView>

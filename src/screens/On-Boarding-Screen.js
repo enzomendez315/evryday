@@ -1,4 +1,4 @@
-import React from 'react';
+import {React,useRef, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import LottieView from 'lottie-react-native';
 
@@ -37,9 +37,9 @@ const OnboardingScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Avatars Row */}
       <View style={styles.avatarsContainer}>
-        <LottieView source={require('../../src/animations/ape_waving_hand.json')} autoPlay loop style={styles.avatar} />
-        <LottieView source={require('../../src/animations/bear_clapping_hand.json')} autoPlay loop style={styles.avatar} />
-        <LottieView source={require('../../src/animations/sloth_moving_hand.json')} autoPlay loop style={styles.avatar} />
+        <LottieView source={require('../../src/animations/ape_loading.json')} autoPlay loop style={styles.avatar} />
+        <LottieView source={require('../../src/animations/bear_loading.json')} autoPlay loop style={styles.avatar} />
+        <LottieView source={require('../../src/animations/sloth_loading.json')} autoPlay loop style={styles.avatar} />
       </View>
 
       <View style={styles.speechBubbleContainer}>
@@ -63,7 +63,7 @@ const OnboardingScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: { 
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -71,13 +71,15 @@ const styles = StyleSheet.create({
   },
   avatarsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
     marginBottom: 20,
+    paddingHorizontal: 10,
   },
   avatar: {
-    width: 100,
-    height: 100,
+    width: 250,
+    height: 250,
   },
   speechBubbleContainer: {
     marginBottom: 40,
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
   getStartedButton: {
     backgroundColor: '#4CAF50',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
   },
   getStartedText: {
     color: 'white',

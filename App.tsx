@@ -24,6 +24,7 @@ import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
+import OnboardingScreen from './src/screens/On-Boarding-Screen';
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
 import DailyGoalsScreen from './src/screens/dailyGoals/Daily-Goals-Screen';
 import NutritionGoalsScreen from './src/screens/dailyGoals/Nutrition-Goals-Screen';
@@ -151,6 +152,7 @@ function SettingsStack() {
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
       <Stack.Screen name="Nutrition Goals" component={NutritionGoalsScreen} />
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
     </Stack.Navigator>
   );
 }
@@ -244,7 +246,7 @@ function App() {
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
-      // await DataStore.clear(); // clear the local Datastore before connecting to the remote database
+      await DataStore.clear(); // clear the local Datastore before connecting to the remote database
       await DataStore.start();
       await StartListening(user, setDBReady);
 
