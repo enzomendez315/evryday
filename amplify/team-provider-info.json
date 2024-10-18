@@ -15,11 +15,8 @@
       "auth": {
         "EvryDay": {}
       },
-      "function": {
-        "deleteUserData": {
-          "deploymentBucketName": "amplify-evryday-beta-35318-deployment",
-          "s3Key": "amplify-builds/deleteUserData-5361354556716a503242-build.zip"
-        }
+      "api": {
+        "evryday": {}
       }
     }
   }
