@@ -1,4 +1,32 @@
 {
+  "beta": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-evryday-beta-35318-authRole",
+      "UnauthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-beta-35318-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-beta-35318-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-evryday-beta-35318-deployment",
+      "UnauthRoleName": "amplify-evryday-beta-35318-unauthRole",
+      "StackName": "amplify-evryday-beta-35318",
+      "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-evryday-beta-35318/71fdfa10-8d43-11ef-af91-0a281f4e8273",
+      "AmplifyAppId": "d303bpvqrqjc9z"
+    },
+    "categories": {
+      "auth": {
+        "evryday7b027c17": {},
+        "EvryDay": {}
+      },
+      "api": {
+        "evryday": {}
+      },
+      "function": {
+        "deleteUserData": {
+          "deploymentBucketName": "amplify-evryday-beta-35318-deployment",
+          "s3Key": "amplify-builds/deleteUserData-5361354556716a503242-build.zip"
+        }
+      }
+    }
+  },
   "staging": {
     "awscloudformation": {
       "AuthRoleName": "amplify-amplify0a53240a11b74-staging-d616d-authRole",

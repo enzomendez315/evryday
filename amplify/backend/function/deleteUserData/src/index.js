@@ -1,24 +1,27 @@
 /* Amplify Params - DO NOT EDIT
+	API_EVRYDAY_GRAPHQLAPIENDPOINTOUTPUT
 	API_EVRYDAY_GRAPHQLAPIIDOUTPUT
+	API_EVRYDAY_GRAPHQLAPIKEYOUTPUT
 	API_EVRYDAY_USERTABLE_ARN
 	API_EVRYDAY_USERTABLE_NAME
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
 
-// Remove the users name and set account for deletion
-
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
 const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
-const userTable = process.env.API_EVRYDAY_USERTABLE_NAME;
+const tableName = process.env.names;
 
 const THIRTY_DAYS_IN_SECONDS =  30 * 24 * 60 * 60;
 
 exports.handler = async (event) => {
-    const ownerField = 'owner';
-    const identityClaim = 'username';
+    const ownerField = 'owner'; // owner is default value but if you specified ownerField on auth rule, that must be specified here
+    const identityClaim = 'username'; // username is default value but if you specified identityField on auth rule, that must be specified here
     
     var condition = {
         [ownerField]: {
@@ -36,7 +39,7 @@ exports.handler = async (event) => {
 
         do {
             let queryParams = {
-                TableName: userTable,
+                TableName: tableName,
                 ScanFilter: condition,
                 ExclusiveStartKey: LastEvaluatedKey
             }
@@ -58,12 +61,11 @@ exports.handler = async (event) => {
             if (items.length > 0) {
                 let deleteParams = {
                     RequestItems: {
-                        [userTable]: items.map(item => {
+                        [tableName]: items.map(item => {
                             return {
                                 PutRequest: {
                                     Item: {
                                         ...item,
-                                        name: "deleted",
                                         _deleted: true,
                                         _ttl: dateNow.getTime()/1000 + THIRTY_DAYS_IN_SECONDS,
                                         _version: item._version + 1,

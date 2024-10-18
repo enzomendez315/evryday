@@ -11,7 +11,7 @@ import {
     Button,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { getFoodItemFromBarcode } from '../logic/diet-api';
+import { getFoodItemFromBarcode, initFoodItems } from '../logic/diet-api';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { userSignOut } from '../logic/account';
 import { getUserDBEntry } from '../logic/account';
@@ -21,8 +21,9 @@ import { RefreshLocalStorage } from '../logic/devFunctions';
 import { COLORS } from '../theme/theme';
 import PopupComponent from '../components/PopupMenu';
 import { generateClient } from 'aws-amplify/api';
-import * as mutations from './graphql/mutations';
+import { deleteUserData } from '../graphql/mutations';
 import { deleteUser } from 'aws-amplify/auth';
+
 
 let userID;
 
@@ -307,8 +308,8 @@ const SettingsScreen = () => {
                                 size={20} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            onPress={() => {}}
+                        {/*<TouchableOpacity
+                            onPress={async () => {await initFoodItems()}}
                             style={styles.row}>
                             <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
                                 <FeatherIcon color="#fff" name="star" size={20} />
@@ -322,7 +323,7 @@ const SettingsScreen = () => {
                                 color="#C6C6C6"
                                 name="chevron-right"
                                 size={20} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity
                             onPress={async () => {
