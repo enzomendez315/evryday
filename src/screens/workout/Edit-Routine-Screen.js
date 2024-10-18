@@ -230,15 +230,16 @@ const EditRoutineScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: COLORS.workoutBackgroundPistachio,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: 'white',
     },
     routineContainer: {
         flex: 1,
-        backgroundColor: COLORS.lightGray,
+        backgroundColor: COLORS.workoutBackgroundPistachio,
         margin: 10,
     },
     exercisesContainer: {
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     addSetButton: {
-        backgroundColor: COLORS.primaryBlueHex,
+        backgroundColor: COLORS.workoutButtonGreen,
         padding: 10,
         margin: 10,
         borderRadius: 8,

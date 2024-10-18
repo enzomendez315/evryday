@@ -2,16 +2,16 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { SafeAreaView, Button, StatusBar, Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
-import { syncDailySleepLog, getSleepScore } from '../logic/sleep-api';
-import { syncDietDashboardData, getNutritionScore } from '../logic/diet-api';
-import { getExerciseScore } from '../logic/workout-api';
+import { syncDailySleepLog, getSleepScore } from '../../logic/sleep-api';
+import { syncDietDashboardData, getNutritionScore } from '../../logic/diet-api';
+import { getExerciseScore } from '../../logic/workout-api';
 import { getCurrentUser } from 'aws-amplify/auth';
-import { getUserDBEntry } from '../logic/account';
-import { COLORS } from '../theme/theme';
-import { getFormattedDate, setActiveDate, getActiveDate } from '../logic/date-time';
-import { syncMostRecentWorkoutLogForDate } from '../logic/workout-api';
+import { getUserDBEntry } from '../../logic/account';
+import { COLORS } from '../../theme/theme';
+import { getFormattedDate, setActiveDate, getActiveDate } from '../../logic/date-time';
+import { syncMostRecentWorkoutLogForDate } from '../../logic/workout-api';
 // for selecting dates at the top of the screen
-import { PickDatePopup } from '../components/datePicker';
+import { PickDatePopup } from '../../components/datePicker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 let userID;
@@ -254,6 +254,19 @@ const SleepTab = ({ sleepData }) => {
   );
 };
 
+// Weight Tab Component:
+const WeightTab = ({ weightData }) => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity
+      style={styles.weightTab}
+      onPress={() => navigation.navigate('Weight Screen')}>
+      <Text>this is the weighting area</Text>
+    </TouchableOpacity>
+  );
+};
+
 const Dashboard = (props) => {
   const [sleepData, setSleepData] = useState(null);
   const [calorieData, setCalorieData] = useState(null);
@@ -341,6 +354,8 @@ const Dashboard = (props) => {
             <SleepTab sleepData={sleepData} />
             <Text style={styles.tabHeaderText}>Exercise</Text>
             <WorkoutTab />
+            <Text style={styles.tabHeaderText}>Weight</Text>
+            <WeightTab />
             {/* Add more components as needed */}
           </ScrollView>
         </View>
@@ -427,7 +442,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.0,
     elevation: 5,
   },
-
+  weightTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderRadius: 8,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
+  },
   dietTab: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -7,7 +7,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { COLORS } from './src/theme/theme';
 import LottieView from "lottie-react-native";
 
-import DashboardScreen from './src/screens/Dashboard-Screen';
+import DashboardScreen from './src/screens/dashboard/Dashboard-Screen';
+import WeightScreen from './src/screens/dashboard/Weight-Screen';
 import SettingsScreen from './src/screens/Settings-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
@@ -133,6 +134,10 @@ function DashboardStack() {
       <Stack.Screen name="Dashboard Home" component={DashboardScreen}
         options={{
           headerShown: false,
+        }} />
+      <Stack.Screen name="Weight Screen" component={WeightScreen}
+        options={{
+          headerShown: true,
         }} />
     </Stack.Navigator>
   );

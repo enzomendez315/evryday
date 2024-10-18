@@ -63,29 +63,118 @@ const exampleRoutineData = [
 
 const DEBUG = false;
 
+// // create a flow of data that is able to save data in the database
+// // in this order when given data in the form of exampleRoutineData
+// // 1. creates exercise sets and saves them in the relationship to exercise types
+// // 2. connects that exercise type with its list of sets to the routine
+// // 3. saves the routine in the database with a list of exercise types and their sets
+// // 4. returns the routine
+// export async function createExerciseRoutine(userId, date, routineName, exerciseData_) {
+//     DEBUG && console.log(`createExerciseRoutine userId: ${userId} Date: ${date}`);
+//     // gets the exercise log for the user and date
+//     let userLog = await DataStore.query(ExerciseLog, (u) => u.and(c => [
+//         u.userId.eq(userId),
+//         u.date.eq(date)
+//     ]));
+
+//     // if no log is found, create a new one
+//     DEBUG && console.log(`createExerciseRoutine userLog length: ${userLog.length}`);
+//     if (userLog.length === 0) {
+//         DEBUG && console.log("No log found in createExerciseRoutine, creating one now");
+//         // replace empty query with the new created log
+//         userLog = await createNewLog(userId, date);
+//         DEBUG && console.log(`created new log: ${userLog[0].id}`);
+//     }
+
+//     // check that the routine has a unique name
+//     const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
+//     for (let routine of routines) {
+//         if (routine.name === routineName) {
+//             console.log("routine name already exists");
+//             return;
+//         }
+//     }
+
+//     // create and save a new routine object
+//     let routine = new ExerciseRoutine({
+//         userId: userId,
+//         name: routineName,
+//     });
+    
+//     await DataStore.save(routine);
+
+//     let exerciseTypes = [];
+//     // loops through all exercise types in a routine
+
+//     for (let exercise of exerciseData_) {
+//         // checks if exercise Type already exists
+//         const exerciseTypeCheck = await DataStore.query(ExerciseType, (e) => e.name.eq(exercise.name));
+//         let exerciseType;
+//         // if it doesn't exist, create a new exercise type
+//         if (exerciseTypeCheck.length === 0) {
+//             exerciseType = new ExerciseType({
+//                 name: exercise.name,
+//                 target: exercise.muscleGroup,
+//             });
+//             await DataStore.save(exerciseType);
+//         } else {
+//             exerciseType = exerciseTypeCheck[0];
+//         }
+//         exerciseTypes.push(exerciseType);
+
+//         // goes through each set for the exercise type
+//         for (let set of exercise.sets) {
+//             let exerciseSet = new ExerciseSet({
+//                 weight: set.weight,
+//                 reps: set.reps,
+//                 time: '0',
+//                 exerciseType: exerciseType,
+//             });
+//             // saves each set
+//             await DataStore.save(exerciseSet);
+//             console.log("saved routineExerciseType: ");
+
+//             let setExerciseType = new ExerciseSetExerciseType({
+//                 exerciseSet: exerciseSet,
+//                 exerciseType: exerciseType,
+//             });
+//             // saves the relationship between the exercise set and the exercise type
+//             await DataStore.save(setExerciseType);
+
+//             // save the relationship between the set and the routine
+//             let routineExerciseSet = new ExerciseSetExerciseRoutine({
+//                 exerciseSet: exerciseSet,
+//                 exerciseRoutine: routine,
+//             });
+//             await DataStore.save(routineExerciseSet);
+//         }
+
+//         // saves the relationship between the exercise type and the routine
+//         let routineExerciseType = new ExerciseRoutineExerciseType({
+//             exerciseRoutine: routine,
+//             exerciseType: exerciseType,
+//         });
+//         await DataStore.save(routineExerciseType);
+//     }
+//     // puts the list of exercise types into the routine object
+//     routine.ExerciseTypes = exerciseTypes;
+//     // saves routine to database
+//     try {
+//         await DataStore.save(routine);
+//     }
+//     catch (err) {
+//         console.log(err);
+//     }
+//     console.log("we are done with 0 bugs congratulashions!");
+// }
+
 // create a flow of data that is able to save data in the database
 // in this order when given data in the form of exampleRoutineData
 // 1. creates exercise sets and saves them in the relationship to exercise types
 // 2. connects that exercise type with its list of sets to the routine
 // 3. saves the routine in the database with a list of exercise types and their sets
 // 4. returns the routine
-export async function createExerciseRoutine(userId, date, routineName, exerciseData_) {
-    DEBUG && console.log(`createExerciseRoutine userId: ${userId} Date: ${date}`);
-    // gets the exercise log for the user and date
-    let userLog = await DataStore.query(ExerciseLog, (u) => u.and(c => [
-        u.userId.eq(userId),
-        u.date.eq(date)
-    ]));
-
-    // if no log is found, create a new one
-    DEBUG && console.log(`createExerciseRoutine userLog length: ${userLog.length}`);
-    if (userLog.length === 0) {
-        DEBUG && console.log("No log found in createExerciseRoutine, creating one now");
-        // replace empty query with the new created log
-        userLog = await createNewLog(userId, date);
-        DEBUG && console.log(`created new log: ${userLog[0].id}`);
-    }
-
+export async function createExerciseRoutine(userId, routineName, exerciseData_) {
     // check that the routine has a unique name
     const routines = await DataStore.query(ExerciseRoutine, (r) => r.userId.eq(userId));
     for (let routine of routines) {
@@ -94,13 +183,12 @@ export async function createExerciseRoutine(userId, date, routineName, exerciseD
             return;
         }
     }
-
-    // create and save a new routine object
+    // creates a new routine object
     let routine = new ExerciseRoutine({
         userId: userId,
         name: routineName,
     });
-    
+    // saves the routine object
     await DataStore.save(routine);
 
     let exerciseTypes = [];

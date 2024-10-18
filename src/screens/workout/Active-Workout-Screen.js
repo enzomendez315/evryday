@@ -161,21 +161,20 @@ const ActiveWorkout = ({ route }) => {
 
 const styles = StyleSheet.create({
   backgroundColor: {
-    color: COLORS.whiteHex,
+    color: COLORS.workoutBackgroundPistachio,
   },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: COLORS.whiteHex,
+    backgroundColor: COLORS.workoutBackgroundPistachio,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
   },
   finishButton: {
-    backgroundColor: COLORS.primaryBlueHex,
+    backgroundColor: COLORS.workoutButtonGreen,
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -186,17 +185,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   clockIcon: {
-    // Style for the clock icon
+    color: 'white',
   },
   routineName: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: 'white',
   },
   activeClock: {
     fontSize: 22,
     textAlign: 'center',
     marginVertical: 20,
+    color: 'white',
   },
 
   addButton: {
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
   workoutTabContainer: {
     flex: 1,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.workoutBackgroundPistachio,
   },
 
   setRow: {
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
   },
   setText: {
     fontSize: 14,
+    color: 'white',
   },
   exerciseTitle: {
     fontSize: 20,

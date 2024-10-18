@@ -1445,6 +1445,22 @@ export type ModelMealToFoodFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
+export type ModelIDKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelFoodBarcodeFilterInput = {
   id?: ModelIDInput | null,
   barcode?: ModelStringInput | null,
@@ -1761,22 +1777,6 @@ export type ModelExerciseRoutineExerciseTypeFilterInput = {
   not?: ModelExerciseRoutineExerciseTypeFilterInput | null,
   _deleted?: ModelBooleanInput | null,
 };
-
-export type ModelIDKeyConditionInput = {
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-};
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 
 export type ModelSubscriptionDailyGoalsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
@@ -4918,6 +4918,66 @@ export type SyncMealToFoodsQuery = {
   } | null,
 };
 
+export type MealToFoodsByMealIdAndFoodIdQueryVariables = {
+  mealId: string,
+  foodId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMealToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MealToFoodsByMealIdAndFoodIdQuery = {
+  mealToFoodsByMealIdAndFoodId?:  {
+    __typename: "ModelMealToFoodConnection",
+    items:  Array< {
+      __typename: "MealToFood",
+      id: string,
+      mealId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type MealToFoodsByFoodIdAndMealIdQueryVariables = {
+  foodId: string,
+  mealId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMealToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MealToFoodsByFoodIdAndMealIdQuery = {
+  mealToFoodsByFoodIdAndMealId?:  {
+    __typename: "ModelMealToFoodConnection",
+    items:  Array< {
+      __typename: "MealToFood",
+      id: string,
+      mealId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetFoodBarcodeQueryVariables = {
   id: string,
 };
@@ -5422,6 +5482,66 @@ export type SyncRecipeToFoodsQueryVariables = {
 
 export type SyncRecipeToFoodsQuery = {
   syncRecipeToFoods?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type RecipeToFoodsByRecipeIdAndFoodIdQueryVariables = {
+  recipeId: string,
+  foodId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type RecipeToFoodsByRecipeIdAndFoodIdQuery = {
+  recipeToFoodsByRecipeIdAndFoodId?:  {
+    __typename: "ModelRecipeToFoodConnection",
+    items:  Array< {
+      __typename: "RecipeToFood",
+      id: string,
+      recipeId: string,
+      foodId: string,
+      servingId: string,
+      servingAmount: number,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type RecipeToFoodsByFoodIdAndRecipeIdQueryVariables = {
+  foodId: string,
+  recipeId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelRecipeToFoodFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type RecipeToFoodsByFoodIdAndRecipeIdQuery = {
+  recipeToFoodsByFoodIdAndRecipeId?:  {
     __typename: "ModelRecipeToFoodConnection",
     items:  Array< {
       __typename: "RecipeToFood",
@@ -6183,6 +6303,60 @@ export type SyncExerciseLogExerciseRoutinesQuery = {
   } | null,
 };
 
+export type ExerciseLogExerciseRoutinesByExerciseLogIdQueryVariables = {
+  exerciseLogId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseLogIdQuery = {
+  exerciseLogExerciseRoutinesByExerciseLogId?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQueryVariables = {
+  exerciseRoutineId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQuery = {
+  exerciseLogExerciseRoutinesByExerciseRoutineId?:  {
+    __typename: "ModelExerciseLogExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseRoutine",
+      id: string,
+      exerciseLogId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetExerciseLogExerciseSetQueryVariables = {
   id: string,
 };
@@ -6260,6 +6434,60 @@ export type SyncExerciseLogExerciseSetsQueryVariables = {
 
 export type SyncExerciseLogExerciseSetsQuery = {
   syncExerciseLogExerciseSets?:  {
+    __typename: "ModelExerciseLogExerciseSetConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseSet",
+      id: string,
+      exerciseLogId: string,
+      exerciseSetId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseLogExerciseSetsByExerciseLogIdQueryVariables = {
+  exerciseLogId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseSetFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseSetsByExerciseLogIdQuery = {
+  exerciseLogExerciseSetsByExerciseLogId?:  {
+    __typename: "ModelExerciseLogExerciseSetConnection",
+    items:  Array< {
+      __typename: "ExerciseLogExerciseSet",
+      id: string,
+      exerciseLogId: string,
+      exerciseSetId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseLogExerciseSetsByExerciseSetIdQueryVariables = {
+  exerciseSetId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseLogExerciseSetFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseLogExerciseSetsByExerciseSetIdQuery = {
+  exerciseLogExerciseSetsByExerciseSetId?:  {
     __typename: "ModelExerciseLogExerciseSetConnection",
     items:  Array< {
       __typename: "ExerciseLogExerciseSet",
@@ -6369,6 +6597,60 @@ export type SyncExerciseSetExerciseTypesQuery = {
   } | null,
 };
 
+export type ExerciseSetExerciseTypesByExerciseSetIdQueryVariables = {
+  exerciseSetId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseSetExerciseTypeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseSetExerciseTypesByExerciseSetIdQuery = {
+  exerciseSetExerciseTypesByExerciseSetId?:  {
+    __typename: "ModelExerciseSetExerciseTypeConnection",
+    items:  Array< {
+      __typename: "ExerciseSetExerciseType",
+      id: string,
+      exerciseSetId: string,
+      exerciseTypeId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseSetExerciseTypesByExerciseTypeIdQueryVariables = {
+  exerciseTypeId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseSetExerciseTypeFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseSetExerciseTypesByExerciseTypeIdQuery = {
+  exerciseSetExerciseTypesByExerciseTypeId?:  {
+    __typename: "ModelExerciseSetExerciseTypeConnection",
+    items:  Array< {
+      __typename: "ExerciseSetExerciseType",
+      id: string,
+      exerciseSetId: string,
+      exerciseTypeId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetExerciseSetExerciseRoutineQueryVariables = {
   id: string,
 };
@@ -6444,6 +6726,60 @@ export type SyncExerciseSetExerciseRoutinesQueryVariables = {
 
 export type SyncExerciseSetExerciseRoutinesQuery = {
   syncExerciseSetExerciseRoutines?:  {
+    __typename: "ModelExerciseSetExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseSetExerciseRoutine",
+      id: string,
+      exerciseSetId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseSetExerciseRoutinesByExerciseSetIdQueryVariables = {
+  exerciseSetId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseSetExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseSetExerciseRoutinesByExerciseSetIdQuery = {
+  exerciseSetExerciseRoutinesByExerciseSetId?:  {
+    __typename: "ModelExerciseSetExerciseRoutineConnection",
+    items:  Array< {
+      __typename: "ExerciseSetExerciseRoutine",
+      id: string,
+      exerciseSetId: string,
+      exerciseRoutineId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ExerciseSetExerciseRoutinesByExerciseRoutineIdQueryVariables = {
+  exerciseRoutineId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelExerciseSetExerciseRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ExerciseSetExerciseRoutinesByExerciseRoutineIdQuery = {
+  exerciseSetExerciseRoutinesByExerciseRoutineId?:  {
     __typename: "ModelExerciseSetExerciseRoutineConnection",
     items:  Array< {
       __typename: "ExerciseSetExerciseRoutine",
@@ -6541,342 +6877,6 @@ export type SyncExerciseRoutineExerciseTypesQuery = {
       id: string,
       exerciseRoutineId: string,
       exerciseTypeId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type MealToFoodsByMealIdAndFoodIdQueryVariables = {
-  mealId: string,
-  foodId?: ModelIDKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelMealToFoodFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type MealToFoodsByMealIdAndFoodIdQuery = {
-  mealToFoodsByMealIdAndFoodId?:  {
-    __typename: "ModelMealToFoodConnection",
-    items:  Array< {
-      __typename: "MealToFood",
-      id: string,
-      mealId: string,
-      foodId: string,
-      servingId: string,
-      servingAmount: number,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type MealToFoodsByFoodIdAndMealIdQueryVariables = {
-  foodId: string,
-  mealId?: ModelIDKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelMealToFoodFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type MealToFoodsByFoodIdAndMealIdQuery = {
-  mealToFoodsByFoodIdAndMealId?:  {
-    __typename: "ModelMealToFoodConnection",
-    items:  Array< {
-      __typename: "MealToFood",
-      id: string,
-      mealId: string,
-      foodId: string,
-      servingId: string,
-      servingAmount: number,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type RecipeToFoodsByRecipeIdAndFoodIdQueryVariables = {
-  recipeId: string,
-  foodId?: ModelIDKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelRecipeToFoodFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type RecipeToFoodsByRecipeIdAndFoodIdQuery = {
-  recipeToFoodsByRecipeIdAndFoodId?:  {
-    __typename: "ModelRecipeToFoodConnection",
-    items:  Array< {
-      __typename: "RecipeToFood",
-      id: string,
-      recipeId: string,
-      foodId: string,
-      servingId: string,
-      servingAmount: number,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type RecipeToFoodsByFoodIdAndRecipeIdQueryVariables = {
-  foodId: string,
-  recipeId?: ModelIDKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelRecipeToFoodFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type RecipeToFoodsByFoodIdAndRecipeIdQuery = {
-  recipeToFoodsByFoodIdAndRecipeId?:  {
-    __typename: "ModelRecipeToFoodConnection",
-    items:  Array< {
-      __typename: "RecipeToFood",
-      id: string,
-      recipeId: string,
-      foodId: string,
-      servingId: string,
-      servingAmount: number,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseLogIdQueryVariables = {
-  exerciseLogId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseLogIdQuery = {
-  exerciseLogExerciseRoutinesByExerciseLogId?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQueryVariables = {
-  exerciseRoutineId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseRoutinesByExerciseRoutineIdQuery = {
-  exerciseLogExerciseRoutinesByExerciseRoutineId?:  {
-    __typename: "ModelExerciseLogExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseRoutine",
-      id: string,
-      exerciseLogId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseSetsByExerciseLogIdQueryVariables = {
-  exerciseLogId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseSetFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseSetsByExerciseLogIdQuery = {
-  exerciseLogExerciseSetsByExerciseLogId?:  {
-    __typename: "ModelExerciseLogExerciseSetConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseSet",
-      id: string,
-      exerciseLogId: string,
-      exerciseSetId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseLogExerciseSetsByExerciseSetIdQueryVariables = {
-  exerciseSetId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseLogExerciseSetFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseLogExerciseSetsByExerciseSetIdQuery = {
-  exerciseLogExerciseSetsByExerciseSetId?:  {
-    __typename: "ModelExerciseLogExerciseSetConnection",
-    items:  Array< {
-      __typename: "ExerciseLogExerciseSet",
-      id: string,
-      exerciseLogId: string,
-      exerciseSetId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseSetExerciseTypesByExerciseSetIdQueryVariables = {
-  exerciseSetId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseSetExerciseTypeFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseSetExerciseTypesByExerciseSetIdQuery = {
-  exerciseSetExerciseTypesByExerciseSetId?:  {
-    __typename: "ModelExerciseSetExerciseTypeConnection",
-    items:  Array< {
-      __typename: "ExerciseSetExerciseType",
-      id: string,
-      exerciseSetId: string,
-      exerciseTypeId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseSetExerciseTypesByExerciseTypeIdQueryVariables = {
-  exerciseTypeId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseSetExerciseTypeFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseSetExerciseTypesByExerciseTypeIdQuery = {
-  exerciseSetExerciseTypesByExerciseTypeId?:  {
-    __typename: "ModelExerciseSetExerciseTypeConnection",
-    items:  Array< {
-      __typename: "ExerciseSetExerciseType",
-      id: string,
-      exerciseSetId: string,
-      exerciseTypeId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseSetExerciseRoutinesByExerciseSetIdQueryVariables = {
-  exerciseSetId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseSetExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseSetExerciseRoutinesByExerciseSetIdQuery = {
-  exerciseSetExerciseRoutinesByExerciseSetId?:  {
-    __typename: "ModelExerciseSetExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseSetExerciseRoutine",
-      id: string,
-      exerciseSetId: string,
-      exerciseRoutineId: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type ExerciseSetExerciseRoutinesByExerciseRoutineIdQueryVariables = {
-  exerciseRoutineId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelExerciseSetExerciseRoutineFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ExerciseSetExerciseRoutinesByExerciseRoutineIdQuery = {
-  exerciseSetExerciseRoutinesByExerciseRoutineId?:  {
-    __typename: "ModelExerciseSetExerciseRoutineConnection",
-    items:  Array< {
-      __typename: "ExerciseSetExerciseRoutine",
-      id: string,
-      exerciseSetId: string,
-      exerciseRoutineId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,

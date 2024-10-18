@@ -195,13 +195,13 @@ export async function syncDailyLogData(userId, date, setCalorieData, setLogData,
     // set the calorie data by summing up the values in each array
     setCalorieData({
         proteinCurrent: macros.reduce((acc, meal) => acc + meal.protein, 0),
-        proteinGoal: 150,
+        proteinGoal: goals.proteinGoal ?? 150,
         carbsCurrent: macros.reduce((acc, meal) => acc + meal.carbs, 0),
-        carbsGoal: 250,
+        carbsGoal: goals.carbGoal ?? 250,
         fatCurrent: macros.reduce((acc, meal) => acc + meal.fat, 0),
-        fatGoal: 75,
+        fatGoal: goals.fatGoal ?? 75,
         caloriesCurrent: macros.reduce((acc, meal) => acc + meal.calories, 0),
-        caloriesGoal: goals.caloriesGoal ?? 2000,
+        caloriesGoal: goals.calorieGoal ?? 2000,
     });
 
     // set the meal data
@@ -346,7 +346,25 @@ export async function searchFoodItems(searchTerm, setFoodItems, userId) {
     const favFoods = await getFavoriteFoods(userId, searchTerm)
     const regFoods = await getFoodItems(searchTerm, userId)
 
-    setFoodItems([...favFoods, ...regFoods]);
+
+    // remove foods with the same name 
+    // it looks like some foods are duplicated in the database
+    // e.g. 'Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D' ref_id: 1
+    // and 'Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D' ref_id: 1
+    let uniqueFoods = [];
+    for (let food of regFoods) {
+        let found = false;
+        for (let uniqueFood of uniqueFoods) {
+            if (food.name === uniqueFood.name) {
+                found = true;
+            }
+        }
+        if (!found) {
+            uniqueFoods.push(food);
+        }
+    }
+    setFoodItems([...favFoods, ...uniqueFoods]);
+    //setFoodItems([...favFoods, ...regFoods]); // this line will show all foods
 }
 
 // queries all food items from the datastore
@@ -367,7 +385,7 @@ async function getFoodItems(searchTerm, userId) {
         lowerSearch = searchTerm.toLowerCase();
         upperSearch = searchTerm.toUpperCase();
     }
-    const foodItems = await DataStore.query(FoodItem, (outer) => 
+    const foodItems = await DataStore.query(FoodItem, (outer) =>
         outer.and((inner) => [
             inner.or((c) => [
                 c.name.contains(lowerSearch),
@@ -407,7 +425,7 @@ export async function getFavoriteFoods(userId, searchTerm) {
     } else {
         filteredFavorites = favItems.filter((food) => food.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
-    
+
     return filteredFavorites;
 }
 
