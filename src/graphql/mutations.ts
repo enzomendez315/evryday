@@ -1107,12 +1107,28 @@ export const createExerciseLog = /* GraphQL */ `mutation CreateExerciseLog(
     userId
     date
     exerciseRoutine {
-      nextToken
-      startedAt
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     durationMinutes
     caloriesBurned
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseSets {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1134,12 +1150,28 @@ export const updateExerciseLog = /* GraphQL */ `mutation UpdateExerciseLog(
     userId
     date
     exerciseRoutine {
-      nextToken
-      startedAt
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     durationMinutes
     caloriesBurned
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseSets {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1161,12 +1193,28 @@ export const deleteExerciseLog = /* GraphQL */ `mutation DeleteExerciseLog(
     userId
     date
     exerciseRoutine {
-      nextToken
-      startedAt
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     durationMinutes
     caloriesBurned
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseSets {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1179,162 +1227,6 @@ export const deleteExerciseLog = /* GraphQL */ `mutation DeleteExerciseLog(
   APITypes.DeleteExerciseLogMutationVariables,
   APITypes.DeleteExerciseLogMutation
 >;
-export const createExerciseRoutine = /* GraphQL */ `mutation CreateExerciseRoutine(
-  $input: CreateExerciseRoutineInput!
-  $condition: ModelExerciseRoutineConditionInput
-) {
-  createExerciseRoutine(input: $input, condition: $condition) {
-    id
-    userId
-    name
-    exerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseLogExerciseRoutineId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateExerciseRoutineMutationVariables,
-  APITypes.CreateExerciseRoutineMutation
->;
-export const updateExerciseRoutine = /* GraphQL */ `mutation UpdateExerciseRoutine(
-  $input: UpdateExerciseRoutineInput!
-  $condition: ModelExerciseRoutineConditionInput
-) {
-  updateExerciseRoutine(input: $input, condition: $condition) {
-    id
-    userId
-    name
-    exerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseLogExerciseRoutineId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateExerciseRoutineMutationVariables,
-  APITypes.UpdateExerciseRoutineMutation
->;
-export const deleteExerciseRoutine = /* GraphQL */ `mutation DeleteExerciseRoutine(
-  $input: DeleteExerciseRoutineInput!
-  $condition: ModelExerciseRoutineConditionInput
-) {
-  deleteExerciseRoutine(input: $input, condition: $condition) {
-    id
-    userId
-    name
-    exerciseType {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseLogExerciseRoutineId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteExerciseRoutineMutationVariables,
-  APITypes.DeleteExerciseRoutineMutation
->;
-export const createExerciseType = /* GraphQL */ `mutation CreateExerciseType(
-  $input: CreateExerciseTypeInput!
-  $condition: ModelExerciseTypeConditionInput
-) {
-  createExerciseType(input: $input, condition: $condition) {
-    id
-    name
-    target
-    exerciseSet {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseRoutineExerciseTypeId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateExerciseTypeMutationVariables,
-  APITypes.CreateExerciseTypeMutation
->;
-export const updateExerciseType = /* GraphQL */ `mutation UpdateExerciseType(
-  $input: UpdateExerciseTypeInput!
-  $condition: ModelExerciseTypeConditionInput
-) {
-  updateExerciseType(input: $input, condition: $condition) {
-    id
-    name
-    target
-    exerciseSet {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseRoutineExerciseTypeId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateExerciseTypeMutationVariables,
-  APITypes.UpdateExerciseTypeMutation
->;
-export const deleteExerciseType = /* GraphQL */ `mutation DeleteExerciseType(
-  $input: DeleteExerciseTypeInput!
-  $condition: ModelExerciseTypeConditionInput
-) {
-  deleteExerciseType(input: $input, condition: $condition) {
-    id
-    name
-    target
-    exerciseSet {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    exerciseRoutineExerciseTypeId
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteExerciseTypeMutationVariables,
-  APITypes.DeleteExerciseTypeMutation
->;
 export const createExerciseSet = /* GraphQL */ `mutation CreateExerciseSet(
   $input: CreateExerciseSetInput!
   $condition: ModelExerciseSetConditionInput
@@ -1344,12 +1236,26 @@ export const createExerciseSet = /* GraphQL */ `mutation CreateExerciseSet(
     reps
     time
     weight
+    ExerciseType {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    exerciseTypeExerciseSetId
     __typename
   }
 }
@@ -1366,12 +1272,26 @@ export const updateExerciseSet = /* GraphQL */ `mutation UpdateExerciseSet(
     reps
     time
     weight
+    ExerciseType {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    exerciseTypeExerciseSetId
     __typename
   }
 }
@@ -1388,18 +1308,227 @@ export const deleteExerciseSet = /* GraphQL */ `mutation DeleteExerciseSet(
     reps
     time
     weight
+    ExerciseType {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseRoutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    exerciseTypeExerciseSetId
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteExerciseSetMutationVariables,
   APITypes.DeleteExerciseSetMutation
+>;
+export const createExerciseRoutine = /* GraphQL */ `mutation CreateExerciseRoutine(
+  $input: CreateExerciseRoutineInput!
+  $condition: ModelExerciseRoutineConditionInput
+) {
+  createExerciseRoutine(input: $input, condition: $condition) {
+    id
+    userId
+    name
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseTypes {
+      nextToken
+      startedAt
+      __typename
+    }
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseRoutineMutationVariables,
+  APITypes.CreateExerciseRoutineMutation
+>;
+export const updateExerciseRoutine = /* GraphQL */ `mutation UpdateExerciseRoutine(
+  $input: UpdateExerciseRoutineInput!
+  $condition: ModelExerciseRoutineConditionInput
+) {
+  updateExerciseRoutine(input: $input, condition: $condition) {
+    id
+    userId
+    name
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseTypes {
+      nextToken
+      startedAt
+      __typename
+    }
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseRoutineMutationVariables,
+  APITypes.UpdateExerciseRoutineMutation
+>;
+export const deleteExerciseRoutine = /* GraphQL */ `mutation DeleteExerciseRoutine(
+  $input: DeleteExerciseRoutineInput!
+  $condition: ModelExerciseRoutineConditionInput
+) {
+  deleteExerciseRoutine(input: $input, condition: $condition) {
+    id
+    userId
+    name
+    exerciselogs {
+      nextToken
+      startedAt
+      __typename
+    }
+    ExerciseTypes {
+      nextToken
+      startedAt
+      __typename
+    }
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseRoutineMutationVariables,
+  APITypes.DeleteExerciseRoutineMutation
+>;
+export const createExerciseType = /* GraphQL */ `mutation CreateExerciseType(
+  $input: CreateExerciseTypeInput!
+  $condition: ModelExerciseTypeConditionInput
+) {
+  createExerciseType(input: $input, condition: $condition) {
+    id
+    name
+    target
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciseroutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseTypeMutationVariables,
+  APITypes.CreateExerciseTypeMutation
+>;
+export const updateExerciseType = /* GraphQL */ `mutation UpdateExerciseType(
+  $input: UpdateExerciseTypeInput!
+  $condition: ModelExerciseTypeConditionInput
+) {
+  updateExerciseType(input: $input, condition: $condition) {
+    id
+    name
+    target
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciseroutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseTypeMutationVariables,
+  APITypes.UpdateExerciseTypeMutation
+>;
+export const deleteExerciseType = /* GraphQL */ `mutation DeleteExerciseType(
+  $input: DeleteExerciseTypeInput!
+  $condition: ModelExerciseTypeConditionInput
+) {
+  deleteExerciseType(input: $input, condition: $condition) {
+    id
+    name
+    target
+    exercisesets {
+      nextToken
+      startedAt
+      __typename
+    }
+    exerciseroutines {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseTypeMutationVariables,
+  APITypes.DeleteExerciseTypeMutation
 >;
 export const createSleepLog = /* GraphQL */ `mutation CreateSleepLog(
   $input: CreateSleepLogInput!
@@ -1667,4 +1796,655 @@ export const deleteWeightLog = /* GraphQL */ `mutation DeleteWeightLog(
 ` as GeneratedMutation<
   APITypes.DeleteWeightLogMutationVariables,
   APITypes.DeleteWeightLogMutation
+>;
+export const createExerciseLogExerciseRoutine = /* GraphQL */ `mutation CreateExerciseLogExerciseRoutine(
+  $input: CreateExerciseLogExerciseRoutineInput!
+  $condition: ModelExerciseLogExerciseRoutineConditionInput
+) {
+  createExerciseLogExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseRoutineId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseLogExerciseRoutineMutationVariables,
+  APITypes.CreateExerciseLogExerciseRoutineMutation
+>;
+export const updateExerciseLogExerciseRoutine = /* GraphQL */ `mutation UpdateExerciseLogExerciseRoutine(
+  $input: UpdateExerciseLogExerciseRoutineInput!
+  $condition: ModelExerciseLogExerciseRoutineConditionInput
+) {
+  updateExerciseLogExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseRoutineId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseLogExerciseRoutineMutationVariables,
+  APITypes.UpdateExerciseLogExerciseRoutineMutation
+>;
+export const deleteExerciseLogExerciseRoutine = /* GraphQL */ `mutation DeleteExerciseLogExerciseRoutine(
+  $input: DeleteExerciseLogExerciseRoutineInput!
+  $condition: ModelExerciseLogExerciseRoutineConditionInput
+) {
+  deleteExerciseLogExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseRoutineId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseLogExerciseRoutineMutationVariables,
+  APITypes.DeleteExerciseLogExerciseRoutineMutation
+>;
+export const createExerciseLogExerciseSet = /* GraphQL */ `mutation CreateExerciseLogExerciseSet(
+  $input: CreateExerciseLogExerciseSetInput!
+  $condition: ModelExerciseLogExerciseSetConditionInput
+) {
+  createExerciseLogExerciseSet(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseSetId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseLogExerciseSetMutationVariables,
+  APITypes.CreateExerciseLogExerciseSetMutation
+>;
+export const updateExerciseLogExerciseSet = /* GraphQL */ `mutation UpdateExerciseLogExerciseSet(
+  $input: UpdateExerciseLogExerciseSetInput!
+  $condition: ModelExerciseLogExerciseSetConditionInput
+) {
+  updateExerciseLogExerciseSet(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseSetId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseLogExerciseSetMutationVariables,
+  APITypes.UpdateExerciseLogExerciseSetMutation
+>;
+export const deleteExerciseLogExerciseSet = /* GraphQL */ `mutation DeleteExerciseLogExerciseSet(
+  $input: DeleteExerciseLogExerciseSetInput!
+  $condition: ModelExerciseLogExerciseSetConditionInput
+) {
+  deleteExerciseLogExerciseSet(input: $input, condition: $condition) {
+    id
+    exerciseLogId
+    exerciseSetId
+    exerciseLog {
+      id
+      userId
+      date
+      durationMinutes
+      caloriesBurned
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseLogExerciseSetMutationVariables,
+  APITypes.DeleteExerciseLogExerciseSetMutation
+>;
+export const createExerciseSetExerciseType = /* GraphQL */ `mutation CreateExerciseSetExerciseType(
+  $input: CreateExerciseSetExerciseTypeInput!
+  $condition: ModelExerciseSetExerciseTypeConditionInput
+) {
+  createExerciseSetExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseTypeId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseSetExerciseTypeMutationVariables,
+  APITypes.CreateExerciseSetExerciseTypeMutation
+>;
+export const updateExerciseSetExerciseType = /* GraphQL */ `mutation UpdateExerciseSetExerciseType(
+  $input: UpdateExerciseSetExerciseTypeInput!
+  $condition: ModelExerciseSetExerciseTypeConditionInput
+) {
+  updateExerciseSetExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseTypeId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseSetExerciseTypeMutationVariables,
+  APITypes.UpdateExerciseSetExerciseTypeMutation
+>;
+export const deleteExerciseSetExerciseType = /* GraphQL */ `mutation DeleteExerciseSetExerciseType(
+  $input: DeleteExerciseSetExerciseTypeInput!
+  $condition: ModelExerciseSetExerciseTypeConditionInput
+) {
+  deleteExerciseSetExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseTypeId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseSetExerciseTypeMutationVariables,
+  APITypes.DeleteExerciseSetExerciseTypeMutation
+>;
+export const createExerciseSetExerciseRoutine = /* GraphQL */ `mutation CreateExerciseSetExerciseRoutine(
+  $input: CreateExerciseSetExerciseRoutineInput!
+  $condition: ModelExerciseSetExerciseRoutineConditionInput
+) {
+  createExerciseSetExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseRoutineId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseSetExerciseRoutineMutationVariables,
+  APITypes.CreateExerciseSetExerciseRoutineMutation
+>;
+export const updateExerciseSetExerciseRoutine = /* GraphQL */ `mutation UpdateExerciseSetExerciseRoutine(
+  $input: UpdateExerciseSetExerciseRoutineInput!
+  $condition: ModelExerciseSetExerciseRoutineConditionInput
+) {
+  updateExerciseSetExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseRoutineId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseSetExerciseRoutineMutationVariables,
+  APITypes.UpdateExerciseSetExerciseRoutineMutation
+>;
+export const deleteExerciseSetExerciseRoutine = /* GraphQL */ `mutation DeleteExerciseSetExerciseRoutine(
+  $input: DeleteExerciseSetExerciseRoutineInput!
+  $condition: ModelExerciseSetExerciseRoutineConditionInput
+) {
+  deleteExerciseSetExerciseRoutine(input: $input, condition: $condition) {
+    id
+    exerciseSetId
+    exerciseRoutineId
+    exerciseSet {
+      id
+      reps
+      time
+      weight
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseSetExerciseRoutineMutationVariables,
+  APITypes.DeleteExerciseSetExerciseRoutineMutation
+>;
+export const createExerciseRoutineExerciseType = /* GraphQL */ `mutation CreateExerciseRoutineExerciseType(
+  $input: CreateExerciseRoutineExerciseTypeInput!
+  $condition: ModelExerciseRoutineExerciseTypeConditionInput
+) {
+  createExerciseRoutineExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseRoutineId
+    exerciseTypeId
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateExerciseRoutineExerciseTypeMutationVariables,
+  APITypes.CreateExerciseRoutineExerciseTypeMutation
+>;
+export const updateExerciseRoutineExerciseType = /* GraphQL */ `mutation UpdateExerciseRoutineExerciseType(
+  $input: UpdateExerciseRoutineExerciseTypeInput!
+  $condition: ModelExerciseRoutineExerciseTypeConditionInput
+) {
+  updateExerciseRoutineExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseRoutineId
+    exerciseTypeId
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateExerciseRoutineExerciseTypeMutationVariables,
+  APITypes.UpdateExerciseRoutineExerciseTypeMutation
+>;
+export const deleteExerciseRoutineExerciseType = /* GraphQL */ `mutation DeleteExerciseRoutineExerciseType(
+  $input: DeleteExerciseRoutineExerciseTypeInput!
+  $condition: ModelExerciseRoutineExerciseTypeConditionInput
+) {
+  deleteExerciseRoutineExerciseType(input: $input, condition: $condition) {
+    id
+    exerciseRoutineId
+    exerciseTypeId
+    exerciseRoutine {
+      id
+      userId
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    exerciseType {
+      id
+      name
+      target
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteExerciseRoutineExerciseTypeMutationVariables,
+  APITypes.DeleteExerciseRoutineExerciseTypeMutation
 >;

@@ -110,23 +110,11 @@ type ExerciseLog @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   date: AWSDate!
-  exerciseRoutine: [ExerciseRoutine] @hasMany
+  exerciseRoutine: ExerciseRoutine
   durationMinutes: Int
   caloriesBurned: Int
-}
-
-type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  userId: ID!
-  name: String
-  exerciseType: [ExerciseType] @hasMany
-}
-
-type ExerciseType @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  target: String
-  exerciseSet: [ExerciseSet] @hasMany
+  ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseLogExerciseRoutine")
+  ExerciseSets: [ExerciseSet] @manyToMany(relationName: "ExerciseLogExerciseSet")
 }
 
 type ExerciseSet @model @auth(rules: [{allow: public}]) {
@@ -134,6 +122,26 @@ type ExerciseSet @model @auth(rules: [{allow: public}]) {
   reps: String
   time: String
   weight: String
+  ExerciseType: [ExerciseType] @manyToMany(relationName: "ExerciseSetExerciseType")
+  ExerciseRoutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseSetExerciseRoutine")
+  exerciselogs: [ExerciseLog] @manyToMany(relationName: "ExerciseLogExerciseSet")
+}
+
+type ExerciseRoutine @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID!
+  name: String
+  exerciselogs: [ExerciseLog] @manyToMany(relationName: "ExerciseLogExerciseRoutine")
+  ExerciseTypes: [ExerciseType] @manyToMany(relationName: "ExerciseRoutineExerciseType")
+  exercisesets: [ExerciseSet] @manyToMany(relationName: "ExerciseSetExerciseRoutine")
+}
+
+type ExerciseType @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  target: String
+  exercisesets: [ExerciseSet] @manyToMany(relationName: "ExerciseSetExerciseType")
+  exerciseroutines: [ExerciseRoutine] @manyToMany(relationName: "ExerciseRoutineExerciseType")
 }
 
 type SleepLog @model @auth(rules: [{allow: public}]) {
