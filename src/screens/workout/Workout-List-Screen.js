@@ -82,6 +82,7 @@ const WorkoutListScreen = ({ route, navigation }) => {
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Type here to search..."
+                    placeholderTextColor='white'
                     value={searchQuery}
                     onChangeText={text => setSearchQuery(text)}
                     onSubmitEditing={handleSearch}  // Search when the user submits the keyboard
@@ -116,12 +117,12 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         paddingHorizontal: 15,
-        backgroundColor: COLORS.backgroundBlue,
+        backgroundColor: COLORS.workoutBackgroundPistachio,
     },
     title: {
         fontSize: 36,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
         marginBottom: 20,
         textAlign: 'left'
     },
@@ -129,21 +130,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 20,
     },
 
     searchInput: {
         flex: 1,
         marginRight: 10,
         height: 40,
-        borderColor: 'gray',
+        borderColor: COLORS.workoutButtonGreen,
         borderWidth: 1,
         paddingLeft: 10,
         fontSize: 16,
+        color: 'white',
     },
 
     searchButton: {
-        backgroundColor: COLORS.primaryBlueHex,
+        backgroundColor: COLORS.workoutButtonGreen,
         borderRadius: 15,
         paddingVertical: 10,
         paddingHorizontal: 20
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
     },
 
     exerciseItem: {
-        backgroundColor: COLORS.darkBlue,
+        backgroundColor: COLORS.workoutButtonGreen,
         borderRadius: 15,
         padding: 12,
         marginBottom: 8,
@@ -171,21 +173,21 @@ const styles = StyleSheet.create({
     exerciseName: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: COLORS.whiteHex,
+        color: 'white',
     },
 
     exerciseDetail: {
         fontSize: 14,
-        color: COLORS.lightBlue,
+        color: 'white',
     },
     exerciseType: {
         fontSize: 14,
-        color: COLORS.lightGray,
+        color: 'white',
     },
 
     noResultsText: {
         fontSize: 18,
-        color: 'red',
+        color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 20,

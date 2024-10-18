@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Button, StatusBar, Text, View, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+import { SafeAreaView, Button, StatusBar, Text, View, TouchableOpacity, 
+  ScrollView, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { syncExerciseRoutines } from '../../logic/workout-api';
 import { COLORS } from '../../theme/theme';
@@ -34,54 +35,56 @@ const ExerciseListPopup = ({ navigation, visible, onClose, routine }) => {
       transparent={true}
       onRequestClose={onClose}
     >
-      <View style={styles.popupOverlay}>
-        <View style={styles.popup}>
-          <View style={styles.popupHeader}>
-            <TouchableOpacity onPress={onClose}>
-              <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>×</Text>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.popupOverlay}>
+          <View style={styles.popup}>
+            <View style={styles.popupHeader}>
+              <TouchableOpacity onPress={onClose}>
+                <Text style={[styles.closeButton, { alignSelf: 'flex-start', fontSize: 24 }]}>×</Text>
+              </TouchableOpacity>
+              <Text style={styles.popupTitle}>{routine.name}</Text>
+              <TouchableOpacity onPress={() => {
+                onClose();
+                navigation.navigate("Edit Routine", { routineName: routine.name, exerciseData: routine.exercises, routineId: routine.id });
+              }}>
+                <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.startWorkoutButton}
+              onPress={() => {
+                // Close the popup first
+                onClose();
+                // Navigate to ActiveWorkout screen with the routine's name and data
+                navigation.navigate('Active Workout', {
+                  routineName: routine.name,
+                  workoutData: routine.exercises  // Pass the exercises to the ActiveWorkout screen
+                });
+              }}
+            >
+              <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
             </TouchableOpacity>
-            <Text style={styles.popupTitle}>{routine.name}</Text>
-            <TouchableOpacity onPress={() => {
-              onClose();
-              navigation.navigate("Edit Routine", { routineName: routine.name, exerciseData: routine.exercises, routineId: routine.id });
-            }}>
-              <Text style={styles.editButton}>Edit</Text>
-            </TouchableOpacity>
+
+            <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
+            {routine.exercises.map((exercise, index) => (
+              <ScrollView key={index} style={styles.exerciseContainer}>
+
+                <Text style={styles.exerciseNamePopUp}>{exercise.name}</Text>
+                <Text style={styles.muscleGroup}>{exercise.muscleGroup}</Text>
+
+                {exercise.sets.map((set, setIndex) => (
+                  <Text key={setIndex} style={styles.exerciseSet}>
+                    {`Set ${setIndex + 1}: ${set.weight} x ${set.reps}`}
+                  </Text>
+                ))}
+
+
+              </ScrollView>
+            ))}
           </View>
-
-          <TouchableOpacity
-            style={styles.startWorkoutButton}
-            onPress={() => {
-              // Close the popup first
-              onClose();
-              // Navigate to ActiveWorkout screen with the routine's name and data
-              navigation.navigate('Active Workout', {
-                routineName: routine.name,
-                workoutData: routine.exercises  // Pass the exercises to the ActiveWorkout screen
-              });
-            }}
-          >
-            <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.lastPerformedText}>Last Performed: {routine.lastPerformed}</Text>
-          {routine.exercises.map((exercise, index) => (
-            <ScrollView key={index} style={styles.exerciseContainer}>
-
-              <Text style={styles.exerciseNamePopUp}>{exercise.name}</Text>
-              <Text style={styles.muscleGroup}>{exercise.muscleGroup}</Text>
-
-              {exercise.sets.map((set, setIndex) => (
-                <Text key={setIndex} style={styles.exerciseSet}>
-                  {`Set ${setIndex + 1}: ${set.weight} x ${set.reps}`}
-                </Text>
-              ))}
-
-
-            </ScrollView>
-          ))}
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -118,13 +121,14 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <StatusBar barStyle="default" backgroundColor={COLORS.workoutButtonGreen} />
       <SafeAreaView style={styles.container}>
         <PickDatePopup isPickDatePopupVisible={isPickDatePopupVisible} calendarDate={calendarDate} setCalendarDate={setCalendarDate}
           setDateHook={setDateHook} setIsPickDatePopupVisible={setIsPickDatePopupVisible} />
 
         <View style={styles.dateHeaderContainer}>
           <Button title="<"
+            color={COLORS.workoutButtonGreen}
             onPress={() => {
               setActiveDate(-1);
               setDateHook(getActiveDate());
@@ -132,10 +136,11 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 
           <TouchableOpacity style={styles.dateTitleContainer} onPress={() => setIsPickDatePopupVisible(true)}>
             <Text style={styles.dateTitle}>{getFormattedDate(dateHook)}</Text>
-            <FeatherIcon name="calendar" size={24} color="black" />
+            <FeatherIcon name="calendar" size={24} color="white" />
           </TouchableOpacity>
 
           <Button title=">"
+            color={COLORS.workoutButtonGreen}
             onPress={() => {
               setActiveDate(1);
               setDateHook(getActiveDate());
@@ -197,14 +202,14 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A6CC9A', //COLORS.backgroundBlue,
+    backgroundColor: COLORS.workoutBackgroundPistachio, //COLORS.backgroundBlue,
   },
   dateHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: COLORS.backgroundBlue2,
+    backgroundColor: COLORS.workoutBackgroundPistachio,
   },
   dateTitleContainer: {
     flex: 1,
@@ -215,7 +220,7 @@ const styles = StyleSheet.create({
   dateTitle: {
     fontSize: 24,
     textAlign: 'center',
-    color: 'black',
+    color: 'white',
     paddingHorizontal: 20,
   },
   bodyContainer: {
@@ -232,9 +237,10 @@ const styles = StyleSheet.create({
   routineTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'white',
   },
   addRoutineButton: {
-    backgroundColor: '#5D905A', //COLORS.primaryBlueHex,
+    backgroundColor: COLORS.workoutButtonGreen, //COLORS.primaryBlueHex,
     borderRadius: 15,
     padding: 10,
     shadowColor: '#000000',
@@ -258,7 +264,7 @@ const styles = StyleSheet.create({
   },
 
   routineTab: {
-    backgroundColor: COLORS.darkBlue,
+    backgroundColor: COLORS.workoutButtonGreen,
     borderRadius: 15,
     padding: 16,
     marginBottom: 16,
@@ -291,7 +297,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseListButton: {
-    backgroundColor: COLORS.primaryBlueHex,
+    backgroundColor: COLORS.workoutButtonGreen,
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -306,7 +312,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseHistoryButton: {
-    backgroundColor: COLORS.primaryBlueHex,
+    backgroundColor: COLORS.workoutButtonGreen,
     padding: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -334,7 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   popup: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.workoutBackgroundPistachio,
     borderRadius: 20,
     padding: 20,
     width: '90%',
@@ -349,14 +355,15 @@ const styles = StyleSheet.create({
   popupTitle: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: 'white',
   },
   editButton: {
     fontSize: 18,
-    color: COLORS.primaryBlueHex,
+    color: 'white',
   },
 
   startWorkoutButton: {
-    backgroundColor: COLORS.primaryBlueHex,
+    backgroundColor: COLORS.workoutButtonGreen,
     padding: 15,
     borderRadius: 15,
     marginBottom: 20,
@@ -370,6 +377,7 @@ const styles = StyleSheet.create({
   lastPerformedText: {
     fontSize: 16,
     marginBottom: 20,
+    color: 'white',
   },
   exerciseContainer: {
     marginBottom: 10,
@@ -383,7 +391,7 @@ const styles = StyleSheet.create({
   exerciseNamePopUp: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.primaryGrayHex,
+    color: 'white',
   },
 
   muscleGroup: {
@@ -394,7 +402,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     textAlign: 'left'
   },

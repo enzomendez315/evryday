@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         paddingHorizontal: 15,
-        backgroundColor: COLORS.backgroundBlue,
+        backgroundColor: COLORS.workoutBackgroundPistachio,
     },
     title: {
         fontSize: 36,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
         marginBottom: 20,
         textAlign: 'left'
     },
@@ -66,13 +66,13 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 15,
         borderRadius: 15,
-        backgroundColor: COLORS.darkBlue,
+        backgroundColor: COLORS.workoutButtonGreen,
     },
 
     sessionDate: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: COLORS.lightBlue,
+        color: 'white',
     },
 
     statsContainer: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 
     containerStats: {
         fontWeight: 'bold',
-        color: COLORS.lightGray,
+        color: 'white',
     }
 });
 

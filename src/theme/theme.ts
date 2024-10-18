@@ -24,7 +24,8 @@ interface Color {
   sleepButtonBlue: string;
   peach: string;
   dustyOrange: string;
-  pistachio: string;
+  workoutBackgroundPistachio: string;
+  workoutButtonGreen: string;
 }
 
 export const COLORS: Color = {
@@ -54,5 +55,6 @@ export const COLORS: Color = {
   sleepButtonBlue: '#0033A0',
   peach: '#F7B994',
   dustyOrange: '#DB7650',
-  pistachio: '#A6CC9A',
+  workoutBackgroundPistachio: '#A6CC9A',
+  workoutButtonGreen: '#5D905A',
 };
