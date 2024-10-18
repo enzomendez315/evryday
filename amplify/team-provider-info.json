@@ -1,82 +1,25 @@
 {
-  "staging": {
+  "beta": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-amplify0a53240a11b74-staging-d616d-authRole",
-      "UnauthRoleArn": "arn:aws:iam::030695255021:role/amplify-amplify0a53240a11b74-staging-d616d-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::030695255021:role/amplify-amplify0a53240a11b74-staging-d616d-authRole",
+      "AuthRoleName": "amplify-evryday-beta-35318-authRole",
+      "UnauthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-beta-35318-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-beta-35318-authRole",
       "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-      "UnauthRoleName": "amplify-amplify0a53240a11b74-staging-d616d-unauthRole",
-      "StackName": "amplify-amplify0a53240a11b74-staging-d616d",
-      "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-amplify0a53240a11b74-staging-d616d/aaec7c20-f07c-11ee-8ebc-0a4239d5f5d7",
+      "DeploymentBucketName": "amplify-evryday-beta-35318-deployment",
+      "UnauthRoleName": "amplify-evryday-beta-35318-unauthRole",
+      "StackName": "amplify-evryday-beta-35318",
+      "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-evryday-beta-35318/71fdfa10-8d43-11ef-af91-0a281f4e8273",
       "AmplifyAppId": "d303bpvqrqjc9z"
     },
     "categories": {
-      "api": {
-        "evryday": {},
-        "AdminQueries": {}
-      },
       "auth": {
-        "evryday7b027c17": {
-          "googleClientId": "1064045555003-u8hsdnv9td0scelrm84rmar3q6ehsdd9.apps.googleusercontent.com"
-        },
-        "userPoolGroups": {}
+        "EvryDay": {}
       },
       "function": {
-        "AdminQueries01025b9f": {
-          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-          "s3Key": "amplify-builds/AdminQueries01025b9f-75726558426e2b316458-build.zip"
-        },
-        "evryday7b027c17": {},
         "deleteUserData": {
-          "deploymentBucketName": "amplify-amplify0a53240a11b74-staging-d616d-deployment",
-          "s3Key": "amplify-builds/deleteUserData-617749513362504a5778-build.zip"
+          "deploymentBucketName": "amplify-evryday-beta-35318-deployment",
+          "s3Key": "amplify-builds/deleteUserData-5361354556716a503242-build.zip"
         }
-      }
-    }
-  },
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-evryday-dev-6bfc4-authRole",
-      "UnauthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-dev-6bfc4-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-dev-6bfc4-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-evryday-dev-6bfc4-deployment",
-      "UnauthRoleName": "amplify-evryday-dev-6bfc4-unauthRole",
-      "StackName": "amplify-evryday-dev-6bfc4",
-      "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-evryday-dev-6bfc4/0a73edc0-f188-11ee-ab49-0245613793c5",
-      "AmplifyAppId": "d2cpas43z7qbhc"
-    }
-  },
-  "test": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-evryday-test-3a55b-authRole",
-      "UnauthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-test-3a55b-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::030695255021:role/amplify-evryday-test-3a55b-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-evryday-test-3a55b-deployment",
-      "UnauthRoleName": "amplify-evryday-test-3a55b-unauthRole",
-      "StackName": "amplify-evryday-test-3a55b",
-      "StackId": "arn:aws:cloudformation:us-east-2:030695255021:stack/amplify-evryday-test-3a55b/ed223950-3810-11ef-af69-06b754a4eae7",
-      "AmplifyAppId": "d303bpvqrqjc9z"
-    },
-    "categories": {
-      "auth": {
-        "evryday7b027c17": {
-          "googleClientId": "1064045555003-u8hsdnv9td0scelrm84rmar3q6ehsdd9.apps.googleusercontent.com"
-        },
-        "userPoolGroups": {}
-      },
-      "function": {
-        "AdminQueries01025b9f": {
-          "deploymentBucketName": "amplify-evryday-test-3a55b-deployment",
-          "s3Key": "amplify-builds/AdminQueries01025b9f-75726558426e2b316458-build.zip"
-        },
-        "evryday7b027c17": {}
-      },
-      "api": {
-        "AdminQueries": {},
-        "evryday": {}
       }
     }
   }
