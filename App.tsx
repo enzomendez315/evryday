@@ -12,6 +12,9 @@ import WeightScreen from './src/screens/dashboard/Weight-Screen';
 import SettingsScreen from './src/screens/Settings-Screen';
 import DietScreen from './src/screens/diet/Diet-Screen';
 import AddMealScreen from './src/screens/diet/Add-Meal-Screen';
+import BarcodeScanningScreen from './src/screens/diet/Barcode-Scanning-Screen';
+import PermissionsPage from './src/components/PermissionsPage';
+
 
 import SleepScreen from './src/screens/sleep/Sleep-Screen';
 import SearchFoodScreen from './src/screens/diet/Search-Food-Screen';
@@ -188,6 +191,8 @@ function DietStack() {
       <Stack.Screen name="Create Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
       <Stack.Screen name="Add Serving Option" component={ModifyFoodScreen} initialParams={{ editable: true }} />
       <Stack.Screen name="Edit Food Item" component={ModifyFoodScreen} initialParams={{ editable: true }} />
+      <Stack.Screen name="Scan Barcode" component={BarcodeScanningScreen} />
+      <Stack.Screen name="PermissionsPage" component={PermissionsPage} />
     </Stack.Navigator>
   );
 }

@@ -19,6 +19,14 @@
     "apievrydayGraphQLAPIIdOutput": {
       "Type": "String",
       "Default": "apievrydayGraphQLAPIIdOutput"
+    },
+    "apievrydayGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "apievrydayGraphQLAPIEndpointOutput"
+    },
+    "apievrydayGraphQLAPIKeyOutput": {
+      "Type": "String",
+      "Default": "apievrydayGraphQLAPIKeyOutput"
     }
   },
   "Conditions": {
@@ -74,6 +82,15 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
+            "API_EVRYDAY_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apievrydayGraphQLAPIIdOutput"
+            },
+            "API_EVRYDAY_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apievrydayGraphQLAPIEndpointOutput"
+            },
+            "API_EVRYDAY_GRAPHQLAPIKEYOUTPUT": {
+              "Ref": "apievrydayGraphQLAPIKeyOutput"
+            },
             "API_EVRYDAY_USERTABLE_NAME": {
               "Fn::ImportValue": {
                 "Fn::Sub": "${apievrydayGraphQLAPIIdOutput}:GetAtt:UserTable:Name"
@@ -99,9 +116,6 @@
                   }
                 ]
               ]
-            },
-            "API_EVRYDAY_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apievrydayGraphQLAPIIdOutput"
             }
           }
         },
@@ -122,12 +136,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "evrydayLambdaRole17dad3df",
+            "evrydayLambdaRole7bd0aa1a",
             {
               "Fn::Join": [
                 "",
                 [
-                  "evrydayLambdaRole17dad3df",
+                  "evrydayLambdaRole7bd0aa1a",
                   "-",
                   {
                     "Ref": "env"
@@ -216,17 +230,54 @@
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:Put*",
-                "dynamodb:Create*",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PartiQLInsert",
-                "dynamodb:Get*",
-                "dynamodb:BatchGetItem",
-                "dynamodb:List*",
-                "dynamodb:Describe*",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:PartiQLSelect",
+                "appsync:GraphQL"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appsync:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apis/",
+                      {
+                        "Ref": "apievrydayGraphQLAPIIdOutput"
+                      },
+                      "/types/Query/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appsync:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apis/",
+                      {
+                        "Ref": "apievrydayGraphQLAPIIdOutput"
+                      },
+                      "/types/Mutation/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
                 "dynamodb:Update*",
                 "dynamodb:RestoreTable*",
                 "dynamodb:PartiQLUpdate",

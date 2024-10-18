@@ -51,6 +51,7 @@
         "react-native-table-component": "^1.2.2",
         "react-native-url-polyfill": "^2.0.0",
         "react-native-vector-icons": "^10.0.3",
+        "react-native-vision-camera": "^4.5.1",
         "rn-vertical-slider": "^4.4.0",
         "simple-oauth2": "^5.1.0"
     },
