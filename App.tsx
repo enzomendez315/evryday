@@ -227,15 +227,22 @@ function WorkoutStack() {
 
 // Fully syncs the local Datastore with the remote database
 export async function StartListening(user: string, setDBReady: React.Dispatch<React.SetStateAction<boolean>>) {
+  const timedout = setTimeout(() => {
+    console.log("DataStore timed out");
+    setDBReady(true);
+    listener(); 
+  }, 15000);
   console.log("DataStore is started");
   const listener = Hub.listen('datastore', async hubData => {
     const { event, data } = hubData.payload;
     if (event === 'ready') {
       console.log("DataStore is ready");
+      clearTimeout(timedout);
       listener(); // Stops the listener
       setDBReady(true);
     }
   })
+  return () => clearTimeout(timedout);
 }
 
 function App() {
@@ -244,12 +251,16 @@ function App() {
   const [useSleep, setUseSleep] = React.useState(true);
   const [useWorkout, setUseWorkout] = React.useState(true);
   const [isDBReady, setDBReady] = React.useState(false);
+  // const [isDBReady, setDBReady] = React.useState(true);
   // ConsoleLogger.LOG_LEVEL = 'DEBUG'; // Uncomment to enable AWS debug logging
   React.useEffect(() => {
+    let timedOut = false;
+
     currentUserDetails().then(async (user) => {
       setUserId(user);
       console.log(User); // Need to use a random model to initialize the DataStore
       // await DataStore.clear(); // clear the local Datastore before connecting to the remote database
+
       await DataStore.start();
       await StartListening(user, setDBReady);
 

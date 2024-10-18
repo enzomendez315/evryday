@@ -2133,13 +2133,6 @@ export type ModelSubscriptionExerciseRoutineExerciseTypeFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
-export type DeleteUserDataMutationVariables = {
-};
-
-export type DeleteUserDataMutation = {
-  deleteUserData: boolean,
-};
-
 export type CreateDailyGoalsMutationVariables = {
   input: CreateDailyGoalsInput,
   condition?: ModelDailyGoalsConditionInput | null,
