@@ -268,8 +268,8 @@ function App() {
         : <View style={{ flex: 1, alignItems: 'center', backgroundColor: COLORS.backgroundBlue }}>
           <Text style={{ marginTop: 30 }}>Getting things ready ...</Text>
           <LottieView
-            source={require('./src/animations/sloth_meditating.json')}
-            style={{ width: "75%", height: "75%" }}
+            source={require('./src/animations/all_three_appear.json')}
+            style={{ width: "100%", height: "100%" }}
             autoPlay
             loop
           />
