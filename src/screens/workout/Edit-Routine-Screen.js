@@ -149,7 +149,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
                     {exerciseData && exerciseData.map((item, index) => (
                         <View style={styles.exercisesContainer} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={styles.title}>{item.name}</Text>
+                                <Text style={styles.workoutTitle}>{item.name}</Text>
                                 <TouchableOpacity
                                     style={styles.addSetButton}
                                     onPress={() => handleDeleteExercise(item.name)}>
@@ -308,6 +308,12 @@ const styles = StyleSheet.create({
     popupTitle: {
         fontSize: 22,
         fontWeight: 'bold',
+    },
+
+    workoutTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'black',  // Black text for workoutTitle
     },
 });
 

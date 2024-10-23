@@ -55,6 +55,6 @@ export const COLORS: Color = {
   sleepButtonBlue: '#0033A0',
   peach: '#E29676',
   dustyOrange: '#DB7650',
-  workoutBackgroundPistachio: '#A6CC9A',
+  workoutBackgroundPistachio: '#92B885',
   workoutButtonGreen: '#5D905A',
 };
