@@ -520,6 +520,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     shadowColor: '#000000',
+    width: '45%',  // ensure width is set for consistent layout
     shadowOffset: {
       width: 0,
       height: 3
@@ -573,6 +574,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 50,
     shadowColor: '#000000',
+    width: '45%',  // ensure width is set for consistent layout
     shadowOffset: {
       width: 0,
       height: 3

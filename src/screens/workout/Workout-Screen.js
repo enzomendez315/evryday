@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.workoutBackgroundPistachio, //COLORS.backgroundBlue,
+    alignContent: 'center',
   },
   dateHeaderContainer: {
     flexDirection: 'row',
