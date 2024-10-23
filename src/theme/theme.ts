@@ -53,7 +53,7 @@ export const COLORS: Color = {
   softLavender: '#BA98BF',
   sleepBackgroundBlue: '#2D5272',
   sleepButtonBlue: '#0033A0',
-  peach: '#F7B994',
+  peach: '#E29676',
   dustyOrange: '#DB7650',
   workoutBackgroundPistachio: '#A6CC9A',
   workoutButtonGreen: '#5D905A',

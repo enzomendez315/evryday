@@ -155,9 +155,9 @@ const DailyGoalsScreen = () => {
                     </Picker>
                 </View>
 
-                <View style={{ padding: 10 }}>
-                    <Button title='Submit' onPress={handleSubmit} />
-                </View>
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                    <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -167,54 +167,69 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.backgroundBlue,
+        padding: 10,
     },
     body: {
         padding: 10,
         justifyContent: 'space-between',
         flexDirection: 'column',
         flex: .9,
+        backgroundColor: '#F2F2F2',
+        borderRadius: 15,
     },
     inputRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 10,
-        backgroundColor: 'white',
+        padding: 15,
+        backgroundColor: '#fff',
         borderRadius: 10,
+        marginBottom: 10,
         shadowColor: '#000000',
         shadowOffset: {
             width: 0,
             height: 3
         },
         shadowRadius: 5,
-        shadowOpacity: 1.0,
+        shadowOpacity: 0.3,
         elevation: 5,
     },
     label: {
         flex: .5,
         padding: 10,
+        color: '#333',
+        fontWeight: 'bold',
     },
     input: {
         flex: .6,
         height: 40,
         padding: 10,
         borderBottomWidth: 1,
+        borderColor: COLORS.lightGray,
+        borderRadius: 5,
         textAlign: 'center',
+        backgroundColor: '#f9f9f9',
     },
     picker: {
         flex: .6,
         height: 40,
         padding: 10,
         textAlign: 'center',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 5,
     },
     sectionHeader: {
-        fontSize: 25,
-        color: 'black',
+        fontSize: 22,
+        color: 'white',
         padding: 10,
+        backgroundColor: COLORS.primaryBlueHex,
+        borderRadius: 15,
+        textAlign: 'center',
+        marginBottom: 10,
     },
     nutritionContainer: {
         alignItems: 'center',
         flex: .8,
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         borderRadius: 10,
         padding: 10,
         margin: 5,
@@ -224,8 +239,26 @@ const styles = StyleSheet.create({
             height: 3
         },
         shadowRadius: 5,
-        shadowOpacity: 1.0,
+        shadowOpacity: 0.3,  // Subtle shadow
         elevation: 5,
+    },
+    submitButton: {
+        backgroundColor: COLORS.primaryBlueHex,  // More vibrant button color for emphasis
+        borderRadius: 15,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        margin: 10,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,  // Add shadow to the submit button for depth
+    },
+    submitButtonText: {
+        fontSize: 16,
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
 

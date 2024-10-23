@@ -1,5 +1,5 @@
 import {React,useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
 import LottieView from 'lottie-react-native';
 
 const OnboardingScreen = ({ navigation }) => {
@@ -34,13 +34,18 @@ const OnboardingScreen = ({ navigation }) => {
   
   
   return (
-    <View style={styles.container}>
-      {/* Avatars Row */}
-      <View style={styles.avatarsContainer}>
-        <LottieView source={require('../../src/animations/ape_loading.json')} autoPlay loop style={styles.avatar} />
-        <LottieView source={require('../../src/animations/bear_loading.json')} autoPlay loop style={styles.avatar} />
-        <LottieView source={require('../../src/animations/sloth_loading.json')} autoPlay loop style={styles.avatar} />
-      </View>
+    // <View style={styles.container}>
+    //   {/* Avatars Row */}
+    //   <View style={styles.avatarsContainer}>
+    //     {/* <LottieView source={require('../../src/animations/ape_loading.json')} autoPlay loop style={styles.avatar} />
+    //     <LottieView source={require('../../src/animations/bear_loading.json')} autoPlay loop style={styles.avatar} />
+    //     <LottieView source={require('../../src/animations/sloth_loading.json')} autoPlay loop style={styles.avatar} /> */}
+    //     <Image source={require('../../src/images/all_three.png')} style={styles.avatar} />
+    //   </View>
+
+      <View style={styles.container}>
+      {/*Avatars Row*/}
+      <Image source={require('../../src/images/all_three.png')} style={styles.avatar} />
 
       <View style={styles.speechBubbleContainer}>
         <Animated.View style={{ ...styles.speechBubble, opacity: fadeAnim1 }}>
@@ -70,23 +75,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   avatarsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    marginBottom: 10,
+
   },
   avatar: {
-    width: 250,
-    height: 250,
+    width: '90%',   
+    height: undefined,  
+    aspectRatio: 1, 
+    resizeMode: 'contain',
   },
   speechBubbleContainer: {
     marginBottom: 40,
   },
   speechBubble: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 10,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   getStartedButton: {
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

@@ -503,6 +503,7 @@ export default SleepScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     alignItems: 'center',
     backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue,
   },
@@ -510,6 +511,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%', // Ensure it takes up full width
     padding: 20,
     backgroundColor: COLORS.sleepBackgroundBlue, //COLORS.backgroundBlue2,
   },
@@ -593,6 +595,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignItems: 'center',
     shadowColor: '#000000',
+    width: '100%',
     shadowOffset: {
       width: 0,
       height: 3
@@ -604,10 +607,12 @@ const styles = StyleSheet.create({
   chartContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
 
   sleepScrollContainer: {
     marginVertical: 10,
+    width: '100%',
   },
 
   sleepTabContainer: {
@@ -743,5 +748,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  scrollView: {
+    flex: 1,
+    width: '100%', // To ensure it takes full width
   },
 });
