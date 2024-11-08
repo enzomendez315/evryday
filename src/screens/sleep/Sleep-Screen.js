@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Modal, SafeAreaView, StatusBar, Text, StyleSheet, Button, TouchableWithoutFeedback,
-  ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image
+  ScrollView, View, TouchableOpacity, TextInput, Dimensions, Image, Linking
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
@@ -123,8 +123,14 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
               <View style={styles.popupHeader}>
                 <Text style={styles.popupTitle}>New Sleep Session</Text>
 
-                <TouchableOpacity onPress={() => { /* Handle edit */ }}>
-                  <Text style={styles.editButton}>Edit</Text>
+                <TouchableOpacity onPress={() => {
+                  console.log('Syncing your Oura device')
+                  console.log('Redirecting to authorize endpoint')
+                  const authorizationURL = 'http://192.168.4.95:3000/authorize';
+
+                  Linking.openURL(authorizationURL).catch((error) => console.error(`Cannot open URL: ${authorizationURL}`));
+                }}>
+                  <Text style={styles.editButton}>Sync Oura</Text>
                 </TouchableOpacity>
               </View>
 

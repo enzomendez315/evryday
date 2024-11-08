@@ -97,3 +97,6 @@ amplifytools.xcconfig
 **.sample
 #amplify-do-not-edit-end
 .env
+cert.csr
+private.key
+certificate.crt

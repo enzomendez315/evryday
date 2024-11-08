@@ -9,14 +9,14 @@ const privateKey = fs.readFileSync('private.key', 'utf8');
 const certificate = fs.readFileSync('certificate.crt', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
-const clientID = process.env.OURA_CLIENT_ID;
-const clientSecret = process.env.OURA_CLIENT_SECRET;
-const redirectURI = process.env.OURA_REDIRECT_URI;
-const port = 3000;
+const clientID = process.env.FITBIT_CLIENT_ID;
+const clientSecret = process.env.FITBIT_CLIENT_SECRET;
+const redirectURI = process.env.FITBIT_REDIRECT_URI;
+const port = 3001;
 
-// Step 1: Redirect to Oura’s authorization page
+// Step 1: Redirect to Fitbit’s authorization page
 app.get('/authorize', (request, response) => {
-  const authorizationURL = `https://cloud.ouraring.com/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=code&scope=email+personal+daily`;
+  const authorizationURL = `https://www.fitbit.com/oauth2/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=code&scope=activity%20heartrate%20sleep%20profile`;
   response.redirect(authorizationURL);
 });
 
@@ -24,14 +24,20 @@ app.get('/authorize', (request, response) => {
 app.get('/callback', async (request, response) => {
   const code = request.query.code;
   try {
-    const tokenResponse = await axios.post('https://cloud.ouraring.com/oauth/token', {
-      client_id: clientID,
-      client_secret: clientSecret,
-      grant_type: 'authorization_code',
-      redirect_uri: redirectURI,
-      code: code,
+    const tokenResponse = await axios.post('https://api.fitbit.com/oauth2/token', null, {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${clientID}:${clientSecret}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      params: {
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: redirectURI,
+      },
     });
+
     const accessToken = tokenResponse.data.access_token;
+    const refreshToken = tokenResponse.data.refresh_token;
 
     // Store accessToken securely or use it for API requests
     response.send('Access Token obtained successfully');
@@ -41,10 +47,10 @@ app.get('/callback', async (request, response) => {
   }
 });
 
-// Step 3: Use the access token to call Oura API
+// Step 3: Use the access token to call Fitbit API (e.g., get user data)
 async function getUserData(accessToken) {
   try {
-    const response = await axios.get('https://api.ouraring.com/v1/userinfo', {
+    const response = await axios.get('https://api.fitbit.com/1/user/-/profile.json', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
