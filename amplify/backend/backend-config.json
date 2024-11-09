@@ -54,5 +54,15 @@
       "service": "Cognito"
     }
   },
-  "function": {}
+  "function": {},
+  "parameters": {
+    "AMPLIFY_auth_EvryDay_googleClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "EvryDay"
+        }
+      ]
+    }
+  }
 }
