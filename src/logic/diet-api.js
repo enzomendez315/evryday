@@ -1,6 +1,6 @@
 import { DataStore } from 'aws-amplify/datastore';
 import { currentUserDetails } from '../logic/account'
-import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood } from '../models';
+import { NutritionLog, Meal, MealPeriod, FoodItem, FoodItemServing, MealToFood, Recipe, RecipeToFood, DailyGoals, UserFavoriteFood, FoodBarcode } from '../models';
 import { getUserGoals } from './user-goals'
 
 const DEBUG = false;
@@ -468,6 +468,145 @@ export async function addFoodToMeal(meal, food, servingId, servingAmount) {
         tempMeal = updatedMeal;
     });
     return tempMeal;
+}
+
+export async function getFoodItemFromBarcode(barcode) {
+    // barcodes 
+    /*
+    810085812203 - Ghost war head sour green apple
+    810757010067 - Gluten free table crackers - schar
+    016000124790 - Honey Nut Cheerios - General Mills - 10.8oz
+    016000169685 - Honey Nut Cheerios - 18.8 oz
+    810021671949 - Mint Chocolate Sweet Thins - Simple Mills
+    856069005650 - Sweet Thins Chocolate Brownie - Simple Mills - 120g
+    */
+
+    // check if item is already in our database
+    const barcodeEntry = await DataStore.query(FoodBarcode, (c) => c.barcode.eq(barcode));
+    DEBUG && console.log('barcodeEntry:', barcodeEntry);
+    let foodItem = null;
+    if (barcodeEntry.length > 0) {
+        foodItem = await barcodeEntry[0].foodItem
+        DEBUG && console.log('foodItem:', foodItem);
+        return foodItem;
+    }
+    
+    try{
+        const queryOpenFoodFacts = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}?fields=product_name,nutriments,image_url,nutrition_data_per,nutrition_data_prepared_per,serving_quantity,serving_size,serving_quantity_unit,serving_quantity,brands`);
+        const foodData = await queryOpenFoodFacts.json();
+        DEBUG && console.log(foodData);
+
+        let name = foodData?.product?.product_name;
+        let brand = foodData?.product?.brands;
+        if (brand !== undefined && brand !== null) {
+            brand = brand.split(',').slice(-1)[0];
+        }
+        let servingSize = foodData?.product?.serving_size;
+        let servingSizeUnit = null;
+        let servingSizeAmount = null;
+        if (servingSize !== undefined || servingSize !== null) {
+            servingSizeAmount = parseFloat(servingSize.split(' ')[0]);
+            servingSizeUnit = servingSize.substring(servingSizeAmount.length + 1);
+        }
+
+        let calories = Math.round(parseFloat(foodData?.product?.nutriments?.['energy-kcal_100g'] ?? '0'));
+        let protein = parseFloat(foodData?.product?.nutriments?.proteins_100g ?? '0');
+        let carbs = parseFloat(foodData?.product?.nutriments?.carbohydrates_100g ?? '0');
+        let fat = parseFloat(foodData?.product?.nutriments?.fat_100g ?? '0');
+
+        let caloriesPerServing = Math.round(parseFloat(foodData?.product?.nutriments?.['energy-kcal_serving'] ?? '0'));
+        let proteinPerServing = parseFloat(foodData?.product?.nutriments?.proteins_serving ?? '0');
+        let carbsPerServing = parseFloat(foodData?.product?.nutriments?.carbohydrates_serving ?? '0');
+        let fatPerServing = parseFloat(foodData?.product?.nutriments?.fat_serving ?? '0');
+
+        //TODO REMOVE AFTER TESTING
+        DEBUG && console.log('name:', name);
+        DEBUG && console.log('brand:', brand);
+        DEBUG && console.log('Serving Size Unit:', servingSizeUnit);
+        DEBUG && console.log('Serving Size Amount:', servingSizeAmount);
+        DEBUG && console.log('calories:', calories);
+        DEBUG && console.log('protein:', protein);
+        DEBUG && console.log('carbs:', carbs);
+        DEBUG && console.log('fat:', fat);
+
+        DEBUG && console.log('serving_size:', servingSize);
+        DEBUG && console.log('caloriesPerServing:', caloriesPerServing);
+        DEBUG && console.log('proteinPerServing:', proteinPerServing);
+        DEBUG && console.log('carbsPerServing:', carbsPerServing);
+        DEBUG && console.log('fatPerServing:', fatPerServing);
+
+        if (name === undefined || name === null) {
+            console.log('name not found');
+            return null;
+        }
+
+        if (brand === undefined) {
+            brand = null;
+        }
+
+        // Check if food is already in the database
+        const foundFoodItem = await DataStore.query(FoodItem, (outer) => outer.and((food) => [
+            food.name.eq(name),
+            food.brand.eq(brand)
+        ]));
+
+        if (foundFoodItem.length > 0) {
+            DEBUG && console.log('foundFoodItem:', foundFoodItem[0]);
+            const newBarcodeEntry = await DataStore.save(
+                new FoodBarcode({
+                    barcode: barcode,
+                    foodItem: foundFoodItem[0]
+                })
+            );
+            return foundFoodItem[0];
+        }
+
+        DEBUG && console.log('No food item found, creating new food item');
+        const newFoodItem = await DataStore.save(
+            new FoodItem({
+                name: name,
+                owner: '11111111-1111-1111-1111-111111111111',
+                brand: brand
+            })
+        );
+
+        const newBarcodeEntry = await DataStore.save(
+            new FoodBarcode({
+                barcode: barcode,
+                foodItem: newFoodItem
+            })
+        );
+
+        const foodServing = await DataStore.save(
+            new FoodItemServing({
+                foodItem: newFoodItem,
+                servingSize: parseFloat(servingSizeAmount),
+                servingUnit: servingSizeUnit,
+                calories: parseInt(caloriesPerServing),
+                protein: parseFloat(proteinPerServing),
+                carbs: parseFloat(carbsPerServing),
+                fat: parseFloat(fatPerServing)
+            })
+        );
+
+        const baseFoodServing = await DataStore.save(
+            new FoodItemServing({
+                foodItem: newFoodItem,
+                servingSize: 100,
+                servingUnit: 'g',
+                calories: parseInt(calories),
+                protein: parseFloat(protein),
+                carbs: parseFloat(carbs),
+                fat: parseFloat(fat)
+            })
+        );
+        
+        return newFoodItem;
+
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
 // Modify-Food-obj

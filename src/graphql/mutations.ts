@@ -8,13 +8,6 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
-export const deleteUserData = /* GraphQL */ `mutation DeleteUserData {
-  deleteUserData
-}
-` as GeneratedMutation<
-  APITypes.DeleteUserDataMutationVariables,
-  APITypes.DeleteUserDataMutation
->;
 export const createDailyGoals = /* GraphQL */ `mutation CreateDailyGoals(
   $input: CreateDailyGoalsInput!
   $condition: ModelDailyGoalsConditionInput
