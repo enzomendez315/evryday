@@ -104,7 +104,10 @@ const SearchFoodScreen = (props) => {
           )}
         />
       </SafeAreaView>
+    </View>
+    </SafeAreaView>
     </>
+          
   );
 };
 export default SearchFoodScreen;

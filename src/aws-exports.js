@@ -4,11 +4,8 @@
 const awsmobile = {
     "aws_project_region": "us-east-2",
     "aws_appsync_graphqlEndpoint": "https://rskwmghvcfdcjarz2ia5coj3xa.appsync-api.us-east-2.amazonaws.com/graphql",
-    "aws_appsync_graphqlEndpoint": "https://rskwmghvcfdcjarz2ia5coj3xa.appsync-api.us-east-2.amazonaws.com/graphql",
     "aws_appsync_region": "us-east-2",
     "aws_appsync_authenticationType": "API_KEY",
-    "aws_appsync_apiKey": "da2-zghrnbmewjal7lnqv7mvu6bcty",
-    "aws_cognito_identity_pool_id": "us-east-2:bb02700d-7a92-4db1-b2a2-ef5d0ae5e04a",
     "aws_appsync_apiKey": "da2-zghrnbmewjal7lnqv7mvu6bcty",
     "aws_cognito_identity_pool_id": "us-east-2:bb02700d-7a92-4db1-b2a2-ef5d0ae5e04a",
     "aws_cognito_region": "us-east-2",
@@ -23,12 +20,9 @@ const awsmobile = {
         ],
         "redirectSignIn": "com.evryday://",
         "redirectSignOut": "com.evryday://",
-        "responseType": "token"
+        "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_AND_IDENTITY_POOLS",
-    "aws_user_pools_id": "us-east-2_msKLp1Tm8",
-    "aws_user_pools_web_client_id": "350vm9gfqbl6tg3p4e12l3k1cf",
-    "oauth": {},
     "aws_cognito_username_attributes": [
         "EMAIL"
     ],
@@ -36,8 +30,6 @@ const awsmobile = {
         "GOOGLE"
     ],
     "aws_cognito_signup_attributes": [
-        "EMAIL",
-        "NAME"
         "EMAIL",
         "NAME"
     ],
