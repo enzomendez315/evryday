@@ -2,6 +2,12 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@aws-amplify/datastore";
 
+export enum FriendState {
+  PENDING = "Pending",
+  REJECTED = "Rejected",
+  ACCEPTED = "Accepted"
+}
+
 export enum MealPeriod {
   BREAKFAST = "Breakfast",
   LUNCH = "Lunch",
@@ -65,6 +71,7 @@ type EagerUser = {
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly gender?: string | null;
+  readonly friends?: (Friends | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -81,6 +88,7 @@ type LazyUser = {
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly gender?: string | null;
+  readonly friends: AsyncCollection<Friends>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -89,6 +97,40 @@ export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser :
 
 export declare const User: (new (init: ModelInit<User>) => User) & {
   copyOf(source: User, mutator: (draft: MutableModel<User>) => MutableModel<User> | void): User;
+}
+
+type EagerFriends = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Friends, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user?: User | null;
+  readonly friendsUserId?: string | null;
+  readonly state?: FriendState | keyof typeof FriendState | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly userFriendsId?: string | null;
+}
+
+type LazyFriends = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Friends, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user: AsyncItem<User | undefined>;
+  readonly friendsUserId?: string | null;
+  readonly state?: FriendState | keyof typeof FriendState | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly userFriendsId?: string | null;
+}
+
+export declare type Friends = LazyLoading extends LazyLoadingDisabled ? EagerFriends : LazyFriends
+
+export declare const Friends: (new (init: ModelInit<Friends>) => Friends) & {
+  copyOf(source: Friends, mutator: (draft: MutableModel<Friends>) => MutableModel<Friends> | void): Friends;
 }
 
 type EagerNutritionLog = {

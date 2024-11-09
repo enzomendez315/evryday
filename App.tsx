@@ -27,6 +27,7 @@ import WorkingHistoryOverview from './src/screens/workout/Workout-History-Screen
 import WorkoutListScreen from './src/screens/workout/Workout-List-Screen';
 import EditRoutineScreen from './src/screens/workout/Edit-Routine-Screen';
 
+import OnboardingScreen from './src/screens/On-Boarding-Screen';
 import BasicInfoScreen from './src/screens/Basic-Info-Screen';
 import DailyGoalsScreen from './src/screens/dailyGoals/Daily-Goals-Screen';
 import NutritionGoalsScreen from './src/screens/dailyGoals/Nutrition-Goals-Screen';
@@ -154,6 +155,7 @@ function SettingsStack() {
       <Stack.Screen name="Basic Info" component={BasicInfoScreen} />
       <Stack.Screen name="Daily Goals" component={DailyGoalsScreen} />
       <Stack.Screen name="Nutrition Goals" component={NutritionGoalsScreen} />
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
     </Stack.Navigator>
   );
 }
@@ -284,8 +286,8 @@ function App() {
         : <View style={{ flex: 1, alignItems: 'center', backgroundColor: COLORS.backgroundBlue }}>
           <Text style={{ marginTop: 30 }}>Getting things ready ...</Text>
           <LottieView
-            source={require('./src/animations/sloth_meditating.json')}
-            style={{ width: "75%", height: "75%" }}
+            source={require('./src/animations/all_three_appear.json')}
+            style={{ width: "100%", height: "100%" }}
             autoPlay
             loop
           />

@@ -170,7 +170,7 @@ const WorkoutHomeScreen = ({ navigation, route }) => {
 
             <TouchableOpacity style={styles.addRoutineButton}
               onPress={() => navigation.navigate("Edit Routine", { routineName: 'New Routine', exerciseData: [] })}>
-              <Text style={styles.addRoutineButtonText}>Add Workout</Text>
+              <Text style={styles.addRoutineButtonText}>Add Routine</Text>
             </TouchableOpacity>
 
           </View>
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.workoutBackgroundPistachio, //COLORS.backgroundBlue,
+    alignContent: 'center',
   },
   dateHeaderContainer: {
     flexDirection: 'row',

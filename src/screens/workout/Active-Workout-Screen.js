@@ -228,10 +228,11 @@ const styles = StyleSheet.create({
   },
   setText: {
     fontSize: 14,
-    color: 'white',
+    color: 'black',
   },
   exerciseTitle: {
     fontSize: 20,
+    color: 'white',
   },
   input: {
 

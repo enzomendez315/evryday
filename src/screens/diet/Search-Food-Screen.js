@@ -49,9 +49,17 @@ const SearchFoodScreen = (props) => {
     })
     searchFoodItems(searchTerm, setFoodItems, userId);
   }, []);
+
+  const handleSearch = () => {
+    searchFoodItems(searchTerm, setFoodItems, userId);
+  };
+
   return (
     <>
       <StatusBar barStyle="default" backgroundColor={COLORS.lightGreen} />
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Foods</Text>
+        <View style={styles.searchSection}>
       <SafeAreaView>
         <NavMenuPopupComponent
           isVisible={navMenuVisible}
@@ -60,100 +68,104 @@ const SearchFoodScreen = (props) => {
         />
         <View style={styles.header}>
           <TextInput
-            style={styles.searchInputText}
-            placeholder="Enter Food Here"
+            style={styles.searchInput}
+            placeholder="Type here to search..."
+            placeholderTextColor="black"
+            value={searchTerm}
             onChangeText={(input) => {
               setSearchTerm(input);
               searchFoodItems(input, setFoodItems, userId);
             }}
           />
-        </View>
-        <Text style={styles.resultsText}>Search Results:</Text>
-        <View style={styles.tableHeadContainer}>
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+            <Text style={styles.searchButtonText}>Search</Text>
+          </TouchableOpacity>
         </View>
 
-        <ScrollView>
-          <View style={styles.tableContainer}>
-            <FlatList
-              style={styles.listContainer}
-              scrollEnabled={false}
-              data={foodItems}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <>
-                  <TouchableOpacity onPress={() => navigation.navigate('Add Food', { foodItem: item, meal })}>
-                    <View style={styles.tableTextContainer}>
-                      <Text style={styles.tableText}>{item.name.length < MAX_NAME_LENGTH
-                        ? `${item.name}`
-                        : `${item.name.substring(0, MAX_NAME_LENGTH)}`}</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <View style={styles.separator} />
-                </>
-              )}
-            />
-          </View>
-        </ScrollView>
+        <FlatList
+          style={styles.listContainer}
+          data={foodItems}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <>
+              <TouchableOpacity onPress={() => navigation.navigate('Add Food', { foodItem: item, meal })}>
+                <View style={styles.foodItem}>
+                  <Text style={styles.foodName}>
+                    {item.name.length < MAX_NAME_LENGTH
+                      ? item.name
+                      : `${item.name.substring(0, MAX_NAME_LENGTH)}...`}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </>
+          )}
+          ListEmptyComponent={() => (
+            <Text style={styles.noResultsText}>No Food Found</Text>
+          )}
+        />
       </SafeAreaView>
+    </View>
+    </SafeAreaView>
     </>
+          
   );
 };
-
 export default SearchFoodScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.backgroundBlue,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: COLORS.peach,
+    padding: 20,
+    paddingHorizontal: 15,
   },
+
   title: {
-    fontSize: 30,
+    fontSize: 36,
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'black',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'left'
   },
-  searchInputText: {
-    fontSize: 20,
-    color: 'black',
-    textAlign: 'left',
+  searchInput: {
+    flex: 1,
+    marginRight: 10,
+    height: 40,
+    borderColor: COLORS.dustyOrange,
     borderWidth: 1,
-    marginTop: 20,
+    paddingLeft: 10,
+    fontSize: 16,
+    color: 'white',
+  },
+
+  searchSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
   },
+
+  searchButton: {
+    backgroundColor: COLORS.dustyOrange,
+    borderRadius: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20
+  },
+  searchButtonText: {
+    fontSize: 16,
+    color: COLORS.whiteHex,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+
   resultsText: {
     fontSize: 20,
     color: 'black',
     textAlign: 'left',
   },
-  tableContainer: {
-    padding: 10,
-    justifyContent: 'center',
-  },
-  tableHeadContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  tableHeadText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'black'
-  },
-  tableTextContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  tableText: {
-    margin: 6,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
+  
   listContainer: {
+    flex: 1,
     padding: 1,
     scrollEnabled: true,
   },
@@ -165,5 +177,28 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 30,
     paddingVertical: 10,
-  }
+  },
+
+  foodItem: {
+    backgroundColor: COLORS.dustyOrange,
+    borderRadius: 15,
+    padding: 12,
+    marginBottom: 8,
+  },
+
+  foodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  noResultsText: {
+    fontSize: 18,
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+
+
 });

@@ -74,6 +74,11 @@ src/logic/diet-api-tsconversion.ts
 amplify/README.md
 /src/sampleData
 
+.env
+cert.csr
+private.key
+certificate.crt
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -85,7 +90,6 @@ amplify/backend/.temp
 build/
 dist/
 node_modules/
-!node_modules/react-native-vision-camera/android/build.gradle
 aws-exports.js
 awsconfiguration.json
 amplifyconfiguration.json
@@ -96,7 +100,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-.env
-cert.csr
-private.key
-certificate.crt

@@ -20,7 +20,7 @@ const awsmobile = {
         ],
         "redirectSignIn": "com.evryday://",
         "redirectSignOut": "com.evryday://",
-        "responseType": "token"
+        "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_AND_IDENTITY_POOLS",
     "aws_cognito_username_attributes": [
