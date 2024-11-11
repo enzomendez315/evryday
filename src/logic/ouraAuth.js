@@ -55,8 +55,8 @@ async function getUserData(accessToken) {
   }
 }
 
-//app.listen(port, () => console.log(`Server running on http://localhost:${port}/authorize`));
+app.listen(port, () => console.log(`Server running on http://localhost:${port}/authorize`));
 
-https.createServer(credentials, app).listen(port, () => {
-  console.log(`Server running on https://localhost:${port}/authorize`);
-});
+// https.createServer(credentials, app).listen(port, () => {
+//   console.log(`Server running on https://localhost:${port}/authorize`);
+// });
