@@ -159,16 +159,19 @@ export type CreateUserInput = {
   id?: string | null,
   userId: string,
   name: string,
+  name_searchable?: string | null,
   age?: number | null,
   height?: number | null,
   weight?: number | null,
   gender?: string | null,
   _version?: number | null,
+  userPrivacySettingsId?: string | null,
 };
 
 export type ModelUserConditionInput = {
   userId?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  name_searchable?: ModelStringInput | null,
   age?: ModelIntInput | null,
   height?: ModelFloatInput | null,
   weight?: ModelFloatInput | null,
@@ -179,6 +182,7 @@ export type ModelUserConditionInput = {
   _deleted?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
+  userPrivacySettingsId?: ModelIDInput | null,
 };
 
 export type User = {
@@ -186,29 +190,160 @@ export type User = {
   id: string,
   userId: string,
   name: string,
+  name_searchable?: string | null,
   age?: number | null,
   height?: number | null,
   weight?: number | null,
   gender?: string | null,
+  friends?: ModelFriendsConnection | null,
+  privacySettings?: PrivacySettings | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
+  userPrivacySettingsId?: string | null,
+};
+
+export type ModelFriendsConnection = {
+  __typename: "ModelFriendsConnection",
+  items:  Array<Friends | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Friends = {
+  __typename: "Friends",
+  id: string,
+  user?: User | null,
+  friendsUserId?: string | null,
+  state?: FriendState | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  userFriendsId?: string | null,
+};
+
+export enum FriendState {
+  Pending = "Pending",
+  Rejected = "Rejected",
+  Accepted = "Accepted",
+}
+
+
+export type PrivacySettings = {
+  __typename: "PrivacySettings",
+  id: string,
+  user?: User | null,
+  isSearchable?: boolean | null,
+  showDiet?: boolean | null,
+  showWorkout?: boolean | null,
+  showSleep?: boolean | null,
+  showAccountDetails?: boolean | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  privacySettingsUserId?: string | null,
 };
 
 export type UpdateUserInput = {
   id: string,
   userId?: string | null,
   name?: string | null,
+  name_searchable?: string | null,
   age?: number | null,
   height?: number | null,
   weight?: number | null,
   gender?: string | null,
   _version?: number | null,
+  userPrivacySettingsId?: string | null,
 };
 
 export type DeleteUserInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreatePrivacySettingsInput = {
+  id?: string | null,
+  isSearchable?: boolean | null,
+  showDiet?: boolean | null,
+  showWorkout?: boolean | null,
+  showSleep?: boolean | null,
+  showAccountDetails?: boolean | null,
+  _version?: number | null,
+  privacySettingsUserId?: string | null,
+};
+
+export type ModelPrivacySettingsConditionInput = {
+  isSearchable?: ModelBooleanInput | null,
+  showDiet?: ModelBooleanInput | null,
+  showWorkout?: ModelBooleanInput | null,
+  showSleep?: ModelBooleanInput | null,
+  showAccountDetails?: ModelBooleanInput | null,
+  and?: Array< ModelPrivacySettingsConditionInput | null > | null,
+  or?: Array< ModelPrivacySettingsConditionInput | null > | null,
+  not?: ModelPrivacySettingsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  privacySettingsUserId?: ModelIDInput | null,
+};
+
+export type UpdatePrivacySettingsInput = {
+  id: string,
+  isSearchable?: boolean | null,
+  showDiet?: boolean | null,
+  showWorkout?: boolean | null,
+  showSleep?: boolean | null,
+  showAccountDetails?: boolean | null,
+  _version?: number | null,
+  privacySettingsUserId?: string | null,
+};
+
+export type DeletePrivacySettingsInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateFriendsInput = {
+  id?: string | null,
+  friendsUserId?: string | null,
+  state?: FriendState | null,
+  _version?: number | null,
+  userFriendsId?: string | null,
+};
+
+export type ModelFriendsConditionInput = {
+  friendsUserId?: ModelIDInput | null,
+  state?: ModelFriendStateInput | null,
+  and?: Array< ModelFriendsConditionInput | null > | null,
+  or?: Array< ModelFriendsConditionInput | null > | null,
+  not?: ModelFriendsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  userFriendsId?: ModelIDInput | null,
+};
+
+export type ModelFriendStateInput = {
+  eq?: FriendState | null,
+  ne?: FriendState | null,
+};
+
+export type UpdateFriendsInput = {
+  id: string,
+  friendsUserId?: string | null,
+  state?: FriendState | null,
+  _version?: number | null,
+  userFriendsId?: string | null,
+};
+
+export type DeleteFriendsInput = {
   id: string,
   _version?: number | null,
 };
@@ -1201,6 +1336,122 @@ export type DeleteWeightLogInput = {
   _version?: number | null,
 };
 
+export type CreateOuraTokenInput = {
+  id?: string | null,
+  userId: string,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number,
+  lastRefresh: string,
+  scopes?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type ModelOuraTokenConditionInput = {
+  userId?: ModelIDInput | null,
+  accessToken?: ModelStringInput | null,
+  refreshToken?: ModelStringInput | null,
+  expiresIn?: ModelIntInput | null,
+  lastRefresh?: ModelStringInput | null,
+  scopes?: ModelStringInput | null,
+  and?: Array< ModelOuraTokenConditionInput | null > | null,
+  or?: Array< ModelOuraTokenConditionInput | null > | null,
+  not?: ModelOuraTokenConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type OuraToken = {
+  __typename: "OuraToken",
+  id: string,
+  userId: string,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number,
+  lastRefresh: string,
+  scopes?: Array< string | null > | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateOuraTokenInput = {
+  id: string,
+  userId?: string | null,
+  accessToken?: string | null,
+  refreshToken?: string | null,
+  expiresIn?: number | null,
+  lastRefresh?: string | null,
+  scopes?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type DeleteOuraTokenInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateFitbitTokenInput = {
+  id?: string | null,
+  userId: string,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number,
+  lastRefresh: string,
+  scopes?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type ModelFitbitTokenConditionInput = {
+  userId?: ModelIDInput | null,
+  accessToken?: ModelStringInput | null,
+  refreshToken?: ModelStringInput | null,
+  expiresIn?: ModelIntInput | null,
+  lastRefresh?: ModelStringInput | null,
+  scopes?: ModelStringInput | null,
+  and?: Array< ModelFitbitTokenConditionInput | null > | null,
+  or?: Array< ModelFitbitTokenConditionInput | null > | null,
+  not?: ModelFitbitTokenConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type FitbitToken = {
+  __typename: "FitbitToken",
+  id: string,
+  userId: string,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number,
+  lastRefresh: string,
+  scopes?: Array< string | null > | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateFitbitTokenInput = {
+  id: string,
+  userId?: string | null,
+  accessToken?: string | null,
+  refreshToken?: string | null,
+  expiresIn?: number | null,
+  lastRefresh?: string | null,
+  scopes?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type DeleteFitbitTokenInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateExerciseLogExerciseRoutineInput = {
   id?: string | null,
   exerciseLogId: string,
@@ -1380,6 +1631,7 @@ export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   userId?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  name_searchable?: ModelStringInput | null,
   age?: ModelIntInput | null,
   height?: ModelFloatInput | null,
   weight?: ModelFloatInput | null,
@@ -1390,6 +1642,7 @@ export type ModelUserFilterInput = {
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
   _deleted?: ModelBooleanInput | null,
+  userPrivacySettingsId?: ModelIDInput | null,
 };
 
 export type ModelUserConnection = {
@@ -1397,6 +1650,42 @@ export type ModelUserConnection = {
   items:  Array<User | null >,
   nextToken?: string | null,
   startedAt?: number | null,
+};
+
+export type ModelPrivacySettingsFilterInput = {
+  id?: ModelIDInput | null,
+  isSearchable?: ModelBooleanInput | null,
+  showDiet?: ModelBooleanInput | null,
+  showWorkout?: ModelBooleanInput | null,
+  showSleep?: ModelBooleanInput | null,
+  showAccountDetails?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelPrivacySettingsFilterInput | null > | null,
+  or?: Array< ModelPrivacySettingsFilterInput | null > | null,
+  not?: ModelPrivacySettingsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  privacySettingsUserId?: ModelIDInput | null,
+};
+
+export type ModelPrivacySettingsConnection = {
+  __typename: "ModelPrivacySettingsConnection",
+  items:  Array<PrivacySettings | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelFriendsFilterInput = {
+  id?: ModelIDInput | null,
+  friendsUserId?: ModelIDInput | null,
+  state?: ModelFriendStateInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelFriendsFilterInput | null > | null,
+  or?: Array< ModelFriendsFilterInput | null > | null,
+  not?: ModelFriendsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+  userFriendsId?: ModelIDInput | null,
 };
 
 export type ModelNutritionLogFilterInput = {
@@ -1718,6 +2007,52 @@ export type ModelWeightLogConnection = {
   startedAt?: number | null,
 };
 
+export type ModelOuraTokenFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  accessToken?: ModelStringInput | null,
+  refreshToken?: ModelStringInput | null,
+  expiresIn?: ModelIntInput | null,
+  lastRefresh?: ModelStringInput | null,
+  scopes?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelOuraTokenFilterInput | null > | null,
+  or?: Array< ModelOuraTokenFilterInput | null > | null,
+  not?: ModelOuraTokenFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelOuraTokenConnection = {
+  __typename: "ModelOuraTokenConnection",
+  items:  Array<OuraToken | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelFitbitTokenFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  accessToken?: ModelStringInput | null,
+  refreshToken?: ModelStringInput | null,
+  expiresIn?: ModelIntInput | null,
+  lastRefresh?: ModelStringInput | null,
+  scopes?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelFitbitTokenFilterInput | null > | null,
+  or?: Array< ModelFitbitTokenFilterInput | null > | null,
+  not?: ModelFitbitTokenFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelFitbitTokenConnection = {
+  __typename: "ModelFitbitTokenConnection",
+  items:  Array<FitbitToken | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
 export type ModelExerciseLogExerciseRoutineFilterInput = {
   id?: ModelIDInput | null,
   exerciseLogId?: ModelIDInput | null,
@@ -1858,6 +2193,7 @@ export type ModelSubscriptionUserFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
+  name_searchable?: ModelSubscriptionStringInput | null,
   age?: ModelSubscriptionIntInput | null,
   height?: ModelSubscriptionFloatInput | null,
   weight?: ModelSubscriptionFloatInput | null,
@@ -1866,6 +2202,34 @@ export type ModelSubscriptionUserFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+  userFriendsId?: ModelSubscriptionIDInput | null,
+  userPrivacySettingsId?: ModelSubscriptionIDInput | null,
+};
+
+export type ModelSubscriptionPrivacySettingsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  isSearchable?: ModelSubscriptionBooleanInput | null,
+  showDiet?: ModelSubscriptionBooleanInput | null,
+  showWorkout?: ModelSubscriptionBooleanInput | null,
+  showSleep?: ModelSubscriptionBooleanInput | null,
+  showAccountDetails?: ModelSubscriptionBooleanInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionPrivacySettingsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionPrivacySettingsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+  privacySettingsUserId?: ModelSubscriptionIDInput | null,
+};
+
+export type ModelSubscriptionFriendsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  friendsUserId?: ModelSubscriptionIDInput | null,
+  state?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -2078,6 +2442,36 @@ export type ModelSubscriptionWeightLogFilterInput = {
   _deleted?: ModelBooleanInput | null,
 };
 
+export type ModelSubscriptionOuraTokenFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  accessToken?: ModelSubscriptionStringInput | null,
+  refreshToken?: ModelSubscriptionStringInput | null,
+  expiresIn?: ModelSubscriptionIntInput | null,
+  lastRefresh?: ModelSubscriptionStringInput | null,
+  scopes?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionOuraTokenFilterInput | null > | null,
+  or?: Array< ModelSubscriptionOuraTokenFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelSubscriptionFitbitTokenFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  accessToken?: ModelSubscriptionStringInput | null,
+  refreshToken?: ModelSubscriptionStringInput | null,
+  expiresIn?: ModelSubscriptionIntInput | null,
+  lastRefresh?: ModelSubscriptionStringInput | null,
+  scopes?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionFitbitTokenFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFitbitTokenFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelSubscriptionExerciseLogExerciseRoutineFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   exerciseLogId?: ModelSubscriptionIDInput | null,
@@ -2219,15 +2613,37 @@ export type CreateUserMutation = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
   } | null,
 };
 
@@ -2242,15 +2658,37 @@ export type UpdateUserMutation = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
   } | null,
 };
 
@@ -2265,15 +2703,268 @@ export type DeleteUserMutation = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
+  } | null,
+};
+
+export type CreatePrivacySettingsMutationVariables = {
+  input: CreatePrivacySettingsInput,
+  condition?: ModelPrivacySettingsConditionInput | null,
+};
+
+export type CreatePrivacySettingsMutation = {
+  createPrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type UpdatePrivacySettingsMutationVariables = {
+  input: UpdatePrivacySettingsInput,
+  condition?: ModelPrivacySettingsConditionInput | null,
+};
+
+export type UpdatePrivacySettingsMutation = {
+  updatePrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type DeletePrivacySettingsMutationVariables = {
+  input: DeletePrivacySettingsInput,
+  condition?: ModelPrivacySettingsConditionInput | null,
+};
+
+export type DeletePrivacySettingsMutation = {
+  deletePrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type CreateFriendsMutationVariables = {
+  input: CreateFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type CreateFriendsMutation = {
+  createFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
+  } | null,
+};
+
+export type UpdateFriendsMutationVariables = {
+  input: UpdateFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type UpdateFriendsMutation = {
+  updateFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
+  } | null,
+};
+
+export type DeleteFriendsMutationVariables = {
+  input: DeleteFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type DeleteFriendsMutation = {
+  deleteFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
   } | null,
 };
 
@@ -3858,6 +4549,144 @@ export type DeleteWeightLogMutation = {
   } | null,
 };
 
+export type CreateOuraTokenMutationVariables = {
+  input: CreateOuraTokenInput,
+  condition?: ModelOuraTokenConditionInput | null,
+};
+
+export type CreateOuraTokenMutation = {
+  createOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateOuraTokenMutationVariables = {
+  input: UpdateOuraTokenInput,
+  condition?: ModelOuraTokenConditionInput | null,
+};
+
+export type UpdateOuraTokenMutation = {
+  updateOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteOuraTokenMutationVariables = {
+  input: DeleteOuraTokenInput,
+  condition?: ModelOuraTokenConditionInput | null,
+};
+
+export type DeleteOuraTokenMutation = {
+  deleteOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateFitbitTokenMutationVariables = {
+  input: CreateFitbitTokenInput,
+  condition?: ModelFitbitTokenConditionInput | null,
+};
+
+export type CreateFitbitTokenMutation = {
+  createFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateFitbitTokenMutationVariables = {
+  input: UpdateFitbitTokenInput,
+  condition?: ModelFitbitTokenConditionInput | null,
+};
+
+export type UpdateFitbitTokenMutation = {
+  updateFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteFitbitTokenMutationVariables = {
+  input: DeleteFitbitTokenInput,
+  condition?: ModelFitbitTokenConditionInput | null,
+};
+
+export type DeleteFitbitTokenMutation = {
+  deleteFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
 export type CreateExerciseLogExerciseRoutineMutationVariables = {
   input: CreateExerciseLogExerciseRoutineInput,
   condition?: ModelExerciseLogExerciseRoutineConditionInput | null,
@@ -4591,15 +5420,37 @@ export type GetUserQuery = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
   } | null,
 };
 
@@ -4617,6 +5468,7 @@ export type ListUsersQuery = {
       id: string,
       userId: string,
       name: string,
+      name_searchable?: string | null,
       age?: number | null,
       height?: number | null,
       weight?: number | null,
@@ -4626,6 +5478,7 @@ export type ListUsersQuery = {
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -4647,6 +5500,7 @@ export type SyncUsersQuery = {
       id: string,
       userId: string,
       name: string,
+      name_searchable?: string | null,
       age?: number | null,
       height?: number | null,
       weight?: number | null,
@@ -4656,6 +5510,194 @@ export type SyncUsersQuery = {
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetPrivacySettingsQueryVariables = {
+  id: string,
+};
+
+export type GetPrivacySettingsQuery = {
+  getPrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type ListPrivacySettingsQueryVariables = {
+  filter?: ModelPrivacySettingsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPrivacySettingsQuery = {
+  listPrivacySettings?:  {
+    __typename: "ModelPrivacySettingsConnection",
+    items:  Array< {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncPrivacySettingsQueryVariables = {
+  filter?: ModelPrivacySettingsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncPrivacySettingsQuery = {
+  syncPrivacySettings?:  {
+    __typename: "ModelPrivacySettingsConnection",
+    items:  Array< {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetFriendsQueryVariables = {
+  id: string,
+};
+
+export type GetFriendsQuery = {
+  getFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
+  } | null,
+};
+
+export type ListFriendsQueryVariables = {
+  filter?: ModelFriendsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListFriendsQuery = {
+  listFriends?:  {
+    __typename: "ModelFriendsConnection",
+    items:  Array< {
+      __typename: "Friends",
+      id: string,
+      friendsUserId?: string | null,
+      state?: FriendState | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userFriendsId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncFriendsQueryVariables = {
+  filter?: ModelFriendsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncFriendsQuery = {
+  syncFriends?:  {
+    __typename: "ModelFriendsConnection",
+    items:  Array< {
+      __typename: "Friends",
+      id: string,
+      friendsUserId?: string | null,
+      state?: FriendState | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userFriendsId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -6203,6 +7245,168 @@ export type SyncWeightLogsQuery = {
   } | null,
 };
 
+export type GetOuraTokenQueryVariables = {
+  id: string,
+};
+
+export type GetOuraTokenQuery = {
+  getOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListOuraTokensQueryVariables = {
+  filter?: ModelOuraTokenFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListOuraTokensQuery = {
+  listOuraTokens?:  {
+    __typename: "ModelOuraTokenConnection",
+    items:  Array< {
+      __typename: "OuraToken",
+      id: string,
+      userId: string,
+      accessToken: string,
+      refreshToken: string,
+      expiresIn: number,
+      lastRefresh: string,
+      scopes?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncOuraTokensQueryVariables = {
+  filter?: ModelOuraTokenFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncOuraTokensQuery = {
+  syncOuraTokens?:  {
+    __typename: "ModelOuraTokenConnection",
+    items:  Array< {
+      __typename: "OuraToken",
+      id: string,
+      userId: string,
+      accessToken: string,
+      refreshToken: string,
+      expiresIn: number,
+      lastRefresh: string,
+      scopes?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetFitbitTokenQueryVariables = {
+  id: string,
+};
+
+export type GetFitbitTokenQuery = {
+  getFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListFitbitTokensQueryVariables = {
+  filter?: ModelFitbitTokenFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListFitbitTokensQuery = {
+  listFitbitTokens?:  {
+    __typename: "ModelFitbitTokenConnection",
+    items:  Array< {
+      __typename: "FitbitToken",
+      id: string,
+      userId: string,
+      accessToken: string,
+      refreshToken: string,
+      expiresIn: number,
+      lastRefresh: string,
+      scopes?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncFitbitTokensQueryVariables = {
+  filter?: ModelFitbitTokenFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncFitbitTokensQuery = {
+  syncFitbitTokens?:  {
+    __typename: "ModelFitbitTokenConnection",
+    items:  Array< {
+      __typename: "FitbitToken",
+      id: string,
+      userId: string,
+      accessToken: string,
+      refreshToken: string,
+      expiresIn: number,
+      lastRefresh: string,
+      scopes?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetExerciseLogExerciseRoutineQueryVariables = {
   id: string,
 };
@@ -7017,15 +8221,37 @@ export type OnCreateUserSubscription = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
   } | null,
 };
 
@@ -7039,15 +8265,37 @@ export type OnUpdateUserSubscription = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
   } | null,
 };
 
@@ -7061,15 +8309,262 @@ export type OnDeleteUserSubscription = {
     id: string,
     userId: string,
     name: string,
+    name_searchable?: string | null,
     age?: number | null,
     height?: number | null,
     weight?: number | null,
     gender?: string | null,
+    friends?:  {
+      __typename: "ModelFriendsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    privacySettings?:  {
+      __typename: "PrivacySettings",
+      id: string,
+      isSearchable?: boolean | null,
+      showDiet?: boolean | null,
+      showWorkout?: boolean | null,
+      showSleep?: boolean | null,
+      showAccountDetails?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      privacySettingsUserId?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+    userPrivacySettingsId?: string | null,
+  } | null,
+};
+
+export type OnCreatePrivacySettingsSubscriptionVariables = {
+  filter?: ModelSubscriptionPrivacySettingsFilterInput | null,
+};
+
+export type OnCreatePrivacySettingsSubscription = {
+  onCreatePrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type OnUpdatePrivacySettingsSubscriptionVariables = {
+  filter?: ModelSubscriptionPrivacySettingsFilterInput | null,
+};
+
+export type OnUpdatePrivacySettingsSubscription = {
+  onUpdatePrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type OnDeletePrivacySettingsSubscriptionVariables = {
+  filter?: ModelSubscriptionPrivacySettingsFilterInput | null,
+};
+
+export type OnDeletePrivacySettingsSubscription = {
+  onDeletePrivacySettings?:  {
+    __typename: "PrivacySettings",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    isSearchable?: boolean | null,
+    showDiet?: boolean | null,
+    showWorkout?: boolean | null,
+    showSleep?: boolean | null,
+    showAccountDetails?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    privacySettingsUserId?: string | null,
+  } | null,
+};
+
+export type OnCreateFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
+};
+
+export type OnCreateFriendsSubscription = {
+  onCreateFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
+  } | null,
+};
+
+export type OnUpdateFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
+};
+
+export type OnUpdateFriendsSubscription = {
+  onUpdateFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
+  } | null,
+};
+
+export type OnDeleteFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
+};
+
+export type OnDeleteFriendsSubscription = {
+  onDeleteFriends?:  {
+    __typename: "Friends",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      userId: string,
+      name: string,
+      name_searchable?: string | null,
+      age?: number | null,
+      height?: number | null,
+      weight?: number | null,
+      gender?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userPrivacySettingsId?: string | null,
+    } | null,
+    friendsUserId?: string | null,
+    state?: FriendState | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userFriendsId?: string | null,
   } | null,
 };
 
@@ -8595,6 +10090,138 @@ export type OnDeleteWeightLogSubscription = {
     userId: string,
     date: string,
     weight: number,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateOuraTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionOuraTokenFilterInput | null,
+};
+
+export type OnCreateOuraTokenSubscription = {
+  onCreateOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateOuraTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionOuraTokenFilterInput | null,
+};
+
+export type OnUpdateOuraTokenSubscription = {
+  onUpdateOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteOuraTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionOuraTokenFilterInput | null,
+};
+
+export type OnDeleteOuraTokenSubscription = {
+  onDeleteOuraToken?:  {
+    __typename: "OuraToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateFitbitTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionFitbitTokenFilterInput | null,
+};
+
+export type OnCreateFitbitTokenSubscription = {
+  onCreateFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateFitbitTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionFitbitTokenFilterInput | null,
+};
+
+export type OnUpdateFitbitTokenSubscription = {
+  onUpdateFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteFitbitTokenSubscriptionVariables = {
+  filter?: ModelSubscriptionFitbitTokenFilterInput | null,
+};
+
+export type OnDeleteFitbitTokenSubscription = {
+  onDeleteFitbitToken?:  {
+    __typename: "FitbitToken",
+    id: string,
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number,
+    lastRefresh: string,
+    scopes?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
     _version: number,

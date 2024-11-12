@@ -15,11 +15,12 @@ const MealPeriod = {
   "SNACK": "Snack"
 };
 
-const { DailyGoals, User, Friends, NutritionLog, Meal, MealToFood, FoodBarcode, FoodItem, FoodItemServing, UserFavoriteFood, Recipe, RecipeToFood, ExerciseLog, ExerciseSet, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog, WeightLog, ExerciseLogExerciseRoutine, ExerciseLogExerciseSet, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, ExerciseRoutineExerciseType } = initSchema(schema);
+const { DailyGoals, User, PrivacySettings, Friends, NutritionLog, Meal, MealToFood, FoodBarcode, FoodItem, FoodItemServing, UserFavoriteFood, Recipe, RecipeToFood, ExerciseLog, ExerciseSet, ExerciseRoutine, ExerciseType, SleepLog, HealthScore, GoalLog, WeightLog, OuraToken, FitbitToken, ExerciseLogExerciseRoutine, ExerciseLogExerciseSet, ExerciseSetExerciseType, ExerciseSetExerciseRoutine, ExerciseRoutineExerciseType } = initSchema(schema);
 
 export {
   DailyGoals,
   User,
+  PrivacySettings,
   Friends,
   NutritionLog,
   Meal,
@@ -38,6 +39,8 @@ export {
   HealthScore,
   GoalLog,
   WeightLog,
+  OuraToken,
+  FitbitToken,
   ExerciseLogExerciseRoutine,
   ExerciseLogExerciseSet,
   ExerciseSetExerciseType,

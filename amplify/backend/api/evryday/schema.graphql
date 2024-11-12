@@ -14,11 +14,23 @@ type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   userId: ID!
   name: String!
+  name_searchable: String
   age: Int
   height: Float
   weight: Float
   gender: String
   friends: [Friends] @hasMany
+  privacySettings: PrivacySettings @hasOne
+}
+
+type PrivacySettings @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  user: User @belongsTo
+  isSearchable: Boolean
+  showDiet: Boolean
+  showWorkout: Boolean
+  showSleep: Boolean
+  showAccountDetails: Boolean
 }
 
 type Friends @model @auth(rules: [{allow: public}]) {
@@ -185,4 +197,24 @@ type WeightLog @model @auth(rules: [{allow: public}]) {
   userId: ID!
   date: String!
   weight: Float!
+}
+
+type OuraToken @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID!
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  lastRefresh: AWSDateTime!
+  scopes: [String]
+}
+
+type FitbitToken @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: ID!
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  lastRefresh: AWSDateTime!
+  scopes: [String]
 }

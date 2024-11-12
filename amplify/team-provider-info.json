@@ -16,6 +16,9 @@
         "EvryDay": {
           "googleClientId": "1064045555003-q0c5odaseqdtgq1a0ao071p155klg2gm.apps.googleusercontent.com"
         }
+      },
+      "api": {
+        "evryday": {}
       }
     }
   }

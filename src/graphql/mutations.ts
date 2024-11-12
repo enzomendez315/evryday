@@ -94,15 +94,37 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     id
     userId
     name
+    name_searchable
     age
     height
     weight
     gender
+    friends {
+      nextToken
+      startedAt
+      __typename
+    }
+    privacySettings {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    userPrivacySettingsId
     __typename
   }
 }
@@ -118,15 +140,37 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     id
     userId
     name
+    name_searchable
     age
     height
     weight
     gender
+    friends {
+      nextToken
+      startedAt
+      __typename
+    }
+    privacySettings {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    userPrivacySettingsId
     __typename
   }
 }
@@ -142,21 +186,280 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     id
     userId
     name
+    name_searchable
     age
     height
     weight
     gender
+    friends {
+      nextToken
+      startedAt
+      __typename
+    }
+    privacySettings {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    userPrivacySettingsId
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteUserMutationVariables,
   APITypes.DeleteUserMutation
+>;
+export const createPrivacySettings = /* GraphQL */ `mutation CreatePrivacySettings(
+  $input: CreatePrivacySettingsInput!
+  $condition: ModelPrivacySettingsConditionInput
+) {
+  createPrivacySettings(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    isSearchable
+    showDiet
+    showWorkout
+    showSleep
+    showAccountDetails
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    privacySettingsUserId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreatePrivacySettingsMutationVariables,
+  APITypes.CreatePrivacySettingsMutation
+>;
+export const updatePrivacySettings = /* GraphQL */ `mutation UpdatePrivacySettings(
+  $input: UpdatePrivacySettingsInput!
+  $condition: ModelPrivacySettingsConditionInput
+) {
+  updatePrivacySettings(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    isSearchable
+    showDiet
+    showWorkout
+    showSleep
+    showAccountDetails
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    privacySettingsUserId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdatePrivacySettingsMutationVariables,
+  APITypes.UpdatePrivacySettingsMutation
+>;
+export const deletePrivacySettings = /* GraphQL */ `mutation DeletePrivacySettings(
+  $input: DeletePrivacySettingsInput!
+  $condition: ModelPrivacySettingsConditionInput
+) {
+  deletePrivacySettings(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    isSearchable
+    showDiet
+    showWorkout
+    showSleep
+    showAccountDetails
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    privacySettingsUserId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeletePrivacySettingsMutationVariables,
+  APITypes.DeletePrivacySettingsMutation
+>;
+export const createFriends = /* GraphQL */ `mutation CreateFriends(
+  $input: CreateFriendsInput!
+  $condition: ModelFriendsConditionInput
+) {
+  createFriends(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    friendsUserId
+    state
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    userFriendsId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateFriendsMutationVariables,
+  APITypes.CreateFriendsMutation
+>;
+export const updateFriends = /* GraphQL */ `mutation UpdateFriends(
+  $input: UpdateFriendsInput!
+  $condition: ModelFriendsConditionInput
+) {
+  updateFriends(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    friendsUserId
+    state
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    userFriendsId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateFriendsMutationVariables,
+  APITypes.UpdateFriendsMutation
+>;
+export const deleteFriends = /* GraphQL */ `mutation DeleteFriends(
+  $input: DeleteFriendsInput!
+  $condition: ModelFriendsConditionInput
+) {
+  deleteFriends(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    friendsUserId
+    state
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    userFriendsId
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteFriendsMutationVariables,
+  APITypes.DeleteFriendsMutation
 >;
 export const createNutritionLog = /* GraphQL */ `mutation CreateNutritionLog(
   $input: CreateNutritionLogInput!
@@ -1789,6 +2092,150 @@ export const deleteWeightLog = /* GraphQL */ `mutation DeleteWeightLog(
 ` as GeneratedMutation<
   APITypes.DeleteWeightLogMutationVariables,
   APITypes.DeleteWeightLogMutation
+>;
+export const createOuraToken = /* GraphQL */ `mutation CreateOuraToken(
+  $input: CreateOuraTokenInput!
+  $condition: ModelOuraTokenConditionInput
+) {
+  createOuraToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateOuraTokenMutationVariables,
+  APITypes.CreateOuraTokenMutation
+>;
+export const updateOuraToken = /* GraphQL */ `mutation UpdateOuraToken(
+  $input: UpdateOuraTokenInput!
+  $condition: ModelOuraTokenConditionInput
+) {
+  updateOuraToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateOuraTokenMutationVariables,
+  APITypes.UpdateOuraTokenMutation
+>;
+export const deleteOuraToken = /* GraphQL */ `mutation DeleteOuraToken(
+  $input: DeleteOuraTokenInput!
+  $condition: ModelOuraTokenConditionInput
+) {
+  deleteOuraToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteOuraTokenMutationVariables,
+  APITypes.DeleteOuraTokenMutation
+>;
+export const createFitbitToken = /* GraphQL */ `mutation CreateFitbitToken(
+  $input: CreateFitbitTokenInput!
+  $condition: ModelFitbitTokenConditionInput
+) {
+  createFitbitToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateFitbitTokenMutationVariables,
+  APITypes.CreateFitbitTokenMutation
+>;
+export const updateFitbitToken = /* GraphQL */ `mutation UpdateFitbitToken(
+  $input: UpdateFitbitTokenInput!
+  $condition: ModelFitbitTokenConditionInput
+) {
+  updateFitbitToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateFitbitTokenMutationVariables,
+  APITypes.UpdateFitbitTokenMutation
+>;
+export const deleteFitbitToken = /* GraphQL */ `mutation DeleteFitbitToken(
+  $input: DeleteFitbitTokenInput!
+  $condition: ModelFitbitTokenConditionInput
+) {
+  deleteFitbitToken(input: $input, condition: $condition) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteFitbitTokenMutationVariables,
+  APITypes.DeleteFitbitTokenMutation
 >;
 export const createExerciseLogExerciseRoutine = /* GraphQL */ `mutation CreateExerciseLogExerciseRoutine(
   $input: CreateExerciseLogExerciseRoutineInput!

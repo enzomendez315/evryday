@@ -67,13 +67,16 @@ type EagerUser = {
   readonly id: string;
   readonly userId: string;
   readonly name: string;
+  readonly name_searchable?: string | null;
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly gender?: string | null;
   readonly friends?: (Friends | null)[] | null;
+  readonly privacySettings?: PrivacySettings | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly userPrivacySettingsId?: string | null;
 }
 
 type LazyUser = {
@@ -84,19 +87,62 @@ type LazyUser = {
   readonly id: string;
   readonly userId: string;
   readonly name: string;
+  readonly name_searchable?: string | null;
   readonly age?: number | null;
   readonly height?: number | null;
   readonly weight?: number | null;
   readonly gender?: string | null;
   readonly friends: AsyncCollection<Friends>;
+  readonly privacySettings: AsyncItem<PrivacySettings | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly userPrivacySettingsId?: string | null;
 }
 
 export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser : LazyUser
 
 export declare const User: (new (init: ModelInit<User>) => User) & {
   copyOf(source: User, mutator: (draft: MutableModel<User>) => MutableModel<User> | void): User;
+}
+
+type EagerPrivacySettings = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<PrivacySettings, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user?: User | null;
+  readonly isSearchable?: boolean | null;
+  readonly showDiet?: boolean | null;
+  readonly showWorkout?: boolean | null;
+  readonly showSleep?: boolean | null;
+  readonly showAccountDetails?: boolean | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly privacySettingsUserId?: string | null;
+}
+
+type LazyPrivacySettings = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<PrivacySettings, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user: AsyncItem<User | undefined>;
+  readonly isSearchable?: boolean | null;
+  readonly showDiet?: boolean | null;
+  readonly showWorkout?: boolean | null;
+  readonly showSleep?: boolean | null;
+  readonly showAccountDetails?: boolean | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly privacySettingsUserId?: string | null;
+}
+
+export declare type PrivacySettings = LazyLoading extends LazyLoadingDisabled ? EagerPrivacySettings : LazyPrivacySettings
+
+export declare const PrivacySettings: (new (init: ModelInit<PrivacySettings>) => PrivacySettings) & {
+  copyOf(source: PrivacySettings, mutator: (draft: MutableModel<PrivacySettings>) => MutableModel<PrivacySettings> | void): PrivacySettings;
 }
 
 type EagerFriends = {
@@ -735,6 +781,82 @@ export declare type WeightLog = LazyLoading extends LazyLoadingDisabled ? EagerW
 
 export declare const WeightLog: (new (init: ModelInit<WeightLog>) => WeightLog) & {
   copyOf(source: WeightLog, mutator: (draft: MutableModel<WeightLog>) => MutableModel<WeightLog> | void): WeightLog;
+}
+
+type EagerOuraToken = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<OuraToken, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly expiresIn: number;
+  readonly lastRefresh: string;
+  readonly scopes?: (string | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyOuraToken = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<OuraToken, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly expiresIn: number;
+  readonly lastRefresh: string;
+  readonly scopes?: (string | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type OuraToken = LazyLoading extends LazyLoadingDisabled ? EagerOuraToken : LazyOuraToken
+
+export declare const OuraToken: (new (init: ModelInit<OuraToken>) => OuraToken) & {
+  copyOf(source: OuraToken, mutator: (draft: MutableModel<OuraToken>) => MutableModel<OuraToken> | void): OuraToken;
+}
+
+type EagerFitbitToken = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FitbitToken, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly expiresIn: number;
+  readonly lastRefresh: string;
+  readonly scopes?: (string | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyFitbitToken = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FitbitToken, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly expiresIn: number;
+  readonly lastRefresh: string;
+  readonly scopes?: (string | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type FitbitToken = LazyLoading extends LazyLoadingDisabled ? EagerFitbitToken : LazyFitbitToken
+
+export declare const FitbitToken: (new (init: ModelInit<FitbitToken>) => FitbitToken) & {
+  copyOf(source: FitbitToken, mutator: (draft: MutableModel<FitbitToken>) => MutableModel<FitbitToken> | void): FitbitToken;
 }
 
 type EagerExerciseLogExerciseRoutine = {

@@ -106,15 +106,37 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     id
     userId
     name
+    name_searchable
     age
     height
     weight
     gender
+    friends {
+      nextToken
+      startedAt
+      __typename
+    }
+    privacySettings {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    userPrivacySettingsId
     __typename
   }
 }
@@ -129,6 +151,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       id
       userId
       name
+      name_searchable
       age
       height
       weight
@@ -138,6 +161,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       _version
       _deleted
       _lastChangedAt
+      userPrivacySettingsId
       __typename
     }
     nextToken
@@ -162,6 +186,7 @@ export const syncUsers = /* GraphQL */ `query SyncUsers(
       id
       userId
       name
+      name_searchable
       age
       height
       weight
@@ -171,6 +196,7 @@ export const syncUsers = /* GraphQL */ `query SyncUsers(
       _version
       _deleted
       _lastChangedAt
+      userPrivacySettingsId
       __typename
     }
     nextToken
@@ -179,6 +205,205 @@ export const syncUsers = /* GraphQL */ `query SyncUsers(
   }
 }
 ` as GeneratedQuery<APITypes.SyncUsersQueryVariables, APITypes.SyncUsersQuery>;
+export const getPrivacySettings = /* GraphQL */ `query GetPrivacySettings($id: ID!) {
+  getPrivacySettings(id: $id) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    isSearchable
+    showDiet
+    showWorkout
+    showSleep
+    showAccountDetails
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    privacySettingsUserId
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetPrivacySettingsQueryVariables,
+  APITypes.GetPrivacySettingsQuery
+>;
+export const listPrivacySettings = /* GraphQL */ `query ListPrivacySettings(
+  $filter: ModelPrivacySettingsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPrivacySettings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListPrivacySettingsQueryVariables,
+  APITypes.ListPrivacySettingsQuery
+>;
+export const syncPrivacySettings = /* GraphQL */ `query SyncPrivacySettings(
+  $filter: ModelPrivacySettingsFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncPrivacySettings(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      isSearchable
+      showDiet
+      showWorkout
+      showSleep
+      showAccountDetails
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      privacySettingsUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncPrivacySettingsQueryVariables,
+  APITypes.SyncPrivacySettingsQuery
+>;
+export const getFriends = /* GraphQL */ `query GetFriends($id: ID!) {
+  getFriends(id: $id) {
+    id
+    user {
+      id
+      userId
+      name
+      name_searchable
+      age
+      height
+      weight
+      gender
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userPrivacySettingsId
+      __typename
+    }
+    friendsUserId
+    state
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    userFriendsId
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFriendsQueryVariables,
+  APITypes.GetFriendsQuery
+>;
+export const listFriends = /* GraphQL */ `query ListFriends(
+  $filter: ModelFriendsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFriends(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      friendsUserId
+      state
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userFriendsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListFriendsQueryVariables,
+  APITypes.ListFriendsQuery
+>;
+export const syncFriends = /* GraphQL */ `query SyncFriends(
+  $filter: ModelFriendsFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFriends(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      friendsUserId
+      state
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userFriendsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFriendsQueryVariables,
+  APITypes.SyncFriendsQuery
+>;
 export const getNutritionLog = /* GraphQL */ `query GetNutritionLog($id: ID!) {
   getNutritionLog(id: $id) {
     id
@@ -1841,6 +2066,180 @@ export const syncWeightLogs = /* GraphQL */ `query SyncWeightLogs(
 ` as GeneratedQuery<
   APITypes.SyncWeightLogsQueryVariables,
   APITypes.SyncWeightLogsQuery
+>;
+export const getOuraToken = /* GraphQL */ `query GetOuraToken($id: ID!) {
+  getOuraToken(id: $id) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetOuraTokenQueryVariables,
+  APITypes.GetOuraTokenQuery
+>;
+export const listOuraTokens = /* GraphQL */ `query ListOuraTokens(
+  $filter: ModelOuraTokenFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listOuraTokens(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userId
+      accessToken
+      refreshToken
+      expiresIn
+      lastRefresh
+      scopes
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListOuraTokensQueryVariables,
+  APITypes.ListOuraTokensQuery
+>;
+export const syncOuraTokens = /* GraphQL */ `query SyncOuraTokens(
+  $filter: ModelOuraTokenFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncOuraTokens(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userId
+      accessToken
+      refreshToken
+      expiresIn
+      lastRefresh
+      scopes
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncOuraTokensQueryVariables,
+  APITypes.SyncOuraTokensQuery
+>;
+export const getFitbitToken = /* GraphQL */ `query GetFitbitToken($id: ID!) {
+  getFitbitToken(id: $id) {
+    id
+    userId
+    accessToken
+    refreshToken
+    expiresIn
+    lastRefresh
+    scopes
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetFitbitTokenQueryVariables,
+  APITypes.GetFitbitTokenQuery
+>;
+export const listFitbitTokens = /* GraphQL */ `query ListFitbitTokens(
+  $filter: ModelFitbitTokenFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listFitbitTokens(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userId
+      accessToken
+      refreshToken
+      expiresIn
+      lastRefresh
+      scopes
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListFitbitTokensQueryVariables,
+  APITypes.ListFitbitTokensQuery
+>;
+export const syncFitbitTokens = /* GraphQL */ `query SyncFitbitTokens(
+  $filter: ModelFitbitTokenFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncFitbitTokens(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userId
+      accessToken
+      refreshToken
+      expiresIn
+      lastRefresh
+      scopes
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncFitbitTokensQueryVariables,
+  APITypes.SyncFitbitTokensQuery
 >;
 export const getExerciseLogExerciseRoutine = /* GraphQL */ `query GetExerciseLogExerciseRoutine($id: ID!) {
   getExerciseLogExerciseRoutine(id: $id) {
