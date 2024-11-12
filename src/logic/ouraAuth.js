@@ -1,13 +1,9 @@
 require('dotenv').config();
 const axios = require('axios');
 const express = require('express');
-const https = require('https');
-const fs = require('fs');
 const app = express();
 
-const privateKey = fs.readFileSync('private.key', 'utf8');
-const certificate = fs.readFileSync('certificate.crt', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
+const DEBUG = true;
 
 const clientID = process.env.OURA_CLIENT_ID;
 const clientSecret = process.env.OURA_CLIENT_SECRET;
@@ -16,22 +12,33 @@ const port = 3000;
 
 // Step 1: Redirect to Oura’s authorization page
 app.get('/authorize', (request, response) => {
-  const authorizationURL = `https://cloud.ouraring.com/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=code&scope=email+personal+daily`;
+  const authorizationURL = `https://cloud.ouraring.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=email+personal+daily`;
   response.redirect(authorizationURL);
 });
 
 // Step 2: Handle callback and exchange code for access token
 app.get('/callback', async (request, response) => {
   const code = request.query.code;
+  DEBUG && console.log(`The code is ${code}`);
+
   try {
-    const tokenResponse = await axios.post('https://cloud.ouraring.com/oauth/token', {
+    const tokenResponse = await axios.post('https://api.ouraring.com/oauth/token', {
       client_id: clientID,
       client_secret: clientSecret,
       grant_type: 'authorization_code',
       redirect_uri: redirectURI,
       code: code,
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
+
+    // Access tokens last 24 hours
     const accessToken = tokenResponse.data.access_token;
+    const refreshToken = tokenResponse.data.refresh_token;
+    DEBUG && console.log(`The access token is ${accessToken}`);
+    DEBUG && console.log(`The refresh token is ${refreshToken}`);
 
     // Store accessToken securely or use it for API requests
     response.send('Access Token obtained successfully');
