@@ -1,7 +1,18 @@
-require('dotenv').config();
-const axios = require('axios');
-const express = require('express');
+//import { authorizeOura, handleOuraCallback } from '../logic/oura-api';
+// import dotenv from 'dotenv';
+// dotenv.config();
+
+// require('dotenv').config();
+// const axios = require('axios');
+// const express = require('express');
+// const app = express();
+
+import dotenv from 'dotenv';
+import axios from 'axios';
+import express from 'express';
+dotenv.config();
 const app = express();
+
 
 const DEBUG = true;
 
@@ -40,8 +51,10 @@ app.get('/callback', async (request, response) => {
     DEBUG && console.log(`The access token is ${accessToken}`);
     DEBUG && console.log(`The refresh token is ${refreshToken}`);
 
-    // Store accessToken securely or use it for API requests
-    response.send('Access Token obtained successfully');
+    getUserData(accessToken);
+
+    //response.send('Access Token obtained successfully');
+    response.redirect('com.evryday://');
   } catch (error) {
     console.error('Error obtaining access token:', error);
     response.status(500).send('Error obtaining access token');
@@ -51,12 +64,12 @@ app.get('/callback', async (request, response) => {
 // Step 3: Use the access token to call Oura API
 async function getUserData(accessToken) {
   try {
-    const response = await axios.get('https://api.ouraring.com/v1/userinfo', {
+    const response = await axios.get('https://api.ouraring.com/v2/usercollection/daily_sleep?start_date=2024-01-01&end_date=2024-11-12', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(response.data); // Use user data as needed
+    console.log('Data is:', response.data);
   } catch (error) {
     console.error('Error fetching data:', error);
   }

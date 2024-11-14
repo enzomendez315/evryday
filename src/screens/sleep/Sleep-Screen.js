@@ -14,6 +14,8 @@ import {
   editSleepEntry, syncUsersMonthLog,
   getSleepEntry
 } from '../../logic/sleep-api'
+import { authorizeOura, handleOuraCallback } from '../../logic/oura-api';
+import axios from 'axios';
 import { AccountContext } from '../../../App';
 import {
   getFormattedDate, getActiveDate,
@@ -124,11 +126,9 @@ const AddSleepPopup = ({ isAddPopupVisible, setIsAddPopupVisible, setSleepData, 
                 <Text style={styles.popupTitle}>New Sleep Session</Text>
 
                 <TouchableOpacity onPress={() => {
-                  console.log('Syncing your Oura device')
-                  console.log('Redirecting to authorize endpoint')
-                  const authorizationURL = 'http://192.168.4.95:3000/authorize';
-
-                  Linking.openURL(authorizationURL).catch((error) => console.error(`Cannot open URL: ${authorizationURL}`));
+                  console.log("Going to the authorization URL now");
+                  const authorizeURL = 'https://nationally-native-slug.ngrok-free.app/authorize';
+                  Linking.openURL(authorizeURL).catch(err => console.error("Failed to open URL:", err));
                 }}>
                   <Text style={styles.editButton}>Sync Oura</Text>
                 </TouchableOpacity>
